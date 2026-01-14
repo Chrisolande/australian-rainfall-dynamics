@@ -3,6 +3,8 @@ title: "In-Depth Analysis of Australian Weather Data: Zero-Inflated Models"
 author: "Chris Olande"
 date: "2026-01-14"
 format:
+  gfm:
+    preview-mode: raw
   html:
     toc: true
     toc-depth: 3
