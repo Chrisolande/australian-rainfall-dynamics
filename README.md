@@ -35,7 +35,7 @@ This repository contains a full statistical analysis of daily rainfall across Au
 The primary dataset is `data/weatherAUS.csv`, which includes daily observations from 49 Australian locations. The analysis covers more than 140,000 observations and includes variables such as humidity, pressure, wind direction, cloud cover, and temperature. Key engineered features include:
 
 - **Cyclical seasonality** using sine and cosine transforms for day of year.
-- **Wind vector decomposition** to convert wind direction into North South and East West components.
+- **Wind vector decomposition** to convert wind direction into North-South and East-West components.
 - **Rain persistence features** such as wet or dry day streaks and lagged rainfall.
 - **Interaction terms** that capture the combined effect of sunshine and humidity.
 
@@ -83,7 +83,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 The report includes diagnostics for:
 
 - Residual dispersion and zero inflation using DHARMa.
-- Temporal autocorrelation checks using Durbin Watson statistics.
+- Temporal autocorrelation checks using Durbin-Watson statistics.
 - Comparative model tests using likelihood ratio tests and AIC deltas.
 
 ## Notes on Outputs
