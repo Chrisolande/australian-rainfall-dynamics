@@ -93,7 +93,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 - Agricultural planning and irrigation scheduling.
 - Historical data imputation for non-extreme events.
 
-## Not Suitable for
+## Unsuitable Use Cases
 
 - Extreme value prediction such as 100-year flood estimation.
 - Engineering design loads or catastrophic event forecasting.
