@@ -1,6 +1,6 @@
 # Predicting the Unpredictable: Australian Rainfall Dynamics
 
-This repository contains a full statistical analysis of daily rainfall across Australia using zero-inflated gamma mixed models. The work blends exploratory data analysis, feature engineering, and model diagnostics to explain both rainfall occurrence and intensity across 49 locations and more than 142,000 daily observations.
+This repository contains a full statistical analysis of daily rainfall across Australia using zero-inflated gamma mixed models. The work blends exploratory data analysis, feature engineering, and model diagnostics to explain both rainfall occurrence and intensity across 49 locations and more than 142,000 observations.
 
 ## Statistical Challenge
 
@@ -57,7 +57,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 ## Key Findings Summary
 
 - Rainfall probability is strongly tied to humidity and prior day rain state.
-- The joint effect of humidity and sunshine creates a non-linear threshold for rain onset, described as the rain corner effect.
+- The joint effect of humidity and sunshine creates a nonlinear threshold for rain onset, described as the rain corner effect.
 - Wind direction and pressure gradients influence rainfall intensity, especially for southerly and westerly flows.
 - Location-level random effects capture meaningful geographic structure, roughly 10 percent of total variance.
 
@@ -70,7 +70,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 ## Model Progression
 
 | Model | Focus | AIC | Delta AIC |
-| --- | --- | --- | --- |
+| --- | --- | ---: | ---: |
 | M0 | Null baseline | 461,670 | - |
 | M1 | Moisture and pressure | 422,847 | -38,823 |
 | M2 | Temporal persistence | 406,659 | -16,188 |
@@ -93,7 +93,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 - Agricultural planning and irrigation scheduling.
 - Historical data imputation for non-extreme events.
 
-## Not Suitable For
+## Not Suitable for
 
 - Extreme value prediction such as 100-year flood estimation.
 - Engineering design loads or catastrophic event forecasting.
