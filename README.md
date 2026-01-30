@@ -4,7 +4,7 @@ This repository contains a full statistical analysis of daily rainfall across Au
 
 ## Statistical Challenge
 
-Australian rainfall is highly intermittent and non Gaussian. The dataset includes roughly 64 percent dry days, strong right skew, and heavy tail events where daily rainfall exceeds 100 mm. These characteristics motivate a two part model that separates the probability of rain from the magnitude of rain.
+Australian rainfall is highly intermittent and non-Gaussian. The dataset includes roughly 64 percent dry days, strong right skew, and heavy tail events where daily rainfall exceeds 100 mm. These characteristics motivate a two-part model that separates the probability of rain from the magnitude of rain.
 
 ## Project Goals
 
@@ -43,7 +43,7 @@ The primary dataset is `data/weatherAUS.csv`, which includes daily observations 
 - **Rain persistence features** such as wet or dry day streaks and lagged rainfall.
 - **Interaction terms** that capture the combined effect of sunshine and humidity.
 
-Missingness is most pronounced in sunshine and evaporation, which motivates Random Forest based imputation with predictive mean matching to preserve distributional structure.
+Missingness is most pronounced in sunshine and evaporation, which motivates Random Forest-based imputation with predictive mean matching to preserve distributional structure.
 
 ## Modeling Approach
 
@@ -57,7 +57,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 ## Key Findings Summary
 
 - Rainfall probability is strongly tied to humidity and prior day rain state.
-- The joint effect of humidity and sunshine creates a nonlinear threshold for rain onset, described as the Rain Corner effect.
+- The joint effect of humidity and sunshine creates a non-linear threshold for rain onset, described as the rain corner effect.
 - Wind direction and pressure gradients influence rainfall intensity, especially for southerly and westerly flows.
 - Location-level random effects capture meaningful geographic structure, roughly 10 percent of total variance.
 
@@ -89,9 +89,9 @@ The final model includes fixed effects for meteorological drivers and random eff
 
 ## Suitable Use Cases
 
-- Short range probabilistic forecasting.
+- Short-range probabilistic forecasting.
 - Agricultural planning and irrigation scheduling.
-- Historical data imputation for non extreme events.
+- Historical data imputation for non-extreme events.
 
 ## Not Suitable For
 
