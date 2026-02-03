@@ -54,7 +54,7 @@ The response  is treated as a mixture distribution:
 | **M5** | Circular Wind Vectors | 402,453 | -599 |
 | **M6** | **Mixed Effects (Random Slopes)** | **394,854** | **-7,599** |
 
-### **Variance Analysis (Nakagawa’s )**
+### **Variance Analysis (Nakagawa's R²)**
 
 * **Marginal R² (Fixed Effects)**: **0.345**
 * **Conditional R² (Total Variance)**: **0.441**
