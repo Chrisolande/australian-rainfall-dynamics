@@ -197,18 +197,14 @@ df <- df %>%
 cat("3.1: TEMPORAL DRIFT ANALYSIS\n")
 cat("-----------------------------\n")
 
-# Use naniar for temporal missingness aggregation
+# Calculate temporal missingness manually with tidyverse
 temporal_missingness <- df %>%
+  select(year, all_of(key_vars)) %>%
   group_by(year) %>%
-  miss_var_summary() %>%
-  filter(variable %in% key_vars) %>%
-  select(year, variable, pct_miss, n_miss) %>%
-  pivot_wider(
-    names_from = variable,
-    values_from = pct_miss,
-    id_cols = year
-  ) %>%
-  ungroup()
+  summarise(
+    across(all_of(key_vars), ~mean(is.na(.)) * 100),
+    .groups = "drop"
+  )
 
 cat("Missingness Rate by Year:\n")
 print(temporal_missingness %>%
@@ -276,17 +272,15 @@ if (chi_test$p.value < 0.05) {
 }
 cat("\n")
 
-# Show missingness rates by rainfall category using naniar
+# Show missingness rates by rainfall category
 missingness_by_rainfall <- df %>%
+  select(rainfall_category, sunshine, evaporation) %>%
   group_by(rainfall_category) %>%
-  miss_var_summary() %>%
-  filter(variable %in% c("sunshine", "evaporation")) %>%
-  select(rainfall_category, variable, pct_miss, n_miss) %>%
-  pivot_wider(
-    names_from = variable,
-    values_from = pct_miss
-  ) %>%
-  ungroup()
+  summarise(
+    sunshine = mean(is.na(sunshine)) * 100,
+    evaporation = mean(is.na(evaporation)) * 100,
+    .groups = "drop"
+  )
 
 cat("Missingness Rates by Rainfall Category:\n")
 print(missingness_by_rainfall %>%
