@@ -229,7 +229,7 @@ for (var in key_vars) {
               cor_test$estimate, cor_test$p.value))
   
   if (cor_test$p.value < 0.05) {
-    if (abs(cor_value) > 0.1) {
+    if (abs(cor_test$estimate) > 0.1) {
       cat("  ⚠️  Significant temporal drift detected!\n")
     } else {
       cat("  ✓ Statistically significant but weak correlation.\n")
