@@ -1,8 +1,4 @@
-
 # Missing Data Analysis Script
-
-# Purpose: Analyze missingness patterns in weather data
-# Focus: High-missingness variables and their co-occurrence patterns
 
 # Load required packages
 library(dplyr)
@@ -13,11 +9,11 @@ library(naniar)
 library(purrr)
 library(glue)
 
-# Define high-missingness variables 
+# Define high-missingness variables
 high_miss_cols <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
 
-high_miss <- df %>% 
-  select(all_of(high_miss_cols)) %>% 
+high_miss <- df %>%
+  select(all_of(high_miss_cols)) %>%
   colnames()
 
 cat("High missingness variables:", paste(high_miss, collapse = ", "), "\n\n")
@@ -25,55 +21,56 @@ cat("High missingness variables:", paste(high_miss, collapse = ", "), "\n\n")
 # Analyze co-missingness patterns
 cat("Analyzing co-missingness patterns...\n\n")
 
-co_missing_stats <- expand_grid(var1 = high_miss, var2 = high_miss) %>% 
-  filter(var1 < var2) %>% 
-  rowwise() %>% 
+co_missing_stats <- expand_grid(var1 = high_miss, var2 = high_miss) %>%
+  filter(var1 < var2) %>%
+  rowwise() %>%
   mutate(
     n_var1_miss = sum(is.na(df[[var1]])),
     n_both_miss = sum(is.na(df[[var1]]) & is.na(df[[var2]])),
     pct_co_miss = if_else(n_var1_miss > 0, (n_both_miss / n_var1_miss) * 100, 0)
-  ) %>% 
-  ungroup() %>% 
+  ) %>%
+  ungroup() %>%
   arrange(desc(pct_co_miss))
 
 # Display missing pattern combinations
 cat("Missing pattern combinations:\n")
-df %>% 
-  select(all_of(high_miss)) %>% 
-  miss_case_table() %>% 
+df %>%
+  select(all_of(high_miss)) %>%
+  miss_case_table() %>%
   print()
 
-cat("\n")
+
 print(co_missing_stats)
 
 # Print detailed co-missingness summary
 cat("\nCo-missingness Summary:\n")
-co_missing_stats %>% 
+co_missing_stats %>%
   mutate(
-    msg = glue("  {var1} | {var2}: {round(pct_co_miss, 1)}% (when {var1} is missing, {var2} is also missing)")
-  ) %>% 
-  pull(msg) %>% 
+    msg = glue(
+      "  {var1} | {var2}: {round(pct_co_miss, 1)}% (when {var1} is missing, {var2} is also missing)"
+    )
+  ) %>%
+  pull(msg) %>%
   walk(cat, "\n")
 
-cat("\n\n")
 
 # Analyze missingness by location
-cat("Analyzing missingness by location...\n\n")
+cat("Analyzing missingness by location")
 
-location_summary <- df %>% 
-  group_by(location) %>% 
+location_summary <- df %>%
+  group_by(location) %>%
   miss_var_summary()
 
-location_summary %>% 
-  filter(variable %in% high_miss) %>% 
-  arrange(desc(pct_miss)) %>% 
-  head(10) %>% 
+location_summary %>%
+  filter(variable %in% high_miss) %>%
+  arrange(desc(pct_miss)) %>%
+  head(10) %>%
   print()
 
 cat("\n")
 
 # Analyze temporal trends in missingness
-cat("Analyzing temporal trends...\n\n")
+cat("Analyzing temporal trends.")
 
 temporal_trend <- df %>%
   mutate(month = floor_date(date, "month")) %>%
@@ -83,7 +80,10 @@ temporal_trend <- df %>%
   summarise(pct_missing = mean(is.na(value)) * 100, .groups = "drop")
 
 # Plot temporal trends
-p_time <- ggplot(temporal_trend, aes(x = month, y = pct_missing, color = variable)) +
+p_time <- ggplot(
+  temporal_trend,
+  aes(x = month, y = pct_missing, color = variable)
+) +
   geom_line(linewidth = 1) +
   facet_wrap(~variable, scales = "free_y", ncol = 1) +
   labs(
@@ -99,8 +99,6 @@ print(p_time)
 
 
 if (all(c("rainfall", "sunshine") %in% names(df))) {
-
-  
   # Calculate sunshine missingness by rainfall status
   weather_missing_stats <- df %>%
     mutate(is_rainy = if_else(rainfall > 1, "Rainy (>1mm)", "Dry (≤1mm)")) %>%
@@ -110,14 +108,13 @@ if (all(c("rainfall", "sunshine") %in% names(df))) {
       pct_sunshine_missing = mean(is.na(sunshine)) * 100,
       .groups = "drop"
     )
-  
+
   print(weather_missing_stats)
-  cat("\n")
-  
+
   # Plot rainfall density by sunshine missingness
   p_rainfall <- df %>%
     bind_shadow() %>%
-    filter(rainfall > 0 & rainfall < 50) %>% 
+    filter(rainfall > 0 & rainfall < 50) %>%
     ggplot(aes(x = rainfall, fill = sunshine_NA)) +
     geom_density(alpha = 0.6) +
     scale_fill_viridis_d(labels = c("!NA" = "Present", "NA" = "Missing")) +
@@ -129,8 +126,6 @@ if (all(c("rainfall", "sunshine") %in% names(df))) {
       fill = "Sunshine Status"
     ) +
     theme_minimal()
-  
+
   print(p_rainfall)
 }
-
-cat("\nMissing data analysis complete!\n")
