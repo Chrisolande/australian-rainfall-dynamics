@@ -25,11 +25,15 @@ book:
       chapters:
         - 01-data-prep.qmd
         - 02-eda.qmd
-    - part: "Modelling"
+    - part: "Feature Engineering"
       chapters:
         - 03-features.qmd
+    - part: "Modelling"
+      chapters:
         - 04-modeling.qmd
-    - 05-conclusion.qmd
+        - 05-evaluation.qmd
+        - 06-model-selection.qmd
+    - 07-conclusion.qmd
 
 execute:
   warning: false

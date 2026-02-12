@@ -334,9 +334,9 @@ To identify the primary meteorological drivers of rainfall, we performed a Spear
 **Statistical Validation:** To confirm that the opposing effects of moisture and solar radiation are statistically distinct, we applied Steiger’s Z-test for dependent correlations ($z \approx 188.9, p < 2.2e-16$). While this formally rejects the null hypothesis, we exercise caution in interpreting the p-value; in datasets of this magnitude ($N > 140,000$), statistical significance is often achieved even for trivial effects due to high power. However, the substantial magnitude of the Z-statistic confirms that the difference is not merely an artifact of sample size. We therefore conclude that `Humidity3pm` and `Sunshine` represent distinct, opposing physical forces in the generation of Australian rainfall, rather than relying solely on the p-value for "certainty."
 
 
-# Pattern Analysis
+## Pattern Analysis
 
-## Temporal Dependence and Markov Chain Analysis
+### Temporal Dependence and Markov Chain Analysis
 
 ```{r}
 #| label: markov-prep
@@ -450,7 +450,7 @@ To quantify the "persistence" of weather patterns (the tendency of current weath
 
 **Conclusion:** While the "Dry" state is highly stable (sticky), the "Wet" state is transient. This asymmetry suggests that while past rainfall is a useful predictor, it cannot be the *sole* predictor. A robust model must incorporate other meteorological covariates (humidity, pressure) to accurately predict the onset and cessation of rainfall events.
 
-## Justification for Interaction Terms
+### Justification for Interaction Terms
 
 ```{r}
 #| label: fig-interaction-rain-corner
@@ -501,7 +501,7 @@ To refine our model specification, we investigated potential non-linear interact
 
 **Modeling Implication:** This stark visual contrast confirms that `Humidity` and `Sunshine` do not act independently. The effect of humidity on rainfall probability is conditional on the level of sunshine. Consequently, a standard additive model ($Rain \sim Humidity + Sunshine$) would fail to capture this specific "corner" effect. This finding empirically justifies the inclusion of a multiplicative interaction term ($Humidity \times Sunshine$) in our final model to mathematically capture this synergistic threshold.
 
-## The 'Drying Effect' and Temporal Decay
+### The 'Drying Effect' and Temporal Decay
 
 ```{r}
 #| label: dry-spell-prep
@@ -677,7 +677,7 @@ Beyond simple day-to-day persistence, we modeled the **cumulative effect of dry 
 -   **Visual Evidence:** As seen in @fig-dry-spell, the empirical data (black dots) shows a "kink" around Day 10-12. The probability of rain drops sharply from Day 1 (\~48%) to Day 10 (\~18%), but then stabilizes or decays much slower from Day 15 to Day 30.
 -   **Implication:** A simple linear term underestimates the rapid initial drying and overestimates the decay in long-term droughts. Future models should utilize spline terms for `days_since_rain` to capture this "rapid-then-gradual" decay dynamic.
 
-## Atmospheric Pressure and Diurnal Variation
+### Atmospheric Pressure and Diurnal Variation
 
 ```{r}
 #| label: pressure-prep-normality
@@ -891,7 +891,7 @@ We analyzed atmospheric pressure dynamics to determine how barometric baselines 
 
 **3. Effect Size:** The Cohen's $d$ analysis reveals that the **magnitude of change** (`pressure_change`) has a **medium effect size** ($d = -0.72$), which is notably stronger than the absolute pressure readings ($d \approx 0.28-0.48$). This suggests that the *stability* of pressure (or lack thereof) during the day is a potent predictor of rainfall, potentially more so than the raw pressure reading itself.
 
-## Seasonal Dynamics and Intensity Cycles
+### Seasonal Dynamics and Intensity Cycles
 
 ```{r}
 #| label: seasonality-prep

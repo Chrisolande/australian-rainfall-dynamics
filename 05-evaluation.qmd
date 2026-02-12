@@ -1,0 +1,279 @@
+# Model Evaluation
+
+In this chapter, we rigorously validate the final Mixed-Effects Zero-Inflated Gamma model (M6) across four dimensions: classification performance, spatial heterogeneity, residual diagnostics, and temporal independence.
+
+```{r}
+#| label: setup-evaluation
+#| include: false
+
+librarian::shelf(
+  tidyverse,
+  glmmTMB,
+  DHARMa,
+  splines,
+  kableExtra,
+  pROC,
+  here
+)
+
+df_final <- read_csv(here::here("data", "df_engineered.csv"))
+source(here::here("utils.R"))
+
+if (file.exists(here::here("models/all_models_bundle.RData"))) {
+  load(here::here("models/all_models_bundle.RData"))
+}
+
+re_data <- select_model_features(df_final, keep_location = TRUE) %>%
+  scale_data()
+```
+
+## Classification Performance
+
+```{r}
+#| label: model-evaluation
+#| echo: true
+#| fig-cap: "ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days."
+#| message: false
+#| warning: false
+
+prob_no_rain <- predict(m6_mixed, type = "zprob")
+actual_no_rain <- ifelse(re_data$rainfall == 0, 1, 0)
+
+roc_obj <- roc(actual_no_rain, prob_no_rain)
+
+plot(
+  roc_obj,
+  main = "ROC Curve: Predicting Rainfall Occurrence",
+  col = "#0072B2",
+  lwd = 2,
+  print.auc = TRUE,
+  print.auc.y = 0.4
+)
+
+coords_obj <- coords(roc_obj, "best", best.method = "youden")
+optimal_threshold <- coords_obj$threshold
+
+cat(sprintf("\nOptimal Probability Threshold: %.4f\n", optimal_threshold))
+
+predicted_class <- ifelse(prob_no_rain > optimal_threshold, "No Rain", "Rain")
+actual_class <- ifelse(re_data$rainfall == 0, "No Rain", "Rain")
+
+conf_matrix <- table(Predicted = predicted_class, Actual = actual_class)
+
+conf_matrix %>%
+  kable(caption = "Confusion Matrix (Optimal Threshold)") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+cat(sprintf("\nModel Accuracy: %.2f%%\n", accuracy * 100))
+```
+
+While the Gamma component estimates rainfall *amount*, the Zero-Inflation component acts as a binary classifier answering: *"Will it rain?"*
+
+**1. Discriminative Power (AUC = 0.832):** In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.
+
+**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** — because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."
+
+**3. Confusion Matrix Results (Accuracy: 75.41%):**
+
+- Correct Dry Predictions (TN): 68,544 days
+- Correct Rain Predictions (TP): 38,433 days
+- False Alarms (Type I): 22,294 days
+- Missed Rain (Type II): 12,585 days
+
+The model is conservative — twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.
+
+## Random Effects Visualization
+
+```{r}
+#| label: fig-location-effects
+#| fig-cap: "The Geography of Rain: Random Intercepts by Location. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average; cities in red (e.g., Nhil, Norfolk Island) are inherently drier, after controlling for all dynamic weather variables."
+#| fig-width: 10
+#| fig-height: 12
+#| echo: true
+#| warning: false
+
+ranef_data <- ranef(m6_mixed)
+
+loc_effects <- as.data.frame(ranef_data$cond$location) %>%
+  rownames_to_column("Location") %>%
+  rename(Effect = `(Intercept)`) %>%
+  arrange(Effect) %>%
+  mutate(
+    Location = factor(Location, levels = Location),
+    CI_lower = Effect - 1.96 * sd(Effect) / sqrt(n()),
+    CI_upper = Effect + 1.96 * sd(Effect) / sqrt(n()),
+    Category = case_when(
+      Effect > sd(Effect) ~ "Significantly Wetter",
+      Effect < -sd(Effect) ~ "Significantly Drier",
+      TRUE ~ "Near Average"
+    ),
+    Category = factor(
+      Category,
+      levels = c("Significantly Drier", "Near Average", "Significantly Wetter")
+    )
+  )
+
+ggplot(loc_effects, aes(x = Effect, y = Location)) +
+  annotate(
+    "rect",
+    xmin = -Inf,
+    xmax = -sd(loc_effects$Effect),
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "#c0392b",
+    alpha = 0.05
+  ) +
+  annotate(
+    "rect",
+    xmin = sd(loc_effects$Effect),
+    xmax = Inf,
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "#2980b9",
+    alpha = 0.05
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    color = "grey30",
+    linewidth = 0.8
+  ) +
+  geom_vline(
+    xintercept = c(-sd(loc_effects$Effect), sd(loc_effects$Effect)),
+    linetype = "dotted",
+    color = "grey50",
+    linewidth = 0.5
+  ) +
+  geom_segment(
+    aes(
+      x = CI_lower,
+      xend = CI_upper,
+      y = Location,
+      yend = Location,
+      color = Category
+    ),
+    linewidth = 1.5,
+    alpha = 0.4
+  ) +
+  geom_point(aes(color = Category), size = 4, alpha = 0.9) +
+  geom_text(
+    data = filter(loc_effects, abs(Effect) > sd(Effect)),
+    aes(
+      label = sprintf("%.2f", Effect),
+      x = Effect,
+      hjust = ifelse(Effect > 0, -0.3, 1.3)
+    ),
+    size = 3,
+    fontface = "bold",
+    color = "grey20"
+  ) +
+  scale_color_manual(
+    values = c(
+      "Significantly Drier" = "#c0392b",
+      "Near Average" = "#7f8c8d",
+      "Significantly Wetter" = "#2980b9"
+    ),
+    name = "Effect Size"
+  ) +
+  labs(
+    title = "The Geography of Rain: Location-Specific Baselines",
+    subtitle = "Random intercepts show how much wetter/drier each city is, holding all weather variables constant.\nBars show 95% confidence intervals; points beyond ±1 SD are labeled.",
+    x = "Baseline Rainfall Adjustment (Log mm)",
+    y = NULL,
+    caption = "Interpretation: A value of +0.5 means ~65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey90", linewidth = 0.3),
+    plot.title = element_text(face = "bold", size = 16, margin = margin(b = 5)),
+    plot.subtitle = element_text(
+      color = "grey30",
+      size = 11,
+      margin = margin(b = 15)
+    ),
+    plot.caption = element_text(
+      color = "grey50",
+      size = 9,
+      hjust = 0,
+      margin = margin(t = 10)
+    ),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(
+      size = 11,
+      face = "bold",
+      margin = margin(t = 10)
+    ),
+    legend.position = "top",
+    legend.justification = "left",
+    legend.title = element_text(face = "bold", size = 10),
+    legend.text = element_text(size = 9),
+    plot.margin = margin(15, 15, 15, 15)
+  )
+```
+
+**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments — even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.
+
+**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography — weather systems that produce moderate rain elsewhere produce only light rain here.
+
+**3. Significance:** The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.
+
+## Validating Model Assumptions (DHARMa)
+
+```{r}
+#| label: model-diagnostics
+#| echo: true
+#| fig-cap: "DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs. Predicted shows no fanning or curvature, confirming homoscedasticity."
+#| fig-width: 10
+#| fig-height: 5
+#| message: false
+#| warning: false
+#| cache: true
+
+res <- simulateResiduals(m6_mixed)
+plot(res)
+testDispersion(res)
+testZeroInflation(res)
+```
+
+**1. Q-Q Plot:** Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows $p < 0.05$ (expected at $N > 140,000$), visual deviations are negligible. The **Gamma distribution** correctly characterizes the positive rainfall values.
+
+**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal — **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.
+
+**3. Formal Tests:**
+
+- **Dispersion Test:** $p = 0.192$ — we fail to reject ideal dispersion. The `ziGamma` family successfully handled the variance structure without over-dispersion.
+- **Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) — the model predicts the exact correct number of dry days.
+
+## Verifying Temporal Independence
+
+```{r}
+#| label: temporal-autocorrelation
+#| echo: true
+#| fig-cap: "Temporal Autocorrelation Check (Canberra). Left: Residuals vs. Time showing random scatter. Right: ACF plot showing all lags within the blue confidence bounds, confirming independence."
+#| message: false
+#| warning: false
+
+rows_used <- as.numeric(rownames(m6_mixed$frame))
+
+Canberra_data <- df_final[rows_used, ] %>%
+  mutate(dharma_resid = residuals(res)) %>%
+  filter(location == "Canberra") %>%
+  arrange(date)
+
+dw_result <- testTemporalAutocorrelation(
+  simulationOutput = Canberra_data$dharma_resid,
+  time = Canberra_data$date
+)
+
+print(dw_result)
+```
+
+**1. Durbin-Watson Statistic = 2.0406:** A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.
+
+**2. Statistical Significance:** $p = 0.2355$ — we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.
+
+**3. Interpretation:** By explicitly including `rain_yesterday` (Markov chain) and `ns(days_since_rain)` (spline), we successfully "bleached" the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.

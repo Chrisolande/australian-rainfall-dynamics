@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>5&nbsp; Conclusion – Australian Rainfall Dynamics</title>
+<title>7&nbsp; Conclusion – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./04-modeling.html" rel="prev">
+<link href="./06-model-selection.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -313,7 +313,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-conclusion.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07-conclusion.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -374,7 +374,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Modelling</span></a>
+ <span class="menu-text">Feature Engineering</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -386,18 +386,41 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04-modeling.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-conclusion.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="./07-conclusion.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -410,12 +433,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#summary-of-findings" id="toc-summary-of-findings" class="nav-link active" data-scroll-target="#summary-of-findings"><span class="header-section-number">5.1</span> Summary of Findings</a></li>
-  <li><a href="#model-performance-and-limitations" id="toc-model-performance-and-limitations" class="nav-link" data-scroll-target="#model-performance-and-limitations"><span class="header-section-number">5.2</span> Model Performance and Limitations</a></li>
-  <li><a href="#operational-suitability" id="toc-operational-suitability" class="nav-link" data-scroll-target="#operational-suitability"><span class="header-section-number">5.3</span> Operational Suitability</a></li>
-  <li><a href="#final-recommendation" id="toc-final-recommendation" class="nav-link" data-scroll-target="#final-recommendation"><span class="header-section-number">5.4</span> Final Recommendation</a></li>
+  <li><a href="#summary-of-findings" id="toc-summary-of-findings" class="nav-link active" data-scroll-target="#summary-of-findings"><span class="header-section-number">7.1</span> Summary of Findings</a></li>
+  <li><a href="#model-performance-and-limitations" id="toc-model-performance-and-limitations" class="nav-link" data-scroll-target="#model-performance-and-limitations"><span class="header-section-number">7.2</span> Model Performance and Limitations</a></li>
+  <li><a href="#operational-suitability" id="toc-operational-suitability" class="nav-link" data-scroll-target="#operational-suitability"><span class="header-section-number">7.3</span> Operational Suitability</a></li>
+  <li><a href="#final-recommendation" id="toc-final-recommendation" class="nav-link" data-scroll-target="#final-recommendation"><span class="header-section-number">7.4</span> Final Recommendation</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/07-conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -423,7 +446,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -440,8 +463,8 @@ window.Quarto = {
 </header>
 
 
-<section id="summary-of-findings" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="summary-of-findings"><span class="header-section-number">5.1</span> Summary of Findings</h2>
+<section id="summary-of-findings" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="summary-of-findings"><span class="header-section-number">7.1</span> Summary of Findings</h2>
 <p>This study successfully developed a hierarchical Zero-Inflated Gamma model to predict daily rainfall across Australia. By analyzing over 140,000 observations, we demonstrated that rainfall is driven by a complex interplay of <strong>thermodynamic instability</strong>, <strong>wind vector dynamics</strong>, and <strong>spatial heterogeneity</strong>.</p>
 <p>Our progressive modeling strategy validated four critical physical hypotheses:</p>
 <p>1. <strong>The “Rain Corner”:</strong> We mathematically defined the interaction between High Humidity and Low Sunshine, identifying it as the primary thermodynamic trigger for precipitation.</p>
@@ -451,8 +474,8 @@ window.Quarto = {
 <p>3. <strong>Wind Vectors:</strong> Decomposing wind into <span class="math inline">\(U\)</span> (East-West) and <span class="math inline">\(V\)</span> (North-South) components revealed that Southerly and Westerly flows are the strongest drivers of rainfall intensity.</p>
 <p>4. <strong>Spatial Variance:</strong> Our Mixed Model (M6) revealed distinct geographic baselines, separating “wet” tropical zones from “dry” interior zones with high statistical confidence.</p>
 </section>
-<section id="model-performance-and-limitations" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="model-performance-and-limitations"><span class="header-section-number">5.2</span> Model Performance and Limitations</h2>
+<section id="model-performance-and-limitations" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="model-performance-and-limitations"><span class="header-section-number">7.2</span> Model Performance and Limitations</h2>
 <p>The final model (M6) offers a significant improvement over standard linear approaches:</p>
 <ul>
 <li><p><strong>Classification:</strong> It achieves an <strong>AUC of 0.83</strong>, indicating strong discriminative power in distinguishing wet days from dry days.</p></li>
@@ -460,8 +483,8 @@ window.Quarto = {
 <li><p><strong>Limitation on Extremes:</strong> The Global RMSE of <strong>7.48 mm</strong> indicates that the model under-predicts the magnitude of extreme outlier events (e.g., &gt;50mm). While the Gamma distribution handles skewness better than a Gaussian, it lacks the “heavy tail” required to fully capture rare, catastrophic storm events.</p></li>
 </ul>
 </section>
-<section id="operational-suitability" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="operational-suitability"><span class="header-section-number">5.3</span> Operational Suitability</h2>
+<section id="operational-suitability" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="operational-suitability"><span class="header-section-number">7.3</span> Operational Suitability</h2>
 <p>Based on these metrics, we define the following scope for deployment:</p>
 <ul>
 <li><strong>Suitable For:</strong>
@@ -476,8 +499,8 @@ window.Quarto = {
 </ul></li>
 </ul>
 </section>
-<section id="final-recommendation" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="final-recommendation"><span class="header-section-number">5.4</span> Final Recommendation</h2>
+<section id="final-recommendation" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="final-recommendation"><span class="header-section-number">7.4</span> Final Recommendation</h2>
 <p>We recommend the <strong>Mixed Effects Zero-Inflated Gamma Model</strong> as the standard for general meteorological inference. It successfully balances complexity and accuracy, solving the “negative rain” problem inherent in linear models. Future work should focus on integrating <strong>Extreme Value Theory (EVT)</strong> tails to better model the catastrophic outlier events that the current Gamma framework underestimates.</p>
 
 
@@ -958,8 +981,8 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./04-modeling.html" class="pagination-link" aria-label="Modelling">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span>
+      <a href="./06-model-selection.html" class="pagination-link" aria-label="Model Selection">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -1011,5 +1034,5 @@ window.Quarto = {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/07-conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
