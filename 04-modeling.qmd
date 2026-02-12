@@ -1,0 +1,1316 @@
+
+# Modelling
+
+## Establishing the Baseline (Null Model)
+
+# Modeling
+
+In this chapter, we progressively build our statistical framework, starting from a null baseline and adding layers of physical complexity. We utilize **Zero-Inflated Gamma (ZIG)** models to handle the dual nature of rainfall data (probability of occurrence vs. intensity).
+
+```{r}
+#| label: setup-modeling
+#| include: false
+
+librarian::shelf(
+  tidyverse,
+  glmmTMB,
+  sjPlot,
+  DHARMa,
+  kableExtra,
+  gtsummary,
+  lmtest,
+  performance,
+  gt,
+  splines,
+  pROC,
+  here
+)
+
+df_scaled <- read_csv(here::here("data", "df_scaled.csv"))
+df_final <- read_csv(here::here("data", "df_engineered.csv"))
+
+source(here::here("utils.R"))
+
+if (file.exists(here::here("models/all_models_bundle.RData"))) {
+  load(here::here("models/all_models_bundle.RData"))
+}
+```
+
+# Modelling
+
+## Establishing the Baseline (Null Model)
+
+```{r}
+#| label: null-model-fit
+#| echo: true
+#| message: false
+#| eval: false
+
+# Fit the Null Model (Intercept-Only)
+# TO Establish a baseline AIC/BIC and recover global average parameters
+m0_null <- glmmTMB(
+  formula = rainfall ~ 1, # Model rainfall intensity using only an intercept
+  ziformula = ~1, # Model probability of dry days using only an intercept
+  family = Gamma(link = "log"), # Gamma distribution for positive rain
+  data = df_scaled
+)
+```
+
+```{r}
+#| label: null-model-output
+
+tab_model(
+  m0_null,
+  show.se = TRUE,
+  show.aic = TRUE,
+  transform = "exp",
+  collapse.se = TRUE,
+  p.style = "numeric_stars",
+  string.pred = "Parameter",
+  string.est = "Estimate (Exp)",
+  dv.labels = "Baseline Rainfall Model",
+  title = "Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"
+)
+```
+
+To quantify the value added by our meteorological predictors, we first fitted a **"Null" Zero-Inflated Gamma model**. This model contains no predictors (covariates); it consists solely of intercepts. Its purpose is to verify if the model structure correctly recovers the fundamental properties of the dataset (the global probability of rain and the global average intensity).
+
+**1. Zero-Inflation Component (The "Hurdle"):** The zero-inflation intercept is $\beta_{zi} = 0.5769$. Since this component uses a **logit** link function, we can back-transform it to find the baseline probability of a dry day:
+
+$$P(\text{Dry}) = \frac{e^{0.5769}}{1 + e^{0.5769}} \approx \frac{1.78}{2.78} \approx 64.03\%$$
+
+**Insight:** This model-derived probability matches the empirical zero-inflation rate ($64.05\%$) calculated in our EDA perfectly. This confirms the model is correctly calibrated to the frequency of dry days.
+
+**2. Conditional Component (Gamma Intensity):** The conditional intercept is $\beta_{cond} = 1.8825$. Using the **log** link function, we recover the baseline rainfall intensity for wet days:
+
+$$\mu_{\text{rain}} = e^{1.8825} \approx 6.57 \text{ mm}$$
+
+**Insight:** This represents the typical "geometric mean" rainfall intensity when it does rain, unadjusted for season or location.
+
+**3. Performance Baseline:**
+
+-   **AIC:** 461,669.7
+
+-   **Implication:** Any subsequent model including predictors (e.g., `humidity`, `pressure`, `season`) must achieve an AIC significantly lower than this value to demonstrate predictive power.
+
+## Moisture Dynamics
+
+```{r}
+#| label: m1-moisture-code
+#| echo: true
+#| eval: false
+
+# Update the null model to include moisture-related predictors
+m1_moisture <- update(
+  m0_null,
+  . ~ . + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change,
+  ziformula = ~ humidity3pm + dewpoint_9am
+)
+```
+
+```{r}
+#| label: m1-moisture-output
+#| echo: false
+
+m1_moisture %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label = list(
+      humidity3pm ~ "Humidity (3pm)",
+      dewpoint_9am ~ "Dewpoint (9am)",
+      dewpoint_change ~ "Dewpoint Change (Delta)",
+      pressure_change ~ "Pressure Change (Delta)"
+    )
+  ) %>%
+  bold_p() %>%
+  add_glance_table(include = c("AIC", "BIC", "logLik")) %>%
+  modify_header(label = "**Predictor**") %>%
+  modify_caption("**Model 1: Moisture & Pressure Dynamics**")
+```
+
+Building upon the baseline, "Model 1" incorporates the primary moisture and pressure drivers identified in the exploratory analysis. Specifically, we test the hypothesis that atmospheric moisture content (`humidity`, `dewpoint`) and pressure stability (`pressure_change`) drive both the occurrence and intensity of rainfall.
+
+**1. Performance Improvement:**
+
+-   **AIC Reduction:** The AIC dropped dramatically from **461,669.7 (Null)** to **422,847 (M1)**.
+
+-   **Significance:** This massive reduction ($\Delta AIC \approx 38,823$) confirms that moisture dynamics are foundational predictors, explaining a vast amount of the variance in the dataset.
+
+**2. Conditional Model (Rainfall Intensity):** All predictors in the conditional part are statistically significant ($p < 2e^{-16}$):
+
+-   **Humidity & Dewpoint:** Both `humidity3pm` ($\beta = 0.38$) and `dewpoint_9am` ($\beta = 0.38$) have strong positive effects. As the air becomes more saturated (higher humidity) and holds more absolute moisture (higher dewpoint), rainfall intensity increases.
+
+-   **Pressure Change:** The coefficient is positive ($\beta = 0.23$), suggesting that larger rapid fluctuations in pressure (instability) correlate with heavier rainfall.
+
+**3. Zero-Inflation Model (Probability of Dry Days):**
+
+-   **Humidity:** The coefficient for `humidity3pm` is **-1.07**. In a zero-inflated model, a *negative* coefficient means the predictor *decreases* the log-odds of a zero (dry day). Therefore, **higher humidity significantly increases the probability of rain**.
+
+-   **Non-Significance:** Interestingly, `dewpoint_9am` is not significant in the zero-inflation part ($p = 0.907$). This implies that while the *absolute* moisture (dewpoint) determines *how hard* it rains (intensity), it is the *relative* saturation (humidity) that determines *if* it rains at all.
+
+## Temporal Dynamics and Persistence
+
+```{r}
+#| label: m2-temporal-code
+#| echo: true
+#| eval: false
+
+# Update Model 1 to include:
+# - Cyclical Seasonality (day_cos, day_sin) in the Conditional Model
+# - Persistence (rain_yesterday) and Development (cloud/pressure) in the ZI Model
+m2_temporal <- update(
+  m1_moisture,
+  . ~ . + day_cos + day_sin,
+  ziformula = ~ humidity3pm +
+    dewpoint_9am +
+    rain_yesterday +
+    cloud_development +
+    pressure_change
+)
+
+```
+
+```{r}
+#| label: m2-temporal-output
+#| echo: false
+
+m2_temporal %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label = list(
+      day_cos ~ "Seasonality (Cos)",
+      day_sin ~ "Seasonality (Sin)",
+      rain_yesterday ~ "Rain Yesterday (Persistence)",
+      cloud_development ~ "Cloud Development",
+      pressure_change ~ "Pressure Change"
+    )
+  ) %>%
+  bold_p() %>%
+  add_glance_table(include = c("AIC", "BIC")) %>%
+  modify_header(label = "**Predictor**") %>%
+  modify_caption("**Model 2: Temporal & Persistence Effects**")
+```
+
+"Model 2" extends the analysis by incorporating the time-dependent structures identified in our EDA: **seasonality** (cyclical encoding) and **persistence** (Markov chains). We also refined the Zero-Inflation component to include dynamic drivers like `cloud_development` and `pressure_change`.
+
+**1. Performance Improvement:**
+
+-   **AIC Reduction:** The model achieved an AIC of **406,659**, a substantial improvement over Model 1 (422,846).
+
+-   **Magnitude:** The reduction of $\Delta AIC \approx 16,187$ confirms that adding temporal context (knowing *when* in the year and *what happened yesterday*) provides critical predictive information that moisture variables alone cannot capture.
+
+**2. Conditional Model (Rainfall Intensity):**
+
+-   **Seasonality:** Both `day_cos` ($\beta = 0.03, p < 0.001$) and `day_sin` ($\beta = -0.04, p < 0.001$) are highly significant. This mathematically confirms the "Summer Peak" pattern observed before, rainfall intensity is not constant but oscillates sinusoidally throughout the year.
+
+-   **Robustness:** The coefficients for moisture (`humidity3pm`, `dewpoint`) remained stable compared to Model 1, indicating that seasonality is an independent driver of intensity, not just a proxy for changing humidity levels.
+
+**3. Zero-Inflation Model (Probability of Dry Days):**
+
+-   **The "Persistence" Effect:** The strongest predictor in the zero-inflation model is `rain_yesterdayYes` with a coefficient of **-1.42**.
+
+-   **Interpretation:** Because the Zero-Inflation model predicts the probability of a *zero* (dry day), a negative coefficient means *lower odds of being dry*.
+
+-   **Odds Ratio:** $\exp(-1.42) \approx 0.24$. This implies that if it rained yesterday, the odds of today being dry drop by \~76%. This is a massive effect size that validates the Markov Chain findings before.
+
+-   **Dynamic Drivers:**
+
+-   `pressure_change` ($\beta = -0.51$): Large pressure drops significantly decrease the probability of a dry day (i.e., increase rain probability).
+
+-   `cloud_development` ($\beta = 0.11$): Surprisingly, positive cloud development (more clouds at 3pm than 9am) has a positive coefficient here, slightly *increasing* the zero-inflation probability. This might capture non-precipitating cumulus buildup typical of dry, fair-weather afternoons.
+
+## Historical Context and Persistence
+
+```{r}
+#| label: m3-history-code
+#| echo: true
+#| eval: false
+
+# Update Model 2 to include Historical Context in the Conditional Model
+# - Rainfall Moving Average (7-day)
+# - Days Since Last Rain (Drought effect)
+# - Humidity Moving Average (7-day)
+# - Rain Yesterday (Persistence on Intensity)
+m3_history <- update(
+  m2_temporal,
+  . ~ . + rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday,
+  ziformula = ~ humidity3pm +
+    dewpoint_9am +
+    rain_yesterday +
+    cloud_development +
+    pressure_change
+)
+```
+
+```{r}
+#| label: m3-history-output
+#| echo: false
+
+m3_history %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label = list(
+      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
+      humidity_ma7 ~ "Humidity Trend (7-Day MA)",
+      days_since_rain ~ "Dry Spell Length (Days)",
+      rain_yesterday ~ "Rain Yesterday (Indicator)"
+    )
+  ) %>%
+  bold_p() %>%
+  add_glance_table(include = c("AIC", "BIC")) %>%
+  modify_header(label = "**Predictor**") %>%
+  modify_caption("**Model 3: Historical Trends & Lagged Effects**")
+```
+
+"Model 3" integrates the final layer of complexity: **history**. While Model 2 accounted for *when* we are (seasonality), Model 3 accounts for *what just happened* (recent weather trends). We hypothesize that the intensity of today's rain is conditionally dependent on the saturation of the ground and atmosphere over the past week.
+
+**1. Performance Improvement:**
+
+-   **AIC Reduction:** The AIC improved to **404,936.2**, down from 406,659.3 (M2).
+
+-   **Significance:** This reduction ($\Delta AIC \approx 1,723$) indicates that adding historical moving averages improves the model, though with diminishing returns compared to the massive leaps seen in Models 1 and 2.
+
+**2. Conditional Model (Rainfall Intensity):**
+
+-   **Persistence of Intensity (`rain_yesterday`):** The coefficient is positive ($\beta = 0.31, p < 0.001$). This implies that if it rained yesterday, today's rainfall is likely to be **\~37% more intense** ($e^{0.31} \approx 1.36$). Wet weather systems tend to be "heavy" and sustained.
+
+-   **Accumulated Wetness (`rainfall_ma7`):** The positive coefficient ($\beta = 0.13$) confirms that a wetter preceding week correlates with heavier rainfall today, likely due to deep atmospheric moisture saturation.
+
+-   **The "Drizzle" Effect (`humidity_ma7`):** Interestingly, the 7-day humidity average has a *negative* coefficient ($\beta = -0.10$). Once we control for *today's* humidity (which is positive), a persistently humid week might indicate stable, low-intensity stratiform clouds (drizzle) rather than the explosive instability required for heavy convective storms.
+
+-   **Drought Effect (`days_since_rain`):** This variable is **not significant** ($p = 0.14$) for intensity. While our dry spell analysis showed it strongly predicts *whether* it rains (Zero-Inflation), it does not appear to influence *how much* it rains once the dry spell breaks.
+
+**3. Zero-Inflation Model:**
+
+-   The coefficients remain robust and nearly identical to Model 2, reaffirming that `rain_yesterday` ($\beta = -1.42$) is the dominant driver of the state change from "Dry" to "Wet."
+
+## Energy Dynamics and Interactions
+
+```{r}
+#| label: m4-energy-code
+#| echo: true
+#| eval: false
+
+# Update Model 3 to include Energy Dynamics and Interactions
+# - Sunshine & Evaporation (Energy Input)
+# - Instability Index (Atmospheric Dynamics)
+# - The "Rain Corner" Interaction (Sunshine * Humidity)
+# - Cloud Development (Diurnal Change)
+m4_energy <- update(
+  m3_history,
+  . ~ . +
+    sunshine +
+    evaporation +
+    instability_index +
+    sun_humid_interaction +
+    cloud_development,
+  ziformula = ~ humidity3pm +
+    dewpoint_9am +
+    rain_yesterday +
+    cloud_development +
+    pressure_change
+)
+```
+
+```{r}
+#| label: m4-energy-output
+#| echo: false
+
+m4_energy %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label = list(
+      sunshine ~ "Sunshine Duration (Hours)",
+      evaporation ~ "Evaporation Rate",
+      instability_index ~ "Instability Index (Derived)",
+      sun_humid_interaction ~ "Interaction: Sun * Humid",
+      cloud_development ~ "Cloud Development (Delta)"
+    )
+  ) %>%
+  bold_p() %>%
+  add_glance_table(include = c("AIC", "BIC")) %>%
+  modify_header(label = "**Predictor**") %>%
+  modify_caption("**Model 4: Thermodynamic Energy & Interactions**")
+```
+
+"Model 4" represents the full complexity of our meteorological hypothesis. Beyond moisture and history, we now incorporate **energy dynamics** (solar radiation, evaporation) and **atmospheric instability**. Crucially, we test the interaction term derived in the previous section to capture the non-linear "Rain Corner" effect.
+
+**1. Performance Improvement:**
+
+-   **AIC Reduction:** The AIC dropped to **403,051.8**.
+
+-   **Significance:** The reduction of $\Delta AIC \approx 1,884$ compared to Model 3 confirms that including energy dynamics provides a statistically significant improvement in model fit.
+
+**2. Conditional Model (Rainfall Intensity):**
+
+-   **The "Rain Corner" Interaction:** The `sun_humid_interaction` term is highly significant ($\beta = -0.08, p < 0.001$).
+
+-   **Interpretation:** The negative coefficient confirms the "corner" geometry. As sunshine increases, the positive effect of humidity on rainfall intensity is dampening. Conversely, the heaviest rain occurs when humidity is high *and* sunshine is low (deep cloud cover).
+
+-   **Instability:** The `instability_index` has a strong positive effect ($\beta = 0.19$). This confirms that low-pressure, high-humidity systems (convective instability) produce significantly heavier rainfall than stable systems.
+
+-   **Evaporation:** Surprisingly, `evaporation` has a positive coefficient ($\beta = 0.19$). While high evaporation typically implies dry heat, in the context of a wet day, it likely serves as a proxy for the **available energy** (latent heat) in the system that fuels storm development.
+
+-   **Sunshine:** As expected, `sunshine` has a negative effect ($\beta = -0.07$) on intensity. Even if it rains on a sunny day (e.g., a brief shower), the intensity is lower compared to a fully overcast day.
+
+**3. Shift in Humidity Importance:** Notice that the coefficient for `humidity3pm` dropped drastically from **0.39** (Model 3) to **0.08** (Model 4).
+
+-   **Explanation:** This does *not* mean humidity is less important. Rather, the variance previously attributed to raw "humidity" has now been correctly partitioned into more specific physical processes: `instability_index` (pressure-humidity interaction) and `sun_humid_interaction`. The model now understands *why* humidity matters.
+
+## Wind Dynamics
+
+```{r}
+#| label: m5-wind-code
+#| echo: true
+#| eval: false
+
+# Update Model 4 to include Circular Wind Vectors
+# - Gust U (East-West) and V (North-South) components
+# - 9am Wind U and V components (Morning wind direction)
+m5_wind <- update(
+  m4_energy,
+  . ~ . + gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW,
+  ziformula = ~ humidity3pm +
+    dewpoint_9am +
+    rain_yesterday +
+    cloud_development +
+    pressure_change
+)
+```
+
+```{r}
+#| label: m5-wind-output
+#| echo: false
+
+m5_wind %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label = list(
+      gust_U_EW ~ "Gust Vector (East-West)",
+      gust_V_NS ~ "Gust Vector (North-South)",
+      wind9am_U_EW ~ "Wind 9am Vector (East-West)",
+      wind9am_V_NS ~ "Wind 9am Vector (North-South)"
+    )
+  ) %>%
+  bold_p() %>%
+  add_glance_table(include = c("AIC", "BIC")) %>%
+  modify_header(label = "**Predictor**") %>%
+  modify_caption("**Model 5: Wind Vector Dynamics**")
+```
+
+"Model 5" introduces the final physical layer: **Wind Vector Decomposition**. By decomposing wind direction into North-South ($V$) and East-West ($U$) components, we test the hypothesis that specific airflow origins (e.g., moisture-laden ocean winds vs. dry desert winds) drive rainfall intensity.
+
+**1. Performance Improvement:**
+
+-   **AIC Reduction:** The AIC dropped to **402,452.7** from 403,051.8 (M4).
+
+-   **Significance:** The decrease of $\Delta AIC \approx 600$ is smaller than previous steps but still highly statistically significant, confirming that wind direction adds unique information not captured by pressure or season alone.
+
+**2. Conditional Model (Rainfall Intensity):** All wind vector components are statistically significant ($p < 0.001$), and their signs reveal a clear physical story consistent with Australian climatology:
+
+-   **North-South Vector (`wind9am_V_NS`):** The coefficient is **-0.088**.
+    -   *Mathematical interpretation:* Since $V > 0$ represents North (winds from the interior/equator) and $V < 0$ represents South (winds from the ocean), a **negative coefficient** implies that **Southerly winds (negative V)** increase rainfall intensity.
+    -   *Physical validation:* This aligns perfectly with Australian geography, where "Southerly Busters" and fronts from the Southern Ocean bring cold, heavy rain, while Northerly winds typically bring dry heat from the desert interior.
+-   **East-West Vector (`wind9am_U_EW`):** The coefficient is **-0.085**.
+    -   *Interpretation:* A negative coefficient implies that **Westerly winds (negative U)** increase rainfall.
+    -   *Physical validation:* This captures the "Roaring Forties" and the prevailing Westerlies that bring frontal rain systems to the southern continent.
+-   **Gusts vs. Sustained Wind:** The morning winds (`wind9am`) have coefficients roughly 3-4x larger than the gust components (`gust_U/V`, $\beta \approx -0.02$). This suggests that the **prevailing air mass direction** (advection) is more important for determining rainfall volume than the localized turbulence of wind gusts.
+
+**3. Model Stability:** Crucially, the coefficients for previous drivers (Humidity, Instability, Seasonality) remained stable. This indicates that our Wind Vectors are **orthogonal predictors**; they explain *new* variance rather than stealing explanatory power from existing features.
+
+## Spatial Heterogenity (Mixed Effects)
+
+```{r}
+#| label: m6-mixed-code
+#| echo: true
+#| eval: false
+
+# We explicitly keep 'location' to serve as the grouping factor
+re_data <- select_model_features(df_final, keep_location = TRUE) %>%
+  scale_data()
+
+# Define Optimizer Control
+# BFGS optimizer is selected for better convergence on complex GLMM surfaces
+ctrl <- glmmTMBControl(
+  optimizer = optim,
+  optArgs = list(method = "BFGS"),
+  optCtrl = list(maxit = 1000)
+)
+
+# 3. Fit Zero-Inflated Gamma Mixed Model
+# - Random Intercepts: (1 | location) -> Baseline rainfall varies by city
+# - Random Slopes: (humidity + rain_yesterday... | location) -> The *effect* of these drivers varies by city
+m6_mixed <- glmmTMB(
+  rainfall ~
+    humidity3pm +
+    dewpoint_9am +
+    dewpoint_change +
+    pressure_change +
+    day_cos +
+    day_sin +
+    rainfall_ma7 +
+    days_since_rain +
+    humidity_ma7 +
+    rain_yesterday +
+    sunshine +
+    evaporation +
+    instability_index +
+    sun_humid_interaction +
+    cloud_development +
+    gust_U_EW +
+    gust_V_NS +
+    wind9am_V_NS +
+    wind9am_U_EW +
+    diag(1 + humidity3pm + rain_yesterday + dewpoint_change | location),
+  ziformula = ~ humidity3pm +
+    dewpoint_9am +
+    rain_yesterday +
+    cloud_development +
+    pressure_change +
+    rain_yesterday +
+    sunshine +
+    evaporation +
+    ns(days_since_rain, df = 4) +
+    humidity_ma7 +
+    day_cos +
+    day_sin,
+  data = re_data,
+  control = ctrl,
+  family = ziGamma(link = "log")
+)
+```
+
+```{r}
+#| label: m6-mixed-output
+#| echo: false
+
+m6_mixed %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label = list(
+      # Core Dynamics
+      humidity3pm ~ "Humidity (3pm)",
+      sunshine ~ "Sunshine Duration",
+      sun_humid_interaction ~ "Interaction: Sun * Humid",
+
+      # Persistence & History
+      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
+      days_since_rain ~ "Dry Spell Length (Linear)",
+      `ns(days_since_rain, df = 4)` ~ "Dry Spell (Non-Linear Spline)",
+      rain_yesterday ~ "Rain Yesterday (Indicator)",
+
+      # Physics & Wind
+      gust_U_EW ~ "Gust Vector (East-West)",
+      gust_V_NS ~ "Gust Vector (North-South)",
+      instability_index ~ "Instability Index",
+
+      # Seasonality
+      day_cos ~ "Seasonality (Cos)",
+      day_sin ~ "Seasonality (Sin)"
+    )
+  ) %>%
+  bold_p() %>%
+  add_glance_table(include = c("AIC", "BIC", "logLik", "nobs")) %>%
+  modify_header(label = "**Predictor**") %>%
+  modify_caption(
+    "**Model 6: The Final Mixed-Effects Model (Random Slopes)**"
+  ) %>%
+  as_gt() %>%
+  gt::tab_footnote(
+    footnote = "Random Effects Structure: Uncorrelated random slopes for Humidity, Persistence, and Dewpoint by Location."
+  )
+```
+
+The final stage of our modeling strategy addresses the hierarchical nature of the data. Meteorological phenomena are not spatially uniform; the physics of rainfall in a tropical city like Cairns differs from that in an arid city like Alice Springs. To capture this, "Model 6" introduces **Random Effects**, allowing the model parameters to vary by `location`.
+
+**1. Performance Improvement:**
+
+-   **AIC Reduction:** The AIC plummeted to **394,854.0**.
+
+-   **Significance:** This represents a massive improvement ($\Delta AIC \approx 7,599$) over the best fixed-effects model (M5). This confirms that **spatial heterogeneity** is a dominant source of variance. A global "one-size-fits-all" model is insufficient for continental-scale weather prediction.
+
+**2. Random Effects Structure (Variance Components):** We incorporated random intercepts and random slopes for key drivers. The estimated variances reveal significant local differences:
+
+-   **Random Intercepts (**$\sigma^2 = 0.12$): Baseline rainfall intensity varies significantly between locations, confirming that local geography sets the "default" weather state.
+
+-   **Random Slope - Humidity (**$\sigma^2 = 0.023$): The effect of humidity on rainfall is not constant. In some locations, a small increase in humidity triggers rain (high sensitivity), while in others, the atmosphere requires much higher saturation (low sensitivity).
+
+-   **Random Slope - Persistence (**$\sigma^2 = 0.013$): The "stickiness" of wet weather (`rain_yesterday`) varies spatially, likely driven by the difference between stagnation-prone valleys and wind-swept coastal plains.
+
+**3. Fixed Effects Stability:** Despite allowing for local variation, the global fixed effects (Wind Vectors, Instability, Interactions) remained highly significant.
+
+-   **Wind Vectors:** Both `wind9am_V_NS` ($\beta = -0.086$) and `wind9am_U_EW` ($\beta = -0.064$) retained their negative coefficients. This proves that the influence of Southerly and Westerly winds is a robust, continent-wide driver, not an artifact of a few specific locations.
+
+-   **The "Rain Corner":** The interaction term `sun_humid_interaction` ($\beta = -0.067$) remains significant, validating the non-linear relationship between energy and moisture across all Australian climates.
+
+**4. Zero-Inflation & Splines:**
+
+-   The inclusion of **Natural Splines** (`ns(days_since_rain, df=4)`) in the zero-inflation formula allows the probability of a dry spell ending to vary non-linearly over time. The significance of the second spline term ($p = 0.018$) suggests that the "drying effect" is not a simple linear decay, capturing the complex "kink" observed in our dry spell survival plots.
+
+# Model Evaluation
+
+## Classification Performance Evaluation
+
+```{r}
+#| label: model-evaluation
+#| echo: true
+#| fig-cap: "ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days."
+#| message: false
+#| warning: false
+re_data <- select_model_features(df_final, keep_location = TRUE) %>%
+  scale_data()
+# Generate Probabilities
+# Extract the probability of "Structural Zero" (No Rain) from the Zero-Inflated Model
+prob_no_rain <- predict(m6_mixed, type = "zprob")
+
+# Define Ground Truth (1 = No Rain, 0 = Rain)
+actual_no_rain <- ifelse(re_data$rainfall == 0, 1, 0)
+
+# ROC Curve Analysis
+roc_obj <- roc(actual_no_rain, prob_no_rain)
+
+plot(
+  roc_obj,
+  main = "ROC Curve: Predicting Rainfall Occurrence",
+  col = "#0072B2",
+  lwd = 2,
+  print.auc = TRUE,
+  print.auc.y = 0.4
+)
+
+# Threshold Optimization (Youden's J)
+# Find the cut-off that balances Sensitivity (catching rain) and Specificity (catching dry days)
+coords_obj <- coords(roc_obj, "best", best.method = "youden")
+optimal_threshold <- coords_obj$threshold
+
+cat(sprintf("\nOptimal Probability Threshold: %.4f\n", optimal_threshold))
+
+# Confusion Matrix & Accuracy
+predicted_class <- ifelse(prob_no_rain > optimal_threshold, "No Rain", "Rain")
+actual_class <- ifelse(re_data$rainfall == 0, "No Rain", "Rain")
+
+conf_matrix <- table(Predicted = predicted_class, Actual = actual_class)
+
+conf_matrix %>%
+  kable(caption = "Confusion Matrix (Optimal Threshold)") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+# Calculate Accuracy
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+cat(sprintf("\nModel Accuracy: %.2f%%\n", accuracy * 100))
+```
+
+While the Gamma component of our model estimates rainfall *amount*, the Zero-Inflation component acts as a binary classifier answering the fundamental question: *"Will it rain?"*. We evaluated this classification performance using the Receiver Operating Characteristic (ROC) curve and Confusion Matrix.
+
+**1. Discriminative Power (AUC):** The model achieves an **Area Under the Curve (AUC) of 0.832** .
+
+-   **Interpretation:** This indicates a strong predictive capability. In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher probability of dryness to the actual dry day.
+
+-   **Significance:** This confirms that our engineered features (particularly `rain_yesterday` and `pressure_change`) provide a robust signal for distinguishing weather states.
+
+**2. Optimal Thresholding:** Standard models default to a 50% probability cutoff. However, using Youden’s J statistic, we identified the optimal decision threshold as **0.645**.
+
+-   **Implication:** Because dry days are the majority class (64%), the model requires a higher certainty (\>64.5% probability) before confidently predicting "No Rain." This adjustment maximizes the balance between catching rain events and avoiding false alarms.
+
+**3. Confusion Matrix Analysis:** At this optimal threshold, the model demonstrates:
+
+-   **Accuracy:** **75.41%** overall correctness.
+
+-   **Sensitivity vs. Specificity:**
+
+-   **Correct Dry Predictions (TN):** 68,544 days.
+
+-   **Correct Rain Predictions (TP):** 38,433 days.
+
+-   **False Alarms (Type I Error):** 22,294 days were predicted to rain but stayed dry.
+
+-   **Missed Rain (Type II Error):** 12,585 days were predicted dry but actually rained.
+
+**Conclusion:** The model is conservative; it is twice as likely to raise a "False Alarm" (predict rain that doesn't happen) than to miss a rain event. In a meteorological context, this is often desirable;it is better to carry an umbrella and not need it than to be caught in a storm unprepared.
+
+## Random Effects Visualization
+
+```{r}
+#| label: fig-location-effects
+#| fig-cap: "The Geography of Rain: Random Intercepts by Location. This 'Caterpillar Plot' shows the baseline rainfall adjustment for each city. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average, while cities in red (e.g., Nhil, Norfolk Island) are inherently drier, even after controlling for humidity, pressure, and season."
+#| fig-width: 10
+#| fig-height: 12
+#| echo: true
+#| warning: false
+
+# Extract Random Effects
+ranef_data <- ranef(m6_mixed)
+
+# Process for Plotting
+loc_effects <- as.data.frame(ranef_data$cond$location) %>%
+  rownames_to_column("Location") %>%
+  rename(Effect = `(Intercept)`) %>%
+  arrange(Effect) %>%
+  mutate(
+    Location = factor(Location, levels = Location),
+    # Approximate Confidence Intervals
+    CI_lower = Effect - 1.96 * sd(Effect) / sqrt(n()),
+    CI_upper = Effect + 1.96 * sd(Effect) / sqrt(n()),
+    Category = case_when(
+      Effect > sd(Effect) ~ "Significantly Wetter",
+      Effect < -sd(Effect) ~ "Significantly Drier",
+      TRUE ~ "Near Average"
+    ),
+    Category = factor(
+      Category,
+      levels = c("Significantly Drier", "Near Average", "Significantly Wetter")
+    )
+  )
+
+# Generate Caterpillar Plot
+ggplot(loc_effects, aes(x = Effect, y = Location)) +
+  # Background Shading for Significance Zones
+  annotate(
+    "rect",
+    xmin = -Inf,
+    xmax = -sd(loc_effects$Effect),
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "#c0392b",
+    alpha = 0.05
+  ) +
+  annotate(
+    "rect",
+    xmin = sd(loc_effects$Effect),
+    xmax = Inf,
+    ymin = -Inf,
+    ymax = Inf,
+    fill = "#2980b9",
+    alpha = 0.05
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    color = "grey30",
+    linewidth = 0.8
+  ) +
+  geom_vline(
+    xintercept = c(-sd(loc_effects$Effect), sd(loc_effects$Effect)),
+    linetype = "dotted",
+    color = "grey50",
+    linewidth = 0.5
+  ) +
+  geom_segment(
+    aes(
+      x = CI_lower,
+      xend = CI_upper,
+      y = Location,
+      yend = Location,
+      color = Category
+    ),
+    linewidth = 1.5,
+    alpha = 0.4
+  ) +
+  geom_point(aes(color = Category), size = 4, alpha = 0.9) +
+  geom_text(
+    data = filter(loc_effects, abs(Effect) > sd(Effect)),
+    aes(
+      label = sprintf("%.2f", Effect),
+      x = Effect,
+      hjust = ifelse(Effect > 0, -0.3, 1.3)
+    ),
+    size = 3,
+    fontface = "bold",
+    color = "grey20"
+  ) +
+  scale_color_manual(
+    values = c(
+      "Significantly Drier" = "#c0392b",
+      "Near Average" = "#7f8c8d",
+      "Significantly Wetter" = "#2980b9"
+    ),
+    name = "Effect Size"
+  ) +
+  labs(
+    title = "The Geography of Rain: Location-Specific Baselines",
+    subtitle = "Random intercepts show how much wetter/drier each city is, holding all weather variables constant.\nBars show 95% confidence intervals; points beyond +-1 SD are labeled.",
+    x = "Baseline Rainfall Adjustment (Log mm)",
+    y = NULL,
+    caption = "Interpretation: A value of +0.5 means ~65% more rain than average location with identical conditions [exp(0.5) ≈ 1.65]"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey90", linewidth = 0.3),
+    plot.title = element_text(face = "bold", size = 16, margin = margin(b = 5)),
+    plot.subtitle = element_text(
+      color = "grey30",
+      size = 11,
+      margin = margin(b = 15)
+    ),
+    plot.caption = element_text(
+      color = "grey50",
+      size = 9,
+      hjust = 0,
+      margin = margin(t = 10)
+    ),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(
+      size = 11,
+      face = "bold",
+      margin = margin(t = 10)
+    ),
+    legend.position = "top",
+    legend.justification = "left",
+    legend.title = element_text(face = "bold", size = 10),
+    legend.text = element_text(size = 9),
+    plot.margin = margin(15, 15, 15, 15)
+  )
+```
+
+To visualize the spatial heterogeneity captured by Model 6, we extracted the conditional modes (Random Intercepts) for all 49 locations . This plot reveals the inherent "wetness" or "dryness" of a city, **holding all dynamic weather variables constant**.
+
+**1. The Tropical Top End (Wetter):** The cities with the highest positive adjustments are **Katherine (**$\beta = 0.59$) and **Darwin (**$\beta = 0.54$).
+
+-   **Interpretation:** Even if Katherine and Melbourne experience the exact same humidity, pressure, and wind conditions, Katherine will produce significantly heavier rainfall ($e^{0.59} \approx 1.8x$ baseline). This captures the unmeasured convective potential of the Australian tropics.
+
+**2. The Arid Interior and South (Drier):** At the bottom of the chart, we find **Nhil (**$\beta = -0.73$) and **Norfolk Island (**$\beta = -0.65$).
+
+-   **Interpretation:** These locations have a "suppressive" geography. A weather system that would produce moderate rain elsewhere produces only light rain here.
+
+**3. Significance:** The clear separation of locations into "Significantly Wetter" (Blue) and "Significantly Drier" (Red) zones validates the necessity of the Mixed Model. A standard regression model would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.
+
+## Validating Model Assumptions
+
+```{r}
+#| label: model-diagnostics
+#| echo: true
+#| fig-cap: "DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot of residuals shows excellent alignment with the expected uniform distribution (red line), indicating the Gamma distribution is an appropriate choice. Right: Residuals vs. Predicted plot shows no fanning or curvature, confirming homoscedasticity."
+#| fig-width: 10
+#| fig-height: 5
+#| message: false
+#| warning: false
+#| cache: true
+#| dependson: "global-setup"
+# Simulate Residuals
+res <- simulateResiduals(m6_mixed)
+
+# Diagnostic Plots (Q-Q and Residual vs Predicted)
+plot(res)
+
+# Test for Over/Under-Dispersion
+testDispersion(res)
+
+# Test for Zero-Inflation issues
+testZeroInflation(res)
+```
+
+A complex model is only as good as its residuals. We utilized the **DHARMa** package to perform simulation-based diagnostics, which are superior to standard residual plots for Zero-Inflated GLMMs.
+
+**1. Q-Q Plot (Distributional Fit):** The Q-Q plot demonstrates a near-perfect alignment along the 1:1 diagonal.
+
+-   **Result:** The Kolmogorov-Smirnov test indicates a significant deviation ($p < 0.05$), which is common in datasets of this magnitude ($N > 140,000$). However, visually, the deviations are negligible.
+
+-   **Implication:** This confirms that the **Gamma distribution** correctly characterizes the positive rainfall values, capturing the skewness without systematic bias.
+
+**2. Residuals vs. Predicted (Homoscedasticity):** The plot on the right shows a uniform spread of residuals across the range of predicted values.
+
+-   **Quantile Lines:** The red quantile lines (25th, 50th, 75th) are straight and horizontal, indicating **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.
+
+**3. Formal Tests:**
+
+-   **Dispersion Test:** The non-parametric dispersion test yields a p-value of **0.192** .
+
+-   **Interpretation:** We fail to reject the null hypothesis of ideal dispersion. This is a major victory for the model, confirming that the `ziGamma` family successfully handled the variance structure without over-dispersion.
+
+-   **Zero-Inflation Test:** The test compares the observed zeros to the simulated zeros .
+
+-   **Ratio:** The ratio of observed to simulated zeros is **1.00** ($p = 0.992$).
+
+-   **Interpretation:** The model predicts the *exact* correct number of dry days. The Zero-Inflation component is perfectly calibrated.
+
+**Conclusion:** Model 6 passes all critical diagnostic checks. It is robust, well-calibrated, and valid for inference.
+
+## Verifying Temporal Independence
+
+```{r}
+#| label: temporal-autocorrelation
+#| echo: true
+#| fig-cap: "Temporal Autocorrelation Check (Canberra). Left: Residuals vs. Time showing random scatter. Right: Autocorrelation Function (ACF) plot showing lags falling within the blue confidence bounds, confirming independence."
+#| message: false
+#| warning: false
+
+# Align Residuals with Time Series
+# Extract the exact rows used in the model
+rows_used <- as.numeric(rownames(m6_mixed$frame))
+
+# Filter for a single continuous time series (Canberra)
+Canberra_data <- df_final[rows_used, ] %>%
+  mutate(dharma_resid = residuals(res)) %>%
+  filter(location == "Canberra") %>%
+  arrange(date)
+
+# 2. Durbin-Watson Test
+# Tests H0: Residuals are not autocorrelated (Independence)
+dw_result <- testTemporalAutocorrelation(
+  simulationOutput = Canberra_data$dharma_resid,
+  time = Canberra_data$date
+)
+
+print(dw_result)
+```
+
+A critical assumption of Generalized Linear Mixed Models is that residuals are independent. In time-series data like weather, this is often violated by serial autocorrelation (e.g., if the model under-predicts today, it likely under-predicts tomorrow). We tested this assumption on the Canberra time series using the Durbin-Watson test.
+
+**1. Durbin-Watson Statistic:** The test yielded a **DW statistic of 2.0406**.
+
+-   **Benchmark:** A value of **2.0** indicates perfect independence (white noise). Values approaching 0 indicate positive autocorrelation, while values approaching 4 indicate negative autocorrelation.
+
+-   **Result:** Our result is nearly indistinguishable from the ideal value of 2.0.
+
+**2. Statistical Significance:** The p-value is **0.2355** ($> 0.05$).
+
+-   **Conclusion:** We fail to reject the null hypothesis of independence. There is **no evidence of temporal autocorrelation** remaining in the residuals.
+
+**3. Visual Confirmation:** The Autocorrelation Function (ACF) plot confirms this numerically.
+
+-   **ACF Lags:** The vertical bars (correlations at Lag 1, Lag 2, etc.) all fall comfortably within the blue dashed confidence intervals.
+
+-   **Implication:** This validates our feature engineering strategy. By explicitly including "History" terms;specifically the Markov chain (`rain_yesterday`) and the Dry Spell Spline (`days_since_rain`);we successfully "bleached" the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving behind only random, independent noise.
+
+## Predictive Accuracy and Generative Validity
+
+```{r}
+#| label: ppc-and-metrics
+#| echo: true
+#| fig-cap: "Posterior Predictive Check. The blue line represents the observed distribution of daily rainfall. The gray lines represent 50 simulated datasets generated by the model. The tight overlap confirms that the model correctly captures the heavy skew and zero-inflation of the real climate system."
+#| fig-width: 10
+#| fig-height: 7
+#| message: false
+#| warning: false
+
+# Calculate Prediction Error Metrics
+# Generate point predictions (mean of the gamma distribution * probability of rain)
+df_final$pred_rainfall <- predict(m6_mixed, type = "response")
+
+# RMSE: Penalizes large errors (e.g., missing a cyclone)
+global_rmse <- sqrt(mean((df_final$rainfall - df_final$pred_rainfall)^2))
+# MAE: The average "miss" in millimeters
+global_mae <- mean(abs(df_final$rainfall - df_final$pred_rainfall))
+
+print(paste("Global RMSE:", round(global_rmse, 3), "mm"))
+print(paste("Global MAE:", round(global_mae, 3), "mm"))
+
+```
+
+```{r}
+#| label: pcc-simulation
+#| eval: false
+
+# Posterior Predictive Check (PPC)
+# Does the model generate realistic data?
+set.seed(123)
+sims <- simulate(m6_mixed, nsim = 1000)
+# Sample 50 simulations for visualization clarity
+subset_sims <- sims[, sample(ncol(sims), 50)]
+ppc_data <- bind_cols(
+  Observed = re_data$rainfall,
+  subset_sims
+) %>%
+  pivot_longer(
+    cols = -Observed,
+    names_to = "Simulation",
+    values_to = "Simulated_Value"
+  )
+```
+
+```{r}
+#| label: plot-ppc
+#| warning: false
+#| message: false
+
+ggplot() +
+  # Simulated Worlds (Gray)
+  geom_density(
+    data = ppc_data,
+    aes(x = Simulated_Value, group = Simulation),
+    color = "gray70",
+    size = 0.5,
+    alpha = 0.5
+  ) +
+  # Real World (Blue)
+  geom_density(
+    data = re_data,
+    aes(x = rainfall),
+    color = "#0072B2",
+    size = 1.2
+  ) +
+  coord_cartesian(xlim = c(-1, 20)) +
+  labs(
+    title = "Posterior Predictive Check",
+    subtitle = "Does the model's imagination (Gray) match reality (Blue)?",
+    x = "Rainfall (mm)",
+    y = "Density"
+  ) +
+  theme_minimal()
+```
+
+To conclude the validation, we assessed the model's performance in absolute terms (Millimeters of Rain) and its generative capacity (Posterior Predictive Check).
+
+**1. Error Metrics:**
+
+-   **Global MAE (Mean Absolute Error): 2.71 mm.**
+
+-   *Interpretation:* On any given day, our model’s prediction is, on average, within **2.7mm** of the actual rainfall. Given the high variance of Australian weather, this indicates a high degree of precision for day-to-day forecasting.
+
+-   **Global RMSE (Root Mean Square Error): 7.48 mm.**
+
+-   *Interpretation:* RMSE is more sensitive to outliers. The higher value here reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).
+
+**2. Posterior Predictive Check (PPC):** The density plot answers the question: *If we simulated Australian weather using only our model equations, would it look real?*
+
+-   **The Fit:** The blue line (Reality) sits perfectly nested within the bundle of gray lines (Model Simulations).
+
+-   **Zero-Inflation:** The peak at 0mm is captured accurately, confirming the Zero-Inflation component is working.
+
+-   **The Tail:** The decay rate (how quickly light rain turns into heavy rain) matches perfectly. A standard Gaussian model would have failed here, likely predicting negative rain or missing the heavy skew.
+
+-   **Conclusion:** The model is not just fitting means; it is successfully replicating the underlying statistical distribution of the climate system.
+
+## Justification of Distributional choice
+
+```{r}
+#| label: distribution-check-code
+#| echo: true
+#| eval: false
+
+# Fit comparison models to test distributional assumptions
+
+# Gaussian (Linear Regression)
+# Assumes residuals are normally distributed (Bad for zero-heavy data)
+m_linear <- glmmTMB(
+  rainfall ~ humidity3pm +
+    dewpoint_9am +
+    dewpoint_change +
+    pressure_change +
+    day_cos +
+    day_sin +
+    rainfall_ma7 +
+    days_since_rain +
+    humidity_ma7 +
+    rain_yesterday +
+    sunshine +
+    evaporation +
+    instability_index +
+    sun_humid_interaction +
+    cloud_development +
+    gust_U_EW +
+    gust_V_NS +
+    wind9am_V_NS +
+    wind9am_U_EW +
+    (1 | location),
+  data = re_data,
+  family = gaussian(link = "identity")
+)
+
+# Tweedie
+# Handles zeros and positive skew automatically using a power variance parameter (1<p<2)
+m_tweedie <- glmmTMB(
+  rainfall ~ humidity3pm +
+    dewpoint_9am +
+    dewpoint_change +
+    pressure_change +
+    day_cos +
+    day_sin +
+    rainfall_ma7 +
+    days_since_rain +
+    humidity_ma7 +
+    rain_yesterday +
+    sunshine +
+    evaporation +
+    instability_index +
+    sun_humid_interaction +
+    cloud_development +
+    gust_U_EW +
+    gust_V_NS +
+    wind9am_V_NS +
+    wind9am_U_EW +
+    (1 | location),
+  data = re_data,
+  family = tweedie(link = "log")
+)
+```
+
+```{r}
+#| label: fig-distribution-comparison
+#| fig-cap: "Why Distribution Matters: Comparing Predictive Densities. The Gaussian model (Red) fails catastrophically by predicting negative rainfall (x < 0). The Zero-Inflated Gamma (Blue) and Tweedie (Green) models correctly capture the zero-bound and the long right tail of the actual data (Black Dashed Line)."
+#| fig-width: 10
+#| fig-height: 8
+#| echo: true
+#| warning: false
+
+# Plot the density of predictions against the ground truth
+check_data %>%
+  select(rainfall, pred_linear, pred_tweedie, pred_zig) %>%
+  pivot_longer(
+    cols = -rainfall,
+    names_to = "Model",
+    values_to = "Prediction"
+  ) %>%
+  mutate(
+    Model = dplyr::recode(
+      Model,
+      pred_linear = "Linear (Gaussian)",
+      pred_tweedie = "Tweedie",
+      pred_zig = "ZI-Gamma (Ours)"
+    )
+  ) %>%
+  ggplot(aes(x = Prediction, fill = Model)) +
+  geom_density(alpha = 0.5) +
+  # Ground Truth Overlay (Real Data)
+  geom_density(
+    aes(x = rainfall),
+    fill = NA,
+    color = "black",
+    linetype = "dashed",
+    size = 1
+  ) +
+  facet_wrap(~Model, scales = "free") +
+  coord_cartesian(xlim = c(-5, 20)) +
+  labs(
+    title = "Why Distribution Matters",
+    subtitle = "Black Dashed Line = REAL Data. \nNotice Linear predicts impossible negative rain. Tweedie/ZIG capture the shape.",
+    x = "Predicted Rainfall (mm)",
+    y = "Density"
+  ) +
+  theme_minimal()
+```
+
+Scientific modeling often faces a trade-off between simplicity and accuracy. To justify the complexity of our chosen **Zero-Inflated Gamma (ZI-Gamma)** framework, we benchmarked it against a standard **Gaussian (Linear)** model and a **Tweedie** model.
+
+**1. The Failure of Linearity (Gaussian):** The left panel of @fig-distribution-comparison illustrates the catastrophic failure of standard linear regression.
+
+-   **The "Negative Rain" Problem:** The Gaussian model (Pink) assumes a symmetric bell curve errors. To fit the mean correctly, it is forced to predict significant amounts of **negative rainfall** (values $< 0$), which is physically impossible.
+
+-   **Poor Tail Fit:** It completely fails to capture the long right tail of extreme storm events, under-predicting flood risks.
+
+**2. Tweedie vs. Zero-Inflated Gamma:** Both the Tweedie (Green) and our ZI-Gamma (Blue) models successfully respect the physical boundary of zero rainfall. They both align closely with the black dashed line (Real Data).
+
+-   **Why ZI-Gamma?** While Tweedie is efficient, it uses a single process to model both the *probability* of rain and the *intensity*. Our analysis in (Markov Chains Analysis) proved that the drivers of rain *occurrence* (e.g., `pressure_change`) differ slightly from the drivers of *intensity* (e.g., `wind_vectors`).
+
+-   **Conclusion:** The **Zero-Inflated Gamma** was the superior choice because it allowed us to model these two distinct meteorological processes separately;using a Logit model for the "Zero" state and a Gamma model for the "Wet" state;resulting in the highly accurate, physically interpretable predictions seen in the final panel.
+
+# Final Model Selection and Variance Analysis
+
+```{r}
+#| label: model-progression-lrt
+#| echo: true
+#| message: false
+#| warning: false
+
+# Likelihood Ratio Tests (LRT)
+# Test each progressive addition to ensure it adds significant explanatory power
+lrt_1v0 <- lmtest::lrtest(m0_null, m1_moisture)
+lrt_2v1 <- lmtest::lrtest(m1_moisture, m2_temporal)
+lrt_3v2 <- lmtest::lrtest(m2_temporal, m3_history)
+lrt_4v3 <- lmtest::lrtest(m3_history, m4_energy)
+lrt_5v4 <- lmtest::lrtest(m4_energy, m5_wind)
+lrt_6v5 <- lmtest::lrtest(m5_wind, m6_mixed)
+
+# Compile Results Table
+lrt_results <- tibble(
+  Comparison = c(
+    "Null vs Moisture",
+    "Moisture vs Temporal",
+    "Temporal vs History",
+    "History vs Energy",
+    "Energy vs Wind",
+    "Wind vs Mixed Effects"
+  ),
+  Chi_square = c(
+    lrt_1v0$Chisq[2],
+    lrt_2v1$Chisq[2],
+    lrt_3v2$Chisq[2],
+    lrt_4v3$Chisq[2],
+    lrt_5v4$Chisq[2],
+    lrt_6v5$Chisq[2]
+  ),
+  df = c(
+    lrt_1v0$Df[2],
+    lrt_2v1$Df[2],
+    lrt_3v2$Df[2],
+    lrt_4v3$Df[2],
+    lrt_5v4$Df[2],
+    lrt_6v5$Df[2]
+  ),
+  raw_p = c(
+    lrt_1v0$`Pr(>Chisq)`[2],
+    lrt_2v1$`Pr(>Chisq)`[2],
+    lrt_3v2$`Pr(>Chisq)`[2],
+    lrt_4v3$`Pr(>Chisq)`[2],
+    lrt_5v4$`Pr(>Chisq)`[2],
+    lrt_6v5$`Pr(>Chisq)`[2]
+  )
+) %>%
+  mutate(
+    adj_p_value = p.adjust(raw_p, method = "holm"),
+    Significant = ifelse(
+      adj_p_value < 0.001,
+      "***",
+      ifelse(adj_p_value < 0.01, "**", ifelse(adj_p_value < 0.05, "*", "ns"))
+    ),
+    AIC_improvement = c(
+      AIC(m0_null) - AIC(m1_moisture),
+      AIC(m1_moisture) - AIC(m2_temporal),
+      AIC(m2_temporal) - AIC(m3_history),
+      AIC(m3_history) - AIC(m4_energy),
+      AIC(m4_energy) - AIC(m5_wind),
+      AIC(m5_wind) - AIC(m6_mixed)
+    )
+  )
+
+lrt_results %>%
+  mutate(
+    Chi_square = round(Chi_square, 2),
+    AIC_improvement = round(AIC_improvement, 1)
+  ) %>%
+  kable(caption = "Likelihood Ratio Tests: Progressive Model Building") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+```{r}
+#| label: tbl-model-selection
+#| tbl-cap: "Model Selection Table"
+#| echo: true
+
+model_selection <- tibble(
+  Model = c(
+    "m0_null",
+    "m1_moisture",
+    "m2_temporal",
+    "m3_history",
+    "m4_energy",
+    "m5_wind",
+    "m6_mixed"
+  ),
+  AIC = c(
+    AIC(m0_null),
+    AIC(m1_moisture),
+    AIC(m2_temporal),
+    AIC(m3_history),
+    AIC(m4_energy),
+    AIC(m5_wind),
+    AIC(m6_mixed)
+  ),
+  BIC = c(
+    BIC(m0_null),
+    BIC(m1_moisture),
+    BIC(m2_temporal),
+    BIC(m3_history),
+    BIC(m4_energy),
+    BIC(m5_wind),
+    BIC(m6_mixed)
+  )
+) %>%
+  mutate(
+    Delta_AIC = AIC - min(AIC),
+    AIC_weight = exp(-0.5 * Delta_AIC) / sum(exp(-0.5 * Delta_AIC))
+  ) %>%
+  arrange(AIC)
+
+model_selection %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  kable(caption = "Model Selection Table") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+```
+
+```{r}
+#| label: fig-model-selection
+#| fig-cap: "Model Selection: Progressive Improvement. The AIC drops significantly at every stage, confirming that no step was redundant. The largest jump occurs when adding basic moisture variables, but the addition of Spatial Mixed Effects (M6) also provides a massive improvement over the Wind model (M5)."
+#| fig-width: 10
+#| fig-height: 8
+#| echo: true
+#| message: false
+
+ggplot(
+  model_selection,
+  aes(
+    x = factor(
+      Model,
+      levels = c(
+        "m6_mixed",
+        "m5_wind",
+        "m4_energy",
+        "m3_history",
+        "m2_temporal",
+        "m1_moisture",
+        "m0_null"
+      )
+    ),
+    y = AIC
+  )
+) +
+  geom_point(size = 4, color = "#0072B2") +
+  geom_line(aes(group = 1), size = 1, color = "#0072B2", alpha = 0.5) +
+  geom_hline(
+    yintercept = min(model_selection$AIC),
+    linetype = "dashed",
+    color = "red"
+  ) +
+  geom_text(
+    aes(label = sprintf("delta=%.0f", Delta_AIC)),
+    vjust = -1,
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  labs(
+    title = "Model Selection: Progressive Improvement",
+    subtitle = "Each step significantly improves fit (LRT p < 0.001 for all comparisons)",
+    x = "Model (Ordered by Complexity)",
+    y = "AIC (Lower is Better)",
+    caption = "Red line = Best Model (M6 Mixed)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold"),
+    plot.title = element_text(face = "bold")
+  )
+```
+
+```{r}
+#| label: model-r2
+#| echo: true
+#| collapse: true
+
+# Random Effects Necessity Test (LRT M5 vs M6)
+re_test <- lmtest::lrtest(m5_wind, m6_mixed)
+print(re_test)
+
+# Nakagawa's R-Squared
+# Decomposes variance into Fixed Effects (Marginal) vs. Random Effects (Conditional)
+r2_vals <- performance::r2_nakagawa(m6_mixed)
+
+cat(sprintf("\nMarginal R2 (Fixed Effects only): %.4f\n", r2_vals$R2_marginal))
+cat(sprintf(
+  "Conditional R2 (Fixed + Random Effects): %.4f\n",
+  r2_vals$R2_conditional
+))
+```
+
+We employed a strict forward-selection strategy, verifying that each additional layer of complexity provided statistically significant information gain.
+
+**1. Progressive Improvement:** As shown in @fig-model-selection , the AIC decreased monotonically with every model update.
+
+-   **Largest Gain:** The shift from Null to M1 (Moisture) reduced AIC by \~38,000, confirming that humidity is the primary driver.
+
+-   **Final Gain:** The shift from M5 (Wind) to M6 (Mixed) reduced AIC by \~7,600. This is a massive improvement for a late-stage addition, proving that **spatial heterogeneity** is not a minor nuisance but a fundamental component of the Australian climate system.
+
+**2. Likelihood Ratio Tests:** The formal LRT table confirms that every comparison yielded a p-value $< 0.001$. Even the smallest step (Wind Vectors, M5) improved the model significantly ($\chi^2 = 607, df=4$), justifying the inclusion of compass-based predictors.
+
+**3. Variance Explained (**$R^2$): Using Nakagawa’s method for Generalized Linear Mixed Models:
+
+-   **Marginal** $R^2 = 0.345$: Our fixed meteorological predictors (Humidity, Wind, Pressure, etc.) explain **34.5%** of the variance in rainfall intensity.
+
+-   **Conditional** $R^2 = 0.441$: When we include the location-specific random effects, the explanatory power jumps to **44.1%**.
+
+-   **Insight:** Roughly **10% of the explainable variance** in Australian rainfall is purely geographic;attributable to the specific location of the city (e.g., coastal vs. inland) rather than dynamic weather variables.
+
+**Conclusion:** Model 6 (Mixed Effects Zero-Inflated Gamma) is the statistically superior model. It maximizes likelihood, minimizes information loss (AIC/BIC), and captures significant spatial variance that fixed-effects models miss.

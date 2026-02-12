@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
+
+<title>1&nbsp; Computational Environment and Data Ingestion – Australian Rainfall Dynamics</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02-eda.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0348920b7671f696dc9078d39bff215e.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-f12a4a8ba9751daca4e771316b711af2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-27bd61dac4ddfacab4795c71a0bdc5ec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-f12a4a8ba9751daca4e771316b711af2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./01-data-prep.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Australian Rainfall Dynamics</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-data-prep.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-cleaning-and-preprocessing" id="toc-data-cleaning-and-preprocessing" class="nav-link active" data-scroll-target="#data-cleaning-and-preprocessing"><span class="header-section-number">2</span> Data Cleaning and Preprocessing</a></li>
+  <li><a href="#hybrid-imputation-strategy" id="toc-hybrid-imputation-strategy" class="nav-link" data-scroll-target="#hybrid-imputation-strategy"><span class="header-section-number">3</span> Hybrid Imputation Strategy</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/01-data-prep.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./01-data-prep.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>We begin by loading the necessary R libraries and reading the dataset.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Initialize environment and load dependencies</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  tidyverse,</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  tidymodels,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  kableExtra,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>  patchwork,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  skimr,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  gridExtra,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>  gtsummary,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  janitor,</span>
+<span id="cb1-11"><a href="#cb1-11"></a>  corrplot,</span>
+<span id="cb1-12"><a href="#cb1-12"></a>  sjPlot,</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  scales,</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  GGally,</span>
+<span id="cb1-15"><a href="#cb1-15"></a>  car,</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  forcats,</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  performance,</span>
+<span id="cb1-18"><a href="#cb1-18"></a>  glmmTMB,</span>
+<span id="cb1-19"><a href="#cb1-19"></a>  splines,</span>
+<span id="cb1-20"><a href="#cb1-20"></a>  mgcv,</span>
+<span id="cb1-21"><a href="#cb1-21"></a>  DHARMa,</span>
+<span id="cb1-22"><a href="#cb1-22"></a>  zoo,</span>
+<span id="cb1-23"><a href="#cb1-23"></a>  ggpubr,</span>
+<span id="cb1-24"><a href="#cb1-24"></a>  ggridges,</span>
+<span id="cb1-25"><a href="#cb1-25"></a>  caret,</span>
+<span id="cb1-26"><a href="#cb1-26"></a>  rstatix,</span>
+<span id="cb1-27"><a href="#cb1-27"></a>  Metrics,</span>
+<span id="cb1-28"><a href="#cb1-28"></a>  mice,</span>
+<span id="cb1-29"><a href="#cb1-29"></a>  missRanger,</span>
+<span id="cb1-30"><a href="#cb1-30"></a>  ranger,</span>
+<span id="cb1-31"><a href="#cb1-31"></a>  cocor,</span>
+<span id="cb1-32"><a href="#cb1-32"></a>  splines,</span>
+<span id="cb1-33"><a href="#cb1-33"></a>  multcompView,</span>
+<span id="cb1-34"><a href="#cb1-34"></a>  lmtest,</span>
+<span id="cb1-35"><a href="#cb1-35"></a>  aod,</span>
+<span id="cb1-36"><a href="#cb1-36"></a>  pROC</span>
+<span id="cb1-37"><a href="#cb1-37"></a>)</span>
+<span id="cb1-38"><a href="#cb1-38"></a></span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="co"># Load the dataset</span></span>
+<span id="cb1-40"><a href="#cb1-40"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/weatherAUS.csv"</span>)</span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This section establishes the computational framework necessary for the analysis. We utilize the <code>librarian::shelf</code> function for robust dependency management, ensuring that all required packages are installed and loaded efficiently.</p>
+<p>The analytical toolkit assembled here is comprehensive:</p>
+<ul>
+<li><strong>Data Wrangling &amp; Cleaning:</strong> The <code>tidyverse</code> suite and <code>janitor</code> are employed for efficient data manipulation and cleaning.</li>
+<li><strong>Advanced Statistical Modeling:</strong> <code>glmmTMB</code> and <code>mgcv</code> are included to handle complex regression tasks, specifically zero-inflated models and Generalized Additive Models (GAMs), while <code>DHARMa</code> and <code>performance</code> are reserved for rigorous model diagnostics and residual analysis.</li>
+<li><strong>Imputation &amp; Machine Learning:</strong> <code>missRanger</code> and <code>ranger</code> provide the framework for the Random Forest-based imputation strategy mentioned in the objectives.</li>
+<li><strong>Visualization:</strong> A combination of <code>patchwork</code>, <code>ggpubr</code>, and <code>ggridges</code> is loaded to generate publication-quality, multi-panel figures.</li>
+</ul>
+<p>Finally, the primary dataset is ingested into the environment as <code>df</code> for immediate processing.</p>
+<section id="data-cleaning-and-preprocessing" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data Cleaning and Preprocessing</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb2-6"><a href="#cb2-6"></a>    <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb2-7"><a href="#cb2-7"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="co"># Remove records where the target variable (rainfall) is missing</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall))</span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Head of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Head of Cleaned Dataset</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">date</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">location</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min_temp</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">max_temp</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">rainfall</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">evaporation</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sunshine</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">wind_gust_dir</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">wind_gust_speed</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">wind_dir9am</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">wind_dir3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">wind_speed9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">wind_speed3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">humidity9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">humidity3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pressure9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pressure3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">cloud9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">cloud3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">temp9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">temp3pm</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">rain_today</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">rain_tomorrow</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">month</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">day</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2008-12-01</td>
+<td style="text-align: left;">Albury</td>
+<td style="text-align: right;">13.4</td>
+<td style="text-align: right;">22.9</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">WNW</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">1007.7</td>
+<td style="text-align: right;">1007.1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">16.9</td>
+<td style="text-align: right;">21.8</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Mon</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008-12-02</td>
+<td style="text-align: left;">Albury</td>
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">25.1</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">WNW</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: left;">NNW</td>
+<td style="text-align: left;">WSW</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">1010.6</td>
+<td style="text-align: right;">1007.8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">17.2</td>
+<td style="text-align: right;">24.3</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Tue</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008-12-03</td>
+<td style="text-align: left;">Albury</td>
+<td style="text-align: right;">12.9</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">WSW</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">WSW</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">1007.6</td>
+<td style="text-align: right;">1008.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">21.0</td>
+<td style="text-align: right;">23.2</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Wed</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008-12-04</td>
+<td style="text-align: left;">Albury</td>
+<td style="text-align: right;">9.2</td>
+<td style="text-align: right;">28.0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NE</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: left;">SE</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1017.6</td>
+<td style="text-align: right;">1012.8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">18.1</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Thu</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2008-12-05</td>
+<td style="text-align: left;">Albury</td>
+<td style="text-align: right;">17.5</td>
+<td style="text-align: right;">32.3</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: left;">ENE</td>
+<td style="text-align: left;">NW</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">1010.8</td>
+<td style="text-align: right;">1006.0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">17.8</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Fri</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2008-12-06</td>
+<td style="text-align: left;">Albury</td>
+<td style="text-align: right;">14.6</td>
+<td style="text-align: right;">29.7</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">WNW</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: left;">W</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">1009.2</td>
+<td style="text-align: right;">1005.4</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">20.6</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Sat</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">tail</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Tail of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Tail of Cleaned Dataset</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">date</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">location</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min_temp</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">max_temp</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">rainfall</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">evaporation</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sunshine</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">wind_gust_dir</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">wind_gust_speed</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">wind_dir9am</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">wind_dir3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">wind_speed9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">wind_speed3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">humidity9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">humidity3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pressure9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pressure3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">cloud9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">cloud3pm</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">temp9am</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">temp3pm</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">rain_today</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">rain_tomorrow</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">month</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">day</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2017-06-20</td>
+<td style="text-align: left;">Uluru</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">21.8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: left;">ESE</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">1024.7</td>
+<td style="text-align: right;">1021.2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">9.4</td>
+<td style="text-align: right;">20.9</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Tue</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2017-06-21</td>
+<td style="text-align: left;">Uluru</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">23.4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">E</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: left;">SE</td>
+<td style="text-align: left;">ENE</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">1024.6</td>
+<td style="text-align: right;">1020.3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10.1</td>
+<td style="text-align: right;">22.4</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Wed</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2017-06-22</td>
+<td style="text-align: left;">Uluru</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">25.3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NNW</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: left;">SE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">1023.5</td>
+<td style="text-align: right;">1019.1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10.9</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Thu</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2017-06-23</td>
+<td style="text-align: left;">Uluru</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">26.9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: left;">SE</td>
+<td style="text-align: left;">WNW</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">1021.0</td>
+<td style="text-align: right;">1016.8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">26.1</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Fri</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2017-06-24</td>
+<td style="text-align: left;">Uluru</td>
+<td style="text-align: right;">7.8</td>
+<td style="text-align: right;">27.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">SE</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: left;">SSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">1019.4</td>
+<td style="text-align: right;">1016.5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">15.1</td>
+<td style="text-align: right;">26.0</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Sat</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2017-06-25</td>
+<td style="text-align: left;">Uluru</td>
+<td style="text-align: right;">14.9</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">ESE</td>
+<td style="text-align: left;">ESE</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">1020.2</td>
+<td style="text-align: right;">1017.9</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">15.0</td>
+<td style="text-align: right;">20.9</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Sun</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>In this phase, we transform the raw dataset <code>df</code> into a consistent format suitable for analysis (<code>df_clean</code>). The preprocessing pipeline involves three primary operations:</p>
+<ol type="1">
+<li><strong>Syntactic Standardization:</strong> The <code>clean_names()</code> function is applied to convert all column headers to <code>snake_case</code>, ensuring consistent variable naming conventions across the dataset.</li>
+<li><strong>Temporal Feature Extraction:</strong> The <code>date</code> column is cast to a proper Date object. From this, we derive two key categorical variables: <code>month</code> (to capture seasonal rainfall variations) and <code>day</code> (representing the day of the week). These derived features will be essential for identifying temporal patterns in precipitation.</li>
+<li><strong>Target Integrity:</strong> We explicitly exclude observations where the target variable, <code>rainfall</code>, is missing (<code>NA</code>). Since our primary objective is to model rainfall occurrence and intensity, records without this ground truth provide no supervised learning value and are therefore removed.</li>
+</ol>
+<p>The resulting tables (Head and Tail) confirm the successful standardization of variables and the existence of the newly engineered temporal features.</p>
+</section>
+<section id="hybrid-imputation-strategy" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Hybrid Imputation Strategy</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>clean_and_impute_weather <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="co"># Configuration</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  MAXGAP <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>  GHOST_THRESHOLD <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>  PMM_K <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  MAXITER <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a>  <span class="co"># Initial cleaning</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>    <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-12"><a href="#cb4-12"></a>      <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb4-13"><a href="#cb4-13"></a>      <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb4-14"><a href="#cb4-14"></a>      <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb4-15"><a href="#cb4-15"></a>      <span class="at">day_of_year =</span> <span class="fu">yday</span>(date)</span>
+<span id="cb4-16"><a href="#cb4-16"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>    <span class="fu">select</span>(<span class="sc">-</span>rain_tomorrow)</span>
+<span id="cb4-19"><a href="#cb4-19"></a></span>
+<span id="cb4-20"><a href="#cb4-20"></a>  <span class="co"># Create imputation flags</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a></span>
+<span id="cb4-22"><a href="#cb4-22"></a>  df_flagged <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-24"><a href="#cb4-24"></a>      <span class="at">sunshine_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sunshine), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb4-25"><a href="#cb4-25"></a>      <span class="at">evap_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(evaporation), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb4-26"><a href="#cb4-26"></a>      <span class="at">cloud3pm_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud3pm), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb4-27"><a href="#cb4-27"></a>      <span class="at">cloud9am_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud9am), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb4-28"><a href="#cb4-28"></a>    )</span>
+<span id="cb4-29"><a href="#cb4-29"></a></span>
+<span id="cb4-30"><a href="#cb4-30"></a>  <span class="co"># Temporal interpolation</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a></span>
+<span id="cb4-32"><a href="#cb4-32"></a>  interp_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-33"><a href="#cb4-33"></a>    <span class="st">"min_temp"</span>,</span>
+<span id="cb4-34"><a href="#cb4-34"></a>    <span class="st">"max_temp"</span>,</span>
+<span id="cb4-35"><a href="#cb4-35"></a>    <span class="st">"temp9am"</span>,</span>
+<span id="cb4-36"><a href="#cb4-36"></a>    <span class="st">"temp3pm"</span>,</span>
+<span id="cb4-37"><a href="#cb4-37"></a>    <span class="st">"pressure9am"</span>,</span>
+<span id="cb4-38"><a href="#cb4-38"></a>    <span class="st">"pressure3pm"</span>,</span>
+<span id="cb4-39"><a href="#cb4-39"></a>    <span class="st">"humidity9am"</span>,</span>
+<span id="cb4-40"><a href="#cb4-40"></a>    <span class="st">"humidity3pm"</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a>  )</span>
+<span id="cb4-42"><a href="#cb4-42"></a></span>
+<span id="cb4-43"><a href="#cb4-43"></a>  df_interp <span class="ot">&lt;-</span> df_flagged <span class="sc">%&gt;%</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a>    <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a>    <span class="fu">arrange</span>(date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb4-47"><a href="#cb4-47"></a>      <span class="fu">all_of</span>(interp_vars),</span>
+<span id="cb4-48"><a href="#cb4-48"></a>      <span class="sc">~</span> <span class="fu">na.approx</span>(., <span class="at">maxgap =</span> MAXGAP, <span class="at">na.rm =</span> <span class="cn">FALSE</span>, <span class="at">rule =</span> <span class="dv">2</span>)</span>
+<span id="cb4-49"><a href="#cb4-49"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb4-50"><a href="#cb4-50"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb4-51"><a href="#cb4-51"></a></span>
+<span id="cb4-52"><a href="#cb4-52"></a>  <span class="co"># Identify ghost sensors</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a></span>
+<span id="cb4-54"><a href="#cb4-54"></a>  ghost_prone_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"cloud9am"</span>)</span>
+<span id="cb4-55"><a href="#cb4-55"></a></span>
+<span id="cb4-56"><a href="#cb4-56"></a>  ghost_pairs <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a>    <span class="fu">select</span>(location, <span class="fu">all_of</span>(ghost_prone_vars)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb4-59"><a href="#cb4-59"></a>      <span class="at">cols =</span> <span class="fu">all_of</span>(ghost_prone_vars),</span>
+<span id="cb4-60"><a href="#cb4-60"></a>      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb4-61"><a href="#cb4-61"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb4-62"><a href="#cb4-62"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-63"><a href="#cb4-63"></a>    <span class="fu">group_by</span>(location, variable) <span class="sc">%&gt;%</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb4-65"><a href="#cb4-65"></a>      <span class="at">miss_rate =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(value)) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb4-66"><a href="#cb4-66"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb4-67"><a href="#cb4-67"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-68"><a href="#cb4-68"></a>    <span class="fu">filter</span>(miss_rate <span class="sc">&gt;</span> (GHOST_THRESHOLD <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a>    <span class="fu">select</span>(location, variable)</span>
+<span id="cb4-70"><a href="#cb4-70"></a></span>
+<span id="cb4-71"><a href="#cb4-71"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Found %d ghost sensor instances</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb4-72"><a href="#cb4-72"></a></span>
+<span id="cb4-73"><a href="#cb4-73"></a>  <span class="co"># missRanger imputation (first pass for general variables)</span></span>
+<span id="cb4-74"><a href="#cb4-74"></a></span>
+<span id="cb4-75"><a href="#cb4-75"></a>  imputation_data <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb4-76"><a href="#cb4-76"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-77"><a href="#cb4-77"></a>      <span class="at">sin_month =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb4-78"><a href="#cb4-78"></a>      <span class="at">cos_month =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb4-79"><a href="#cb4-79"></a>      <span class="at">sin_doy =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>),</span>
+<span id="cb4-80"><a href="#cb4-80"></a>      <span class="at">cos_doy =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>)</span>
+<span id="cb4-81"><a href="#cb4-81"></a>    )</span>
+<span id="cb4-82"><a href="#cb4-82"></a></span>
+<span id="cb4-83"><a href="#cb4-83"></a>  metadata_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(date)</span>
+<span id="cb4-84"><a href="#cb4-84"></a>  imputation_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>date)</span>
+<span id="cb4-85"><a href="#cb4-85"></a></span>
+<span id="cb4-86"><a href="#cb4-86"></a>  imputed_data <span class="ot">&lt;-</span> <span class="fu">missRanger</span>(</span>
+<span id="cb4-87"><a href="#cb4-87"></a>    <span class="at">data =</span> imputation_cols,</span>
+<span id="cb4-88"><a href="#cb4-88"></a>    <span class="at">pmm.k =</span> PMM_K,</span>
+<span id="cb4-89"><a href="#cb4-89"></a>    <span class="at">num.trees =</span> <span class="dv">100</span>,</span>
+<span id="cb4-90"><a href="#cb4-90"></a>    <span class="at">sample.fraction =</span> <span class="fl">0.3</span>,</span>
+<span id="cb4-91"><a href="#cb4-91"></a>    <span class="at">min.node.size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-92"><a href="#cb4-92"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb4-93"><a href="#cb4-93"></a>    <span class="at">verbose =</span> <span class="dv">1</span>,</span>
+<span id="cb4-94"><a href="#cb4-94"></a>    <span class="at">maxiter =</span> MAXITER</span>
+<span id="cb4-95"><a href="#cb4-95"></a>  )</span>
+<span id="cb4-96"><a href="#cb4-96"></a></span>
+<span id="cb4-97"><a href="#cb4-97"></a>  df_imputed <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(metadata_cols, imputed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb4-98"><a href="#cb4-98"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"sin_"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"cos_"</span>))</span>
+<span id="cb4-99"><a href="#cb4-99"></a></span>
+<span id="cb4-100"><a href="#cb4-100"></a>  <span class="co"># Sanitize ghost sensors</span></span>
+<span id="cb4-101"><a href="#cb4-101"></a></span>
+<span id="cb4-102"><a href="#cb4-102"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(ghost_pairs) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb4-103"><a href="#cb4-103"></a>    ghost_map <span class="ot">&lt;-</span> <span class="fu">split</span>(ghost_pairs<span class="sc">$</span>location, ghost_pairs<span class="sc">$</span>variable)</span>
+<span id="cb4-104"><a href="#cb4-104"></a></span>
+<span id="cb4-105"><a href="#cb4-105"></a>    df_imputed <span class="ot">&lt;-</span> df_imputed <span class="sc">%&gt;%</span></span>
+<span id="cb4-106"><a href="#cb4-106"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb4-107"><a href="#cb4-107"></a>        <span class="fu">names</span>(ghost_map),</span>
+<span id="cb4-108"><a href="#cb4-108"></a>        <span class="sc">~</span> <span class="fu">replace</span>(., location <span class="sc">%in%</span> ghost_map[[<span class="fu">cur_column</span>()]], <span class="cn">NA</span>)</span>
+<span id="cb4-109"><a href="#cb4-109"></a>      ))</span>
+<span id="cb4-110"><a href="#cb4-110"></a></span>
+<span id="cb4-111"><a href="#cb4-111"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Reverted %d instances to NA</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb4-112"><a href="#cb4-112"></a>  }</span>
+<span id="cb4-113"><a href="#cb4-113"></a></span>
+<span id="cb4-114"><a href="#cb4-114"></a>  <span class="co"># Targeted MICE with Random Forest for high-missingness variables</span></span>
+<span id="cb4-115"><a href="#cb4-115"></a></span>
+<span id="cb4-116"><a href="#cb4-116"></a>  init <span class="ot">&lt;-</span> <span class="fu">mice</span>(df_imputed, <span class="at">maxit =</span> <span class="dv">0</span>)</span>
+<span id="cb4-117"><a href="#cb4-117"></a>  pred <span class="ot">&lt;-</span> init<span class="sc">$</span>predictorMatrix</span>
+<span id="cb4-118"><a href="#cb4-118"></a>  meth <span class="ot">&lt;-</span> init<span class="sc">$</span>method</span>
+<span id="cb4-119"><a href="#cb4-119"></a>  pred[,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-120"><a href="#cb4-120"></a></span>
+<span id="cb4-121"><a href="#cb4-121"></a>  <span class="co"># Set method to random forest for target variables</span></span>
+<span id="cb4-122"><a href="#cb4-122"></a>  meth[<span class="st">"sunshine"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-123"><a href="#cb4-123"></a>  meth[<span class="st">"evaporation"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-124"><a href="#cb4-124"></a>  meth[<span class="st">"cloud9am"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-125"><a href="#cb4-125"></a>  meth[<span class="st">"cloud3pm"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-126"><a href="#cb4-126"></a></span>
+<span id="cb4-127"><a href="#cb4-127"></a>  <span class="co"># Define predictors for each variable</span></span>
+<span id="cb4-128"><a href="#cb4-128"></a>  sun_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb4-129"><a href="#cb4-129"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb4-130"><a href="#cb4-130"></a>    <span class="fu">c</span>(<span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"max_temp"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb4-131"><a href="#cb4-131"></a>  )</span>
+<span id="cb4-132"><a href="#cb4-132"></a></span>
+<span id="cb4-133"><a href="#cb4-133"></a>  evap_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb4-134"><a href="#cb4-134"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb4-135"><a href="#cb4-135"></a>    <span class="fu">c</span>(</span>
+<span id="cb4-136"><a href="#cb4-136"></a>      <span class="st">"wind_gust_speed"</span>,</span>
+<span id="cb4-137"><a href="#cb4-137"></a>      <span class="st">"max_temp"</span>,</span>
+<span id="cb4-138"><a href="#cb4-138"></a>      <span class="st">"humidity3pm"</span>,</span>
+<span id="cb4-139"><a href="#cb4-139"></a>      <span class="st">"sunshine"</span>,</span>
+<span id="cb4-140"><a href="#cb4-140"></a>      <span class="st">"location"</span>,</span>
+<span id="cb4-141"><a href="#cb4-141"></a>      <span class="st">"month"</span></span>
+<span id="cb4-142"><a href="#cb4-142"></a>    )</span>
+<span id="cb4-143"><a href="#cb4-143"></a>  )</span>
+<span id="cb4-144"><a href="#cb4-144"></a></span>
+<span id="cb4-145"><a href="#cb4-145"></a>  cloud_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb4-146"><a href="#cb4-146"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb4-147"><a href="#cb4-147"></a>    <span class="fu">c</span>(<span class="st">"humidity9am"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"pressure9am"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb4-148"><a href="#cb4-148"></a>  )</span>
+<span id="cb4-149"><a href="#cb4-149"></a></span>
+<span id="cb4-150"><a href="#cb4-150"></a>  <span class="cf">if</span> (<span class="st">"sunshine"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-151"><a href="#cb4-151"></a>    pred[<span class="st">"sunshine"</span>, sun_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-152"><a href="#cb4-152"></a>  }</span>
+<span id="cb4-153"><a href="#cb4-153"></a>  <span class="cf">if</span> (<span class="st">"evaporation"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-154"><a href="#cb4-154"></a>    pred[<span class="st">"evaporation"</span>, evap_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-155"><a href="#cb4-155"></a>  }</span>
+<span id="cb4-156"><a href="#cb4-156"></a>  <span class="cf">if</span> (<span class="st">"cloud9am"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-157"><a href="#cb4-157"></a>    pred[<span class="st">"cloud9am"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-158"><a href="#cb4-158"></a>  }</span>
+<span id="cb4-159"><a href="#cb4-159"></a>  <span class="cf">if</span> (<span class="st">"cloud3pm"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-160"><a href="#cb4-160"></a>    pred[<span class="st">"cloud3pm"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-161"><a href="#cb4-161"></a>  }</span>
+<span id="cb4-162"><a href="#cb4-162"></a></span>
+<span id="cb4-163"><a href="#cb4-163"></a>  ignore_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"_flagged$|^date$"</span>, <span class="fu">colnames</span>(pred), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-164"><a href="#cb4-164"></a>  pred[, ignore_cols] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-165"><a href="#cb4-165"></a></span>
+<span id="cb4-166"><a href="#cb4-166"></a>  imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
+<span id="cb4-167"><a href="#cb4-167"></a>    df_imputed,</span>
+<span id="cb4-168"><a href="#cb4-168"></a>    <span class="at">method =</span> meth,</span>
+<span id="cb4-169"><a href="#cb4-169"></a>    <span class="at">predictorMatrix =</span> pred,</span>
+<span id="cb4-170"><a href="#cb4-170"></a>    <span class="at">m =</span> <span class="dv">1</span>,</span>
+<span id="cb4-171"><a href="#cb4-171"></a>    <span class="at">maxit =</span> <span class="dv">5</span>,</span>
+<span id="cb4-172"><a href="#cb4-172"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb4-173"><a href="#cb4-173"></a>    <span class="at">printFlag =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-174"><a href="#cb4-174"></a>  )</span>
+<span id="cb4-175"><a href="#cb4-175"></a></span>
+<span id="cb4-176"><a href="#cb4-176"></a>  df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp)</span>
+<span id="cb4-177"><a href="#cb4-177"></a></span>
+<span id="cb4-178"><a href="#cb4-178"></a>  <span class="fu">return</span>(df_final)</span>
+<span id="cb4-179"><a href="#cb4-179"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>df_final <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_final.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To address the missing data challenges identified in the EDA (specifically the high missingness in <code>sunshine</code> and <code>evaporation</code>), we implemented a robust, multi-stage hybrid imputation strategy designed to preserve the statistical properties of meteorological data.</p>
+<p><strong>1. Informative Missingness Flags:</strong> Before imputation, we generated binary flags (e.g., <code>sunshine_imp_flagged</code>) for variables with high missingness. This ensures that if the absence of data itself carries information (e.g., a broken sensor during a specific storm type), the model retains the capacity to learn from it.</p>
+<p><strong>2. Temporal Interpolation (Time-Series Logic):</strong> Recognizing that weather variables like temperature and pressure exhibit strong temporal autocorrelation, we first applied linear interpolation (<code>na.approx</code>) grouped by <code>Location</code>.</p>
+<ul>
+<li><strong>Rationale:</strong> If the temperature is <span class="math inline">\(20^\circ\)</span>C on Monday and <span class="math inline">\(22^\circ\)</span>C on Wednesday, it is physically sound to estimate Tuesday as <span class="math inline">\(21^\circ\)</span>C rather than using a global average.</li>
+<li><strong>Constraint:</strong> This was limited to a <code>maxgap</code> of 5 days to prevent creating artificial data over long periods of sensor failure.</li>
+</ul>
+<p><strong>3. Multivariate Imputation via Chained Random Forests:</strong> For remaining gaps, particularly those in non-continuous variables like <code>cloud cover</code> or <code>wind direction</code>, we utilized the <code>missRanger</code> algorithm.</p>
+<ul>
+<li><strong>Method:</strong> This technique uses Random Forests to predict missing values based on all other available variables iteratively.</li>
+<li><strong>Advantage:</strong> Unlike mean imputation, which shrinks variance, <code>missRanger</code> with Predictive Mean Matching (PMM) preserves the original distribution and the complex non-linear correlations between weather features.</li>
+</ul>
+<p>This comprehensive approach ensures <code>df_final</code> is complete, statistically sound, and ready for advanced modeling.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./02-eda.html" class="pagination-link" aria-label="Exploratory Data Analysis">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu"># Computational Environment and Data Ingestion</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>We begin by loading the necessary R libraries and reading the dataset.</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="in">```{r}</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#| label: setup-libraries-data</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#| message: false</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#| results: 'hide'</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co"># Initialize environment and load dependencies</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
+<span id="cb6-16"><a href="#cb6-16"></a>  tidyverse,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>  tidymodels,</span>
+<span id="cb6-18"><a href="#cb6-18"></a>  kableExtra,</span>
+<span id="cb6-19"><a href="#cb6-19"></a>  patchwork,</span>
+<span id="cb6-20"><a href="#cb6-20"></a>  skimr,</span>
+<span id="cb6-21"><a href="#cb6-21"></a>  gridExtra,</span>
+<span id="cb6-22"><a href="#cb6-22"></a>  gtsummary,</span>
+<span id="cb6-23"><a href="#cb6-23"></a>  janitor,</span>
+<span id="cb6-24"><a href="#cb6-24"></a>  corrplot,</span>
+<span id="cb6-25"><a href="#cb6-25"></a>  sjPlot,</span>
+<span id="cb6-26"><a href="#cb6-26"></a>  scales,</span>
+<span id="cb6-27"><a href="#cb6-27"></a>  GGally,</span>
+<span id="cb6-28"><a href="#cb6-28"></a>  car,</span>
+<span id="cb6-29"><a href="#cb6-29"></a>  forcats,</span>
+<span id="cb6-30"><a href="#cb6-30"></a>  performance,</span>
+<span id="cb6-31"><a href="#cb6-31"></a>  glmmTMB,</span>
+<span id="cb6-32"><a href="#cb6-32"></a>  splines,</span>
+<span id="cb6-33"><a href="#cb6-33"></a>  mgcv,</span>
+<span id="cb6-34"><a href="#cb6-34"></a>  DHARMa,</span>
+<span id="cb6-35"><a href="#cb6-35"></a>  zoo,</span>
+<span id="cb6-36"><a href="#cb6-36"></a>  ggpubr,</span>
+<span id="cb6-37"><a href="#cb6-37"></a>  ggridges,</span>
+<span id="cb6-38"><a href="#cb6-38"></a>  caret,</span>
+<span id="cb6-39"><a href="#cb6-39"></a>  rstatix,</span>
+<span id="cb6-40"><a href="#cb6-40"></a>  Metrics,</span>
+<span id="cb6-41"><a href="#cb6-41"></a>  mice,</span>
+<span id="cb6-42"><a href="#cb6-42"></a>  missRanger,</span>
+<span id="cb6-43"><a href="#cb6-43"></a>  ranger,</span>
+<span id="cb6-44"><a href="#cb6-44"></a>  cocor,</span>
+<span id="cb6-45"><a href="#cb6-45"></a>  splines,</span>
+<span id="cb6-46"><a href="#cb6-46"></a>  multcompView,</span>
+<span id="cb6-47"><a href="#cb6-47"></a>  lmtest,</span>
+<span id="cb6-48"><a href="#cb6-48"></a>  aod,</span>
+<span id="cb6-49"><a href="#cb6-49"></a>  pROC</span>
+<span id="cb6-50"><a href="#cb6-50"></a>)</span>
+<span id="cb6-51"><a href="#cb6-51"></a></span>
+<span id="cb6-52"><a href="#cb6-52"></a><span class="co"># Load the dataset</span></span>
+<span id="cb6-53"><a href="#cb6-53"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/weatherAUS.csv"</span>)</span>
+<span id="cb6-54"><a href="#cb6-54"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb6-55"><a href="#cb6-55"></a><span class="in">```</span></span>
+<span id="cb6-56"><a href="#cb6-56"></a></span>
+<span id="cb6-57"><a href="#cb6-57"></a>This section establishes the computational framework necessary for the analysis. We utilize the <span class="in">`librarian::shelf`</span> function for robust dependency management, ensuring that all required packages are installed and loaded efficiently.</span>
+<span id="cb6-58"><a href="#cb6-58"></a></span>
+<span id="cb6-59"><a href="#cb6-59"></a>The analytical toolkit assembled here is comprehensive:</span>
+<span id="cb6-60"><a href="#cb6-60"></a></span>
+<span id="cb6-61"><a href="#cb6-61"></a><span class="ss">-   </span>**Data Wrangling &amp; Cleaning:** The <span class="in">`tidyverse`</span> suite and <span class="in">`janitor`</span> are employed for efficient data manipulation and cleaning.</span>
+<span id="cb6-62"><a href="#cb6-62"></a><span class="ss">-   </span>**Advanced Statistical Modeling:** <span class="in">`glmmTMB`</span> and <span class="in">`mgcv`</span> are included to handle complex regression tasks, specifically zero-inflated models and Generalized Additive Models (GAMs), while <span class="in">`DHARMa`</span> and <span class="in">`performance`</span> are reserved for rigorous model diagnostics and residual analysis.</span>
+<span id="cb6-63"><a href="#cb6-63"></a><span class="ss">-   </span>**Imputation &amp; Machine Learning:** <span class="in">`missRanger`</span> and <span class="in">`ranger`</span> provide the framework for the Random Forest-based imputation strategy mentioned in the objectives.</span>
+<span id="cb6-64"><a href="#cb6-64"></a><span class="ss">-   </span>**Visualization:** A combination of <span class="in">`patchwork`</span>, <span class="in">`ggpubr`</span>, and <span class="in">`ggridges`</span> is loaded to generate publication-quality, multi-panel figures.</span>
+<span id="cb6-65"><a href="#cb6-65"></a></span>
+<span id="cb6-66"><a href="#cb6-66"></a>Finally, the primary dataset is ingested into the environment as <span class="in">`df`</span> for immediate processing.</span>
+<span id="cb6-67"><a href="#cb6-67"></a></span>
+<span id="cb6-68"><a href="#cb6-68"></a></span>
+<span id="cb6-69"><a href="#cb6-69"></a><span class="fu"># Data Cleaning and Preprocessing</span></span>
+<span id="cb6-70"><a href="#cb6-70"></a></span>
+<span id="cb6-73"><a href="#cb6-73"></a><span class="in">```{r}</span></span>
+<span id="cb6-74"><a href="#cb6-74"></a><span class="co">#| label: data-cleaning</span></span>
+<span id="cb6-75"><a href="#cb6-75"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-76"><a href="#cb6-76"></a><span class="co">#| message: false</span></span>
+<span id="cb6-77"><a href="#cb6-77"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-78"><a href="#cb6-78"></a></span>
+<span id="cb6-79"><a href="#cb6-79"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-80"><a href="#cb6-80"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-81"><a href="#cb6-81"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-82"><a href="#cb6-82"></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb6-83"><a href="#cb6-83"></a>    <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb6-84"><a href="#cb6-84"></a>    <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb6-85"><a href="#cb6-85"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-86"><a href="#cb6-86"></a>  <span class="co"># Remove records where the target variable (rainfall) is missing</span></span>
+<span id="cb6-87"><a href="#cb6-87"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall))</span>
+<span id="cb6-88"><a href="#cb6-88"></a></span>
+<span id="cb6-89"><a href="#cb6-89"></a></span>
+<span id="cb6-90"><a href="#cb6-90"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb6-91"><a href="#cb6-91"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-92"><a href="#cb6-92"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Head of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-93"><a href="#cb6-93"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb6-94"><a href="#cb6-94"></a></span>
+<span id="cb6-95"><a href="#cb6-95"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb6-96"><a href="#cb6-96"></a>  <span class="fu">tail</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-97"><a href="#cb6-97"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Tail of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-98"><a href="#cb6-98"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb6-99"><a href="#cb6-99"></a><span class="in">```</span></span>
+<span id="cb6-100"><a href="#cb6-100"></a></span>
+<span id="cb6-101"><a href="#cb6-101"></a>In this phase, we transform the raw dataset <span class="in">`df`</span> into a consistent format suitable for analysis (<span class="in">`df_clean`</span>). The preprocessing pipeline involves three primary operations:</span>
+<span id="cb6-102"><a href="#cb6-102"></a></span>
+<span id="cb6-103"><a href="#cb6-103"></a><span class="ss">1.  </span>**Syntactic Standardization:** The <span class="in">`clean_names()`</span> function is applied to convert all column headers to <span class="in">`snake_case`</span>, ensuring consistent variable naming conventions across the dataset.</span>
+<span id="cb6-104"><a href="#cb6-104"></a><span class="ss">2.  </span>**Temporal Feature Extraction:** The <span class="in">`date`</span> column is cast to a proper Date object. From this, we derive two key categorical variables: <span class="in">`month`</span> (to capture seasonal rainfall variations) and <span class="in">`day`</span> (representing the day of the week). These derived features will be essential for identifying temporal patterns in precipitation.</span>
+<span id="cb6-105"><a href="#cb6-105"></a><span class="ss">3.  </span>**Target Integrity:** We explicitly exclude observations where the target variable, <span class="in">`rainfall`</span>, is missing (<span class="in">`NA`</span>). Since our primary objective is to model rainfall occurrence and intensity, records without this ground truth provide no supervised learning value and are therefore removed.</span>
+<span id="cb6-106"><a href="#cb6-106"></a></span>
+<span id="cb6-107"><a href="#cb6-107"></a>The resulting tables (Head and Tail) confirm the successful standardization of variables and the existence of the newly engineered temporal features.</span>
+<span id="cb6-108"><a href="#cb6-108"></a></span>
+<span id="cb6-109"><a href="#cb6-109"></a></span>
+<span id="cb6-110"><a href="#cb6-110"></a><span class="fu"># Hybrid Imputation Strategy</span></span>
+<span id="cb6-111"><a href="#cb6-111"></a></span>
+<span id="cb6-114"><a href="#cb6-114"></a><span class="in">```{r}</span></span>
+<span id="cb6-115"><a href="#cb6-115"></a><span class="co">#| label: imputation-strategy</span></span>
+<span id="cb6-116"><a href="#cb6-116"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-117"><a href="#cb6-117"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-118"><a href="#cb6-118"></a></span>
+<span id="cb6-119"><a href="#cb6-119"></a>clean_and_impute_weather <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb6-120"><a href="#cb6-120"></a>  <span class="co"># Configuration</span></span>
+<span id="cb6-121"><a href="#cb6-121"></a>  MAXGAP <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-122"><a href="#cb6-122"></a>  GHOST_THRESHOLD <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
+<span id="cb6-123"><a href="#cb6-123"></a>  PMM_K <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-124"><a href="#cb6-124"></a>  MAXITER <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb6-125"><a href="#cb6-125"></a></span>
+<span id="cb6-126"><a href="#cb6-126"></a>  <span class="co"># Initial cleaning</span></span>
+<span id="cb6-127"><a href="#cb6-127"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-128"><a href="#cb6-128"></a>    <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-129"><a href="#cb6-129"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-130"><a href="#cb6-130"></a>      <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb6-131"><a href="#cb6-131"></a>      <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb6-132"><a href="#cb6-132"></a>      <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb6-133"><a href="#cb6-133"></a>      <span class="at">day_of_year =</span> <span class="fu">yday</span>(date)</span>
+<span id="cb6-134"><a href="#cb6-134"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-135"><a href="#cb6-135"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-136"><a href="#cb6-136"></a>    <span class="fu">select</span>(<span class="sc">-</span>rain_tomorrow)</span>
+<span id="cb6-137"><a href="#cb6-137"></a></span>
+<span id="cb6-138"><a href="#cb6-138"></a>  <span class="co"># Create imputation flags</span></span>
+<span id="cb6-139"><a href="#cb6-139"></a></span>
+<span id="cb6-140"><a href="#cb6-140"></a>  df_flagged <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-141"><a href="#cb6-141"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-142"><a href="#cb6-142"></a>      <span class="at">sunshine_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sunshine), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb6-143"><a href="#cb6-143"></a>      <span class="at">evap_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(evaporation), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb6-144"><a href="#cb6-144"></a>      <span class="at">cloud3pm_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud3pm), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb6-145"><a href="#cb6-145"></a>      <span class="at">cloud9am_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud9am), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-146"><a href="#cb6-146"></a>    )</span>
+<span id="cb6-147"><a href="#cb6-147"></a></span>
+<span id="cb6-148"><a href="#cb6-148"></a>  <span class="co"># Temporal interpolation</span></span>
+<span id="cb6-149"><a href="#cb6-149"></a></span>
+<span id="cb6-150"><a href="#cb6-150"></a>  interp_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-151"><a href="#cb6-151"></a>    <span class="st">"min_temp"</span>,</span>
+<span id="cb6-152"><a href="#cb6-152"></a>    <span class="st">"max_temp"</span>,</span>
+<span id="cb6-153"><a href="#cb6-153"></a>    <span class="st">"temp9am"</span>,</span>
+<span id="cb6-154"><a href="#cb6-154"></a>    <span class="st">"temp3pm"</span>,</span>
+<span id="cb6-155"><a href="#cb6-155"></a>    <span class="st">"pressure9am"</span>,</span>
+<span id="cb6-156"><a href="#cb6-156"></a>    <span class="st">"pressure3pm"</span>,</span>
+<span id="cb6-157"><a href="#cb6-157"></a>    <span class="st">"humidity9am"</span>,</span>
+<span id="cb6-158"><a href="#cb6-158"></a>    <span class="st">"humidity3pm"</span></span>
+<span id="cb6-159"><a href="#cb6-159"></a>  )</span>
+<span id="cb6-160"><a href="#cb6-160"></a></span>
+<span id="cb6-161"><a href="#cb6-161"></a>  df_interp <span class="ot">&lt;-</span> df_flagged <span class="sc">%&gt;%</span></span>
+<span id="cb6-162"><a href="#cb6-162"></a>    <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
+<span id="cb6-163"><a href="#cb6-163"></a>    <span class="fu">arrange</span>(date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-164"><a href="#cb6-164"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb6-165"><a href="#cb6-165"></a>      <span class="fu">all_of</span>(interp_vars),</span>
+<span id="cb6-166"><a href="#cb6-166"></a>      <span class="sc">~</span> <span class="fu">na.approx</span>(., <span class="at">maxgap =</span> MAXGAP, <span class="at">na.rm =</span> <span class="cn">FALSE</span>, <span class="at">rule =</span> <span class="dv">2</span>)</span>
+<span id="cb6-167"><a href="#cb6-167"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb6-168"><a href="#cb6-168"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb6-169"><a href="#cb6-169"></a></span>
+<span id="cb6-170"><a href="#cb6-170"></a>  <span class="co"># Identify ghost sensors</span></span>
+<span id="cb6-171"><a href="#cb6-171"></a></span>
+<span id="cb6-172"><a href="#cb6-172"></a>  ghost_prone_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"cloud9am"</span>)</span>
+<span id="cb6-173"><a href="#cb6-173"></a></span>
+<span id="cb6-174"><a href="#cb6-174"></a>  ghost_pairs <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb6-175"><a href="#cb6-175"></a>    <span class="fu">select</span>(location, <span class="fu">all_of</span>(ghost_prone_vars)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-176"><a href="#cb6-176"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb6-177"><a href="#cb6-177"></a>      <span class="at">cols =</span> <span class="fu">all_of</span>(ghost_prone_vars),</span>
+<span id="cb6-178"><a href="#cb6-178"></a>      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb6-179"><a href="#cb6-179"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb6-180"><a href="#cb6-180"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-181"><a href="#cb6-181"></a>    <span class="fu">group_by</span>(location, variable) <span class="sc">%&gt;%</span></span>
+<span id="cb6-182"><a href="#cb6-182"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb6-183"><a href="#cb6-183"></a>      <span class="at">miss_rate =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(value)) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb6-184"><a href="#cb6-184"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb6-185"><a href="#cb6-185"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-186"><a href="#cb6-186"></a>    <span class="fu">filter</span>(miss_rate <span class="sc">&gt;</span> (GHOST_THRESHOLD <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-187"><a href="#cb6-187"></a>    <span class="fu">select</span>(location, variable)</span>
+<span id="cb6-188"><a href="#cb6-188"></a></span>
+<span id="cb6-189"><a href="#cb6-189"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Found %d ghost sensor instances</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb6-190"><a href="#cb6-190"></a></span>
+<span id="cb6-191"><a href="#cb6-191"></a>  <span class="co"># missRanger imputation (first pass for general variables)</span></span>
+<span id="cb6-192"><a href="#cb6-192"></a></span>
+<span id="cb6-193"><a href="#cb6-193"></a>  imputation_data <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb6-194"><a href="#cb6-194"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-195"><a href="#cb6-195"></a>      <span class="at">sin_month =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb6-196"><a href="#cb6-196"></a>      <span class="at">cos_month =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb6-197"><a href="#cb6-197"></a>      <span class="at">sin_doy =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>),</span>
+<span id="cb6-198"><a href="#cb6-198"></a>      <span class="at">cos_doy =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>)</span>
+<span id="cb6-199"><a href="#cb6-199"></a>    )</span>
+<span id="cb6-200"><a href="#cb6-200"></a></span>
+<span id="cb6-201"><a href="#cb6-201"></a>  metadata_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(date)</span>
+<span id="cb6-202"><a href="#cb6-202"></a>  imputation_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>date)</span>
+<span id="cb6-203"><a href="#cb6-203"></a></span>
+<span id="cb6-204"><a href="#cb6-204"></a>  imputed_data <span class="ot">&lt;-</span> <span class="fu">missRanger</span>(</span>
+<span id="cb6-205"><a href="#cb6-205"></a>    <span class="at">data =</span> imputation_cols,</span>
+<span id="cb6-206"><a href="#cb6-206"></a>    <span class="at">pmm.k =</span> PMM_K,</span>
+<span id="cb6-207"><a href="#cb6-207"></a>    <span class="at">num.trees =</span> <span class="dv">100</span>,</span>
+<span id="cb6-208"><a href="#cb6-208"></a>    <span class="at">sample.fraction =</span> <span class="fl">0.3</span>,</span>
+<span id="cb6-209"><a href="#cb6-209"></a>    <span class="at">min.node.size =</span> <span class="dv">10</span>,</span>
+<span id="cb6-210"><a href="#cb6-210"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb6-211"><a href="#cb6-211"></a>    <span class="at">verbose =</span> <span class="dv">1</span>,</span>
+<span id="cb6-212"><a href="#cb6-212"></a>    <span class="at">maxiter =</span> MAXITER</span>
+<span id="cb6-213"><a href="#cb6-213"></a>  )</span>
+<span id="cb6-214"><a href="#cb6-214"></a></span>
+<span id="cb6-215"><a href="#cb6-215"></a>  df_imputed <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(metadata_cols, imputed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb6-216"><a href="#cb6-216"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"sin_"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"cos_"</span>))</span>
+<span id="cb6-217"><a href="#cb6-217"></a></span>
+<span id="cb6-218"><a href="#cb6-218"></a>  <span class="co"># Sanitize ghost sensors</span></span>
+<span id="cb6-219"><a href="#cb6-219"></a></span>
+<span id="cb6-220"><a href="#cb6-220"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(ghost_pairs) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb6-221"><a href="#cb6-221"></a>    ghost_map <span class="ot">&lt;-</span> <span class="fu">split</span>(ghost_pairs<span class="sc">$</span>location, ghost_pairs<span class="sc">$</span>variable)</span>
+<span id="cb6-222"><a href="#cb6-222"></a></span>
+<span id="cb6-223"><a href="#cb6-223"></a>    df_imputed <span class="ot">&lt;-</span> df_imputed <span class="sc">%&gt;%</span></span>
+<span id="cb6-224"><a href="#cb6-224"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb6-225"><a href="#cb6-225"></a>        <span class="fu">names</span>(ghost_map),</span>
+<span id="cb6-226"><a href="#cb6-226"></a>        <span class="sc">~</span> <span class="fu">replace</span>(., location <span class="sc">%in%</span> ghost_map[[<span class="fu">cur_column</span>()]], <span class="cn">NA</span>)</span>
+<span id="cb6-227"><a href="#cb6-227"></a>      ))</span>
+<span id="cb6-228"><a href="#cb6-228"></a></span>
+<span id="cb6-229"><a href="#cb6-229"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Reverted %d instances to NA</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb6-230"><a href="#cb6-230"></a>  }</span>
+<span id="cb6-231"><a href="#cb6-231"></a></span>
+<span id="cb6-232"><a href="#cb6-232"></a>  <span class="co"># Targeted MICE with Random Forest for high-missingness variables</span></span>
+<span id="cb6-233"><a href="#cb6-233"></a></span>
+<span id="cb6-234"><a href="#cb6-234"></a>  init <span class="ot">&lt;-</span> <span class="fu">mice</span>(df_imputed, <span class="at">maxit =</span> <span class="dv">0</span>)</span>
+<span id="cb6-235"><a href="#cb6-235"></a>  pred <span class="ot">&lt;-</span> init<span class="sc">$</span>predictorMatrix</span>
+<span id="cb6-236"><a href="#cb6-236"></a>  meth <span class="ot">&lt;-</span> init<span class="sc">$</span>method</span>
+<span id="cb6-237"><a href="#cb6-237"></a>  pred[,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-238"><a href="#cb6-238"></a></span>
+<span id="cb6-239"><a href="#cb6-239"></a>  <span class="co"># Set method to random forest for target variables</span></span>
+<span id="cb6-240"><a href="#cb6-240"></a>  meth[<span class="st">"sunshine"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-241"><a href="#cb6-241"></a>  meth[<span class="st">"evaporation"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-242"><a href="#cb6-242"></a>  meth[<span class="st">"cloud9am"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-243"><a href="#cb6-243"></a>  meth[<span class="st">"cloud3pm"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-244"><a href="#cb6-244"></a></span>
+<span id="cb6-245"><a href="#cb6-245"></a>  <span class="co"># Define predictors for each variable</span></span>
+<span id="cb6-246"><a href="#cb6-246"></a>  sun_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb6-247"><a href="#cb6-247"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb6-248"><a href="#cb6-248"></a>    <span class="fu">c</span>(<span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"max_temp"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb6-249"><a href="#cb6-249"></a>  )</span>
+<span id="cb6-250"><a href="#cb6-250"></a></span>
+<span id="cb6-251"><a href="#cb6-251"></a>  evap_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb6-252"><a href="#cb6-252"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb6-253"><a href="#cb6-253"></a>    <span class="fu">c</span>(</span>
+<span id="cb6-254"><a href="#cb6-254"></a>      <span class="st">"wind_gust_speed"</span>,</span>
+<span id="cb6-255"><a href="#cb6-255"></a>      <span class="st">"max_temp"</span>,</span>
+<span id="cb6-256"><a href="#cb6-256"></a>      <span class="st">"humidity3pm"</span>,</span>
+<span id="cb6-257"><a href="#cb6-257"></a>      <span class="st">"sunshine"</span>,</span>
+<span id="cb6-258"><a href="#cb6-258"></a>      <span class="st">"location"</span>,</span>
+<span id="cb6-259"><a href="#cb6-259"></a>      <span class="st">"month"</span></span>
+<span id="cb6-260"><a href="#cb6-260"></a>    )</span>
+<span id="cb6-261"><a href="#cb6-261"></a>  )</span>
+<span id="cb6-262"><a href="#cb6-262"></a></span>
+<span id="cb6-263"><a href="#cb6-263"></a>  cloud_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb6-264"><a href="#cb6-264"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb6-265"><a href="#cb6-265"></a>    <span class="fu">c</span>(<span class="st">"humidity9am"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"pressure9am"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb6-266"><a href="#cb6-266"></a>  )</span>
+<span id="cb6-267"><a href="#cb6-267"></a></span>
+<span id="cb6-268"><a href="#cb6-268"></a>  <span class="cf">if</span> (<span class="st">"sunshine"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-269"><a href="#cb6-269"></a>    pred[<span class="st">"sunshine"</span>, sun_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-270"><a href="#cb6-270"></a>  }</span>
+<span id="cb6-271"><a href="#cb6-271"></a>  <span class="cf">if</span> (<span class="st">"evaporation"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-272"><a href="#cb6-272"></a>    pred[<span class="st">"evaporation"</span>, evap_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-273"><a href="#cb6-273"></a>  }</span>
+<span id="cb6-274"><a href="#cb6-274"></a>  <span class="cf">if</span> (<span class="st">"cloud9am"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-275"><a href="#cb6-275"></a>    pred[<span class="st">"cloud9am"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-276"><a href="#cb6-276"></a>  }</span>
+<span id="cb6-277"><a href="#cb6-277"></a>  <span class="cf">if</span> (<span class="st">"cloud3pm"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-278"><a href="#cb6-278"></a>    pred[<span class="st">"cloud3pm"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-279"><a href="#cb6-279"></a>  }</span>
+<span id="cb6-280"><a href="#cb6-280"></a></span>
+<span id="cb6-281"><a href="#cb6-281"></a>  ignore_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"_flagged$|^date$"</span>, <span class="fu">colnames</span>(pred), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-282"><a href="#cb6-282"></a>  pred[, ignore_cols] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-283"><a href="#cb6-283"></a></span>
+<span id="cb6-284"><a href="#cb6-284"></a>  imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
+<span id="cb6-285"><a href="#cb6-285"></a>    df_imputed,</span>
+<span id="cb6-286"><a href="#cb6-286"></a>    <span class="at">method =</span> meth,</span>
+<span id="cb6-287"><a href="#cb6-287"></a>    <span class="at">predictorMatrix =</span> pred,</span>
+<span id="cb6-288"><a href="#cb6-288"></a>    <span class="at">m =</span> <span class="dv">1</span>,</span>
+<span id="cb6-289"><a href="#cb6-289"></a>    <span class="at">maxit =</span> <span class="dv">5</span>,</span>
+<span id="cb6-290"><a href="#cb6-290"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb6-291"><a href="#cb6-291"></a>    <span class="at">printFlag =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-292"><a href="#cb6-292"></a>  )</span>
+<span id="cb6-293"><a href="#cb6-293"></a></span>
+<span id="cb6-294"><a href="#cb6-294"></a>  df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp)</span>
+<span id="cb6-295"><a href="#cb6-295"></a></span>
+<span id="cb6-296"><a href="#cb6-296"></a>  <span class="fu">return</span>(df_final)</span>
+<span id="cb6-297"><a href="#cb6-297"></a>}</span>
+<span id="cb6-298"><a href="#cb6-298"></a><span class="in">```</span></span>
+<span id="cb6-299"><a href="#cb6-299"></a></span>
+<span id="cb6-300"><a href="#cb6-300"></a></span>
+<span id="cb6-303"><a href="#cb6-303"></a><span class="in">```{r}</span></span>
+<span id="cb6-304"><a href="#cb6-304"></a><span class="co">#| label: clean-and-save-imputed</span></span>
+<span id="cb6-305"><a href="#cb6-305"></a><span class="co">#| message: false</span></span>
+<span id="cb6-306"><a href="#cb6-306"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-307"><a href="#cb6-307"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-308"><a href="#cb6-308"></a></span>
+<span id="cb6-309"><a href="#cb6-309"></a>df_final <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
+<span id="cb6-310"><a href="#cb6-310"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_final.csv"</span>)</span>
+<span id="cb6-311"><a href="#cb6-311"></a><span class="in">```</span></span>
+<span id="cb6-312"><a href="#cb6-312"></a></span>
+<span id="cb6-315"><a href="#cb6-315"></a><span class="in">```{r}</span></span>
+<span id="cb6-316"><a href="#cb6-316"></a><span class="co">#| label: load-imputed-data</span></span>
+<span id="cb6-317"><a href="#cb6-317"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-318"><a href="#cb6-318"></a><span class="co">#| message: false</span></span>
+<span id="cb6-319"><a href="#cb6-319"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-320"><a href="#cb6-320"></a></span>
+<span id="cb6-321"><a href="#cb6-321"></a><span class="co"># Load the pre-computed dataset to save rendering time</span></span>
+<span id="cb6-322"><a href="#cb6-322"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/df_final.csv"</span>)</span>
+<span id="cb6-323"><a href="#cb6-323"></a><span class="in">```</span></span>
+<span id="cb6-324"><a href="#cb6-324"></a></span>
+<span id="cb6-325"><a href="#cb6-325"></a>To address the missing data challenges identified in the EDA (specifically the high missingness in <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span>), we implemented a robust, multi-stage hybrid imputation strategy designed to preserve the statistical properties of meteorological data.</span>
+<span id="cb6-326"><a href="#cb6-326"></a></span>
+<span id="cb6-327"><a href="#cb6-327"></a>**1. Informative Missingness Flags:** Before imputation, we generated binary flags (e.g., <span class="in">`sunshine_imp_flagged`</span>) for variables with high missingness. This ensures that if the absence of data itself carries information (e.g., a broken sensor during a specific storm type), the model retains the capacity to learn from it.</span>
+<span id="cb6-328"><a href="#cb6-328"></a></span>
+<span id="cb6-329"><a href="#cb6-329"></a>**2. Temporal Interpolation (Time-Series Logic):** Recognizing that weather variables like temperature and pressure exhibit strong temporal autocorrelation, we first applied linear interpolation (<span class="in">`na.approx`</span>) grouped by <span class="in">`Location`</span>.</span>
+<span id="cb6-330"><a href="#cb6-330"></a></span>
+<span id="cb6-331"><a href="#cb6-331"></a><span class="ss">-   </span>**Rationale:** If the temperature is $20^\circ$C on Monday and $22^\circ$C on Wednesday, it is physically sound to estimate Tuesday as $21^\circ$C rather than using a global average.</span>
+<span id="cb6-332"><a href="#cb6-332"></a><span class="ss">-   </span>**Constraint:** This was limited to a <span class="in">`maxgap`</span> of 5 days to prevent creating artificial data over long periods of sensor failure.</span>
+<span id="cb6-333"><a href="#cb6-333"></a></span>
+<span id="cb6-334"><a href="#cb6-334"></a>**3. Multivariate Imputation via Chained Random Forests:** For remaining gaps, particularly those in non-continuous variables like <span class="in">`cloud cover`</span> or <span class="in">`wind direction`</span>, we utilized the <span class="in">`missRanger`</span> algorithm.</span>
+<span id="cb6-335"><a href="#cb6-335"></a></span>
+<span id="cb6-336"><a href="#cb6-336"></a><span class="ss">-   </span>**Method:** This technique uses Random Forests to predict missing values based on all other available variables iteratively.</span>
+<span id="cb6-337"><a href="#cb6-337"></a><span class="ss">-   </span>**Advantage:** Unlike mean imputation, which shrinks variance, <span class="in">`missRanger`</span> with Predictive Mean Matching (PMM) preserves the original distribution and the complex non-linear correlations between weather features.</span>
+<span id="cb6-338"><a href="#cb6-338"></a></span>
+<span id="cb6-339"><a href="#cb6-339"></a>This comprehensive approach ensures <span class="in">`df_final`</span> is complete, statistically sound, and ready for advanced modeling.</span>
+<span id="cb6-340"><a href="#cb6-340"></a></span>
+<span id="cb6-343"><a href="#cb6-343"></a><span class="in">```{r}</span></span>
+<span id="cb6-344"><a href="#cb6-344"></a><span class="co">#| label: save-clean-data</span></span>
+<span id="cb6-345"><a href="#cb6-345"></a><span class="co">#| include: false</span></span>
+<span id="cb6-346"><a href="#cb6-346"></a></span>
+<span id="cb6-347"><a href="#cb6-347"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"data"</span>)) {</span>
+<span id="cb6-348"><a href="#cb6-348"></a>  <span class="fu">dir.create</span>(<span class="st">"data"</span>)</span>
+<span id="cb6-349"><a href="#cb6-349"></a>}</span>
+<span id="cb6-350"><a href="#cb6-350"></a></span>
+<span id="cb6-351"><a href="#cb6-351"></a><span class="fu">saveRDS</span>(df_clean, <span class="st">"data/df_clean.rds"</span>)</span>
+<span id="cb6-352"><a href="#cb6-352"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/01-data-prep.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,43 +1,67 @@
 project:
-  type: website
+  type: book
   output-dir: docs
-  render:
-    - index.qmd
 
-website:
+book:
   title: "Australian Rainfall Dynamics"
-  description: "A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs."
-  
+  subtitle: "Statistical Inference with Zero-Inflated Models"
+  author: "Chris Olande"
+  date: today
+  description: >
+    A comprehensive statistical analysis of rainfall patterns across
+    49 Australian cities using Zero-Inflated Gamma GLMMs.
+
   repo-url: https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models
   repo-actions: [source, issue]
-  
-  navbar:
-    title: "Rainfall Dynamics"
-    left:
-      - href: index.qmd
-        text: "Full Analysis"
-    right:
-      - icon: github
-        href: https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models
-        aria-label: GitHub
-      - icon: linkedin
-        href: https://www.linkedin.com/in/chris-olande-6557a3238/
-        aria-label: LinkedIn
+
+  sidebar:
+    style: "docked"
+    background: light
+    search: true
+
+  chapters:
+    - index.qmd
+    - part: "Data"
+      chapters:
+        - 01-data-prep.qmd
+        - 02-eda.qmd
+    - part: "Modelling"
+      chapters:
+        - 03-features.qmd
+        - 04-modeling.qmd
+    - 05-conclusion.qmd
+
+execute:
+  warning: false
+  message: false
+  echo: true
 
 format:
   html:
     theme:
       light: cosmo
       dark: darkly
-    
-    toc: true               
+    highlight-style: github
+
+    toc: true
     toc-depth: 3
-    toc-location: left
+    toc-location: right
+    toc-title: "On this page"
     smooth-scroll: true
 
     code-fold: true
-    code-tools: true 
+    code-tools: true
+    code-copy: true
+    code-line-numbers: true
+    code-overflow: wrap
 
-    include-in-header:
-      text: |
-        <meta name="author" content="Chris Olande">
+    fig-align: center
+    fig-cap-location: bottom
+
+    number-sections: true
+    number-depth: 3
+
+    link-external-icon: true
+    link-external-newwindow: true
+
+    page-layout: article

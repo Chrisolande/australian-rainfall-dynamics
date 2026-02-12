@@ -1,0 +1,467 @@
+
+# Signal Extraction via Moving Averages
+
+```{r}
+#| label: setup-features
+#| include: false
+
+librarian::shelf(
+  tidyverse,
+  zoo,
+  ggridges,
+  scales,
+  kableExtra,
+  performance,
+  here
+)
+
+
+df_final <- read_csv("data/df_final.csv")
+source(here::here("utils.R"))
+```
+
+```{r}
+#| label: ma-feature-engineering
+#| echo: true
+#| message: false
+
+# Calculate Rolling Moving Averages (3-day and 7-day windows)
+# 'align = "right"' ensures no future data leakage (only past/current data used)
+ma_data <- df_final %>%
+  group_by(location) %>%
+  arrange(date) %>%
+  mutate(
+    rainfall_ma3 = rollmean(rainfall, k = 3, fill = NA, align = "right"),
+    rainfall_ma7 = rollmean(rainfall, k = 7, fill = NA, align = "right"),
+    humidity_ma3 = rollmean(humidity3pm, k = 3, fill = NA, align = "right"),
+    humidity_ma7 = rollmean(humidity3pm, k = 7, fill = NA, align = "right")
+  ) %>%
+  ungroup()
+```
+
+```{r}
+#| label: fig-signal-extraction
+#| fig-cap: "Signal Extraction: Moving Averages Filter High-Frequency Noise. The 7-Day Moving Average (Green) suppresses daily stochastic variance to reveal the central tendency of wet regimes."
+#| fig-width: 10
+#| fig-height: 8
+#| echo: true
+#| warning: false
+
+p1_data <- ma_data %>%
+  filter(rainfall > 0) %>%
+  select(rainfall, rainfall_ma3, rainfall_ma7) %>%
+  pivot_longer(everything(), names_to = "metric", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  mutate(
+    metric = factor(
+      metric,
+      levels = c("rainfall", "rainfall_ma3", "rainfall_ma7"),
+      labels = c("Raw Daily", "3-Day MA", "7-Day MA")
+    )
+  )
+
+ggplot(p1_data, aes(x = value, fill = metric, color = metric)) +
+  geom_density(alpha = 0.4, linewidth = 1) +
+  annotation_logticks(sides = "b", color = "grey60", linewidth = 0.3) +
+  scale_x_log10(
+    breaks = c(0.1, 0.5, 1, 5, 10, 50, 100),
+    labels = label_number(suffix = " mm"),
+    expand = c(0, 0)
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Raw Daily" = "#E63946",
+      "3-Day MA" = "#F77F00",
+      "7-Day MA" = "#06A77D"
+    )
+  ) +
+  scale_color_manual(
+    values = c(
+      "Raw Daily" = "#E63946",
+      "3-Day MA" = "#F77F00",
+      "7-Day MA" = "#06A77D"
+    )
+  ) +
+  labs(
+    title = "Signal Extraction: Moving Averages Filter High-Frequency Noise",
+    subtitle = "Raw rainfall (Red) exhibits high stochastic variance with extreme skew. The 7-Day Moving Average (Green)\nacts as a low-pass filter, suppressing daily noise to reveal the central tendency of wet regimes.",
+    x = "Rainfall Intensity (Log Scale)",
+    y = "Density",
+    caption = "Data: Log-transformed daily rainfall recordings",
+    fill = NULL,
+    color = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "top",
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey90", size = 0.3),
+    panel.grid.major.y = element_line(color = "grey90", size = 0.3),
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(
+      color = "grey30",
+      size = 11,
+      margin = margin(b = 15)
+    ),
+    axis.text.x = element_text(margin = margin(t = 5))
+  )
+```
+
+```{r}
+#| label: fig-variance-reduction
+#| fig-cap: "Variance Reduction by Window Size. Increasing the moving average window size significantly reduces the standard deviation of the signal."
+#| fig-width: 8
+#| fig-height: 6
+#| echo: true
+#| warning: false
+
+variance_data <- ma_data %>%
+  filter(rainfall > 0) %>%
+  summarise(
+    Raw = sd(rainfall, na.rm = TRUE),
+    `3-Day MA` = sd(rainfall_ma3, na.rm = TRUE),
+    `7-Day MA` = sd(rainfall_ma7, na.rm = TRUE)
+  ) %>%
+  pivot_longer(everything(), names_to = "metric", values_to = "sd") %>%
+  mutate(
+    metric = factor(metric, levels = c("Raw", "3-Day MA", "7-Day MA")),
+    variance_reduction = (sd[1] - sd) / sd[1] * 100
+  )
+
+ggplot(variance_data, aes(metric, sd, fill = metric)) +
+  geom_col(alpha = 0.8, width = 0.6) +
+  geom_text(
+    aes(label = sprintf("%.1f mm\n(%.0f%% ↓)", sd, variance_reduction)),
+    vjust = -0.3,
+    fontface = "bold",
+    size = 4.5
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Raw" = "#E63946",
+      "3-Day MA" = "#F77F00",
+      "7-Day MA" = "#06A77D"
+    )
+  ) +
+  labs(
+    title = "Variance Reduction by Moving Averages",
+    subtitle = "Standard deviation decreases as window increases",
+    y = "Standard Deviation (mm)",
+    x = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(color = "grey40", margin = margin(b = 10)),
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(face = "bold", size = 12)
+  ) +
+  ylim(0, max(variance_data$sd) * 1.15)
+```
+
+```{r}
+#| label: fig-ma-correlation
+#| fig-cap: "Feature Correlations: Raw vs Moving Averages. High correlations between MA features (e.g., 0.89 between humidity_ma3 and humidity_ma7) warn of multicollinearity risks."
+#| fig-width: 8
+#| fig-height: 8
+#| echo: true
+#| warning: false
+
+cor_data <- ma_data %>%
+  select(
+    rainfall,
+    rainfall_ma3,
+    rainfall_ma7,
+    humidity3pm,
+    humidity_ma3,
+    humidity_ma7
+  ) %>%
+  cor(use = "complete.obs", method = "spearman") %>%
+  as.data.frame() %>%
+  rownames_to_column("var1") %>%
+  pivot_longer(-var1, names_to = "var2", values_to = "correlation") %>%
+  mutate(
+    var1 = factor(
+      var1,
+      levels = c(
+        "rainfall",
+        "rainfall_ma3",
+        "rainfall_ma7",
+        "humidity3pm",
+        "humidity_ma3",
+        "humidity_ma7"
+      )
+    ),
+    var2 = factor(
+      var2,
+      levels = c(
+        "rainfall",
+        "rainfall_ma3",
+        "rainfall_ma7",
+        "humidity3pm",
+        "humidity_ma3",
+        "humidity_ma7"
+      )
+    )
+  )
+
+ggplot(cor_data, aes(var2, var1, fill = correlation)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(
+    aes(label = sprintf("%.2f", correlation)),
+    fontface = "bold",
+    size = 3.5
+  ) +
+  scale_fill_gradient2(
+    low = "#0072B2",
+    mid = "white",
+    high = "#D55E00",
+    midpoint = 0,
+    limits = c(-1, 1),
+    name = "Correlation"
+  ) +
+  labs(
+    title = "Feature Correlations: Raw vs Moving Averages",
+    subtitle = "MAs are highly correlated with each other (potential multicollinearity)",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(color = "grey40", margin = margin(b = 10)),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold"),
+    axis.text.y = element_text(face = "bold"),
+    panel.grid = element_blank()
+  )
+```
+
+```{r}
+#| label: fig-ma-ridgeline
+#| fig-cap: "Distribution Tightening with Moving Averages. Ridgeline plots illustrate how the distribution peaks sharpen and tails compress as the averaging window increases."
+#| fig-width: 9
+#| fig-height: 7
+#| echo: true
+#| warning: false
+
+ridge_data <- ma_data %>%
+  filter(rainfall > 0) %>%
+  select(rainfall, rainfall_ma3, rainfall_ma7) %>%
+  pivot_longer(everything(), names_to = "metric", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  mutate(
+    metric = factor(
+      metric,
+      levels = c("rainfall_ma7", "rainfall_ma3", "rainfall"),
+      labels = c("7-Day MA", "3-Day MA", "Raw Daily")
+    )
+  )
+
+ggplot(ridge_data, aes(value, metric, fill = metric)) +
+  geom_density_ridges(
+    alpha = 0.7,
+    scale = 1.5,
+    quantile_lines = TRUE,
+    quantiles = 2
+  ) +
+  scale_x_log10(
+    breaks = c(1, 5, 10, 25, 50, 100),
+    labels = c("1", "5", "10", "25", "50", "100")
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Raw Daily" = "#E63946",
+      "3-Day MA" = "#F77F00",
+      "7-Day MA" = "#06A77D"
+    )
+  ) +
+  labs(
+    title = "Distribution Tightening with Moving Averages",
+    subtitle = "Peaks become sharper and tails compress as window size increases",
+    x = "Rainfall (mm, log scale)",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(color = "grey40", margin = margin(b = 15)),
+    legend.position = "none",
+    axis.text.y = element_text(face = "bold", size = 12),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank()
+  )
+```
+
+Meteorological data is inherently stochastic; daily rainfall observations are often "noisy" manifestations of underlying weather regimes. To extract the stable climate signal from this high-frequency noise, we applied Moving Average (MA) filters with 3-day and 7-day windows.
+
+**1. Noise Reduction and Variance Suppression:** The effect of this filtering is visually demonstrated in @fig-signal-extraction. The raw daily rainfall (Red curve) exhibits a highly skewed, platykurtic distribution with a long tail of extreme events.
+
+-   **3-Day MA (Orange):** begins to smooth out the extremes.
+-   **7-Day MA (Green):** acts as a robust low-pass filter, suppressing the daily variance to reveal a clearer central tendency.
+
+Quantitatively, this smoothing is substantial. As shown in @fig-variance-reduction, the standard deviation of rainfall intensity drops from **13.1 mm (Raw)** to **5.8 mm (7-Day MA)**, a reduction of **56%**. This confirms that the 7-day MA effectively captures the "weekly wetness regime" rather than the unpredictability of a single day.
+
+**2. Correlation and Multicollinearity:** While moving averages improve signal stability, they introduce strong autocorrelation. @fig-ma-correlation reveals:
+
+-   **High Autocorrelation:** The 3-day and 7-day humidity moving averages have a Spearman correlation of **0.89**.
+-   **Implication:** Including both raw features and multiple moving averages in a linear model (e.g., Logistic Regression) would likely cause **multicollinearity**, leading to inflated standard errors.
+
+**Conclusion:** Moving averages are powerful for visualizing trends and potentially for tree-based models (Random Forest/XGBoost) that can handle correlated features. However, for linear models, we must select a single temporal window (likely the 3-day MA for responsiveness or 7-day MA for stability) to avoid model instability.
+
+
+
+# Strategic Feature Engineering
+
+```{r}
+#| label: feature-engineering
+#| echo: true
+#| message: false
+#| warning: false
+
+# Define Compass Lookup Table for Circular Wind Decomposition
+compass_lookup <- c(
+  "N" = 0,
+  "NNE" = 22.5,
+  "NE" = 45,
+  "ENE" = 67.5,
+  "E" = 90,
+  "ESE" = 112.5,
+  "SE" = 135,
+  "SSE" = 157.5,
+  "S" = 180,
+  "SSW" = 202.5,
+  "SW" = 225,
+  "WSW" = 247.5,
+  "W" = 270,
+  "WNW" = 292.5,
+  "NW" = 315,
+  "NNW" = 337.5
+)
+
+df_final <- df_final %>%
+  group_by(location) %>%
+  arrange(date) %>%
+  mutate(
+    # Lagging MA by 1 day ensures we predict 'Today' using only 'Yesterday's' trends to prevent data leakage
+    rainfall_ma7 = lag(
+      rollmean(rainfall, k = 7, fill = NA, align = "right"),
+      n = 1
+    ),
+    humidity_ma7 = lag(
+      rollmean(humidity3pm, k = 7, fill = NA, align = "right"),
+      1
+    ),
+
+    # Dry Spell Calculation
+    rain_event_id = cumsum(lag(rainfall, 1) > 0),
+    days_since_rain = row_number() - match(rain_event_id, rain_event_id),
+
+    # Markov Chain State
+    rain_yesterday = lag(rain_today, n = 1)
+  ) %>%
+  ungroup() %>%
+  # Remove rows lost to lagging (first 7 days)
+  filter(!is.na(rain_yesterday), !is.na(rainfall_ma7)) %>%
+  select(-rain_event_id) %>%
+  mutate(
+    # Cyclical Time Encoding
+    # Preserves the proximity between Dec 31 and Jan 1
+    day_of_year = yday(date),
+    day_sin = sin(2 * pi * day_of_year / 365),
+    day_cos = cos(2 * pi * day_of_year / 365),
+
+    # Interaction Terms (The "Rain Corner")
+    # Centering variables before interaction reduces multicollinearity
+    sunshine = as.numeric(scale(sunshine, center = TRUE, scale = FALSE)),
+    humidity3pm = as.numeric(scale(humidity3pm, center = TRUE, scale = FALSE)),
+    sun_humid_interaction = as.numeric(sunshine * humidity3pm),
+
+    # Meteorological Indices
+    pressure_change = pressure3pm - pressure9am,
+    dewpoint_9am = temp9am - ((100 - humidity9am) / 5),
+    dewpoint_3pm = temp3pm - ((100 - humidity3pm) / 5),
+    dewpoint_change = dewpoint_3pm - dewpoint_9am,
+    moisture_index = humidity3pm * (1 - sunshine / 15),
+    instability_index = (1020 - pressure3pm) * humidity3pm / 100,
+    cloud_development = pmax(0, cloud3pm - cloud9am),
+
+    # Circular Wind Vector Decomposition
+    # Converts degrees (0-360) into continuous North-South (V) and East-West (U) vectors
+    gust_rad = compass_lookup[wind_gust_dir] * pi / 180,
+    gust_V_NS = wind_gust_speed * cos(gust_rad),
+    gust_U_EW = wind_gust_speed * sin(gust_rad),
+    wind9am_rad = compass_lookup[wind_dir9am] * pi / 180,
+    wind9am_V_NS = wind_speed9am * cos(wind9am_rad),
+    wind9am_U_EW = wind_speed9am * sin(wind9am_rad)
+  ) %>%
+  relocate(rain_today, date, location) %>%
+  relocate(rain_yesterday, days_since_rain, .after = location) %>%
+  relocate(ends_with("_ma7"), .after = days_since_rain) %>%
+  relocate(day_sin, day_cos, .after = date)
+```
+
+Based on the statistical insights derived from the Exploratory Data Analysis, we implemented a targeted feature engineering pipeline to transform raw signals into predictive model inputs.
+
+**1. Handling Seasonality (Cyclical Encoding):** Standard categorical months (1–12) fail to capture the proximity between December and January. To address the seasonal patterns identified in the seasonality section, we applied a sine/cosine transformation to the `day_of_year`.
+
+-   **Result:** `day_sin` and `day_cos` provide a continuous, circular representation of time, allowing the model to "understand" that winter flows smoothly into spring.
+
+**2. Capturing Persistence (Lagged Features):** The Markov Chain analysis proved that yesterday's weather is a strong predictor of today's.
+
+-   **Leakage Prevention:** We explicitly `lag()` all moving averages (e.g., `rainfall_ma7`) by one day. This ensures that when predicting rain for *today*, the model only sees the 7-day trend ending *yesterday*.
+-   **Dry Spells:** The `days_since_rain` counter captures the increasing "stickiness" of dry regimes identified in the dry spell analysis.
+
+**3. Modeling Physical Interactions:** The "Rain Corner" visualization demonstrated that rain occurs specifically when high humidity coincides with low sunshine.
+
+-   **Interaction Term:** We created `sun_humid_interaction` to mathematically represent this synergistic threshold.
+-   **Centering:** Variables were centered prior to multiplication to minimize multicollinearity between the main effects and the interaction term.
+
+**4. Vectorizing Wind Direction:** Wind direction is circular (360° is equal to 0°), which standard models misinterpret (treating 360 as "far" from 0).
+
+-   **Decomposition:** We mapped compass directions to radians and decomposed them into **U (East-West)** and **V (North-South)** vector components. This allows the model to treat wind as a continuous physical force rather than an arbitrary category.
+
+# Multicollinearity Diagnostics
+
+```{r}
+#| label: multicollinearity-check
+#| echo: true
+#| message: false
+#| warning: false
+# Persist df_final
+write_csv(df_final, "data/df_engineered.csv")
+# Feature Selection
+# Exclude location and raw administrative columns to focus on meteorological drivers
+df_wo_location <- select_model_features(df_final, keep_location = FALSE)
+
+# Variance Inflation Factor (VIF) Check
+# Diagnosing potential collinearity introduced by feature engineering
+vif_results <- mc_check(df_wo_location)
+
+# Display VIF Results
+vif_results %>%
+  as_tibble() %>%
+  arrange(desc(VIF)) %>%
+  kable(
+    caption = "Variance Inflation Factor (VIF) for Selected Predictors",
+    digits = 3
+  ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+# inal Scaling
+# Applying Z-score standardization to the validated feature set
+df_scaled <- df_wo_location %>%
+  scale_data()
+
+write_csv(df_scaled, "data/df_scaled.csv")
+```
+
+Following the creation of derived features (interactions, indices, and vector decompositions), it is imperative to verify that we have not introduced severe multicollinearity, which would destabilize the model coefficients. We utilized the Variance Inflation Factor (VIF) to diagnose these dependencies.
+
+**Results Analysis:**
+
+-   **Low to Moderate Collinearity (VIF \< 3):** The majority of our engineered features, including the cyclical time components (`day_sin`, `day_cos`) and the wind vector components (`gust_V_NS`, `gust_U_EW`), exhibit VIF values well below 3. This confirms that our decomposition strategy (e.g., separating wind speed/direction into U/V components) successfully preserved information without creating redundant signals.
+-   **Interaction Stability:** The `sun_humid_interaction` term has a VIF of **1.25**, which is exceptionally low. This vindicates our decision to **center** the `sunshine` and `humidity3pm` variables before multiplication. Without centering, interaction terms often show VIFs \> 10 due to correlation with their main effects.
+-   **High Collinearity (VIF \~ 5):** The highest VIF is observed for `humidity3pm` (**5.20**). This is expected, as this variable is structurally involved in multiple derived features (`moisture_index`, `instability_index`, `interaction`). However, a VIF of 5 is generally considered the upper threshold of acceptability (where VIF \> 10 indicates severe issues). Given that `humidity3pm` is the single strongest predictor of rainfall, we retain it, accepting this moderate inflation to preserve predictive power.
+
+**Conclusion:** The feature set is numerically stable. The centering strategy effectively mitigated the risks associated with interaction terms, and the VIF values indicate that the model will be robust to coefficient variance.

@@ -6,11 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Chris Olande">
-<meta name="dcterms.date" content="2026-02-12">
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>Australian Rainfall Dynamics</title>
+<title>5&nbsp; Conclusion – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01-data-prep.html" rel="next">
+<link href="./04-modeling.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -112,6 +110,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -286,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-conclusion.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -317,7 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
@@ -369,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-conclusion.html" class="sidebar-item-text sidebar-link">
+  <a href="./05-conclusion.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
@@ -383,13 +410,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
-  <ul class="collapse">
-  <li><a href="#the-statistical-challenge" id="toc-the-statistical-challenge" class="nav-link" data-scroll-target="#the-statistical-challenge">The Statistical Challenge</a></li>
-  <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives">Objectives</a></li>
-  </ul></li>
+  <li><a href="#summary-of-findings" id="toc-summary-of-findings" class="nav-link active" data-scroll-target="#summary-of-findings"><span class="header-section-number">5.1</span> Summary of Findings</a></li>
+  <li><a href="#model-performance-and-limitations" id="toc-model-performance-and-limitations" class="nav-link" data-scroll-target="#model-performance-and-limitations"><span class="header-section-number">5.2</span> Model Performance and Limitations</a></li>
+  <li><a href="#operational-suitability" id="toc-operational-suitability" class="nav-link" data-scroll-target="#operational-suitability"><span class="header-section-number">5.3</span> Operational Suitability</a></li>
+  <li><a href="#final-recommendation" id="toc-final-recommendation" class="nav-link" data-scroll-target="#final-recommendation"><span class="header-section-number">5.4</span> Final Recommendation</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -397,32 +423,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Australian Rainfall Dynamics</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-<p class="subtitle lead">Statistical Inference with Zero-Inflated Models</p>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Conclusion</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
-<div>
-  <div class="description">
-    <p>A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.</p>
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Chris Olande </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">February 12, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -432,34 +440,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction" class="level1 unnumbered">
-<h1 class="unnumbered">Introduction</h1>
-<p>Rainfall in Australia is a story of extremes. Driven by the complex interplay of the Southern Ocean’s Westerlies and the tropical monsoon, Australian weather patterns oscillate violently between prolonged droughts and torrential flood events. For meteorologists and data scientists, modeling this phenomenon presents a dual challenge: predicting <strong>if</strong> it will rain (occurrence) and <strong>how much</strong> will fall (intensity).</p>
-<p>This report presents a comprehensive analysis of daily observations from diverse locations across Australia, aiming to accurately model these dynamics using advanced statistical frameworks in <strong>R</strong>.</p>
-<section id="the-statistical-challenge" class="level3">
-<h3 class="anchored" data-anchor-id="the-statistical-challenge">The Statistical Challenge</h3>
-<p>Standard statistical approaches often assume data follows a normal (Gaussian) distribution. However, daily rainfall data violates every assumption of linear regression:</p>
-<ol type="1">
-<li><strong>Zero-Inflation:</strong> Approximately <strong>64%</strong> of observations are dry days (0mm). A standard model struggles to predict exact zeros, often outputting physically impossible negative values.</li>
-<li><strong>Extreme Skewness:</strong> When it does rain, the distribution is highly right-skewed. The “long tail” of storm events drives the bulk of the variance.</li>
-<li><strong>Spatiotemporal Dependence:</strong> Rain is not independent. A wet day in Darwin does not behave like a wet day in Melbourne, and a wet yesterday strongly predicts a wet today.</li>
+<section id="summary-of-findings" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="summary-of-findings"><span class="header-section-number">5.1</span> Summary of Findings</h2>
+<p>This study successfully developed a hierarchical Zero-Inflated Gamma model to predict daily rainfall across Australia. By analyzing over 140,000 observations, we demonstrated that rainfall is driven by a complex interplay of <strong>thermodynamic instability</strong>, <strong>wind vector dynamics</strong>, and <strong>spatial heterogeneity</strong>.</p>
+<p>Our progressive modeling strategy validated four critical physical hypotheses:</p>
+<p>1. <strong>The “Rain Corner”:</strong> We mathematically defined the interaction between High Humidity and Low Sunshine, identifying it as the primary thermodynamic trigger for precipitation.</p>
+<ol start="2" type="1">
+<li><strong>Persistence:</strong> Rainfall is highly state-dependent. A wet yesterday increases the probability of rain today by approximately <strong>76%</strong>, a finding robustly captured by our Markov chain features.</li>
 </ol>
-<p>To address these challenges, we utilize a <strong>Zero-Inflated Gamma (ZIG) Generalized Linear Mixed Model (GLMM)</strong> framework. This allows us to model the <em>probability of rain</em> (Logistic component) and the <em>intensity of rain</em> (Gamma component) as distinct but related physical processes.</p>
+<p>3. <strong>Wind Vectors:</strong> Decomposing wind into <span class="math inline">\(U\)</span> (East-West) and <span class="math inline">\(V\)</span> (North-South) components revealed that Southerly and Westerly flows are the strongest drivers of rainfall intensity.</p>
+<p>4. <strong>Spatial Variance:</strong> Our Mixed Model (M6) revealed distinct geographic baselines, separating “wet” tropical zones from “dry” interior zones with high statistical confidence.</p>
 </section>
-<section id="objectives" class="level3">
-<h3 class="anchored" data-anchor-id="objectives">Objectives</h3>
-<p>To achieve a robust analysis, this report addresses the following key objectives:</p>
+<section id="model-performance-and-limitations" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="model-performance-and-limitations"><span class="header-section-number">5.2</span> Model Performance and Limitations</h2>
+<p>The final model (M6) offers a significant improvement over standard linear approaches:</p>
 <ul>
-<li><p><strong>Data Integrity:</strong> Implement a Random Forest imputation strategy to handle missing values without discarding critical information.</p></li>
-<li><p><strong>Temporal Dynamics:</strong> Investigate the “persistence” effect using Markov Chain analysis to determine how prior weather states influence current rainfall probabilities.</p></li>
-<li><p><strong>Physical Modeling:</strong> Reconstruct the drivers of rainfall by layering <strong>Moisture</strong>, <strong>Energy</strong>, <strong>Wind Vectors</strong>, and <strong>Spatial Heterogeneity</strong> into the model.</p></li>
-<li><p><strong>Model Selection:</strong> Rigorously compare standard linear models against the Zero-Inflated Gamma framework using AIC, BIC, and DHARMa residual diagnostics.</p></li>
+<li><p><strong>Classification:</strong> It achieves an <strong>AUC of 0.83</strong>, indicating strong discriminative power in distinguishing wet days from dry days.</p></li>
+<li><p><strong>General Intensity:</strong> It achieves a <strong>Mean Absolute Error (MAE) of 2.71 mm</strong>, providing precise estimates for typical rainfall events.</p></li>
+<li><p><strong>Limitation on Extremes:</strong> The Global RMSE of <strong>7.48 mm</strong> indicates that the model under-predicts the magnitude of extreme outlier events (e.g., &gt;50mm). While the Gamma distribution handles skewness better than a Gaussian, it lacks the “heavy tail” required to fully capture rare, catastrophic storm events.</p></li>
 </ul>
+</section>
+<section id="operational-suitability" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="operational-suitability"><span class="header-section-number">5.3</span> Operational Suitability</h2>
+<p>Based on these metrics, we define the following scope for deployment:</p>
+<ul>
+<li><strong>Suitable For:</strong>
+<ul>
+<li><strong>Short-term Forecasting:</strong> Ideal for 1-7 day probabilistic forecasts of standard weather patterns.</li>
+<li><strong>Agricultural Planning:</strong> Reliable for estimating soil moisture recharge and typical seasonal accumulation.</li>
+<li><strong>Data Imputation:</strong> Excellent for reconstructing missing historical data for non-extreme days, as it respects the zero-bound constraint.</li>
+</ul></li>
+<li><strong>Not Suitable For:</strong>
+<ul>
+<li><strong>Extreme Value Analysis (EVA):</strong> The model should <strong>not</strong> be used to calculate 1-in-100-year flood risks or engineering design loads (e.g., dam capacities). These rare events require specialized Extreme Value Theory (EVT) distributions (e.g., Generalized Pareto).</li>
+</ul></li>
+</ul>
+</section>
+<section id="final-recommendation" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="final-recommendation"><span class="header-section-number">5.4</span> Final Recommendation</h2>
+<p>We recommend the <strong>Mixed Effects Zero-Inflated Gamma Model</strong> as the standard for general meteorological inference. It successfully balances complexity and accuracy, solving the “negative rain” problem inherent in linear models. Future work should focus on integrating <strong>Extreme Value Theory (EVT)</strong> tails to better model the catastrophic outlier events that the current Gamma framework underestimates.</p>
 
 
 <!-- -->
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -935,45 +958,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./04-modeling.html" class="pagination-link" aria-label="Modelling">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01-data-prep.html" class="pagination-link" aria-label="Computational Environment and Data Ingestion">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu"># Introduction {.unnumbered}</span></span>
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu"># Conclusion</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a>Rainfall in Australia is a story of extremes. Driven by the complex interplay of the Southern Ocean’s Westerlies and the tropical monsoon, Australian weather patterns oscillate violently between prolonged droughts and torrential flood events. For meteorologists and data scientists, modeling this phenomenon presents a dual challenge: predicting **if** it will rain (occurrence) and **how much** will fall (intensity).</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">## Summary of Findings</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a>This report presents a comprehensive analysis of daily observations from diverse locations across Australia, aiming to accurately model these dynamics using advanced statistical frameworks in **R**.</span>
+<span id="cb1-5"><a href="#cb1-5"></a>This study successfully developed a hierarchical Zero-Inflated Gamma model to predict daily rainfall across Australia. By analyzing over 140,000 observations, we demonstrated that rainfall is driven by a complex interplay of **thermodynamic instability**, **wind vector dynamics**, and **spatial heterogeneity**.</span>
 <span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">### The Statistical Challenge</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>Our progressive modeling strategy validated four critical physical hypotheses:</span>
 <span id="cb1-8"><a href="#cb1-8"></a></span>
-<span id="cb1-9"><a href="#cb1-9"></a>Standard statistical approaches often assume data follows a normal (Gaussian) distribution. However, daily rainfall data violates every assumption of linear regression:</span>
+<span id="cb1-9"><a href="#cb1-9"></a>1<span class="sc">\.</span> **The "Rain Corner":** We mathematically defined the interaction between High Humidity and Low Sunshine, identifying it as the primary thermodynamic trigger for precipitation.</span>
 <span id="cb1-10"><a href="#cb1-10"></a></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="ss">1.  </span>**Zero-Inflation:** Approximately **64%** of observations are dry days (0mm). A standard model struggles to predict exact zeros, often outputting physically impossible negative values.</span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="ss">2.  </span>**Extreme Skewness:** When it does rain, the distribution is highly right-skewed. The "long tail" of storm events drives the bulk of the variance.</span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="ss">3.  </span>**Spatiotemporal Dependence:** Rain is not independent. A wet day in Darwin does not behave like a wet day in Melbourne, and a wet yesterday strongly predicts a wet today.</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="ss">2. </span>**Persistence:** Rainfall is highly state-dependent. A wet yesterday increases the probability of rain today by approximately **76%**, a finding robustly captured by our Markov chain features.</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a>3<span class="sc">\.</span> **Wind Vectors:** Decomposing wind into $U$ (East-West) and $V$ (North-South) components revealed that Southerly and Westerly flows are the strongest drivers of rainfall intensity.</span>
 <span id="cb1-14"><a href="#cb1-14"></a></span>
-<span id="cb1-15"><a href="#cb1-15"></a>To address these challenges, we utilize a **Zero-Inflated Gamma (ZIG) Generalized Linear Mixed Model (GLMM)** framework. This allows us to model the *probability of rain* (Logistic component) and the *intensity of rain* (Gamma component) as distinct but related physical processes.</span>
+<span id="cb1-15"><a href="#cb1-15"></a>4<span class="sc">\.</span> **Spatial Variance:** Our Mixed Model (M6) revealed distinct geographic baselines, separating "wet" tropical zones from "dry" interior zones with high statistical confidence.</span>
 <span id="cb1-16"><a href="#cb1-16"></a></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="fu">### Objectives</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="fu">## Model Performance and Limitations</span></span>
 <span id="cb1-18"><a href="#cb1-18"></a></span>
-<span id="cb1-19"><a href="#cb1-19"></a>To achieve a robust analysis, this report addresses the following key objectives:</span>
+<span id="cb1-19"><a href="#cb1-19"></a>The final model (M6) offers a significant improvement over standard linear approaches:</span>
 <span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a><span class="ss">-   </span>**Data Integrity:** Implement a Random Forest imputation strategy to handle missing values without discarding critical information.</span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="ss">-   </span>**Classification:** It achieves an **AUC of 0.83**, indicating strong discriminative power in distinguishing wet days from dry days.</span>
 <span id="cb1-22"><a href="#cb1-22"></a></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="ss">-   </span>**Temporal Dynamics:** Investigate the "persistence" effect using Markov Chain analysis to determine how prior weather states influence current rainfall probabilities.</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="ss">-   </span>**General Intensity:** It achieves a **Mean Absolute Error (MAE) of 2.71 mm**, providing precise estimates for typical rainfall events.</span>
 <span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="ss">-   </span>**Physical Modeling:** Reconstruct the drivers of rainfall by layering **Moisture**, **Energy**, **Wind Vectors**, and **Spatial Heterogeneity** into the model.</span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="ss">-   </span>**Limitation on Extremes:** The Global RMSE of **7.48 mm** indicates that the model under-predicts the magnitude of extreme outlier events (e.g., <span class="sc">\&gt;</span>50mm). While the Gamma distribution handles skewness better than a Gaussian, it lacks the "heavy tail" required to fully capture rare, catastrophic storm events.</span>
 <span id="cb1-26"><a href="#cb1-26"></a></span>
-<span id="cb1-27"><a href="#cb1-27"></a><span class="ss">-   </span>**Model Selection:** Rigorously compare standard linear models against the Zero-Inflated Gamma framework using AIC, BIC, and DHARMa residual diagnostics.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="fu">## Operational Suitability</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a></span>
+<span id="cb1-29"><a href="#cb1-29"></a>Based on these metrics, we define the following scope for deployment:</span>
+<span id="cb1-30"><a href="#cb1-30"></a></span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="ss">-   </span>**Suitable For:**</span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="ss">    -   </span>**Short-term Forecasting:** Ideal for 1-7 day probabilistic forecasts of standard weather patterns.</span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="ss">    -   </span>**Agricultural Planning:** Reliable for estimating soil moisture recharge and typical seasonal accumulation.</span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="ss">    -   </span>**Data Imputation:** Excellent for reconstructing missing historical data for non-extreme days, as it respects the zero-bound constraint.</span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="ss">-   </span>**Not Suitable For:**</span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="ss">    -   </span>**Extreme Value Analysis (EVA):** The model should **not** be used to calculate 1-in-100-year flood risks or engineering design loads (e.g., dam capacities). These rare events require specialized Extreme Value Theory (EVT) distributions (e.g., Generalized Pareto).</span>
+<span id="cb1-37"><a href="#cb1-37"></a></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="fu">## Final Recommendation</span></span>
+<span id="cb1-39"><a href="#cb1-39"></a></span>
+<span id="cb1-40"><a href="#cb1-40"></a>We recommend the **Mixed Effects Zero-Inflated Gamma Model** as the standard for general meteorological inference. It successfully balances complexity and accuracy, solving the "negative rain" problem inherent in linear models. Future work should focus on integrating **Extreme Value Theory (EVT)** tails to better model the catastrophic outlier events that the current Gamma framework underestimates.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
