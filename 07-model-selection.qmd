@@ -96,13 +96,13 @@ ggplot() +
 
 **1. Error Metrics:**
 
-- **Global MAE: 2.71 mm** — on any given day, the model's prediction is within 2.7mm of actual rainfall on average.
-- **Global RMSE: 7.48 mm** — the higher value reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).
+- **Global MAE: 2.71 mm** , on any given day, the model's prediction is within 2.7mm of actual rainfall on average.
+- **Global RMSE: 7.48 mm** , the higher value reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).
 
 **2. Posterior Predictive Check:** The blue line (Reality) sits perfectly nested within the bundle of gray lines (Model Simulations):
 
 - The peak at 0mm is captured accurately, confirming the Zero-Inflation component is working.
-- The decay rate of the right tail matches perfectly — a Gaussian model would have failed here.
+- The decay rate of the right tail matches perfectly , a Gaussian model would have failed here.
 - **Conclusion:** The model is not just fitting means; it is successfully replicating the underlying statistical distribution of the climate system.
 
 ## Justification of Distributional Choice
@@ -207,9 +207,9 @@ check_data %>%
   theme_minimal()
 ```
 
-**1. The Failure of Linearity (Gaussian):** The Gaussian model is forced to predict **negative rainfall** to fit the mean correctly — physically impossible. It also completely misses the long right tail of extreme storm events.
+**1. The Failure of Linearity (Gaussian):** The Gaussian model is forced to predict **negative rainfall** to fit the mean correctly , physically impossible. It also completely misses the long right tail of extreme storm events.
 
-**2. Tweedie vs. Zero-Inflated Gamma:** Both models respect the physical boundary of zero rainfall and align closely with the real data. However, Tweedie uses a *single process* to model both rain occurrence and intensity. Our EDA (Markov Chain analysis) proved these processes have *different drivers* — `pressure_change` drives occurrence while `wind_vectors` drive intensity. The **Zero-Inflated Gamma** separates these into a Logit model (zero state) and a Gamma model (wet state), resulting in more accurate, physically interpretable predictions.
+**2. Tweedie vs. Zero-Inflated Gamma:** Both models respect the physical boundary of zero rainfall and align closely with the real data. However, Tweedie uses a *single process* to model both rain occurrence and intensity. Our EDA (Markov Chain analysis) proved these processes have *different drivers* , `pressure_change` drives occurrence while `wind_vectors` drive intensity. The **Zero-Inflated Gamma** separates these into a Logit model (zero state) and a Gamma model (wet state), resulting in more accurate, physically interpretable predictions.
 
 ## Progressive Model Selection
 
@@ -385,10 +385,10 @@ ggplot(
   )
 ```
 
-**1. Monotonic AIC Decrease:** Every model addition reduced AIC — no step was redundant.
+**1. Monotonic AIC Decrease:** Every model addition reduced AIC , no step was redundant.
 
-- **Largest Gain:** Null → M1 (Moisture): $\Delta AIC \approx 38,000$ — humidity is the primary driver.
-- **Final Gain:** M5 → M6 (Mixed Effects): $\Delta AIC \approx 7,600$ — spatial heterogeneity is not a minor nuisance but a fundamental component of the Australian climate system.
+- **Largest Gain:** Null → M1 (Moisture): $\Delta AIC \approx 38,000$ , humidity is the primary driver.
+- **Final Gain:** M5 → M6 (Mixed Effects): $\Delta AIC \approx 7,600$ , spatial heterogeneity is not a minor nuisance but a fundamental component of the Australian climate system.
 
 **2. Likelihood Ratio Tests:** Every comparison yielded $p < 0.001$. Even the smallest step (Wind Vectors, M5) improved the model significantly ($\chi^2 = 607, df = 4$).
 
@@ -418,6 +418,6 @@ Using Nakagawa's method for GLMMs:
 
 - **Marginal $R^2 = 0.345$:** Our fixed meteorological predictors (Humidity, Wind, Pressure, etc.) explain **34.5%** of the variance in rainfall intensity.
 - **Conditional $R^2 = 0.441$:** Including location-specific random effects raises explanatory power to **44.1%**.
-- **Insight:** Roughly **10% of the explainable variance** in Australian rainfall is purely geographic — attributable to the city's location (coastal vs. inland) rather than dynamic weather variables.
+- **Insight:** Roughly **10% of the explainable variance** in Australian rainfall is purely geographic , attributable to the city's location (coastal vs. inland) rather than dynamic weather variables.
 
 **Conclusion:** Model 6 (Mixed-Effects Zero-Inflated Gamma) is the statistically superior model. It maximizes likelihood, minimizes information loss (AIC/BIC), passes all diagnostic checks, and captures significant spatial variance that fixed-effects models miss.

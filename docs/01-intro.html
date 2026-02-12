@@ -6,11 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Chris Olande">
-<meta name="dcterms.date" content="2026-02-12">
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>Australian Rainfall Dynamics</title>
+<title>1&nbsp; Introduction – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,11 +66,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01-intro.html" rel="next">
+<link href="./02-data-prep.html" rel="next">
+<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0348920b7671f696dc9078d39bff215e.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
@@ -314,7 +314,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Predicting the Unpredictable</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -345,13 +345,13 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Predicting the Unpredictable</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
@@ -438,143 +438,148 @@ window.Quarto = {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
+   
   <ul>
-  <li><a href="#predicting-the-unpredictable" id="toc-predicting-the-unpredictable" class="nav-link active" data-scroll-target="#predicting-the-unpredictable">Predicting the Unpredictable</a>
-  <ul class="collapse">
-  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link" data-scroll-target="#executive-summary">Executive Summary</a></li>
-  <li><a href="#technical-highlights" id="toc-technical-highlights" class="nav-link" data-scroll-target="#technical-highlights">Technical Highlights</a></li>
-  <li><a href="#the-mathematical-framework" id="toc-the-mathematical-framework" class="nav-link" data-scroll-target="#the-mathematical-framework">The Mathematical Framework</a></li>
-  <li><a href="#project-roadmap" id="toc-project-roadmap" class="nav-link" data-scroll-target="#project-roadmap">Project Roadmap</a></li>
-  </ul></li>
+  <li><a href="#why-standard-models-fall-short" id="toc-why-standard-models-fall-short" class="nav-link active" data-scroll-target="#why-standard-models-fall-short"><span class="header-section-number">1.1</span> Why Standard Models Fall Short</a></li>
+  <li><a href="#a-model-built-for-the-problem" id="toc-a-model-built-for-the-problem" class="nav-link" data-scroll-target="#a-model-built-for-the-problem"><span class="header-section-number">1.2</span> A Model Built for the Problem</a></li>
+  <li><a href="#report-structure" id="toc-report-structure" class="nav-link" data-scroll-target="#report-structure"><span class="header-section-number">1.3</span> Report Structure</a></li>
+  <li><a href="#project-objectives" id="toc-project-objectives" class="nav-link" data-scroll-target="#project-objectives"><span class="header-section-number">1.4</span> Project Objectives</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/01-intro.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<div class="quarto-about-solana column-body">
-  <div class="about-entity">
-    <div class="entity-contents">
-      <header id="title-block-header" class="quarto-title-block default">
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Australian Rainfall Dynamics</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-<p class="subtitle lead">Statistical Inference with Zero-Inflated Models</p>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-intro" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
-<div>
-  <div class="description">
-    <p>A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.</p>
-  </div>
-</div>
+
+
+
 <div class="quarto-title-meta">
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Chris Olande </p>
-          </div>
+
+    
+  
+    
   </div>
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">February 12, 2026</p>
-    </div>
-  </div>
-  </div>
-</header> <div class="about-links">
-  <a href="https://github.com/Chrisolande/australian-rainfall-dynamics" class="about-link" rel="" target="">
-    <i class="bi bi-github"></i>
-     <span class="about-link-text">Source Code</span>
-  </a>
-  <a href="https://www.linkedin.com/in/chris-olande-6557a3238/" class="about-link" rel="" target="">
-    <i class="bi bi-linkedin"></i>
-     <span class="about-link-text">LinkedIn</span>
-  </a>
-</div>
-      <div class="about-contents"><main class="content" id="quarto-document-content">
+  
 
 
-<section id="predicting-the-unpredictable" class="level1 unnumbered">
-<h1 class="unnumbered">Predicting the Unpredictable</h1>
-<section id="executive-summary" class="level2">
-<h2 data-anchor-id="executive-summary">Executive Summary</h2>
-<p>Australian rainfall dynamics represent a significant challenge for classical frequentist methods. The data violates every core assumption of OLS: <strong>64% zero-inflation</strong>, a distribution <strong>kurtosis of 181.15</strong>, and strong <strong>Markovian persistence</strong>.</p>
-<p>This project rejects the “one-size-fits-all” Gaussian approach, implementing a <strong>Zero-Inflated Gamma (ZIG) Mixed Model</strong>. By treating rainfall as two distinct physical processes: <strong>occurrence</strong> (hurdle) and <strong>intensity</strong> (volume); and accounting for spatial heterogeneity through random slopes, this framework provides a robust solution for spatiotemporal weather forecasting.</p>
-<hr>
-</section>
-<section id="technical-highlights" class="level2">
-<h2 data-anchor-id="technical-highlights">Technical Highlights</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Data Engineering</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Statistical Framework</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Key Findings</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<ul>
-<li><strong>Hybrid Imputation:</strong> A multi-stage pipeline combining temporal interpolation with Random Forest PMM via <code>missRanger</code> to resolve 47% missingness in sunshine data without shrinking variance.</li>
-<li><strong>Wind Vectorization:</strong> Resolved the <span class="math inline">\(0^\circ/360^\circ\)</span> boundary discontinuity by decomposing compass bearings into continuous North-South (<span class="math inline">\(V\)</span>) and East-West (<span class="math inline">\(U\)</span>) components.</li>
-<li><strong>Signal Extraction:</strong> Utilized 7-day moving averages as low-pass filters to suppress daily stochastic noise and reveal latent wet-weather regimes.</li>
-<li><strong>Feature Interaction:</strong> Engineered a centered <code>sunshine × humidity3pm</code> interaction term to capture the non-linear “Rain Corner” threshold while maintaining a VIF of 1.25.</li>
-</ul>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<ul>
-<li><strong>Mixed-Effects Architecture:</strong> Implemented uncorrelated random intercepts and slopes: <span class="math inline">\(\text{diag}(1 + \text{humidity} + \text{persistence} \mid \text{location})\)</span>; allowing the physics of rainfall to vary across the continent.</li>
-<li><strong>Non-Linear Persistence:</strong> Utilized natural splines: <span class="math inline">\(ns(\text{days\_since\_rain}, df = 4)\)</span>; within the zero-inflation component to model the non-linear “drying effect” of ongoing droughts.</li>
-<li><strong>Parameter Estimation:</strong> Fitted via Maximum Likelihood Estimation (MLE) using the Template Model Builder (<code>glmmTMB</code>) for computational efficiency in high-dimensional mixed models.</li>
-<li><strong>Diagnostic Rigor:</strong> Verified via <strong>DHARMa</strong> simulation-based residuals, confirming ideal dispersion (<span class="math inline">\(p = 0.19\)</span>) and perfect zero-calibration (ratio = 1.00).</li>
-</ul>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<ul>
-<li><strong>The Rain Corner:</strong> Rainfall is gated by a thermodynamic threshold: precipitation is negligible unless afternoon humidity exceeds ~50% and sunshine duration falls below 5 hours.</li>
-<li><strong>Spatial Variance:</strong> After controlling for all meteorological covariates, <strong>10% of total variance</strong> is explained by geography alone, highlighting the dominance of local micro-climates.</li>
-<li><strong>Intensity Drivers:</strong> Southerly and Westerly wind vectors were identified as the primary drivers of intensity, reflecting the influence of Southern Ocean frontal systems.</li>
-<li><strong>Classification Power:</strong> The model achieved an <strong>AUC of 0.83</strong>, demonstrating high discriminative capacity between dry and rainy states.</li>
-</ul>
-</div>
-</div>
-</div>
-<hr>
-</section>
-<section id="the-mathematical-framework" class="level2">
-<h2 data-anchor-id="the-mathematical-framework">The Mathematical Framework</h2>
-<p>The model assumes that rainfall <span class="math inline">\(y_i\)</span> is a realization of a mixture of a point mass at zero and a Gamma-distributed continuous variable.</p>
-<p><strong>The Conditional Probability:</strong> <span class="math display">\[y_i \mid y_i &gt; 0 \sim \text{Gamma}(\mu_i, \phi)\]</span> <span class="math display">\[\log(\mu_i) = \mathbf{X}_i\beta + \mathbf{Z}_i\mathbf{b}\]</span></p>
-<p><strong>The Zero-Inflation (Logistic) Hurdle:</strong> <span class="math display">\[\text{logit}(\pi_i) = \mathbf{W}_i\gamma + \nu_{location}\]</span></p>
-<p>Where <span class="math inline">\(\pi_i\)</span> is the probability of a structural dry day, <span class="math inline">\(\mathbf{X}_i\)</span> and <span class="math inline">\(\mathbf{W}_i\)</span> are predictor matrices, and <span class="math inline">\(\mathbf{Z}_i\mathbf{b}\)</span> represents the random slope components.</p>
-<hr>
-</section>
-<section id="project-roadmap" class="level2">
-<h2 data-anchor-id="project-roadmap">Project Roadmap</h2>
-<ol type="1">
-<li><a href="./01-intro.html"><strong>Introduction</strong></a> - Overview of meteorological challenges and the failure of OLS assumptions.</li>
-<li><a href="./02-data-prep.html"><strong>Data Preparation</strong></a> - Hybrid imputation strategy handling ghost sensors and high-dimensional missingness.</li>
-<li><a href="./03-eda.html"><strong>Exploratory Data Analysis</strong></a> - Visualizing the “Rain Corner” and calculating Markovian transition probabilities.</li>
-<li><a href="./04-features.html"><strong>Feature Engineering</strong></a> - Signal extraction, circular wind vector decomposition, and cyclical encoding.</li>
-<li><a href="./05-modeling.html"><strong>Modelling</strong></a> - Progressive model building from Null Intercepts to the full Mixed-Effects ZI-Gamma.</li>
-<li><a href="./06-evaluation.html"><strong>Model Evaluation</strong></a> - Classification metrics (AUC-ROC), Posterior Predictive Checks, and DHARMa diagnostics.</li>
-<li><a href="./07-model-selection.html"><strong>Model Selection</strong></a> - Rigorous comparison using AIC/BIC and Nakagawa’s <span class="math inline">\(R^2\)</span>.</li>
-<li><a href="./08-conclusion.html"><strong>Conclusion</strong></a> - Summary of findings and operational suitability limits.</li>
-</ol>
-<hr>
-<div class="callout callout-style-default callout-tip callout-titled">
+</header>
+
+
+<p>Rainfall in Australia is not just weather; it is a story of extremes. Driven by massive climate cycles like El Nino, the continent swings violently between years of crippling drought and sudden, devastating floods.</p>
+<p>For data scientists and meteorologists, predicting this is a unique challenge. It requires solving two problems at once: predicting <strong>if</strong> it will rain and predicting <strong>how much</strong> will fall. This report analyzes daily rainfall across Australia, building a model that handles both dry spells and heavy storms using statistical techniques designed for the kind of data weather actually produces.</p>
+<section id="why-standard-models-fall-short" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="why-standard-models-fall-short"><span class="header-section-number">1.1</span> Why Standard Models Fall Short</h2>
+<p>Traditional regression methods assume data that behaves. Rainfall does not.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Reproducibility
+The Three Statistical Violations
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The computational environment is managed via <code>librarian</code>. All models are pre-bundled in <code>.RData</code> format to ensure the report renders instantly without compromising the complexity of the underlying <code>glmmTMB</code> optimizations.</p>
+<ol type="1">
+<li><strong>Too many zeros:</strong> About <strong>64%</strong> of days in this dataset record exactly zero rain. Standard models try to average these dry days with wet ones, often predicting negative rainfall.</li>
+<li><strong>Extreme variability:</strong> When it rains, the amount can range from a trace to a cyclone. The distribution is heavily right-skewed; a handful of extreme storms drive most of the variance.</li>
+<li><strong>Weather has memory:</strong> Rain is not independent. A wet yesterday makes a wet today more likely. Standard models treat each day as a fresh roll of the dice.</li>
+</ol>
 </div>
 </div>
+</section>
+<section id="a-model-built-for-the-problem" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="a-model-built-for-the-problem"><span class="header-section-number">1.2</span> A Model Built for the Problem</h2>
+<p>This analysis uses a <strong>Zero-Inflated Gamma (ZIG)</strong> framework. Rather than forcing a single equation to predict both occurrence and intensity, the ZIG model splits the problem into two linked components:</p>
+<ol type="1">
+<li>A <strong>logistic model</strong> predicts the probability that a day is dry versus wet (<span class="math inline">\(\pi_i\)</span>).</li>
+<li>A <strong>Gamma model</strong> predicts the rainfall volume on wet days (<span class="math inline">\(\mu_i\)</span>).</li>
+</ol>
+<p>This dual structure allows the atmospheric triggers of rain, such as a dropping pressure front, to be modeled separately from the physical drivers of intensity like wind vectors and moisture availability.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why not Tweedie?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We considered a Tweedie distribution, which uses a single process for both outcomes. However, we rejected it because our exploratory analysis (see <span class="quarto-unresolved-ref">?sec-eda</span>) showed that the drivers of occurrence are distinct from the drivers of intensity. Forcing a single parameter to capture both would obscure this physical reality.</p>
+</div>
+</div>
+</section>
+<section id="report-structure" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="report-structure"><span class="header-section-number">1.3</span> Report Structure</h2>
+<p>This document is organized around the progressive validation of our modeling choices:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Chapter</th>
+<th style="text-align: left;">Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>01 Intro</strong></td>
+<td style="text-align: left;">Establishes the statistical pathology of rainfall and limitations of OLS.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>02 Data</strong></td>
+<td style="text-align: left;">Implements a three-stage imputation strategy to recover missing values.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>03 EDA</strong></td>
+<td style="text-align: left;">Quantifies zero-inflation, skewness, and Markovian persistence.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>04 Features</strong></td>
+<td style="text-align: left;">Engineers wind vectors, cyclical time, and interaction terms.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>05 Modeling</strong></td>
+<td style="text-align: left;">Builds the GLMM progressively from Null to Spatial Random Effects.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>06 Eval</strong></td>
+<td style="text-align: left;">Validates the model using DHARMa simulation-based diagnostics.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>07 Selection</strong></td>
+<td style="text-align: left;">Compares ZI-Gamma vs Tweedie and finalizes the model choice.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>08 Conclusion</strong></td>
+<td style="text-align: left;">Summarizes findings and states operational recommendations.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="project-objectives" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="project-objectives"><span class="header-section-number">1.4</span> Project Objectives</h2>
+<ul>
+<li><p><strong>Recover missing data without bias.</strong> Weather sensors fail. We implement a three-stage imputation strategy that fills gaps using temporal neighbors, multivariate patterns, and domain-specific inference.</p></li>
+<li><p><strong>Capture weather dynamics.</strong> We model wind direction as continuous vectors, encode the non-linear interaction between sunshine and humidity, and quantify the Markovian persistence of weather states.</p></li>
+<li><p><strong>Account for spatial heterogeneity.</strong> A model that works for tropical Darwin will fail in arid Alice Springs. We introduce hierarchical random effects that allow rainfall relationships to vary by location.</p></li>
+<li><p><strong>Validate the model.</strong> Standard accuracy metrics can mask poor fit. We use simulation-based residual diagnostics to stress-test the model and confirm that it captures the true data-generating process.</p></li>
+</ul>
 
 
 <!-- -->
+
 </section>
-</section>
-</main></div>
-    </div>
-  </div>
-</div>
- <!-- /main -->
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -590,6 +595,13 @@ Reproducibility
       window.document.body.appendChild(a);
     }
     setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
@@ -1040,103 +1052,82 @@ Reproducibility
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Predicting the Unpredictable">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Predicting the Unpredictable</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01-intro.html" class="pagination-link" aria-label="Introduction">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02-data-prep.html" class="pagination-link" aria-label="Data Cleaning and Preprocessing">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="an">pagetitle:</span><span class="co"> "Australian Rainfall Dynamics"</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="an">date:</span><span class="co"> today</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="an">about:</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co">  template: solana</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">  links:</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">    - icon: github</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">      text: Source Code</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">      href: https://github.com/Chrisolande/australian-rainfall-dynamics</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">    - icon: linkedin</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">      text: LinkedIn</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">      href: https://www.linkedin.com/in/chris-olande-6557a3238/</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">---</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="fu"># Predicting the Unpredictable {.unnumbered}</span></span>
-<span id="cb1-16"><a href="#cb1-16"></a></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="fu">## Executive Summary</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a></span>
-<span id="cb1-19"><a href="#cb1-19"></a>Australian rainfall dynamics represent a significant challenge for classical frequentist methods. The data violates every core assumption of OLS: **64% zero-inflation**, a distribution **kurtosis of 181.15**, and strong **Markovian persistence**. </span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a>This project rejects the "one-size-fits-all" Gaussian approach, implementing a **Zero-Inflated Gamma (ZIG) Mixed Model**. By treating rainfall as two distinct physical processes: **occurrence** (hurdle) and **intensity** (volume); and accounting for spatial heterogeneity through random slopes, this framework provides a robust solution for spatiotemporal weather forecasting.</span>
-<span id="cb1-22"><a href="#cb1-22"></a></span>
-<span id="cb1-23"><a href="#cb1-23"></a>---</span>
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu"># Introduction {#sec-intro}</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>Rainfall in Australia is not just weather; it is a story of extremes. Driven by massive climate cycles like El Nino, the continent swings violently between years of crippling drought and sudden, devastating floods.</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>For data scientists and meteorologists, predicting this is a unique challenge. It requires solving two problems at once: predicting **if** it will rain and predicting **how much** will fall. This report analyzes daily rainfall across Australia, building a model that handles both dry spells and heavy storms using statistical techniques designed for the kind of data weather actually produces.</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">## Why Standard Models Fall Short</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>Traditional regression methods assume data that behaves. Rainfall does not.</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">## The Three Statistical Violations</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="ss">1.  </span>**Too many zeros:** About **64%** of days in this dataset record exactly zero rain. Standard models try to average these dry days with wet ones, often predicting negative rainfall.</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="ss">2.  </span>**Extreme variability:** When it rains, the amount can range from a trace to a cyclone. The distribution is heavily right-skewed; a handful of extreme storms drive most of the variance.</span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="ss">3.  </span>**Weather has memory:** Rain is not independent. A wet yesterday makes a wet today more likely. Standard models treat each day as a fresh roll of the dice.</span>
+<span id="cb1-16"><a href="#cb1-16"></a>:::</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="fu">## A Model Built for the Problem</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a>This analysis uses a **Zero-Inflated Gamma (ZIG)** framework. Rather than forcing a single equation to predict both occurrence and intensity, the ZIG model splits the problem into two linked components:</span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="ss">1.  </span>A **logistic model** predicts the probability that a day is dry versus wet ($\pi_i$).</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="ss">2.  </span>A **Gamma model** predicts the rainfall volume on wet days ($\mu_i$).</span>
 <span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="fu">## Technical Highlights</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
 <span id="cb1-26"><a href="#cb1-26"></a></span>
-<span id="cb1-27"><a href="#cb1-27"></a>::: {.panel-tabset}</span>
+<span id="cb1-27"><a href="#cb1-27"></a>This dual structure allows the atmospheric triggers of rain, such as a dropping pressure front, to be modeled separately from the physical drivers of intensity like wind vectors and moisture availability.</span>
 <span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a><span class="fu">### Data Engineering</span></span>
-<span id="cb1-30"><a href="#cb1-30"></a></span>
-<span id="cb1-31"><a href="#cb1-31"></a><span class="ss">* </span>**Hybrid Imputation:** A multi-stage pipeline combining temporal interpolation with Random Forest PMM via <span class="in">`missRanger`</span> to resolve 47% missingness in sunshine data without shrinking variance.</span>
-<span id="cb1-32"><a href="#cb1-32"></a><span class="ss">* </span>**Wind Vectorization:** Resolved the $0^\circ/360^\circ$ boundary discontinuity by decomposing compass bearings into continuous North-South ($V$) and East-West ($U$) components.</span>
-<span id="cb1-33"><a href="#cb1-33"></a><span class="ss">* </span>**Signal Extraction:** Utilized 7-day moving averages as low-pass filters to suppress daily stochastic noise and reveal latent wet-weather regimes.</span>
-<span id="cb1-34"><a href="#cb1-34"></a><span class="ss">* </span>**Feature Interaction:** Engineered a centered <span class="in">`sunshine × humidity3pm`</span> interaction term to capture the non-linear "Rain Corner" threshold while maintaining a VIF of 1.25.</span>
+<span id="cb1-29"><a href="#cb1-29"></a>::: {.callout-important}</span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="fu">## Why not Tweedie?</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a>We considered a Tweedie distribution, which uses a single process for both outcomes. However, we rejected it because our exploratory analysis (see @sec-eda) showed that the drivers of occurrence are distinct from the drivers of intensity. Forcing a single parameter to capture both would obscure this physical reality.</span>
+<span id="cb1-32"><a href="#cb1-32"></a>:::</span>
+<span id="cb1-33"><a href="#cb1-33"></a></span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="fu">## Report Structure</span></span>
 <span id="cb1-35"><a href="#cb1-35"></a></span>
-<span id="cb1-36"><a href="#cb1-36"></a><span class="fu">### Statistical Framework</span></span>
+<span id="cb1-36"><a href="#cb1-36"></a>This document is organized around the progressive validation of our modeling choices:</span>
 <span id="cb1-37"><a href="#cb1-37"></a></span>
-<span id="cb1-38"><a href="#cb1-38"></a><span class="ss">* </span>**Mixed-Effects Architecture:** Implemented uncorrelated random intercepts and slopes: $\text{diag}(1 + \text{humidity} + \text{persistence} \mid \text{location})$; allowing the physics of rainfall to vary across the continent.</span>
-<span id="cb1-39"><a href="#cb1-39"></a><span class="ss">* </span>**Non-Linear Persistence:** Utilized natural splines: $ns(\text{days<span class="sc">\_</span>since<span class="sc">\_</span>rain}, df = 4)$; within the zero-inflation component to model the non-linear "drying effect" of ongoing droughts.</span>
-<span id="cb1-40"><a href="#cb1-40"></a><span class="ss">* </span>**Parameter Estimation:** Fitted via Maximum Likelihood Estimation (MLE) using the Template Model Builder (<span class="in">`glmmTMB`</span>) for computational efficiency in high-dimensional mixed models.</span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="ss">* </span>**Diagnostic Rigor:** Verified via **DHARMa** simulation-based residuals, confirming ideal dispersion ($p = 0.19$) and perfect zero-calibration (ratio = 1.00).</span>
-<span id="cb1-42"><a href="#cb1-42"></a></span>
-<span id="cb1-43"><a href="#cb1-43"></a><span class="fu">### Key Findings</span></span>
-<span id="cb1-44"><a href="#cb1-44"></a></span>
-<span id="cb1-45"><a href="#cb1-45"></a><span class="ss">* </span>**The Rain Corner:** Rainfall is gated by a thermodynamic threshold: precipitation is negligible unless afternoon humidity exceeds ~50% and sunshine duration falls below 5 hours.</span>
-<span id="cb1-46"><a href="#cb1-46"></a><span class="ss">* </span>**Spatial Variance:** After controlling for all meteorological covariates, **10% of total variance** is explained by geography alone, highlighting the dominance of local micro-climates.</span>
-<span id="cb1-47"><a href="#cb1-47"></a><span class="ss">* </span>**Intensity Drivers:** Southerly and Westerly wind vectors were identified as the primary drivers of intensity, reflecting the influence of Southern Ocean frontal systems.</span>
-<span id="cb1-48"><a href="#cb1-48"></a><span class="ss">* </span>**Classification Power:** The model achieved an **AUC of 0.83**, demonstrating high discriminative capacity between dry and rainy states.</span>
-<span id="cb1-49"><a href="#cb1-49"></a></span>
-<span id="cb1-50"><a href="#cb1-50"></a>:::</span>
-<span id="cb1-51"><a href="#cb1-51"></a></span>
-<span id="cb1-52"><a href="#cb1-52"></a>---</span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="pp">|</span> Chapter <span class="pp">|</span> Focus <span class="pp">|</span></span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="pp">| :---</span> <span class="pp">| :---</span> <span class="pp">|</span></span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="pp">|</span> **01 Intro** <span class="pp">|</span> Establishes the statistical pathology of rainfall and limitations of OLS. <span class="pp">|</span></span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="pp">|</span> **02 Data** <span class="pp">|</span> Implements a three-stage imputation strategy to recover missing values. <span class="pp">|</span></span>
+<span id="cb1-42"><a href="#cb1-42"></a><span class="pp">|</span> **03 EDA** <span class="pp">|</span> Quantifies zero-inflation, skewness, and Markovian persistence. <span class="pp">|</span></span>
+<span id="cb1-43"><a href="#cb1-43"></a><span class="pp">|</span> **04 Features** <span class="pp">|</span> Engineers wind vectors, cyclical time, and interaction terms. <span class="pp">|</span></span>
+<span id="cb1-44"><a href="#cb1-44"></a><span class="pp">|</span> **05 Modeling** <span class="pp">|</span> Builds the GLMM progressively from Null to Spatial Random Effects. <span class="pp">|</span></span>
+<span id="cb1-45"><a href="#cb1-45"></a><span class="pp">|</span> **06 Eval** <span class="pp">|</span> Validates the model using DHARMa simulation-based diagnostics. <span class="pp">|</span></span>
+<span id="cb1-46"><a href="#cb1-46"></a><span class="pp">|</span> **07 Selection** <span class="pp">|</span> Compares ZI-Gamma vs Tweedie and finalizes the model choice. <span class="pp">|</span></span>
+<span id="cb1-47"><a href="#cb1-47"></a><span class="pp">|</span> **08 Conclusion** <span class="pp">|</span> Summarizes findings and states operational recommendations. <span class="pp">|</span></span>
+<span id="cb1-48"><a href="#cb1-48"></a></span>
+<span id="cb1-49"><a href="#cb1-49"></a><span class="fu">## Project Objectives</span></span>
+<span id="cb1-50"><a href="#cb1-50"></a></span>
+<span id="cb1-51"><a href="#cb1-51"></a><span class="ss">* </span>**Recover missing data without bias.**</span>
+<span id="cb1-52"><a href="#cb1-52"></a>    Weather sensors fail. We implement a three-stage imputation strategy that fills gaps using temporal neighbors, multivariate patterns, and domain-specific inference.</span>
 <span id="cb1-53"><a href="#cb1-53"></a></span>
-<span id="cb1-54"><a href="#cb1-54"></a><span class="fu">## The Mathematical Framework</span></span>
-<span id="cb1-55"><a href="#cb1-55"></a></span>
-<span id="cb1-56"><a href="#cb1-56"></a>The model assumes that rainfall $y_i$ is a realization of a mixture of a point mass at zero and a Gamma-distributed continuous variable.</span>
-<span id="cb1-57"><a href="#cb1-57"></a></span>
-<span id="cb1-58"><a href="#cb1-58"></a>**The Conditional Probability:**</span>
-<span id="cb1-59"><a href="#cb1-59"></a>$$y_i \mid y_i &gt; 0 \sim \text{Gamma}(\mu_i, \phi)$$</span>
-<span id="cb1-60"><a href="#cb1-60"></a>$$\log(\mu_i) = \mathbf{X}_i\beta + \mathbf{Z}_i\mathbf{b}$$</span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>**The Zero-Inflation (Logistic) Hurdle:**</span>
-<span id="cb1-63"><a href="#cb1-63"></a>$$\text{logit}(\pi_i) = \mathbf{W}_i\gamma + \nu_{location}$$</span>
-<span id="cb1-64"><a href="#cb1-64"></a></span>
-<span id="cb1-65"><a href="#cb1-65"></a>Where $\pi_i$ is the probability of a structural dry day, $\mathbf{X}_i$ and $\mathbf{W}_i$ are predictor matrices, and $\mathbf{Z}_i\mathbf{b}$ represents the random slope components.</span>
-<span id="cb1-66"><a href="#cb1-66"></a></span>
-<span id="cb1-67"><a href="#cb1-67"></a>---</span>
-<span id="cb1-68"><a href="#cb1-68"></a></span>
-<span id="cb1-69"><a href="#cb1-69"></a><span class="fu">## Project Roadmap</span></span>
-<span id="cb1-70"><a href="#cb1-70"></a></span>
-<span id="cb1-71"><a href="#cb1-71"></a><span class="ss">1. </span><span class="co">[</span><span class="ot">**Introduction**</span><span class="co">](01-intro.qmd)</span> - Overview of meteorological challenges and the failure of OLS assumptions.</span>
-<span id="cb1-72"><a href="#cb1-72"></a><span class="ss">2. </span><span class="co">[</span><span class="ot">**Data Preparation**</span><span class="co">](02-data-prep.qmd)</span> - Hybrid imputation strategy handling ghost sensors and high-dimensional missingness.</span>
-<span id="cb1-73"><a href="#cb1-73"></a><span class="ss">3. </span><span class="co">[</span><span class="ot">**Exploratory Data Analysis**</span><span class="co">](03-eda.qmd)</span> - Visualizing the "Rain Corner" and calculating Markovian transition probabilities.</span>
-<span id="cb1-74"><a href="#cb1-74"></a><span class="ss">4. </span><span class="co">[</span><span class="ot">**Feature Engineering**</span><span class="co">](04-features.qmd)</span> - Signal extraction, circular wind vector decomposition, and cyclical encoding.</span>
-<span id="cb1-75"><a href="#cb1-75"></a><span class="ss">5. </span><span class="co">[</span><span class="ot">**Modelling**</span><span class="co">](05-modeling.qmd)</span> - Progressive model building from Null Intercepts to the full Mixed-Effects ZI-Gamma.</span>
-<span id="cb1-76"><a href="#cb1-76"></a><span class="ss">6. </span><span class="co">[</span><span class="ot">**Model Evaluation**</span><span class="co">](06-evaluation.qmd)</span> - Classification metrics (AUC-ROC), Posterior Predictive Checks, and DHARMa diagnostics.</span>
-<span id="cb1-77"><a href="#cb1-77"></a><span class="ss">7. </span><span class="co">[</span><span class="ot">**Model Selection**</span><span class="co">](07-model-selection.qmd)</span> - Rigorous comparison using AIC/BIC and Nakagawa's $R^2$.</span>
-<span id="cb1-78"><a href="#cb1-78"></a><span class="ss">8. </span><span class="co">[</span><span class="ot">**Conclusion**</span><span class="co">](08-conclusion.qmd)</span> - Summary of findings and operational suitability limits.</span>
-<span id="cb1-79"><a href="#cb1-79"></a></span>
-<span id="cb1-80"><a href="#cb1-80"></a>---</span>
-<span id="cb1-81"><a href="#cb1-81"></a></span>
-<span id="cb1-82"><a href="#cb1-82"></a>::: {.callout-tip}</span>
-<span id="cb1-83"><a href="#cb1-83"></a><span class="fu">## Reproducibility</span></span>
-<span id="cb1-84"><a href="#cb1-84"></a>The computational environment is managed via <span class="in">`librarian`</span>. All models are pre-bundled in <span class="in">`.RData`</span> format to ensure the report renders instantly without compromising the complexity of the underlying <span class="in">`glmmTMB`</span> optimizations.</span>
-<span id="cb1-85"><a href="#cb1-85"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-54"><a href="#cb1-54"></a><span class="ss">* </span>**Capture weather dynamics.**</span>
+<span id="cb1-55"><a href="#cb1-55"></a>    We model wind direction as continuous vectors, encode the non-linear interaction between sunshine and humidity, and quantify the Markovian persistence of weather states.</span>
+<span id="cb1-56"><a href="#cb1-56"></a></span>
+<span id="cb1-57"><a href="#cb1-57"></a><span class="ss">* </span>**Account for spatial heterogeneity.**</span>
+<span id="cb1-58"><a href="#cb1-58"></a>    A model that works for tropical Darwin will fail in arid Alice Springs. We introduce hierarchical random effects that allow rainfall relationships to vary by location.</span>
+<span id="cb1-59"><a href="#cb1-59"></a></span>
+<span id="cb1-60"><a href="#cb1-60"></a><span class="ss">* </span>**Validate the model.**</span>
+<span id="cb1-61"><a href="#cb1-61"></a>    Standard accuracy metrics can mask poor fit. We use simulation-based residual diagnostics to stress-test the model and confirm that it captures the true data-generating process.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/01-intro.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

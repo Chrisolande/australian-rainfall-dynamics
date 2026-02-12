@@ -72,7 +72,7 @@ While the Gamma component estimates rainfall *amount*, the Zero-Inflation compon
 
 **1. Discriminative Power (AUC = 0.832):** In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.
 
-**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** — because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."
+**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** , because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."
 
 **3. Confusion Matrix Results (Accuracy: 75.41%):**
 
@@ -81,7 +81,7 @@ While the Gamma component estimates rainfall *amount*, the Zero-Inflation compon
 - False Alarms (Type I): 22,294 days
 - Missed Rain (Type II): 12,585 days
 
-The model is conservative — twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.
+The model is conservative , twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.
 
 ## Random Effects Visualization
 
@@ -215,9 +215,9 @@ ggplot(loc_effects, aes(x = Effect, y = Location)) +
   )
 ```
 
-**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments — even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.
+**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments , even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.
 
-**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography — weather systems that produce moderate rain elsewhere produce only light rain here.
+**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography , weather systems that produce moderate rain elsewhere produce only light rain here.
 
 **3. Significance:** The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.
 
@@ -241,12 +241,12 @@ testZeroInflation(res)
 
 **1. Q-Q Plot:** Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows $p < 0.05$ (expected at $N > 140,000$), visual deviations are negligible. The **Gamma distribution** correctly characterizes the positive rainfall values.
 
-**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal — **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.
+**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal , **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.
 
 **3. Formal Tests:**
 
-- **Dispersion Test:** $p = 0.192$ — we fail to reject ideal dispersion. The `ziGamma` family successfully handled the variance structure without over-dispersion.
-- **Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) — the model predicts the exact correct number of dry days.
+- **Dispersion Test:** $p = 0.192$ , we fail to reject ideal dispersion. The `ziGamma` family successfully handled the variance structure without over-dispersion.
+- **Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) , the model predicts the exact correct number of dry days.
 
 ## Verifying Temporal Independence
 
@@ -274,6 +274,6 @@ print(dw_result)
 
 **1. Durbin-Watson Statistic = 2.0406:** A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.
 
-**2. Statistical Significance:** $p = 0.2355$ — we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.
+**2. Statistical Significance:** $p = 0.2355$ , we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.
 
 **3. Interpretation:** By explicitly including `rain_yesterday` (Markov chain) and `ns(days_since_rain)` (spline), we successfully "bleached" the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.

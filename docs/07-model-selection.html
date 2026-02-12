@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>6&nbsp; Model Selection – Australian Rainfall Dynamics</title>
+<title>7&nbsp; Model Selection – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./07-conclusion.html" rel="next">
-<link href="./05-evaluation.html" rel="prev">
+<link href="./08-conclusion.html" rel="next">
+<link href="./06-evaluation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -316,7 +316,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./06-model-selection.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./07-model-selection.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -348,7 +348,13 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Predicting the Unpredictable</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -362,14 +368,14 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-data-prep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span></a>
+  <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-eda.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  <a href="./03-eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -385,8 +391,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-features.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+  <a href="./04-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
   </div>
 </li>
       </ul>
@@ -402,28 +408,28 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-modeling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  <a href="./05-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  <a href="./06-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-model-selection.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  <a href="./07-model-selection.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-conclusion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="./08-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -436,20 +442,20 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#predictive-accuracy-and-generative-validity" id="toc-predictive-accuracy-and-generative-validity" class="nav-link active" data-scroll-target="#predictive-accuracy-and-generative-validity"><span class="header-section-number">6.1</span> Predictive Accuracy and Generative Validity</a></li>
-  <li><a href="#justification-of-distributional-choice" id="toc-justification-of-distributional-choice" class="nav-link" data-scroll-target="#justification-of-distributional-choice"><span class="header-section-number">6.2</span> Justification of Distributional Choice</a></li>
-  <li><a href="#progressive-model-selection" id="toc-progressive-model-selection" class="nav-link" data-scroll-target="#progressive-model-selection"><span class="header-section-number">6.3</span> Progressive Model Selection</a></li>
-  <li><a href="#variance-explained" id="toc-variance-explained" class="nav-link" data-scroll-target="#variance-explained"><span class="header-section-number">6.4</span> Variance Explained</a></li>
+  <li><a href="#predictive-accuracy-and-generative-validity" id="toc-predictive-accuracy-and-generative-validity" class="nav-link active" data-scroll-target="#predictive-accuracy-and-generative-validity"><span class="header-section-number">7.1</span> Predictive Accuracy and Generative Validity</a></li>
+  <li><a href="#justification-of-distributional-choice" id="toc-justification-of-distributional-choice" class="nav-link" data-scroll-target="#justification-of-distributional-choice"><span class="header-section-number">7.2</span> Justification of Distributional Choice</a></li>
+  <li><a href="#progressive-model-selection" id="toc-progressive-model-selection" class="nav-link" data-scroll-target="#progressive-model-selection"><span class="header-section-number">7.3</span> Progressive Model Selection</a></li>
+  <li><a href="#variance-explained" id="toc-variance-explained" class="nav-link" data-scroll-target="#variance-explained"><span class="header-section-number">7.4</span> Variance Explained</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/06-model-selection.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/07-model-selection.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./06-model-selection.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./07-model-selection.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -467,8 +473,8 @@ window.Quarto = {
 
 
 <p>In this chapter, we justify every modelling decision through formal statistical tests, compare competing distributional families, and quantify the total variance explained by the final model.</p>
-<section id="predictive-accuracy-and-generative-validity" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="predictive-accuracy-and-generative-validity"><span class="header-section-number">6.1</span> Predictive Accuracy and Generative Validity</h2>
+<section id="predictive-accuracy-and-generative-validity" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="predictive-accuracy-and-generative-validity"><span class="header-section-number">7.1</span> Predictive Accuracy and Generative Validity</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -537,25 +543,25 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="06-model-selection_files/figure-html/plot-ppc-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="07-model-selection_files/figure-html/plot-ppc-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p><strong>1. Error Metrics:</strong></p>
 <ul>
-<li><strong>Global MAE: 2.71 mm</strong> — on any given day, the model’s prediction is within 2.7mm of actual rainfall on average.</li>
-<li><strong>Global RMSE: 7.48 mm</strong> — the higher value reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).</li>
+<li><strong>Global MAE: 2.71 mm</strong> , on any given day, the model’s prediction is within 2.7mm of actual rainfall on average.</li>
+<li><strong>Global RMSE: 7.48 mm</strong> , the higher value reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).</li>
 </ul>
 <p><strong>2. Posterior Predictive Check:</strong> The blue line (Reality) sits perfectly nested within the bundle of gray lines (Model Simulations):</p>
 <ul>
 <li>The peak at 0mm is captured accurately, confirming the Zero-Inflation component is working.</li>
-<li>The decay rate of the right tail matches perfectly — a Gaussian model would have failed here.</li>
+<li>The decay rate of the right tail matches perfectly , a Gaussian model would have failed here.</li>
 <li><strong>Conclusion:</strong> The model is not just fitting means; it is successfully replicating the underlying statistical distribution of the climate system.</li>
 </ul>
 </section>
-<section id="justification-of-distributional-choice" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="justification-of-distributional-choice"><span class="header-section-number">6.2</span> Justification of Distributional Choice</h2>
+<section id="justification-of-distributional-choice" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="justification-of-distributional-choice"><span class="header-section-number">7.2</span> Justification of Distributional Choice</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -652,20 +658,20 @@ window.Quarto = {
 <div id="fig-distribution-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-distribution-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06-model-selection_files/figure-html/fig-distribution-comparison-1.png" class="img-fluid figure-img" width="960">
+<img src="07-model-selection_files/figure-html/fig-distribution-comparison-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-distribution-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.1: Why Distribution Matters: Comparing Predictive Densities. The Gaussian model (Red) fails catastrophically by predicting negative rainfall. The ZI-Gamma (Blue) and Tweedie (Green) correctly capture the zero-bound and long right tail of the actual data (Black Dashed Line).
+Figure&nbsp;7.1: Why Distribution Matters: Comparing Predictive Densities. The Gaussian model (Red) fails catastrophically by predicting negative rainfall. The ZI-Gamma (Blue) and Tweedie (Green) correctly capture the zero-bound and long right tail of the actual data (Black Dashed Line).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><strong>1. The Failure of Linearity (Gaussian):</strong> The Gaussian model is forced to predict <strong>negative rainfall</strong> to fit the mean correctly — physically impossible. It also completely misses the long right tail of extreme storm events.</p>
-<p><strong>2. Tweedie vs.&nbsp;Zero-Inflated Gamma:</strong> Both models respect the physical boundary of zero rainfall and align closely with the real data. However, Tweedie uses a <em>single process</em> to model both rain occurrence and intensity. Our EDA (Markov Chain analysis) proved these processes have <em>different drivers</em> — <code>pressure_change</code> drives occurrence while <code>wind_vectors</code> drive intensity. The <strong>Zero-Inflated Gamma</strong> separates these into a Logit model (zero state) and a Gamma model (wet state), resulting in more accurate, physically interpretable predictions.</p>
+<p><strong>1. The Failure of Linearity (Gaussian):</strong> The Gaussian model is forced to predict <strong>negative rainfall</strong> to fit the mean correctly , physically impossible. It also completely misses the long right tail of extreme storm events.</p>
+<p><strong>2. Tweedie vs.&nbsp;Zero-Inflated Gamma:</strong> Both models respect the physical boundary of zero rainfall and align closely with the real data. However, Tweedie uses a <em>single process</em> to model both rain occurrence and intensity. Our EDA (Markov Chain analysis) proved these processes have <em>different drivers</em> , <code>pressure_change</code> drives occurrence while <code>wind_vectors</code> drive intensity. The <strong>Zero-Inflated Gamma</strong> separates these into a Logit model (zero state) and a Gamma model (wet state), resulting in more accurate, physically interpretable predictions.</p>
 </section>
-<section id="progressive-model-selection" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="progressive-model-selection"><span class="header-section-number">6.3</span> Progressive Model Selection</h2>
+<section id="progressive-model-selection" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="progressive-model-selection"><span class="header-section-number">7.3</span> Progressive Model Selection</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -854,7 +860,7 @@ Figure&nbsp;6.1: Why Distribution Matters: Comparing Predictive Densities. The G
 <div id="tbl-model-selection" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6.1: Model Selection Summary Table
+Table&nbsp;7.1: Model Selection Summary Table
 </figcaption>
 <div aria-describedby="tbl-model-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -977,24 +983,24 @@ Table&nbsp;6.1: Model Selection Summary Table
 <div id="fig-model-selection" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-model-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="06-model-selection_files/figure-html/fig-model-selection-1.png" class="img-fluid figure-img" width="960">
+<img src="07-model-selection_files/figure-html/fig-model-selection-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops significantly at every stage, confirming that no step was redundant. The largest jump occurs when adding moisture variables; the addition of Spatial Mixed Effects (M6) also provides a massive late-stage improvement.
+Figure&nbsp;7.2: Model Selection: Progressive Improvement. The AIC drops significantly at every stage, confirming that no step was redundant. The largest jump occurs when adding moisture variables; the addition of Spatial Mixed Effects (M6) also provides a massive late-stage improvement.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><strong>1. Monotonic AIC Decrease:</strong> Every model addition reduced AIC — no step was redundant.</p>
+<p><strong>1. Monotonic AIC Decrease:</strong> Every model addition reduced AIC , no step was redundant.</p>
 <ul>
-<li><strong>Largest Gain:</strong> Null → M1 (Moisture): <span class="math inline">\(\Delta AIC \approx 38,000\)</span> — humidity is the primary driver.</li>
-<li><strong>Final Gain:</strong> M5 → M6 (Mixed Effects): <span class="math inline">\(\Delta AIC \approx 7,600\)</span> — spatial heterogeneity is not a minor nuisance but a fundamental component of the Australian climate system.</li>
+<li><strong>Largest Gain:</strong> Null → M1 (Moisture): <span class="math inline">\(\Delta AIC \approx 38,000\)</span> , humidity is the primary driver.</li>
+<li><strong>Final Gain:</strong> M5 → M6 (Mixed Effects): <span class="math inline">\(\Delta AIC \approx 7,600\)</span> , spatial heterogeneity is not a minor nuisance but a fundamental component of the Australian climate system.</li>
 </ul>
 <p><strong>2. Likelihood Ratio Tests:</strong> Every comparison yielded <span class="math inline">\(p &lt; 0.001\)</span>. Even the smallest step (Wind Vectors, M5) improved the model significantly (<span class="math inline">\(\chi^2 = 607, df = 4\)</span>).</p>
 </section>
-<section id="variance-explained" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="variance-explained"><span class="header-section-number">6.4</span> Variance Explained</h2>
+<section id="variance-explained" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="variance-explained"><span class="header-section-number">7.4</span> Variance Explained</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1022,11 +1028,11 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <span id="cb12-22"><a href="#cb12-22"></a>r2_vals <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">r2_nakagawa</span>(m6_mixed)</span>
 <span id="cb12-23"><a href="#cb12-23"></a></span>
 <span id="cb12-24"><a href="#cb12-24"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(</span>
-<span id="cb12-25"><a href="#cb12-25"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Marginal R2  (Fixed Effects only):        %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb12-25"><a href="#cb12-25"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Marginal R2  (Fixed Effects only): %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
 <span id="cb12-26"><a href="#cb12-26"></a>  r2_vals<span class="sc">$</span>R2_marginal</span>
 <span id="cb12-27"><a href="#cb12-27"></a>))</span>
 <span id="cb12-28"><a href="#cb12-28"></a><span class="do">## </span></span>
-<span id="cb12-29"><a href="#cb12-29"></a><span class="do">## Marginal R2  (Fixed Effects only):        0.3498</span></span>
+<span id="cb12-29"><a href="#cb12-29"></a><span class="do">## Marginal R2  (Fixed Effects only): 0.3498</span></span>
 <span id="cb12-30"><a href="#cb12-30"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(</span>
 <span id="cb12-31"><a href="#cb12-31"></a>  <span class="st">"Conditional R2 (Fixed + Random Effects): %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
 <span id="cb12-32"><a href="#cb12-32"></a>  r2_vals<span class="sc">$</span>R2_conditional</span>
@@ -1038,7 +1044,7 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <ul>
 <li><strong>Marginal <span class="math inline">\(R^2 = 0.345\)</span>:</strong> Our fixed meteorological predictors (Humidity, Wind, Pressure, etc.) explain <strong>34.5%</strong> of the variance in rainfall intensity.</li>
 <li><strong>Conditional <span class="math inline">\(R^2 = 0.441\)</span>:</strong> Including location-specific random effects raises explanatory power to <strong>44.1%</strong>.</li>
-<li><strong>Insight:</strong> Roughly <strong>10% of the explainable variance</strong> in Australian rainfall is purely geographic — attributable to the city’s location (coastal vs.&nbsp;inland) rather than dynamic weather variables.</li>
+<li><strong>Insight:</strong> Roughly <strong>10% of the explainable variance</strong> in Australian rainfall is purely geographic , attributable to the city’s location (coastal vs.&nbsp;inland) rather than dynamic weather variables.</li>
 </ul>
 <p><strong>Conclusion:</strong> Model 6 (Mixed-Effects Zero-Inflated Gamma) is the statistically superior model. It maximizes likelihood, minimizes information loss (AIC/BIC), passes all diagnostic checks, and captures significant spatial variance that fixed-effects models miss.</p>
 
@@ -1520,13 +1526,13 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./05-evaluation.html" class="pagination-link" aria-label="Model Evaluation">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span>
+      <a href="./06-evaluation.html" class="pagination-link" aria-label="Model Evaluation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./07-conclusion.html" class="pagination-link" aria-label="Conclusion">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./08-conclusion.html" class="pagination-link" aria-label="Conclusion">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -1628,13 +1634,13 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <span id="cb13-104"><a href="#cb13-104"></a></span>
 <span id="cb13-105"><a href="#cb13-105"></a>**1. Error Metrics:**</span>
 <span id="cb13-106"><a href="#cb13-106"></a></span>
-<span id="cb13-107"><a href="#cb13-107"></a><span class="ss">- </span>**Global MAE: 2.71 mm** — on any given day, the model's prediction is within 2.7mm of actual rainfall on average.</span>
-<span id="cb13-108"><a href="#cb13-108"></a><span class="ss">- </span>**Global RMSE: 7.48 mm** — the higher value reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).</span>
+<span id="cb13-107"><a href="#cb13-107"></a><span class="ss">- </span>**Global MAE: 2.71 mm** , on any given day, the model's prediction is within 2.7mm of actual rainfall on average.</span>
+<span id="cb13-108"><a href="#cb13-108"></a><span class="ss">- </span>**Global RMSE: 7.48 mm** , the higher value reflects the inherent unpredictability of extreme storm events (e.g., receiving 150mm when 50mm was predicted).</span>
 <span id="cb13-109"><a href="#cb13-109"></a></span>
 <span id="cb13-110"><a href="#cb13-110"></a>**2. Posterior Predictive Check:** The blue line (Reality) sits perfectly nested within the bundle of gray lines (Model Simulations):</span>
 <span id="cb13-111"><a href="#cb13-111"></a></span>
 <span id="cb13-112"><a href="#cb13-112"></a><span class="ss">- </span>The peak at 0mm is captured accurately, confirming the Zero-Inflation component is working.</span>
-<span id="cb13-113"><a href="#cb13-113"></a><span class="ss">- </span>The decay rate of the right tail matches perfectly — a Gaussian model would have failed here.</span>
+<span id="cb13-113"><a href="#cb13-113"></a><span class="ss">- </span>The decay rate of the right tail matches perfectly , a Gaussian model would have failed here.</span>
 <span id="cb13-114"><a href="#cb13-114"></a><span class="ss">- </span>**Conclusion:** The model is not just fitting means; it is successfully replicating the underlying statistical distribution of the climate system.</span>
 <span id="cb13-115"><a href="#cb13-115"></a></span>
 <span id="cb13-116"><a href="#cb13-116"></a><span class="fu">## Justification of Distributional Choice</span></span>
@@ -1739,9 +1745,9 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <span id="cb13-219"><a href="#cb13-219"></a>  <span class="fu">theme_minimal</span>()</span>
 <span id="cb13-220"><a href="#cb13-220"></a><span class="in">```</span></span>
 <span id="cb13-221"><a href="#cb13-221"></a></span>
-<span id="cb13-222"><a href="#cb13-222"></a>**1. The Failure of Linearity (Gaussian):** The Gaussian model is forced to predict **negative rainfall** to fit the mean correctly — physically impossible. It also completely misses the long right tail of extreme storm events.</span>
+<span id="cb13-222"><a href="#cb13-222"></a>**1. The Failure of Linearity (Gaussian):** The Gaussian model is forced to predict **negative rainfall** to fit the mean correctly , physically impossible. It also completely misses the long right tail of extreme storm events.</span>
 <span id="cb13-223"><a href="#cb13-223"></a></span>
-<span id="cb13-224"><a href="#cb13-224"></a>**2. Tweedie vs. Zero-Inflated Gamma:** Both models respect the physical boundary of zero rainfall and align closely with the real data. However, Tweedie uses a *single process* to model both rain occurrence and intensity. Our EDA (Markov Chain analysis) proved these processes have *different drivers* — `pressure_change` drives occurrence while `wind_vectors` drive intensity. The **Zero-Inflated Gamma** separates these into a Logit model (zero state) and a Gamma model (wet state), resulting in more accurate, physically interpretable predictions.</span>
+<span id="cb13-224"><a href="#cb13-224"></a>**2. Tweedie vs. Zero-Inflated Gamma:** Both models respect the physical boundary of zero rainfall and align closely with the real data. However, Tweedie uses a *single process* to model both rain occurrence and intensity. Our EDA (Markov Chain analysis) proved these processes have *different drivers* , `pressure_change` drives occurrence while `wind_vectors` drive intensity. The **Zero-Inflated Gamma** separates these into a Logit model (zero state) and a Gamma model (wet state), resulting in more accurate, physically interpretable predictions.</span>
 <span id="cb13-225"><a href="#cb13-225"></a></span>
 <span id="cb13-226"><a href="#cb13-226"></a><span class="fu">## Progressive Model Selection</span></span>
 <span id="cb13-227"><a href="#cb13-227"></a></span>
@@ -1917,10 +1923,10 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <span id="cb13-403"><a href="#cb13-403"></a>  )</span>
 <span id="cb13-404"><a href="#cb13-404"></a><span class="in">```</span></span>
 <span id="cb13-405"><a href="#cb13-405"></a></span>
-<span id="cb13-406"><a href="#cb13-406"></a>**1. Monotonic AIC Decrease:** Every model addition reduced AIC — no step was redundant.</span>
+<span id="cb13-406"><a href="#cb13-406"></a>**1. Monotonic AIC Decrease:** Every model addition reduced AIC , no step was redundant.</span>
 <span id="cb13-407"><a href="#cb13-407"></a></span>
-<span id="cb13-408"><a href="#cb13-408"></a><span class="ss">- </span>**Largest Gain:** Null → M1 (Moisture): $\Delta AIC \approx 38,000$ — humidity is the primary driver.</span>
-<span id="cb13-409"><a href="#cb13-409"></a><span class="ss">- </span>**Final Gain:** M5 → M6 (Mixed Effects): $\Delta AIC \approx 7,600$ — spatial heterogeneity is not a minor nuisance but a fundamental component of the Australian climate system.</span>
+<span id="cb13-408"><a href="#cb13-408"></a><span class="ss">- </span>**Largest Gain:** Null → M1 (Moisture): $\Delta AIC \approx 38,000$ , humidity is the primary driver.</span>
+<span id="cb13-409"><a href="#cb13-409"></a><span class="ss">- </span>**Final Gain:** M5 → M6 (Mixed Effects): $\Delta AIC \approx 7,600$ , spatial heterogeneity is not a minor nuisance but a fundamental component of the Australian climate system.</span>
 <span id="cb13-410"><a href="#cb13-410"></a></span>
 <span id="cb13-411"><a href="#cb13-411"></a>**2. Likelihood Ratio Tests:** Every comparison yielded $p &lt; 0.001$. Even the smallest step (Wind Vectors, M5) improved the model significantly ($\chi^2 = 607, df = 4$).</span>
 <span id="cb13-412"><a href="#cb13-412"></a></span>
@@ -1937,7 +1943,7 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <span id="cb13-425"><a href="#cb13-425"></a>r2_vals <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">r2_nakagawa</span>(m6_mixed)</span>
 <span id="cb13-426"><a href="#cb13-426"></a></span>
 <span id="cb13-427"><a href="#cb13-427"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(</span>
-<span id="cb13-428"><a href="#cb13-428"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Marginal R2  (Fixed Effects only):        %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb13-428"><a href="#cb13-428"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Marginal R2  (Fixed Effects only): %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
 <span id="cb13-429"><a href="#cb13-429"></a>  r2_vals<span class="sc">$</span>R2_marginal</span>
 <span id="cb13-430"><a href="#cb13-430"></a>))</span>
 <span id="cb13-431"><a href="#cb13-431"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(</span>
@@ -1950,7 +1956,7 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 <span id="cb13-438"><a href="#cb13-438"></a></span>
 <span id="cb13-439"><a href="#cb13-439"></a><span class="ss">- </span>**Marginal $R^2 = 0.345$:** Our fixed meteorological predictors (Humidity, Wind, Pressure, etc.) explain **34.5%** of the variance in rainfall intensity.</span>
 <span id="cb13-440"><a href="#cb13-440"></a><span class="ss">- </span>**Conditional $R^2 = 0.441$:** Including location-specific random effects raises explanatory power to **44.1%**.</span>
-<span id="cb13-441"><a href="#cb13-441"></a><span class="ss">- </span>**Insight:** Roughly **10% of the explainable variance** in Australian rainfall is purely geographic — attributable to the city's location (coastal vs. inland) rather than dynamic weather variables.</span>
+<span id="cb13-441"><a href="#cb13-441"></a><span class="ss">- </span>**Insight:** Roughly **10% of the explainable variance** in Australian rainfall is purely geographic , attributable to the city's location (coastal vs. inland) rather than dynamic weather variables.</span>
 <span id="cb13-442"><a href="#cb13-442"></a></span>
 <span id="cb13-443"><a href="#cb13-443"></a>**Conclusion:** Model 6 (Mixed-Effects Zero-Inflated Gamma) is the statistically superior model. It maximizes likelihood, minimizes information loss (AIC/BIC), passes all diagnostic checks, and captures significant spatial variance that fixed-effects models miss.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
@@ -1960,5 +1966,5 @@ Figure&nbsp;6.2: Model Selection: Progressive Improvement. The AIC drops signifi
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/06-model-selection.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/07-model-selection.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

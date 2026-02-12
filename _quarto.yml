@@ -21,19 +21,20 @@ book:
 
   chapters:
     - index.qmd
+    - 01-intro.qmd
     - part: "Data"
       chapters:
-        - 01-data-prep.qmd
-        - 02-eda.qmd
+        - 02-data-prep.qmd
+        - 03-eda.qmd
     - part: "Feature Engineering"
       chapters:
-        - 03-features.qmd
+        - 04-features.qmd
     - part: "Modelling"
       chapters:
-        - 04-modeling.qmd
-        - 05-evaluation.qmd
-        - 06-model-selection.qmd
-    - 07-conclusion.qmd
+        - 05-modeling.qmd
+        - 06-evaluation.qmd
+        - 07-model-selection.qmd
+    - 08-conclusion.qmd
 
 execute:
   warning: false

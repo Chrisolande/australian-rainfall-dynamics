@@ -1,27 +1,85 @@
-# Introduction {.unnumbered}
+---
+pagetitle: "Australian Rainfall Dynamics"
+date: today
+about:
+  template: solana
+  links:
+    - icon: github
+      text: Source Code
+      href: https://github.com/Chrisolande/australian-rainfall-dynamics
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/chris-olande-6557a3238/
+---
 
-Rainfall in Australia is a story of extremes. Driven by the complex interplay of the Southern Ocean’s Westerlies and the tropical monsoon, Australian weather patterns oscillate violently between prolonged droughts and torrential flood events. For meteorologists and data scientists, modeling this phenomenon presents a dual challenge: predicting **if** it will rain (occurrence) and **how much** will fall (intensity).
+# Predicting the Unpredictable {.unnumbered}
 
-This report presents a comprehensive analysis of daily observations from diverse locations across Australia, aiming to accurately model these dynamics using advanced statistical frameworks in **R**.
+## Executive Summary
 
-### The Statistical Challenge
+Australian rainfall dynamics represent a significant challenge for classical frequentist methods. The data violates every core assumption of OLS: **64% zero-inflation**, a distribution **kurtosis of 181.15**, and strong **Markovian persistence**. 
 
-Standard statistical approaches often assume data follows a normal (Gaussian) distribution. However, daily rainfall data violates every assumption of linear regression:
+This project rejects the "one-size-fits-all" Gaussian approach, implementing a **Zero-Inflated Gamma (ZIG) Mixed Model**. By treating rainfall as two distinct physical processes: **occurrence** (hurdle) and **intensity** (volume); and accounting for spatial heterogeneity through random slopes, this framework provides a robust solution for spatiotemporal weather forecasting.
 
-1.  **Zero-Inflation:** Approximately **64%** of observations are dry days (0mm). A standard model struggles to predict exact zeros, often outputting physically impossible negative values.
-2.  **Extreme Skewness:** When it does rain, the distribution is highly right-skewed. The "long tail" of storm events drives the bulk of the variance.
-3.  **Spatiotemporal Dependence:** Rain is not independent. A wet day in Darwin does not behave like a wet day in Melbourne, and a wet yesterday strongly predicts a wet today.
+---
 
-To address these challenges, we utilize a **Zero-Inflated Gamma (ZIG) Generalized Linear Mixed Model (GLMM)** framework. This allows us to model the *probability of rain* (Logistic component) and the *intensity of rain* (Gamma component) as distinct but related physical processes.
+## Technical Highlights
 
-### Objectives
+::: {.panel-tabset}
 
-To achieve a robust analysis, this report addresses the following key objectives:
+### Data Engineering
 
--   **Data Integrity:** Implement a Random Forest imputation strategy to handle missing values without discarding critical information.
+* **Hybrid Imputation:** A multi-stage pipeline combining temporal interpolation with Random Forest PMM via `missRanger` to resolve 47% missingness in sunshine data without shrinking variance.
+* **Wind Vectorization:** Resolved the $0^\circ/360^\circ$ boundary discontinuity by decomposing compass bearings into continuous North-South ($V$) and East-West ($U$) components.
+* **Signal Extraction:** Utilized 7-day moving averages as low-pass filters to suppress daily stochastic noise and reveal latent wet-weather regimes.
+* **Feature Interaction:** Engineered a centered `sunshine × humidity3pm` interaction term to capture the non-linear "Rain Corner" threshold while maintaining a VIF of 1.25.
 
--   **Temporal Dynamics:** Investigate the "persistence" effect using Markov Chain analysis to determine how prior weather states influence current rainfall probabilities.
+### Statistical Framework
 
--   **Physical Modeling:** Reconstruct the drivers of rainfall by layering **Moisture**, **Energy**, **Wind Vectors**, and **Spatial Heterogeneity** into the model.
+* **Mixed-Effects Architecture:** Implemented uncorrelated random intercepts and slopes: $\text{diag}(1 + \text{humidity} + \text{persistence} \mid \text{location})$; allowing the physics of rainfall to vary across the continent.
+* **Non-Linear Persistence:** Utilized natural splines: $ns(\text{days\_since\_rain}, df = 4)$; within the zero-inflation component to model the non-linear "drying effect" of ongoing droughts.
+* **Parameter Estimation:** Fitted via Maximum Likelihood Estimation (MLE) using the Template Model Builder (`glmmTMB`) for computational efficiency in high-dimensional mixed models.
+* **Diagnostic Rigor:** Verified via **DHARMa** simulation-based residuals, confirming ideal dispersion ($p = 0.19$) and perfect zero-calibration (ratio = 1.00).
 
--   **Model Selection:** Rigorously compare standard linear models against the Zero-Inflated Gamma framework using AIC, BIC, and DHARMa residual diagnostics.
+### Key Findings
+
+* **The Rain Corner:** Rainfall is gated by a thermodynamic threshold: precipitation is negligible unless afternoon humidity exceeds ~50% and sunshine duration falls below 5 hours.
+* **Spatial Variance:** After controlling for all meteorological covariates, **10% of total variance** is explained by geography alone, highlighting the dominance of local micro-climates.
+* **Intensity Drivers:** Southerly and Westerly wind vectors were identified as the primary drivers of intensity, reflecting the influence of Southern Ocean frontal systems.
+* **Classification Power:** The model achieved an **AUC of 0.83**, demonstrating high discriminative capacity between dry and rainy states.
+
+:::
+
+---
+
+## The Mathematical Framework
+
+The model assumes that rainfall $y_i$ is a realization of a mixture of a point mass at zero and a Gamma-distributed continuous variable.
+
+**The Conditional Probability:**
+$$y_i \mid y_i > 0 \sim \text{Gamma}(\mu_i, \phi)$$
+$$\log(\mu_i) = \mathbf{X}_i\beta + \mathbf{Z}_i\mathbf{b}$$
+
+**The Zero-Inflation (Logistic) Hurdle:**
+$$\text{logit}(\pi_i) = \mathbf{W}_i\gamma + \nu_{location}$$
+
+Where $\pi_i$ is the probability of a structural dry day, $\mathbf{X}_i$ and $\mathbf{W}_i$ are predictor matrices, and $\mathbf{Z}_i\mathbf{b}$ represents the random slope components.
+
+---
+
+## Project Roadmap
+
+1. [**Introduction**](01-intro.qmd) - Overview of meteorological challenges and the failure of OLS assumptions.
+2. [**Data Preparation**](02-data-prep.qmd) - Hybrid imputation strategy handling ghost sensors and high-dimensional missingness.
+3. [**Exploratory Data Analysis**](03-eda.qmd) - Visualizing the "Rain Corner" and calculating Markovian transition probabilities.
+4. [**Feature Engineering**](04-features.qmd) - Signal extraction, circular wind vector decomposition, and cyclical encoding.
+5. [**Modelling**](05-modeling.qmd) - Progressive model building from Null Intercepts to the full Mixed-Effects ZI-Gamma.
+6. [**Model Evaluation**](06-evaluation.qmd) - Classification metrics (AUC-ROC), Posterior Predictive Checks, and DHARMa diagnostics.
+7. [**Model Selection**](07-model-selection.qmd) - Rigorous comparison using AIC/BIC and Nakagawa's $R^2$.
+8. [**Conclusion**](08-conclusion.qmd) - Summary of findings and operational suitability limits.
+
+---
+
+::: {.callout-tip}
+## Reproducibility
+The computational environment is managed via `librarian`. All models are pre-bundled in `.RData` format to ensure the report renders instantly without compromising the complexity of the underlying `glmmTMB` optimizations.
+:::

@@ -1,0 +1,61 @@
+# Introduction {#sec-intro}
+
+Rainfall in Australia is not just weather; it is a story of extremes. Driven by massive climate cycles like El Nino, the continent swings violently between years of crippling drought and sudden, devastating floods.
+
+For data scientists and meteorologists, predicting this is a unique challenge. It requires solving two problems at once: predicting **if** it will rain and predicting **how much** will fall. This report analyzes daily rainfall across Australia, building a model that handles both dry spells and heavy storms using statistical techniques designed for the kind of data weather actually produces.
+
+## Why Standard Models Fall Short
+
+Traditional regression methods assume data that behaves. Rainfall does not.
+
+::: {.callout-note appearance="simple"}
+## The Three Statistical Violations
+1.  **Too many zeros:** About **64%** of days in this dataset record exactly zero rain. Standard models try to average these dry days with wet ones, often predicting negative rainfall.
+2.  **Extreme variability:** When it rains, the amount can range from a trace to a cyclone. The distribution is heavily right-skewed; a handful of extreme storms drive most of the variance.
+3.  **Weather has memory:** Rain is not independent. A wet yesterday makes a wet today more likely. Standard models treat each day as a fresh roll of the dice.
+:::
+
+## A Model Built for the Problem
+
+This analysis uses a **Zero-Inflated Gamma (ZIG)** framework. Rather than forcing a single equation to predict both occurrence and intensity, the ZIG model splits the problem into two linked components:
+
+1.  A **logistic model** predicts the probability that a day is dry versus wet ($\pi_i$).
+2.  A **Gamma model** predicts the rainfall volume on wet days ($\mu_i$).
+
+
+
+This dual structure allows the atmospheric triggers of rain, such as a dropping pressure front, to be modeled separately from the physical drivers of intensity like wind vectors and moisture availability.
+
+::: {.callout-important}
+## Why not Tweedie?
+We considered a Tweedie distribution, which uses a single process for both outcomes. However, we rejected it because our exploratory analysis (see @sec-eda) showed that the drivers of occurrence are distinct from the drivers of intensity. Forcing a single parameter to capture both would obscure this physical reality.
+:::
+
+## Report Structure
+
+This document is organized around the progressive validation of our modeling choices:
+
+| Chapter | Focus |
+| :--- | :--- |
+| **01 Intro** | Establishes the statistical pathology of rainfall and limitations of OLS. |
+| **02 Data** | Implements a three-stage imputation strategy to recover missing values. |
+| **03 EDA** | Quantifies zero-inflation, skewness, and Markovian persistence. |
+| **04 Features** | Engineers wind vectors, cyclical time, and interaction terms. |
+| **05 Modeling** | Builds the GLMM progressively from Null to Spatial Random Effects. |
+| **06 Eval** | Validates the model using DHARMa simulation-based diagnostics. |
+| **07 Selection** | Compares ZI-Gamma vs Tweedie and finalizes the model choice. |
+| **08 Conclusion** | Summarizes findings and states operational recommendations. |
+
+## Project Objectives
+
+* **Recover missing data without bias.**
+    Weather sensors fail. We implement a three-stage imputation strategy that fills gaps using temporal neighbors, multivariate patterns, and domain-specific inference.
+
+* **Capture weather dynamics.**
+    We model wind direction as continuous vectors, encode the non-linear interaction between sunshine and humidity, and quantify the Markovian persistence of weather states.
+
+* **Account for spatial heterogeneity.**
+    A model that works for tropical Darwin will fail in arid Alice Springs. We introduce hierarchical random effects that allow rainfall relationships to vary by location.
+
+* **Validate the model.**
+    Standard accuracy metrics can mask poor fit. We use simulation-based residual diagnostics to stress-test the model and confirm that it captures the true data-generating process.

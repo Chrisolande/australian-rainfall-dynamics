@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>2&nbsp; Exploratory Data Analysis – Australian Rainfall Dynamics</title>
+<title>3&nbsp; Exploratory Data Analysis – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03-features.html" rel="next">
-<link href="./01-data-prep.html" rel="prev">
+<link href="./04-features.html" rel="next">
+<link href="./02-data-prep.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -316,7 +316,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./02-eda.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./03-eda.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -348,7 +348,13 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Predicting the Unpredictable</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -362,14 +368,14 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-data-prep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span></a>
+  <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-eda.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  <a href="./03-eda.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -385,8 +391,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-features.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+  <a href="./04-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
   </div>
 </li>
       </ul>
@@ -402,28 +408,28 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-modeling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  <a href="./05-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  <a href="./06-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-model-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  <a href="./07-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-conclusion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="./08-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -436,29 +442,29 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#temporal-dynamics-of-rainfall-occurrence" id="toc-temporal-dynamics-of-rainfall-occurrence" class="nav-link active" data-scroll-target="#temporal-dynamics-of-rainfall-occurrence"><span class="header-section-number">2.1</span> Temporal Dynamics of Rainfall Occurrence</a></li>
-  <li><a href="#assessment-of-data-completeness" id="toc-assessment-of-data-completeness" class="nav-link" data-scroll-target="#assessment-of-data-completeness"><span class="header-section-number">2.2</span> Assessment of Data Completeness</a></li>
-  <li><a href="#distributional-characteristics-of-the-target-variable" id="toc-distributional-characteristics-of-the-target-variable" class="nav-link" data-scroll-target="#distributional-characteristics-of-the-target-variable"><span class="header-section-number">2.3</span> Distributional Characteristics of the Target Variable</a></li>
-  <li><a href="#bivariate-correlation-analysis" id="toc-bivariate-correlation-analysis" class="nav-link" data-scroll-target="#bivariate-correlation-analysis"><span class="header-section-number">2.4</span> Bivariate Correlation Analysis</a></li>
-  <li><a href="#pattern-analysis" id="toc-pattern-analysis" class="nav-link" data-scroll-target="#pattern-analysis"><span class="header-section-number">2.5</span> Pattern Analysis</a>
+  <li><a href="#temporal-dynamics-of-rainfall-occurrence" id="toc-temporal-dynamics-of-rainfall-occurrence" class="nav-link active" data-scroll-target="#temporal-dynamics-of-rainfall-occurrence"><span class="header-section-number">3.1</span> Temporal Dynamics of Rainfall Occurrence</a></li>
+  <li><a href="#assessment-of-data-completeness" id="toc-assessment-of-data-completeness" class="nav-link" data-scroll-target="#assessment-of-data-completeness"><span class="header-section-number">3.2</span> Assessment of Data Completeness</a></li>
+  <li><a href="#distributional-characteristics-of-the-target-variable" id="toc-distributional-characteristics-of-the-target-variable" class="nav-link" data-scroll-target="#distributional-characteristics-of-the-target-variable"><span class="header-section-number">3.3</span> Distributional Characteristics of the Target Variable</a></li>
+  <li><a href="#bivariate-correlation-analysis" id="toc-bivariate-correlation-analysis" class="nav-link" data-scroll-target="#bivariate-correlation-analysis"><span class="header-section-number">3.4</span> Bivariate Correlation Analysis</a></li>
+  <li><a href="#pattern-analysis" id="toc-pattern-analysis" class="nav-link" data-scroll-target="#pattern-analysis"><span class="header-section-number">3.5</span> Pattern Analysis</a>
   <ul class="collapse">
-  <li><a href="#temporal-dependence-and-markov-chain-analysis" id="toc-temporal-dependence-and-markov-chain-analysis" class="nav-link" data-scroll-target="#temporal-dependence-and-markov-chain-analysis"><span class="header-section-number">2.5.1</span> Temporal Dependence and Markov Chain Analysis</a></li>
-  <li><a href="#justification-for-interaction-terms" id="toc-justification-for-interaction-terms" class="nav-link" data-scroll-target="#justification-for-interaction-terms"><span class="header-section-number">2.5.2</span> Justification for Interaction Terms</a></li>
-  <li><a href="#the-drying-effect-and-temporal-decay" id="toc-the-drying-effect-and-temporal-decay" class="nav-link" data-scroll-target="#the-drying-effect-and-temporal-decay"><span class="header-section-number">2.5.3</span> The ‘Drying Effect’ and Temporal Decay</a></li>
-  <li><a href="#atmospheric-pressure-and-diurnal-variation" id="toc-atmospheric-pressure-and-diurnal-variation" class="nav-link" data-scroll-target="#atmospheric-pressure-and-diurnal-variation"><span class="header-section-number">2.5.4</span> Atmospheric Pressure and Diurnal Variation</a></li>
-  <li><a href="#seasonal-dynamics-and-intensity-cycles" id="toc-seasonal-dynamics-and-intensity-cycles" class="nav-link" data-scroll-target="#seasonal-dynamics-and-intensity-cycles"><span class="header-section-number">2.5.5</span> Seasonal Dynamics and Intensity Cycles</a></li>
-  <li><a href="#statistical-validation-of-seasonal-intensity" id="toc-statistical-validation-of-seasonal-intensity" class="nav-link" data-scroll-target="#statistical-validation-of-seasonal-intensity"><span class="header-section-number">2.5.6</span> Statistical Validation of Seasonal Intensity</a></li>
+  <li><a href="#temporal-dependence-and-markov-chain-analysis" id="toc-temporal-dependence-and-markov-chain-analysis" class="nav-link" data-scroll-target="#temporal-dependence-and-markov-chain-analysis"><span class="header-section-number">3.5.1</span> Temporal Dependence and Markov Chain Analysis</a></li>
+  <li><a href="#justification-for-interaction-terms" id="toc-justification-for-interaction-terms" class="nav-link" data-scroll-target="#justification-for-interaction-terms"><span class="header-section-number">3.5.2</span> Justification for Interaction Terms</a></li>
+  <li><a href="#the-drying-effect-and-temporal-decay" id="toc-the-drying-effect-and-temporal-decay" class="nav-link" data-scroll-target="#the-drying-effect-and-temporal-decay"><span class="header-section-number">3.5.3</span> The ‘Drying Effect’ and Temporal Decay</a></li>
+  <li><a href="#atmospheric-pressure-and-diurnal-variation" id="toc-atmospheric-pressure-and-diurnal-variation" class="nav-link" data-scroll-target="#atmospheric-pressure-and-diurnal-variation"><span class="header-section-number">3.5.4</span> Atmospheric Pressure and Diurnal Variation</a></li>
+  <li><a href="#seasonal-dynamics-and-intensity-cycles" id="toc-seasonal-dynamics-and-intensity-cycles" class="nav-link" data-scroll-target="#seasonal-dynamics-and-intensity-cycles"><span class="header-section-number">3.5.5</span> Seasonal Dynamics and Intensity Cycles</a></li>
+  <li><a href="#statistical-validation-of-seasonal-intensity" id="toc-statistical-validation-of-seasonal-intensity" class="nav-link" data-scroll-target="#statistical-validation-of-seasonal-intensity"><span class="header-section-number">3.5.6</span> Statistical Validation of Seasonal Intensity</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/02-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/03-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./02-eda.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./03-eda.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -475,8 +481,8 @@ window.Quarto = {
 </header>
 
 
-<section id="temporal-dynamics-of-rainfall-occurrence" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="temporal-dynamics-of-rainfall-occurrence"><span class="header-section-number">2.1</span> Temporal Dynamics of Rainfall Occurrence</h2>
+<section id="temporal-dynamics-of-rainfall-occurrence" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="temporal-dynamics-of-rainfall-occurrence"><span class="header-section-number">3.1</span> Temporal Dynamics of Rainfall Occurrence</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -818,8 +824,8 @@ window.Quarto = {
 </ul>
 <p><strong>Interaction Effects:</strong> The cross-tabulation of Month versus Day confirms that the seasonal signal dominates the weekly noise. For instance, the high counts in June and July are robustly distributed across all days of the week (e.g., June averages ~750-800 events per day), whereas February counts drop significantly (averaging ~450-480 events per day). This validates the necessity of including <code>Month</code> as a seasonal predictor in our subsequent modeling, while <code>Day</code> may serve as a minor control variable.</p>
 </section>
-<section id="assessment-of-data-completeness" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="assessment-of-data-completeness"><span class="header-section-number">2.2</span> Assessment of Data Completeness</h2>
+<section id="assessment-of-data-completeness" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="assessment-of-data-completeness"><span class="header-section-number">3.2</span> Assessment of Data Completeness</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -957,8 +963,8 @@ window.Quarto = {
 </ul>
 <p><strong>Implications for Modeling:</strong> The severity of missingness in <code>sunshine</code> and <code>evaporation</code> poses a strategic dilemma. Applying standard listwise deletion (removing any row with a missing value) would result in the loss of nearly half the dataset, potentially introducing bias and reducing statistical power. This finding empirically justifies the <strong>Random Forest imputation strategy</strong> proposed in the study’s objectives. By imputing these values rather than discarding them, we preserve the integrity of the dataset and allow for the inclusion of these potentially predictive features in the final models.</p>
 </section>
-<section id="distributional-characteristics-of-the-target-variable" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="distributional-characteristics-of-the-target-variable"><span class="header-section-number">2.3</span> Distributional Characteristics of the Target Variable</h2>
+<section id="distributional-characteristics-of-the-target-variable" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="distributional-characteristics-of-the-target-variable"><span class="header-section-number">3.3</span> Distributional Characteristics of the Target Variable</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1129,8 +1135,8 @@ window.Quarto = {
 </ul>
 <p><strong>Conclusion:</strong> The combination of ~64% zeros and extreme kurtosis confirms that a standard Gaussian Linear Model (OLS) would be severely biased. These statistics strongly support the adoption of a <strong>Hurdle Model</strong> or <strong>Zero-Inflated Gamma</strong> framework to separately model the zero-state and the positive continuous state.</p>
 </section>
-<section id="bivariate-correlation-analysis" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="bivariate-correlation-analysis"><span class="header-section-number">2.4</span> Bivariate Correlation Analysis</h2>
+<section id="bivariate-correlation-analysis" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="bivariate-correlation-analysis"><span class="header-section-number">3.4</span> Bivariate Correlation Analysis</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1323,10 +1329,10 @@ window.Quarto = {
 <div id="fig-correlation-matrix" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-correlation-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-correlation-matrix-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-correlation-matrix-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-correlation-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.1: Spearman Correlation Matrix of Meteorological Features. Red indicates negative correlation; Blue indicates positive correlation.
+Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red indicates negative correlation; Blue indicates positive correlation.
 </figcaption>
 </figure>
 </div>
@@ -1489,7 +1495,7 @@ Figure&nbsp;2.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 </details>
 </div>
 <p>To identify the primary meteorological drivers of rainfall, we performed a Spearman rank correlation analysis. This non-parametric method was selected to accommodate the non-linear, skewed nature of the rainfall data identified in the previous section.</p>
-<p><strong>Key Predictors:</strong> As visualized in <a href="#fig-correlation-matrix" class="quarto-xref">Figure&nbsp;<span>2.1</span></a>, the analysis reveals two distinct clusters of predictive features:</p>
+<p><strong>Key Predictors:</strong> As visualized in <a href="#fig-correlation-matrix" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>, the analysis reveals two distinct clusters of predictive features:</p>
 <ol type="1">
 <li><strong>Positive Drivers:</strong> <code>Humidity3pm</code> (<span class="math inline">\(r = 0.44\)</span>) and <code>Cloud Cover</code> (<span class="math inline">\(r \approx 0.37\)</span>) show the strongest positive association with rainfall. This aligns with physical expectations: higher atmospheric moisture and cloud density are precursors to precipitation.</li>
 <li><strong>Negative Drivers:</strong> <code>Sunshine</code> (<span class="math inline">\(r = -0.40\)</span>) and <code>Evaporation</code> (<span class="math inline">\(r = -0.31\)</span>) exhibit the strongest negative correlations. Increased solar exposure and evaporation rates typically indicate clear skies and high pressure systems, conditions unfavorable for rain.</li>
@@ -1497,10 +1503,10 @@ Figure&nbsp;2.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <p><strong>Multicollinearity Warning:</strong> The heatmap also highlights significant collinearity among predictors. For instance, <code>temp9am</code> and <code>temp3pm</code> are highly correlated (<span class="math inline">\(r &gt; 0.8\)</span>), as are <code>pressure9am</code> and <code>pressure3pm</code> (<span class="math inline">\(r = 0.96\)</span>). This reinforces the necessity of the VIF-based feature selection strategy outlined in our methodology to prevent model instability.</p>
 <p><strong>Statistical Validation:</strong> To confirm that the opposing effects of moisture and solar radiation are statistically distinct, we applied Steiger’s Z-test for dependent correlations (<span class="math inline">\(z \approx 188.9, p &lt; 2.2e-16\)</span>). While this formally rejects the null hypothesis, we exercise caution in interpreting the p-value; in datasets of this magnitude (<span class="math inline">\(N &gt; 140,000\)</span>), statistical significance is often achieved even for trivial effects due to high power. However, the substantial magnitude of the Z-statistic confirms that the difference is not merely an artifact of sample size. We therefore conclude that <code>Humidity3pm</code> and <code>Sunshine</code> represent distinct, opposing physical forces in the generation of Australian rainfall, rather than relying solely on the p-value for “certainty.”</p>
 </section>
-<section id="pattern-analysis" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="pattern-analysis"><span class="header-section-number">2.5</span> Pattern Analysis</h2>
-<section id="temporal-dependence-and-markov-chain-analysis" class="level3" data-number="2.5.1">
-<h3 data-number="2.5.1" class="anchored" data-anchor-id="temporal-dependence-and-markov-chain-analysis"><span class="header-section-number">2.5.1</span> Temporal Dependence and Markov Chain Analysis</h3>
+<section id="pattern-analysis" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="pattern-analysis"><span class="header-section-number">3.5</span> Pattern Analysis</h2>
+<section id="temporal-dependence-and-markov-chain-analysis" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="temporal-dependence-and-markov-chain-analysis"><span class="header-section-number">3.5.1</span> Temporal Dependence and Markov Chain Analysis</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1608,10 +1614,10 @@ Yes 17047 14829</code></pre>
 <div id="fig-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-markov-chain-1.png" class="img-fluid figure-img" width="768">
+<img src="03-eda_files/figure-html/fig-markov-chain-1.png" class="img-fluid figure-img" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.2: Markov Chain Transition Matrix: Visualizing the ‘Persistence Effect’ in Australian Rainfall.
+Figure&nbsp;3.2: Markov Chain Transition Matrix: Visualizing the ‘Persistence Effect’ in Australian Rainfall.
 </figcaption>
 </figure>
 </div>
@@ -1619,15 +1625,15 @@ Figure&nbsp;2.2: Markov Chain Transition Matrix: Visualizing the ‘Persistence 
 </div>
 <p>To quantify the “persistence” of weather patterns (the tendency of current weather to resemble past weather), we modeled the rainfall sequence as a first-order Markov Chain. This approach tests the hypothesis that the probability of rain today (<span class="math inline">\(P(\text{Rain}_t)\)</span>) is conditionally dependent on the state of the previous day (<span class="math inline">\(P(\text{Rain}_{t-1})\)</span>).</p>
 <p><strong>Statistical Significance:</strong> The Pearson Chi-squared test (<span class="math inline">\(\chi^2 \approx 13,718, p &lt; 0.001\)</span>) overwhelmingly rejects the null hypothesis of independence. Furthermore, Cramér’s V (<span class="math inline">\(V \approx 0.31\)</span>) indicates a <strong>moderate effect size</strong>, confirming that yesterday’s weather is not just statistically significant but practically meaningful for prediction.</p>
-<p><strong>Transition Probabilities:</strong> As illustrated in <a href="#fig-markov-chain" class="quarto-xref">Figure&nbsp;<span>2.2</span></a>, the transition matrix reveals distinct stability patterns:</p>
+<p><strong>Transition Probabilities:</strong> As illustrated in <a href="#fig-markov-chain" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>, the transition matrix reveals distinct stability patterns:</p>
 <ul>
 <li><strong>Dry Persistence (Stability):</strong> If it was dry yesterday, there is an <strong>85% probability</strong> it will remain dry today. This highlights the stability of high-pressure systems in the Australian climate.</li>
 <li><strong>Wet Persistence (Instability):</strong> If it rained yesterday, there is only a <strong>47% probability</strong> it will rain again today. Conversely, there is a 53% chance the weather will clear up.</li>
 </ul>
 <p><strong>Conclusion:</strong> While the “Dry” state is highly stable (sticky), the “Wet” state is transient. This asymmetry suggests that while past rainfall is a useful predictor, it cannot be the <em>sole</em> predictor. A robust model must incorporate other meteorological covariates (humidity, pressure) to accurately predict the onset and cessation of rainfall events.</p>
 </section>
-<section id="justification-for-interaction-terms" class="level3" data-number="2.5.2">
-<h3 data-number="2.5.2" class="anchored" data-anchor-id="justification-for-interaction-terms"><span class="header-section-number">2.5.2</span> Justification for Interaction Terms</h3>
+<section id="justification-for-interaction-terms" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="justification-for-interaction-terms"><span class="header-section-number">3.5.2</span> Justification for Interaction Terms</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1666,25 +1672,25 @@ Figure&nbsp;2.2: Markov Chain Transition Matrix: Visualizing the ‘Persistence 
 <div id="fig-interaction-rain-corner" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-interaction-rain-corner-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-interaction-rain-corner-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-interaction-rain-corner-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-interaction-rain-corner-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.3: Bivariate Density Plot of Humidity vs.&nbsp;Sunshine, faceted by Rainfall Occurrence. The concentration of the ‘Yes’ class in the upper-left quadrant (High Humidity, Low Sunshine) visually justifies the inclusion of an interaction term.
+Figure&nbsp;3.3: Bivariate Density Plot of Humidity vs.&nbsp;Sunshine, faceted by Rainfall Occurrence. The concentration of the ‘Yes’ class in the upper-left quadrant (High Humidity, Low Sunshine) visually justifies the inclusion of an interaction term.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>To refine our model specification, we investigated potential non-linear interactions between key predictors. Specifically, we examined the joint distribution of <code>Humidity3pm</code> and <code>Sunshine</code>, conditional on the occurrence of rain (<code>rain_today</code>).</p>
-<p><strong>The “Rain Corner” Phenomenon:</strong> As demonstrated in <a href="#fig-interaction-rain-corner" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>, the two weather states exhibit fundamentally different geometric structures in feature space:</p>
+<p><strong>The “Rain Corner” Phenomenon:</strong> As demonstrated in <a href="#fig-interaction-rain-corner" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>, the two weather states exhibit fundamentally different geometric structures in feature space:</p>
 <ul>
 <li><strong>Dry State (<code>rain_today: No</code>):</strong> The density is dispersed broadly across the plot. It is possible to have high humidity without rain (if other conditions like pressure prevent it) or high sunshine without rain. The relationship is loose and unstructured.</li>
 <li><strong>Wet State (<code>rain_today: Yes</code>):</strong> The density collapses into a distinct, tight cluster in the upper-left quadrant, a region we term the <strong>“Rain Corner”</strong>. Rain occurs almost exclusively when <strong>Humidity is High (&gt;50%) AND Sunshine is Low (&lt;5 hours)</strong>.</li>
 </ul>
 <p><strong>Modeling Implication:</strong> This stark visual contrast confirms that <code>Humidity</code> and <code>Sunshine</code> do not act independently. The effect of humidity on rainfall probability is conditional on the level of sunshine. Consequently, a standard additive model (<span class="math inline">\(Rain \sim Humidity + Sunshine\)</span>) would fail to capture this specific “corner” effect. This finding empirically justifies the inclusion of a multiplicative interaction term (<span class="math inline">\(Humidity \times Sunshine\)</span>) in our final model to mathematically capture this synergistic threshold.</p>
 </section>
-<section id="the-drying-effect-and-temporal-decay" class="level3" data-number="2.5.3">
-<h3 data-number="2.5.3" class="anchored" data-anchor-id="the-drying-effect-and-temporal-decay"><span class="header-section-number">2.5.3</span> The ‘Drying Effect’ and Temporal Decay</h3>
+<section id="the-drying-effect-and-temporal-decay" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="the-drying-effect-and-temporal-decay"><span class="header-section-number">3.5.3</span> The ‘Drying Effect’ and Temporal Decay</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1854,10 +1860,10 @@ Figure&nbsp;2.3: Bivariate Density Plot of Humidity vs.&nbsp;Sunshine, faceted b
 <div id="fig-dry-spell" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dry-spell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-dry-spell-1.png" class="img-fluid figure-img" width="864">
+<img src="03-eda_files/figure-html/fig-dry-spell-1.png" class="img-fluid figure-img" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dry-spell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.4: The ‘Drying Effect’: Empirical vs.&nbsp;Modeled Probability of Rainfall. The probability of rain decays exponentially as the dry spell lengthens.
+Figure&nbsp;3.4: The ‘Drying Effect’: Empirical vs.&nbsp;Modeled Probability of Rainfall. The probability of rain decays exponentially as the dry spell lengthens.
 </figcaption>
 </figure>
 </div>
@@ -1871,12 +1877,12 @@ Figure&nbsp;2.4: The ‘Drying Effect’: Empirical vs.&nbsp;Modeled Probability
 </ul>
 <p><strong>Non-Linear Complexity:</strong> While the linear decay model is robust, the Likelihood Ratio Test comparing it to a Natural Spline model (LRT <span class="math inline">\(\chi^2 \approx 7678, p &lt; 0.001\)</span>) indicates significant non-linearity.</p>
 <ul>
-<li><strong>Visual Evidence:</strong> As seen in <a href="#fig-dry-spell" class="quarto-xref">Figure&nbsp;<span>2.4</span></a>, the empirical data (black dots) shows a “kink” around Day 10-12. The probability of rain drops sharply from Day 1 (~48%) to Day 10 (~18%), but then stabilizes or decays much slower from Day 15 to Day 30.</li>
+<li><strong>Visual Evidence:</strong> As seen in <a href="#fig-dry-spell" class="quarto-xref">Figure&nbsp;<span>3.4</span></a>, the empirical data (black dots) shows a “kink” around Day 10-12. The probability of rain drops sharply from Day 1 (~48%) to Day 10 (~18%), but then stabilizes or decays much slower from Day 15 to Day 30.</li>
 <li><strong>Implication:</strong> A simple linear term underestimates the rapid initial drying and overestimates the decay in long-term droughts. Future models should utilize spline terms for <code>days_since_rain</code> to capture this “rapid-then-gradual” decay dynamic.</li>
 </ul>
 </section>
-<section id="atmospheric-pressure-and-diurnal-variation" class="level3" data-number="2.5.4">
-<h3 data-number="2.5.4" class="anchored" data-anchor-id="atmospheric-pressure-and-diurnal-variation"><span class="header-section-number">2.5.4</span> Atmospheric Pressure and Diurnal Variation</h3>
+<section id="atmospheric-pressure-and-diurnal-variation" class="level3" data-number="3.5.4">
+<h3 data-number="3.5.4" class="anchored" data-anchor-id="atmospheric-pressure-and-diurnal-variation"><span class="header-section-number">3.5.4</span> Atmospheric Pressure and Diurnal Variation</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1908,7 +1914,7 @@ Figure&nbsp;2.4: The ‘Drying Effect’: Empirical vs.&nbsp;Modeled Probability
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="02-eda_files/figure-html/pressure-prep-normality-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-eda_files/figure-html/pressure-prep-normality-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2099,10 +2105,10 @@ Figure&nbsp;2.4: The ‘Drying Effect’: Empirical vs.&nbsp;Modeled Probability
 <div id="fig-pressure-violin" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pressure-violin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-pressure-violin-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-pressure-violin-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pressure-violin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.5: Violin Plots of Atmospheric Pressure Variables by Rainfall State. Annotations indicate statistical significance and effect size.
+Figure&nbsp;3.5: Violin Plots of Atmospheric Pressure Variables by Rainfall State. Annotations indicate statistical significance and effect size.
 </figcaption>
 </figure>
 </div>
@@ -2152,10 +2158,10 @@ Figure&nbsp;2.5: Violin Plots of Atmospheric Pressure Variables by Rainfall Stat
 <div id="fig-pressure-means" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pressure-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-pressure-means-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-pressure-means-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pressure-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.6: Comparison of Mean Pressure Levels and Diurnal Drop. Rainy days are characterized by lower absolute pressure and a suppressed diurnal drop.
+Figure&nbsp;3.6: Comparison of Mean Pressure Levels and Diurnal Drop. Rainy days are characterized by lower absolute pressure and a suppressed diurnal drop.
 </figcaption>
 </figure>
 </div>
@@ -2169,7 +2175,7 @@ Figure&nbsp;2.6: Comparison of Mean Pressure Levels and Diurnal Drop. Rainy days
 </ul>
 <p><strong>2. Key Findings:</strong></p>
 <ul>
-<li><strong>Baseline Pressure:</strong> Rainy days are characterized by significantly lower atmospheric pressure. As shown in <a href="#fig-pressure-means" class="quarto-xref">Figure&nbsp;<span>2.6</span></a>, the mean pressure at 9:00 AM is <strong>1015 hPa for rainy days</strong> compared to <strong>1018.5 hPa for dry days</strong>. This aligns with the meteorological principle that low-pressure systems facilitate cloud formation and precipitation.</li>
+<li><strong>Baseline Pressure:</strong> Rainy days are characterized by significantly lower atmospheric pressure. As shown in <a href="#fig-pressure-means" class="quarto-xref">Figure&nbsp;<span>3.6</span></a>, the mean pressure at 9:00 AM is <strong>1015 hPa for rainy days</strong> compared to <strong>1018.5 hPa for dry days</strong>. This aligns with the meteorological principle that low-pressure systems facilitate cloud formation and precipitation.</li>
 <li><strong>Diurnal Drop:</strong> We observed a distinct “suppression” effect on rainy days.
 <ul>
 <li><strong>Dry Days:</strong> Pressure drops significantly by <strong>2.7 hPa</strong> from morning to afternoon, driven by solar heating (thermal lows).</li>
@@ -2178,8 +2184,8 @@ Figure&nbsp;2.6: Comparison of Mean Pressure Levels and Diurnal Drop. Rainy days
 </ul>
 <p><strong>3. Effect Size:</strong> The Cohen’s <span class="math inline">\(d\)</span> analysis reveals that the <strong>magnitude of change</strong> (<code>pressure_change</code>) has a <strong>medium effect size</strong> (<span class="math inline">\(d = -0.72\)</span>), which is notably stronger than the absolute pressure readings (<span class="math inline">\(d \approx 0.28-0.48\)</span>). This suggests that the <em>stability</em> of pressure (or lack thereof) during the day is a potent predictor of rainfall, potentially more so than the raw pressure reading itself.</p>
 </section>
-<section id="seasonal-dynamics-and-intensity-cycles" class="level3" data-number="2.5.5">
-<h3 data-number="2.5.5" class="anchored" data-anchor-id="seasonal-dynamics-and-intensity-cycles"><span class="header-section-number">2.5.5</span> Seasonal Dynamics and Intensity Cycles</h3>
+<section id="seasonal-dynamics-and-intensity-cycles" class="level3" data-number="3.5.5">
+<h3 data-number="3.5.5" class="anchored" data-anchor-id="seasonal-dynamics-and-intensity-cycles"><span class="header-section-number">3.5.5</span> Seasonal Dynamics and Intensity Cycles</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2241,10 +2247,10 @@ Figure&nbsp;2.6: Comparison of Mean Pressure Levels and Diurnal Drop. Rainy days
 <div id="fig-monthly-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-monthly-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-monthly-dist-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-monthly-dist-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monthly-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.7: Ridgeline Plot of Monthly Log-Rainfall Distributions. The shifting peaks illustrate how rainfall intensity varies across the year compared to the global median (dashed line).
+Figure&nbsp;3.7: Ridgeline Plot of Monthly Log-Rainfall Distributions. The shifting peaks illustrate how rainfall intensity varies across the year compared to the global median (dashed line).
 </figcaption>
 </figure>
 </div>
@@ -2300,10 +2306,10 @@ Figure&nbsp;2.7: Ridgeline Plot of Monthly Log-Rainfall Distributions. The shift
 <div id="fig-seasonal-facet" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-seasonal-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-seasonal-facet-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-seasonal-facet-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seasonal-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.8: Seasonal Rainfall Patterns separated by Meteorological Seasons. Summer months exhibit higher variance and intensity compared to Winter.
+Figure&nbsp;3.8: Seasonal Rainfall Patterns separated by Meteorological Seasons. Summer months exhibit higher variance and intensity compared to Winter.
 </figcaption>
 </figure>
 </div>
@@ -2342,10 +2348,10 @@ Figure&nbsp;2.8: Seasonal Rainfall Patterns separated by Meteorological Seasons.
 <div id="fig-mean-rain-bar" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mean-rain-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-mean-rain-bar-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-mean-rain-bar-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mean-rain-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.9: Average Rainfall Intensity (Non-Zero Days) by Month. Summer months (Feb/Jan) clearly exhibit higher average rainfall per event than winter months.
+Figure&nbsp;3.9: Average Rainfall Intensity (Non-Zero Days) by Month. Summer months (Feb/Jan) clearly exhibit higher average rainfall per event than winter months.
 </figcaption>
 </figure>
 </div>
@@ -2365,8 +2371,8 @@ Figure&nbsp;2.9: Average Rainfall Intensity (Non-Zero Days) by Month. Summer mon
 <p><strong>3. Mean Intensity Confirmation:</strong> The bar chart quantifies this observation. February records the highest average rainfall per wet day (<strong>10.1 mm</strong>), nearly double that of July (<strong>4.9 mm</strong>). This stark contrast confirms that <code>Month</code> carries critical information not just about <em>whether</em> it will rain, but <em>how hard</em>.</p>
 <p><strong>Modeling Implication:</strong> Because the relationship between Month 12 (Dec) and Month 1 (Jan) is continuous rather than categorical, treating <code>Month</code> as a standard factor may lose information. These plots strongly support using <strong>Cyclical Encoding (Sine/Cosine transformation)</strong> for the <code>Month</code> variable in our final model to mathematically capture this smooth, wave-like transition from summer peaks to winter troughs.</p>
 </section>
-<section id="statistical-validation-of-seasonal-intensity" class="level3" data-number="2.5.6">
-<h3 data-number="2.5.6" class="anchored" data-anchor-id="statistical-validation-of-seasonal-intensity"><span class="header-section-number">2.5.6</span> Statistical Validation of Seasonal Intensity</h3>
+<section id="statistical-validation-of-seasonal-intensity" class="level3" data-number="3.5.6">
+<h3 data-number="3.5.6" class="anchored" data-anchor-id="statistical-validation-of-seasonal-intensity"><span class="header-section-number">3.5.6</span> Statistical Validation of Seasonal Intensity</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2665,10 +2671,10 @@ Figure&nbsp;2.9: Average Rainfall Intensity (Non-Zero Days) by Month. Summer mon
 <div id="fig-seasonal-stat-groups" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-seasonal-stat-groups-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-eda_files/figure-html/fig-seasonal-stat-groups-1.png" class="img-fluid figure-img" width="960">
+<img src="03-eda_files/figure-html/fig-seasonal-stat-groups-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seasonal-stat-groups-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.10: Mean Seasonal Rainfall with Statistical Groupings. Letters (a, b, c) indicate significant differences based on Dunn’s test (p &lt; 0.05). Seasons sharing the same letter are statistically indistinguishable.
+Figure&nbsp;3.10: Mean Seasonal Rainfall with Statistical Groupings. Letters (a, b, c) indicate significant differences based on Dunn’s test (p &lt; 0.05). Seasons sharing the same letter are statistically indistinguishable.
 </figcaption>
 </figure>
 </div>
@@ -2676,7 +2682,7 @@ Figure&nbsp;2.10: Mean Seasonal Rainfall with Statistical Groupings. Letters (a,
 </div>
 <p>To robustly confirm the seasonal patterns observed in the exploratory phase, we employed non-parametric statistical testing. The Kruskal-Wallis test was selected over ANOVA due to the skewed, non-normal distribution of rainfall data.</p>
 <p><strong>1. Global Significance:</strong> The Kruskal-Wallis test yields a highly significant result (<span class="math inline">\(\chi^2 = 230, p &lt; 0.001\)</span>). This confirms that the differences in rainfall intensity across seasons are not due to random chance. However, the effect size (<span class="math inline">\(\eta^2 \approx 0.004\)</span>) is classified as “small,” suggesting that while season is a significant predictor, it explains a minor portion of the total variance in rainfall intensity (implying other factors like location and pressure are also critical).</p>
-<p><strong>2. Pairwise Comparisons (Post-Hoc Analysis):</strong> The Dunn’s test with Bonferroni correction reveals three distinct statistical groups, visualized in <a href="#fig-seasonal-stat-groups" class="quarto-xref">Figure&nbsp;<span>2.10</span></a> :</p>
+<p><strong>2. Pairwise Comparisons (Post-Hoc Analysis):</strong> The Dunn’s test with Bonferroni correction reveals three distinct statistical groups, visualized in <a href="#fig-seasonal-stat-groups" class="quarto-xref">Figure&nbsp;<span>3.10</span></a> :</p>
 <ul>
 <li><strong>Group ‘a’ (Summer):</strong> Significantly the wettest season (<span class="math inline">\(Mean = 9.1mm\)</span>). It stands alone, statistically distinct from all other seasons (<span class="math inline">\(p &lt; 0.001\)</span>).</li>
 <li><strong>Group ‘b’ (Autumn &amp; Spring):</strong> These transition seasons are statistically indistinguishable from each other (<span class="math inline">\(p = 1.0\)</span>). Their mean intensities (<span class="math inline">\(6.7mm\)</span> and <span class="math inline">\(5.7mm\)</span>) represent a middle ground.</li>
@@ -3163,13 +3169,13 @@ Figure&nbsp;2.10: Mean Seasonal Rainfall with Statistical Groupings. Letters (a,
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01-data-prep.html" class="pagination-link" aria-label="Computational Environment and Data Ingestion">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span>
+      <a href="./02-data-prep.html" class="pagination-link" aria-label="Data Cleaning and Preprocessing">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03-features.html" class="pagination-link" aria-label="Signal Extraction via Moving Averages">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./04-features.html" class="pagination-link" aria-label="Signal Extraction via Moving Averages">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -4418,5 +4424,5 @@ Figure&nbsp;2.10: Mean Seasonal Rainfall with Statistical Groupings. Letters (a,
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/02-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/03-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

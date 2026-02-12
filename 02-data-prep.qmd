@@ -1,0 +1,392 @@
+# Data Cleaning and Preprocessing {#sec-data}
+
+## Computational Environment and Data Ingestion
+
+This analysis leverages a comprehensive suite of R libraries specifically selected to address the challenges of working with meteorological data. The toolkit is assembled to handle data wrangling, advanced statistical modeling, imputation, and publication-quality visualization.
+
+The analytical framework includes:
+
+* **Data Wrangling & Cleaning:** Efficient manipulation and standardization of raw weather data using established best practices for variable naming and data structure.
+* **Advanced Statistical Modeling:** Tools designed specifically for zero-inflated models and Generalized Additive Models (GAMs), paired with rigorous diagnostic frameworks for model validation and residual analysis.
+* **Imputation & Machine Learning:** Sophisticated algorithms for Random Forest-based imputation, enabling recovery of missing values while preserving distributional properties.
+* **Visualization:** Multi-panel visualization capabilities for generating publication-quality figures that communicate complex meteorological patterns.
+
+The primary dataset is ingested and prepared for the analysis pipeline.
+
+```{r}
+#| label: setup-libraries-data
+#| echo: true
+#| message: false
+#| warning: false
+#| results: 'hide'
+
+# Initialize environment and load dependencies
+librarian::shelf(
+  tidyverse,
+  tidymodels,
+  kableExtra,
+  patchwork,
+  skimr,
+  gridExtra,
+  gtsummary,
+  janitor,
+  corrplot,
+  sjPlot,
+  scales,
+  GGally,
+  car,
+  forcats,
+  performance,
+  glmmTMB,
+  splines,
+  mgcv,
+  DHARMa,
+  zoo,
+  ggpubr,
+  ggridges,
+  caret,
+  rstatix,
+  Metrics,
+  mice,
+  missRanger,
+  ranger,
+  cocor,
+  splines,
+  multcompView,
+  lmtest,
+  aod,
+  pROC
+)
+
+# Load the dataset
+df <- read_csv("data/weatherAUS.csv")
+source(here::here("utils.R"))
+
+```
+
+## Data Cleaning and Preprocessing
+
+The raw dataset undergoes a three-step transformation into a standardized format suitable for advanced modeling.
+
+### Syntactic Standardization
+
+All column headers are converted to `snake_case` notation, ensuring consistent variable naming conventions across the entire dataset. This foundational step eliminates ambiguity in variable references and facilitates reproducible analysis.
+
+### Temporal Feature Extraction
+
+The `date` column is properly typed as a Date object. From this temporal reference, two critical categorical variables are engineered:
+
+* **Month:** Captures seasonal rainfall variations by organizing observations into twelve categories. This allows the model to detect systematic differences in precipitation patterns across Australia's seasons.
+* **Day of Week:** Represents the day of the week for each observation. While weather itself is not driven by calendar artifacts, this feature can capture artifacts in observation or reporting procedures.
+
+These derived temporal features are essential for identifying systematic patterns in precipitation and accounting for any measurement bias correlated with day-of-week effects.
+
+### Target Integrity
+
+Observations where the target variable **rainfall** is missing are explicitly removed from the dataset. Since the primary objective is to model rainfall occurrence and intensity, records without ground truth rainfall measurements provide no supervised learning value. This filtering ensures that all subsequent analysis operates on a complete target variable.
+
+```{r}
+#| label: data-cleaning
+#| echo: true
+#| message: false
+#| warning: false
+
+df_clean <- df %>%
+  clean_names() %>%
+  mutate(
+    date = as.Date(date),
+    month = as.factor(month(date)),
+    day = as.factor(wday(date, label = TRUE))
+  ) %>%
+  # Remove records where the target variable (rainfall) is missing
+  filter(!is.na(rainfall))
+
+
+df_clean %>%
+  head() %>%
+  kable(caption = "Head of Cleaned Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+df_clean %>%
+  tail() %>%
+  kable(caption = "Tail of Cleaned Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+The cleaned dataset confirms successful standardization of variables and proper creation of temporal features.
+
+## Hybrid Imputation Strategy
+
+Missing data presents a critical challenge in meteorological analysis. Weather sensors fail, transmission errors occur, and equipment maintenance creates gaps. Rather than discarding incomplete observations or applying crude imputation methods, we implement a sophisticated three-stage imputation strategy designed to preserve the statistical properties and physical realism of meteorological data.
+
+### Stage 1: Informative Missingness Flags
+
+Before imputation occurs, binary indicators are created for variables with high missingness. These flags (e.g., `sunshine_imp_flagged`, `evaporation_imp_flagged`) preserve the information that data was missing at particular times and locations.
+
+> **Rationale:** The absence of data itself may carry information. A broken sunshine sensor during a tropical storm, for example, represents a specific atmospheric condition. By flagging imputed values, the model retains the capacity to learn whether missingness itself is predictive of rainfall a phenomenon that could reflect systematic sensor failures during extreme weather.
+
+### Stage 2: Temporal Interpolation (Time-Series Logic)
+
+Meteorological variables exhibit strong temporal autocorrelation. Temperature, pressure, and humidity do not fluctuate randomly they evolve smoothly over time. For these continuous variables with short gaps, linear interpolation grouped by location is applied.
+
+> **Rationale:** If the temperature is 20 $^\circ$C on Monday and 22 $^\circ$C on Wednesday, it is physically sound to estimate Tuesday's temperature as 21 $^\circ$C rather than using a global average or a seasonal climatology. This approach respects the inherent temporal structure of weather data.
+
+> **Constraint:** Interpolation is limited to a maximum gap of 5 consecutive days. This prevents creating artificial data over extended periods of sensor failure, which could introduce systematic bias into the analysis.
+
+Variables suitable for temporal interpolation include minimum and maximum temperatures, 9 AM and 3 PM temperatures, 9 AM and 3 PM pressure readings, and 9 AM and 3 PM humidity measurements. These are all variables that exhibit strong day-to-day persistence and smooth trajectories.
+
+### Stage 3: Multivariate Imputation via Chained Random Forests
+
+For remaining gaps, particularly in variables with complex non-linear relationships to other meteorological features, a more sophisticated approach is required. Variables such as sunshine, evaporation, and cloud cover do not evolve smoothly; their relationships to other variables are non-linear and conditional on specific atmospheric states.
+
+* **Method:** Random Forest-based imputation iteratively predicts missing values using all other available variables. This technique exploits the fact that the multivariate distribution of weather variables contains strong predictive signals.
+* **Advantage:** Unlike mean imputation, which artificially shrinks variance and distorts correlations, Random Forest imputation with Predictive Mean Matching (PMM) preserves the original marginal distributions and the complex non-linear correlations between weather features. This is critical for maintaining the physical realism of the data.
+
+**Targeted Predictors:**
+For each variable with missing values, a scientifically-motivated set of predictor variables is selected:
+
+* **Sunshine duration** is predicted using cloud cover measurements and temperature, since clear skies (low cloud cover) are associated with longer sunshine duration and higher temperatures.
+* **Evaporation** is predicted using wind speed, temperature, humidity, sunshine duration, and location, reflecting the physical drivers of evaporative demand in the atmosphere.
+* **Cloud cover** measurements are predicted using humidity and pressure, which are strongly linked to atmospheric stability and cloud formation.
+
+This targeted approach ensures that imputation respects physical meteorological principles rather than treating all variables equally.
+
+### Ghost Sensor Detection and Sanitization
+
+Some weather stations experience prolonged equipment failures where sensors cease recording entirely. These "ghost sensors" are identified by detecting variables at specific locations where missingness exceeds 90%.
+
+Rather than allow Random Forest imputation to fill these extended gaps (which could create unrealistic data for entire seasons), observations from ghost sensors are reverted to missing status after the imputation process. This preserves data integrity by acknowledging that we genuinely do not know these values, while still allowing imputation to work effectively on shorter gaps from transient sensor failures.
+
+```{r}
+#| label: imputation-strategy
+#| echo: true
+#| eval: false
+
+clean_and_impute_weather <- function(df) {
+  # Configuration
+  MAXGAP <- 5
+  GHOST_THRESHOLD <- 0.90
+  PMM_K <- 5
+  MAXITER <- 4
+
+  # Initial cleaning
+  df <- df %>%
+    clean_names() %>%
+    mutate(
+      date = as.Date(date),
+      month = as.factor(month(date)),
+      day = as.factor(wday(date, label = TRUE)),
+      day_of_year = yday(date)
+    ) %>%
+    filter(!is.na(rainfall)) %>%
+    select(-rain_tomorrow)
+
+  # Create imputation flags
+
+  df_flagged <- df %>%
+    mutate(
+      sunshine_imp_flagged = ifelse(is.na(sunshine), 1, 0),
+      evap_imp_flagged = ifelse(is.na(evaporation), 1, 0),
+      cloud3pm_imp_flagged = ifelse(is.na(cloud3pm), 1, 0),
+      cloud9am_imp_flagged = ifelse(is.na(cloud9am), 1, 0)
+    )
+
+  # Temporal interpolation
+
+  interp_vars <- c(
+    "min_temp",
+    "max_temp",
+    "temp9am",
+    "temp3pm",
+    "pressure9am",
+    "pressure3pm",
+    "humidity9am",
+    "humidity3pm"
+  )
+
+  df_interp <- df_flagged %>%
+    group_by(location) %>%
+    arrange(date, .by_group = TRUE) %>%
+    mutate(across(
+      all_of(interp_vars),
+      ~ na.approx(., maxgap = MAXGAP, na.rm = FALSE, rule = 2)
+    )) %>%
+    ungroup()
+
+  # Identify ghost sensors
+
+  ghost_prone_vars <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
+
+  ghost_pairs <- df_interp %>%
+    select(location, all_of(ghost_prone_vars)) %>%
+    pivot_longer(
+      cols = all_of(ghost_prone_vars),
+      names_to = "variable",
+      values_to = "value"
+    ) %>%
+    group_by(location, variable) %>%
+    summarise(
+      miss_rate = mean(is.na(value)) * 100,
+      .groups = "drop"
+    ) %>%
+    filter(miss_rate > (GHOST_THRESHOLD * 100)) %>%
+    select(location, variable)
+
+  cat(sprintf("  Found %d ghost sensor instances\n\n", nrow(ghost_pairs)))
+
+  # missRanger imputation (first pass for general variables)
+
+  imputation_data <- df_interp %>%
+    mutate(
+      sin_month = sin(2 * pi * as.numeric(month) / 12),
+      cos_month = cos(2 * pi * as.numeric(month) / 12),
+      sin_doy = sin(2 * pi * day_of_year / 365),
+      cos_doy = cos(2 * pi * day_of_year / 365)
+    )
+
+  metadata_cols <- imputation_data %>% select(date)
+  imputation_cols <- imputation_data %>% select(-date)
+
+  imputed_data <- missRanger(
+    data = imputation_cols,
+    pmm.k = PMM_K,
+    num.trees = 100,
+    sample.fraction = 0.3,
+    min.node.size = 10,
+    seed = 123,
+    verbose = 1,
+    maxiter = MAXITER
+  )
+
+  df_imputed <- bind_cols(metadata_cols, imputed_data) %>%
+    select(-starts_with("sin_"), -starts_with("cos_"))
+
+  # Sanitize ghost sensors
+
+  if (nrow(ghost_pairs) > 0) {
+    ghost_map <- split(ghost_pairs$location, ghost_pairs$variable)
+
+    df_imputed <- df_imputed %>%
+      mutate(across(
+        names(ghost_map),
+        ~ replace(., location %in% ghost_map[[cur_column()]], NA)
+      ))
+
+    cat(sprintf("  Reverted %d instances to NA\n\n", nrow(ghost_pairs)))
+  }
+
+  # Targeted MICE with Random Forest for high-missingness variables
+
+  init <- mice(df_imputed, maxit = 0)
+  pred <- init$predictorMatrix
+  meth <- init$method
+  pred[,] <- 0
+
+  # Set method to random forest for target variables
+  meth["sunshine"] <- "rf"
+  meth["evaporation"] <- "rf"
+  meth["cloud9am"] <- "rf"
+  meth["cloud3pm"] <- "rf"
+
+  # Define predictors for each variable
+  sun_predictors <- intersect(
+    colnames(df_imputed),
+    c("cloud9am", "cloud3pm", "max_temp", "humidity3pm", "location", "month")
+  )
+
+  evap_predictors <- intersect(
+    colnames(df_imputed),
+    c(
+      "wind_gust_speed",
+      "max_temp",
+      "humidity3pm",
+      "sunshine",
+      "location",
+      "month"
+    )
+  )
+
+  cloud_predictors <- intersect(
+    colnames(df_imputed),
+    c("humidity9am", "humidity3pm", "pressure9am", "location", "month")
+  )
+
+  if ("sunshine" %in% rownames(pred)) {
+    pred["sunshine", sun_predictors] <- 1
+  }
+  if ("evaporation" %in% rownames(pred)) {
+    pred["evaporation", evap_predictors] <- 1
+  }
+  if ("cloud9am" %in% rownames(pred)) {
+    pred["cloud9am", cloud_predictors] <- 1
+  }
+  if ("cloud3pm" %in% rownames(pred)) {
+    pred["cloud3pm", cloud_predictors] <- 1
+  }
+
+  ignore_cols <- grep("_flagged$|^date$", colnames(pred), value = TRUE)
+  pred[, ignore_cols] <- 0
+
+  imp <- mice(
+    df_imputed,
+    method = meth,
+    predictorMatrix = pred,
+    m = 1,
+    maxit = 5,
+    seed = 123,
+    printFlag = FALSE
+  )
+
+  df_final <- complete(imp)
+
+  return(df_final)
+}
+
+```
+
+```{r}
+#| label: clean-and-save-imputed
+#| message: false
+#| warning: false
+#| eval: false
+
+df_final <- clean_and_impute_weather(df)
+write_csv(df_final, "data/df_final.csv")
+
+```
+
+```{r}
+#| label: load-imputed-data
+#| echo: false
+#| message: false
+#| warning: false
+
+# Load the pre-computed dataset to save rendering time
+df_final <- read_csv("data/df_final.csv")
+
+```
+
+## Outcome: Complete and Physically Realistic Data
+
+The three-stage imputation strategy produces a complete dataset where:
+
+* **No information is discarded:** Observations with some missing values are retained and improved rather than deleted.
+* **Temporal structure is preserved:** Weather variables maintain their inherent autocorrelation and smooth trajectories.
+* **Physical relationships are respected:** Imputed values reflect the conditional dependencies between meteorological variables.
+* **Uncertainty is acknowledged:** Flagged imputed values allow the model to potentially learn whether missingness itself is informative.
+* **Extreme gaps are handled conservatively:** Extended sensor failures are not artificially filled; genuine missing data remains missing.
+
+The resulting dataset is complete, statistically sound, and ready for exploratory data analysis and advanced modeling.
+
+```{r}
+#| label: save-clean-data
+#| include: false
+
+if (!dir.exists("data")) {
+  dir.create("data")
+}
+
+saveRDS(df_clean, "data/df_clean.rds")
+
+```

@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>3&nbsp; Signal Extraction via Moving Averages – Australian Rainfall Dynamics</title>
+<title>4&nbsp; Signal Extraction via Moving Averages – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./04-modeling.html" rel="next">
-<link href="./02-eda.html" rel="prev">
+<link href="./05-modeling.html" rel="next">
+<link href="./03-eda.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -287,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-features.html">Feature Engineering</a></li><li class="breadcrumb-item"><a href="./03-features.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-features.html">Feature Engineering</a></li><li class="breadcrumb-item"><a href="./04-features.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -319,7 +319,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Predicting the Unpredictable</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -333,14 +339,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-data-prep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span></a>
+  <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-eda.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  <a href="./03-eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -356,8 +362,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-features.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+  <a href="./04-features.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
   </div>
 </li>
       </ul>
@@ -373,28 +379,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-modeling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  <a href="./05-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  <a href="./06-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-model-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  <a href="./07-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-conclusion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="./08-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -407,18 +413,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#strategic-feature-engineering" id="toc-strategic-feature-engineering" class="nav-link active" data-scroll-target="#strategic-feature-engineering"><span class="header-section-number">4</span> Strategic Feature Engineering</a></li>
-  <li><a href="#multicollinearity-diagnostics" id="toc-multicollinearity-diagnostics" class="nav-link" data-scroll-target="#multicollinearity-diagnostics"><span class="header-section-number">5</span> Multicollinearity Diagnostics</a></li>
+  <li><a href="#strategic-feature-engineering" id="toc-strategic-feature-engineering" class="nav-link active" data-scroll-target="#strategic-feature-engineering"><span class="header-section-number">5</span> Strategic Feature Engineering</a></li>
+  <li><a href="#multicollinearity-diagnostics" id="toc-multicollinearity-diagnostics" class="nav-link" data-scroll-target="#multicollinearity-diagnostics"><span class="header-section-number">6</span> Multicollinearity Diagnostics</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/03-features.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/04-features.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-features.html">Feature Engineering</a></li><li class="breadcrumb-item"><a href="./03-features.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-features.html">Feature Engineering</a></li><li class="breadcrumb-item"><a href="./04-features.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -518,10 +524,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-signal-extraction" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-signal-extraction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-features_files/figure-html/fig-signal-extraction-1.png" class="img-fluid figure-img" width="960">
+<img src="04-features_files/figure-html/fig-signal-extraction-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-signal-extraction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.1: Signal Extraction: Moving Averages Filter High-Frequency Noise. The 7-Day Moving Average (Green) suppresses daily stochastic variance to reveal the central tendency of wet regimes.
+Figure&nbsp;4.1: Signal Extraction: Moving Averages Filter High-Frequency Noise. The 7-Day Moving Average (Green) suppresses daily stochastic variance to reveal the central tendency of wet regimes.
 </figcaption>
 </figure>
 </div>
@@ -578,10 +584,10 @@ Figure&nbsp;3.1: Signal Extraction: Moving Averages Filter High-Frequency Noise.
 <div id="fig-variance-reduction" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-variance-reduction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-features_files/figure-html/fig-variance-reduction-1.png" class="img-fluid figure-img" width="768">
+<img src="04-features_files/figure-html/fig-variance-reduction-1.png" class="img-fluid figure-img" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-variance-reduction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.2: Variance Reduction by Window Size. Increasing the moving average window size significantly reduces the standard deviation of the signal.
+Figure&nbsp;4.2: Variance Reduction by Window Size. Increasing the moving average window size significantly reduces the standard deviation of the signal.
 </figcaption>
 </figure>
 </div>
@@ -662,10 +668,10 @@ Figure&nbsp;3.2: Variance Reduction by Window Size. Increasing the moving averag
 <div id="fig-ma-correlation" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ma-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-features_files/figure-html/fig-ma-correlation-1.png" class="img-fluid figure-img" width="768">
+<img src="04-features_files/figure-html/fig-ma-correlation-1.png" class="img-fluid figure-img" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ma-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.3: Feature Correlations: Raw vs Moving Averages. High correlations between MA features (e.g., 0.89 between humidity_ma3 and humidity_ma7) warn of multicollinearity risks.
+Figure&nbsp;4.3: Feature Correlations: Raw vs Moving Averages. High correlations between MA features (e.g., 0.89 between humidity_ma3 and humidity_ma7) warn of multicollinearity risks.
 </figcaption>
 </figure>
 </div>
@@ -725,30 +731,30 @@ Figure&nbsp;3.3: Feature Correlations: Raw vs Moving Averages. High correlations
 <div id="fig-ma-ridgeline" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ma-ridgeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-features_files/figure-html/fig-ma-ridgeline-1.png" class="img-fluid figure-img" width="864">
+<img src="04-features_files/figure-html/fig-ma-ridgeline-1.png" class="img-fluid figure-img" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ma-ridgeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.4: Distribution Tightening with Moving Averages. Ridgeline plots illustrate how the distribution peaks sharpen and tails compress as the averaging window increases.
+Figure&nbsp;4.4: Distribution Tightening with Moving Averages. Ridgeline plots illustrate how the distribution peaks sharpen and tails compress as the averaging window increases.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Meteorological data is inherently stochastic; daily rainfall observations are often “noisy” manifestations of underlying weather regimes. To extract the stable climate signal from this high-frequency noise, we applied Moving Average (MA) filters with 3-day and 7-day windows.</p>
-<p><strong>1. Noise Reduction and Variance Suppression:</strong> The effect of this filtering is visually demonstrated in <a href="#fig-signal-extraction" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>. The raw daily rainfall (Red curve) exhibits a highly skewed, platykurtic distribution with a long tail of extreme events.</p>
+<p><strong>1. Noise Reduction and Variance Suppression:</strong> The effect of this filtering is visually demonstrated in <a href="#fig-signal-extraction" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>. The raw daily rainfall (Red curve) exhibits a highly skewed, platykurtic distribution with a long tail of extreme events.</p>
 <ul>
 <li><strong>3-Day MA (Orange):</strong> begins to smooth out the extremes.</li>
 <li><strong>7-Day MA (Green):</strong> acts as a robust low-pass filter, suppressing the daily variance to reveal a clearer central tendency.</li>
 </ul>
-<p>Quantitatively, this smoothing is substantial. As shown in <a href="#fig-variance-reduction" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>, the standard deviation of rainfall intensity drops from <strong>13.1 mm (Raw)</strong> to <strong>5.8 mm (7-Day MA)</strong>, a reduction of <strong>56%</strong>. This confirms that the 7-day MA effectively captures the “weekly wetness regime” rather than the unpredictability of a single day.</p>
-<p><strong>2. Correlation and Multicollinearity:</strong> While moving averages improve signal stability, they introduce strong autocorrelation. <a href="#fig-ma-correlation" class="quarto-xref">Figure&nbsp;<span>3.3</span></a> reveals:</p>
+<p>Quantitatively, this smoothing is substantial. As shown in <a href="#fig-variance-reduction" class="quarto-xref">Figure&nbsp;<span>4.2</span></a>, the standard deviation of rainfall intensity drops from <strong>13.1 mm (Raw)</strong> to <strong>5.8 mm (7-Day MA)</strong>, a reduction of <strong>56%</strong>. This confirms that the 7-day MA effectively captures the “weekly wetness regime” rather than the unpredictability of a single day.</p>
+<p><strong>2. Correlation and Multicollinearity:</strong> While moving averages improve signal stability, they introduce strong autocorrelation. <a href="#fig-ma-correlation" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> reveals:</p>
 <ul>
 <li><strong>High Autocorrelation:</strong> The 3-day and 7-day humidity moving averages have a Spearman correlation of <strong>0.89</strong>.</li>
 <li><strong>Implication:</strong> Including both raw features and multiple moving averages in a linear model (e.g., Logistic Regression) would likely cause <strong>multicollinearity</strong>, leading to inflated standard errors.</li>
 </ul>
 <p><strong>Conclusion:</strong> Moving averages are powerful for visualizing trends and potentially for tree-based models (Random Forest/XGBoost) that can handle correlated features. However, for linear models, we must select a single temporal window (likely the 3-day MA for responsiveness or 7-day MA for stability) to avoid model instability.</p>
-<section id="strategic-feature-engineering" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Strategic Feature Engineering</h1>
+<section id="strategic-feature-engineering" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Strategic Feature Engineering</h1>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -854,8 +860,8 @@ Figure&nbsp;3.4: Distribution Tightening with Moving Averages. Ridgeline plots i
 <li><strong>Decomposition:</strong> We mapped compass directions to radians and decomposed them into <strong>U (East-West)</strong> and <strong>V (North-South)</strong> vector components. This allows the model to treat wind as a continuous physical force rather than an arbitrary category.</li>
 </ul>
 </section>
-<section id="multicollinearity-diagnostics" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Multicollinearity Diagnostics</h1>
+<section id="multicollinearity-diagnostics" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Multicollinearity Diagnostics</h1>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1595,13 +1601,13 @@ Figure&nbsp;3.4: Distribution Tightening with Moving Averages. Ridgeline plots i
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-eda.html" class="pagination-link" aria-label="Exploratory Data Analysis">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span>
+      <a href="./03-eda.html" class="pagination-link" aria-label="Exploratory Data Analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./04-modeling.html" class="pagination-link" aria-label="Modelling">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./05-modeling.html" class="pagination-link" aria-label="Modelling">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -2078,5 +2084,5 @@ Figure&nbsp;3.4: Distribution Tightening with Moving Averages. Ridgeline plots i
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/03-features.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/04-features.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

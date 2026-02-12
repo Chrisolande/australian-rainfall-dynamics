@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>5&nbsp; Model Evaluation – Australian Rainfall Dynamics</title>
+<title>6&nbsp; Model Evaluation – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./06-model-selection.html" rel="next">
-<link href="./04-modeling.html" rel="prev">
+<link href="./07-model-selection.html" rel="next">
+<link href="./05-modeling.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -316,7 +316,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./05-evaluation.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./06-evaluation.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -348,7 +348,13 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Predicting the Unpredictable</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -362,14 +368,14 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-data-prep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span></a>
+  <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-eda.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  <a href="./03-eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -385,8 +391,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-features.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+  <a href="./04-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
   </div>
 </li>
       </ul>
@@ -402,28 +408,28 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-modeling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  <a href="./05-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-evaluation.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  <a href="./06-evaluation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-model-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  <a href="./07-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-conclusion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="./08-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -436,20 +442,20 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#classification-performance" id="toc-classification-performance" class="nav-link active" data-scroll-target="#classification-performance"><span class="header-section-number">5.1</span> Classification Performance</a></li>
-  <li><a href="#random-effects-visualization" id="toc-random-effects-visualization" class="nav-link" data-scroll-target="#random-effects-visualization"><span class="header-section-number">5.2</span> Random Effects Visualization</a></li>
-  <li><a href="#validating-model-assumptions-dharma" id="toc-validating-model-assumptions-dharma" class="nav-link" data-scroll-target="#validating-model-assumptions-dharma"><span class="header-section-number">5.3</span> Validating Model Assumptions (DHARMa)</a></li>
-  <li><a href="#verifying-temporal-independence" id="toc-verifying-temporal-independence" class="nav-link" data-scroll-target="#verifying-temporal-independence"><span class="header-section-number">5.4</span> Verifying Temporal Independence</a></li>
+  <li><a href="#classification-performance" id="toc-classification-performance" class="nav-link active" data-scroll-target="#classification-performance"><span class="header-section-number">6.1</span> Classification Performance</a></li>
+  <li><a href="#random-effects-visualization" id="toc-random-effects-visualization" class="nav-link" data-scroll-target="#random-effects-visualization"><span class="header-section-number">6.2</span> Random Effects Visualization</a></li>
+  <li><a href="#validating-model-assumptions-dharma" id="toc-validating-model-assumptions-dharma" class="nav-link" data-scroll-target="#validating-model-assumptions-dharma"><span class="header-section-number">6.3</span> Validating Model Assumptions (DHARMa)</a></li>
+  <li><a href="#verifying-temporal-independence" id="toc-verifying-temporal-independence" class="nav-link" data-scroll-target="#verifying-temporal-independence"><span class="header-section-number">6.4</span> Verifying Temporal Independence</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-evaluation.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/06-evaluation.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./05-evaluation.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./06-evaluation.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -467,8 +473,8 @@ window.Quarto = {
 
 
 <p>In this chapter, we rigorously validate the final Mixed-Effects Zero-Inflated Gamma model (M6) across four dimensions: classification performance, spatial heterogeneity, residual diagnostics, and temporal independence.</p>
-<section id="classification-performance" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="classification-performance"><span class="header-section-number">5.1</span> Classification Performance</h2>
+<section id="classification-performance" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="classification-performance"><span class="header-section-number">6.1</span> Classification Performance</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -489,7 +495,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="05-evaluation_files/figure-html/model-evaluation-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="06-evaluation_files/figure-html/model-evaluation-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days.</figcaption>
 </figure>
 </div>
@@ -572,7 +578,7 @@ Model Accuracy: 75.28%</code></pre>
 </div>
 <p>While the Gamma component estimates rainfall <em>amount</em>, the Zero-Inflation component acts as a binary classifier answering: <em>“Will it rain?”</em></p>
 <p><strong>1. Discriminative Power (AUC = 0.832):</strong> In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.</p>
-<p><strong>2. Optimal Thresholding:</strong> Using Youden’s J statistic, the optimal threshold is <strong>0.645</strong> — because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting “No Rain.”</p>
+<p><strong>2. Optimal Thresholding:</strong> Using Youden’s J statistic, the optimal threshold is <strong>0.645</strong> , because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting “No Rain.”</p>
 <p><strong>3. Confusion Matrix Results (Accuracy: 75.41%):</strong></p>
 <ul>
 <li>Correct Dry Predictions (TN): 68,544 days</li>
@@ -580,10 +586,10 @@ Model Accuracy: 75.28%</code></pre>
 <li>False Alarms (Type I): 22,294 days</li>
 <li>Missed Rain (Type II): 12,585 days</li>
 </ul>
-<p>The model is conservative — twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.</p>
+<p>The model is conservative , twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.</p>
 </section>
-<section id="random-effects-visualization" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="random-effects-visualization"><span class="header-section-number">5.2</span> Random Effects Visualization</h2>
+<section id="random-effects-visualization" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="random-effects-visualization"><span class="header-section-number">6.2</span> Random Effects Visualization</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -712,21 +718,21 @@ Model Accuracy: 75.28%</code></pre>
 <div id="fig-location-effects" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-location-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="05-evaluation_files/figure-html/fig-location-effects-1.png" class="img-fluid figure-img" width="960">
+<img src="06-evaluation_files/figure-html/fig-location-effects-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-location-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.1: The Geography of Rain: Random Intercepts by Location. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average; cities in red (e.g., Nhil, Norfolk Island) are inherently drier, after controlling for all dynamic weather variables.
+Figure&nbsp;6.1: The Geography of Rain: Random Intercepts by Location. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average; cities in red (e.g., Nhil, Norfolk Island) are inherently drier, after controlling for all dynamic weather variables.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><strong>1. The Tropical Top End (Wetter):</strong> Katherine (<span class="math inline">\(\beta = 0.59\)</span>) and Darwin (<span class="math inline">\(\beta = 0.54\)</span>) have the highest positive adjustments — even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.</p>
-<p><strong>2. The Arid Interior (Drier):</strong> Nhil (<span class="math inline">\(\beta = -0.73\)</span>) and Norfolk Island (<span class="math inline">\(\beta = -0.65\)</span>) have a suppressive geography — weather systems that produce moderate rain elsewhere produce only light rain here.</p>
+<p><strong>1. The Tropical Top End (Wetter):</strong> Katherine (<span class="math inline">\(\beta = 0.59\)</span>) and Darwin (<span class="math inline">\(\beta = 0.54\)</span>) have the highest positive adjustments , even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.</p>
+<p><strong>2. The Arid Interior (Drier):</strong> Nhil (<span class="math inline">\(\beta = -0.73\)</span>) and Norfolk Island (<span class="math inline">\(\beta = -0.65\)</span>) have a suppressive geography , weather systems that produce moderate rain elsewhere produce only light rain here.</p>
 <p><strong>3. Significance:</strong> The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.</p>
 </section>
-<section id="validating-model-assumptions-dharma" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="validating-model-assumptions-dharma"><span class="header-section-number">5.3</span> Validating Model Assumptions (DHARMa)</h2>
+<section id="validating-model-assumptions-dharma" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="validating-model-assumptions-dharma"><span class="header-section-number">6.3</span> Validating Model Assumptions (DHARMa)</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -736,7 +742,7 @@ Figure&nbsp;5.1: The Geography of Rain: Random Intercepts by Location. Cities in
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="05-evaluation_files/figure-html/model-diagnostics-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="06-evaluation_files/figure-html/model-diagnostics-1.png" class="img-fluid figure-img" width="960"></p>
 <figcaption>DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs.&nbsp;Predicted shows no fanning or curvature, confirming homoscedasticity.</figcaption>
 </figure>
 </div>
@@ -748,7 +754,7 @@ Figure&nbsp;5.1: The Geography of Rain: Random Intercepts by Location. Cities in
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="05-evaluation_files/figure-html/model-diagnostics-2.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="06-evaluation_files/figure-html/model-diagnostics-2.png" class="img-fluid figure-img" width="960"></p>
 <figcaption>DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs.&nbsp;Predicted shows no fanning or curvature, confirming homoscedasticity.</figcaption>
 </figure>
 </div>
@@ -769,7 +775,7 @@ alternative hypothesis: two.sided</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="05-evaluation_files/figure-html/model-diagnostics-3.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="06-evaluation_files/figure-html/model-diagnostics-3.png" class="img-fluid figure-img" width="960"></p>
 <figcaption>DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs.&nbsp;Predicted shows no fanning or curvature, confirming homoscedasticity.</figcaption>
 </figure>
 </div>
@@ -785,15 +791,15 @@ alternative hypothesis: two.sided</code></pre>
 </div>
 </div>
 <p><strong>1. Q-Q Plot:</strong> Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows <span class="math inline">\(p &lt; 0.05\)</span> (expected at <span class="math inline">\(N &gt; 140,000\)</span>), visual deviations are negligible. The <strong>Gamma distribution</strong> correctly characterizes the positive rainfall values.</p>
-<p><strong>2. Residuals vs.&nbsp;Predicted:</strong> The red quantile lines (25th, 50th, 75th) are straight and horizontal — <strong>no significant non-linearity or heteroscedasticity</strong>. The model performs equally well for light drizzle and heavy storms.</p>
+<p><strong>2. Residuals vs.&nbsp;Predicted:</strong> The red quantile lines (25th, 50th, 75th) are straight and horizontal , <strong>no significant non-linearity or heteroscedasticity</strong>. The model performs equally well for light drizzle and heavy storms.</p>
 <p><strong>3. Formal Tests:</strong></p>
 <ul>
-<li><strong>Dispersion Test:</strong> <span class="math inline">\(p = 0.192\)</span> — we fail to reject ideal dispersion. The <code>ziGamma</code> family successfully handled the variance structure without over-dispersion.</li>
-<li><strong>Zero-Inflation Test:</strong> Ratio of observed to simulated zeros = <strong>1.00</strong> (<span class="math inline">\(p = 0.992\)</span>) — the model predicts the exact correct number of dry days.</li>
+<li><strong>Dispersion Test:</strong> <span class="math inline">\(p = 0.192\)</span> , we fail to reject ideal dispersion. The <code>ziGamma</code> family successfully handled the variance structure without over-dispersion.</li>
+<li><strong>Zero-Inflation Test:</strong> Ratio of observed to simulated zeros = <strong>1.00</strong> (<span class="math inline">\(p = 0.992\)</span>) , the model predicts the exact correct number of dry days.</li>
 </ul>
 </section>
-<section id="verifying-temporal-independence" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="verifying-temporal-independence"><span class="header-section-number">5.4</span> Verifying Temporal Independence</h2>
+<section id="verifying-temporal-independence" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="verifying-temporal-independence"><span class="header-section-number">6.4</span> Verifying Temporal Independence</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -812,7 +818,7 @@ alternative hypothesis: two.sided</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="05-evaluation_files/figure-html/temporal-autocorrelation-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="06-evaluation_files/figure-html/temporal-autocorrelation-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Temporal Autocorrelation Check (Canberra). Left: Residuals vs.&nbsp;Time showing random scatter. Right: ACF plot showing all lags within the blue confidence bounds, confirming independence.</figcaption>
 </figure>
 </div>
@@ -831,7 +837,7 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 </div>
 </div>
 <p><strong>1. Durbin-Watson Statistic = 2.0406:</strong> A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.</p>
-<p><strong>2. Statistical Significance:</strong> <span class="math inline">\(p = 0.2355\)</span> — we fail to reject independence. There is <strong>no evidence of temporal autocorrelation</strong> in the residuals.</p>
+<p><strong>2. Statistical Significance:</strong> <span class="math inline">\(p = 0.2355\)</span> , we fail to reject independence. There is <strong>no evidence of temporal autocorrelation</strong> in the residuals.</p>
 <p><strong>3. Interpretation:</strong> By explicitly including <code>rain_yesterday</code> (Markov chain) and <code>ns(days_since_rain)</code> (spline), we successfully “bleached” the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.</p>
 
 
@@ -1312,13 +1318,13 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./04-modeling.html" class="pagination-link" aria-label="Modelling">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span>
+      <a href="./05-modeling.html" class="pagination-link" aria-label="Modelling">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./06-model-selection.html" class="pagination-link" aria-label="Model Selection">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./07-model-selection.html" class="pagination-link" aria-label="Model Selection">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -1396,7 +1402,7 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-76"><a href="#cb16-76"></a></span>
 <span id="cb16-77"><a href="#cb16-77"></a>**1. Discriminative Power (AUC = 0.832):** In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.</span>
 <span id="cb16-78"><a href="#cb16-78"></a></span>
-<span id="cb16-79"><a href="#cb16-79"></a>**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** — because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."</span>
+<span id="cb16-79"><a href="#cb16-79"></a>**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** , because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."</span>
 <span id="cb16-80"><a href="#cb16-80"></a></span>
 <span id="cb16-81"><a href="#cb16-81"></a>**3. Confusion Matrix Results (Accuracy: 75.41%):**</span>
 <span id="cb16-82"><a href="#cb16-82"></a></span>
@@ -1405,7 +1411,7 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-85"><a href="#cb16-85"></a><span class="ss">- </span>False Alarms (Type I): 22,294 days</span>
 <span id="cb16-86"><a href="#cb16-86"></a><span class="ss">- </span>Missed Rain (Type II): 12,585 days</span>
 <span id="cb16-87"><a href="#cb16-87"></a></span>
-<span id="cb16-88"><a href="#cb16-88"></a>The model is conservative — twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.</span>
+<span id="cb16-88"><a href="#cb16-88"></a>The model is conservative , twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.</span>
 <span id="cb16-89"><a href="#cb16-89"></a></span>
 <span id="cb16-90"><a href="#cb16-90"></a><span class="fu">## Random Effects Visualization</span></span>
 <span id="cb16-91"><a href="#cb16-91"></a></span>
@@ -1539,9 +1545,9 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-221"><a href="#cb16-221"></a>  )</span>
 <span id="cb16-222"><a href="#cb16-222"></a><span class="in">```</span></span>
 <span id="cb16-223"><a href="#cb16-223"></a></span>
-<span id="cb16-224"><a href="#cb16-224"></a>**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments — even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.</span>
+<span id="cb16-224"><a href="#cb16-224"></a>**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments , even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.</span>
 <span id="cb16-225"><a href="#cb16-225"></a></span>
-<span id="cb16-226"><a href="#cb16-226"></a>**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography — weather systems that produce moderate rain elsewhere produce only light rain here.</span>
+<span id="cb16-226"><a href="#cb16-226"></a>**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography , weather systems that produce moderate rain elsewhere produce only light rain here.</span>
 <span id="cb16-227"><a href="#cb16-227"></a></span>
 <span id="cb16-228"><a href="#cb16-228"></a>**3. Significance:** The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.</span>
 <span id="cb16-229"><a href="#cb16-229"></a></span>
@@ -1565,12 +1571,12 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-249"><a href="#cb16-249"></a></span>
 <span id="cb16-250"><a href="#cb16-250"></a>**1. Q-Q Plot:** Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows $p &lt; 0.05$ (expected at $N &gt; 140,000$), visual deviations are negligible. The **Gamma distribution** correctly characterizes the positive rainfall values.</span>
 <span id="cb16-251"><a href="#cb16-251"></a></span>
-<span id="cb16-252"><a href="#cb16-252"></a>**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal — **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.</span>
+<span id="cb16-252"><a href="#cb16-252"></a>**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal , **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.</span>
 <span id="cb16-253"><a href="#cb16-253"></a></span>
 <span id="cb16-254"><a href="#cb16-254"></a>**3. Formal Tests:**</span>
 <span id="cb16-255"><a href="#cb16-255"></a></span>
-<span id="cb16-256"><a href="#cb16-256"></a><span class="ss">- </span>**Dispersion Test:** $p = 0.192$ — we fail to reject ideal dispersion. The <span class="in">`ziGamma`</span> family successfully handled the variance structure without over-dispersion.</span>
-<span id="cb16-257"><a href="#cb16-257"></a><span class="ss">- </span>**Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) — the model predicts the exact correct number of dry days.</span>
+<span id="cb16-256"><a href="#cb16-256"></a><span class="ss">- </span>**Dispersion Test:** $p = 0.192$ , we fail to reject ideal dispersion. The <span class="in">`ziGamma`</span> family successfully handled the variance structure without over-dispersion.</span>
+<span id="cb16-257"><a href="#cb16-257"></a><span class="ss">- </span>**Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) , the model predicts the exact correct number of dry days.</span>
 <span id="cb16-258"><a href="#cb16-258"></a></span>
 <span id="cb16-259"><a href="#cb16-259"></a><span class="fu">## Verifying Temporal Independence</span></span>
 <span id="cb16-260"><a href="#cb16-260"></a></span>
@@ -1598,7 +1604,7 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-284"><a href="#cb16-284"></a></span>
 <span id="cb16-285"><a href="#cb16-285"></a>**1. Durbin-Watson Statistic = 2.0406:** A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.</span>
 <span id="cb16-286"><a href="#cb16-286"></a></span>
-<span id="cb16-287"><a href="#cb16-287"></a>**2. Statistical Significance:** $p = 0.2355$ — we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.</span>
+<span id="cb16-287"><a href="#cb16-287"></a>**2. Statistical Significance:** $p = 0.2355$ , we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.</span>
 <span id="cb16-288"><a href="#cb16-288"></a></span>
 <span id="cb16-289"><a href="#cb16-289"></a>**3. Interpretation:** By explicitly including <span class="in">`rain_yesterday`</span> (Markov chain) and <span class="in">`ns(days_since_rain)`</span> (spline), we successfully "bleached" the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
@@ -1608,5 +1614,5 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-evaluation.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/06-evaluation.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

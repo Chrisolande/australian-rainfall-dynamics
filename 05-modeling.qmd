@@ -22,7 +22,7 @@ librarian::shelf(
 )
 
 df_scaled <- read_csv(here::here("data", "df_scaled.csv"))
-df_final  <- read_csv(here::here("data", "df_engineered.csv"))
+df_final <- read_csv(here::here("data", "df_engineered.csv"))
 
 source(here::here("utils.R"))
 
@@ -40,10 +40,10 @@ if (file.exists(here::here("models/all_models_bundle.RData"))) {
 #| eval: false
 
 m0_null <- glmmTMB(
-  formula   = rainfall ~ 1,
+  formula = rainfall ~ 1,
   ziformula = ~1,
-  family    = Gamma(link = "log"),
-  data      = df_scaled
+  family = Gamma(link = "log"),
+  data = df_scaled
 )
 ```
 
@@ -52,15 +52,15 @@ m0_null <- glmmTMB(
 
 tab_model(
   m0_null,
-  show.se        = TRUE,
-  show.aic       = TRUE,
-  transform      = "exp",
-  collapse.se    = TRUE,
-  p.style        = "numeric_stars",
-  string.pred    = "Parameter",
-  string.est     = "Estimate (Exp)",
-  dv.labels      = "Baseline Rainfall Model",
-  title          = "Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"
+  show.se = TRUE,
+  show.aic = TRUE,
+  transform = "exp",
+  collapse.se = TRUE,
+  p.style = "numeric_stars",
+  string.pred = "Parameter",
+  string.est = "Estimate (Exp)",
+  dv.labels = "Baseline Rainfall Model",
+  title = "Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"
 )
 ```
 
@@ -100,8 +100,8 @@ m1_moisture %>%
   tbl_regression(
     exponentiate = TRUE,
     label = list(
-      humidity3pm    ~ "Humidity (3pm)",
-      dewpoint_9am   ~ "Dewpoint (9am)",
+      humidity3pm ~ "Humidity (3pm)",
+      dewpoint_9am ~ "Dewpoint (9am)",
       dewpoint_change ~ "Dewpoint Change (Delta)",
       pressure_change ~ "Pressure Change (Delta)"
     )
@@ -114,11 +114,11 @@ m1_moisture %>%
 
 Building upon the baseline, Model 1 incorporates the primary moisture and pressure drivers identified in EDA. We test the hypothesis that atmospheric moisture (`humidity`, `dewpoint`) and pressure stability (`pressure_change`) drive both the occurrence and intensity of rainfall.
 
-**1. Performance:** AIC dropped from 461,669.7 to 422,847 — a reduction of $\Delta AIC \approx 38,823$, confirming that moisture dynamics are foundational predictors.
+**1. Performance:** AIC dropped from 461,669.7 to 422,847 , a reduction of $\Delta AIC \approx 38,823$, confirming that moisture dynamics are foundational predictors.
 
 **2. Conditional Model:** All predictors are statistically significant ($p < 2e^{-16}$). `humidity3pm` ($\beta = 0.38$) and `dewpoint_9am` ($\beta = 0.38$) both have strong positive effects on intensity.
 
-**3. Zero-Inflation Model:** `humidity3pm` coefficient is **-1.07** — a negative value here means higher humidity *decreases* the probability of a dry day, i.e., increases the probability of rain. Notably, `dewpoint_9am` is not significant in the zero-inflation part ($p = 0.907$), implying that *relative* saturation (humidity) determines *if* it rains, while *absolute* moisture (dewpoint) determines *how hard*.
+**3. Zero-Inflation Model:** `humidity3pm` coefficient is **-1.07** , a negative value here means higher humidity *decreases* the probability of a dry day, i.e., increases the probability of rain. Notably, `dewpoint_9am` is not significant in the zero-inflation part ($p = 0.907$), implying that *relative* saturation (humidity) determines *if* it rains, while *absolute* moisture (dewpoint) determines *how hard*.
 
 ## Temporal Dynamics and Persistence
 
@@ -146,11 +146,11 @@ m2_temporal %>%
   tbl_regression(
     exponentiate = TRUE,
     label = list(
-      day_cos          ~ "Seasonality (Cos)",
-      day_sin          ~ "Seasonality (Sin)",
-      rain_yesterday   ~ "Rain Yesterday (Persistence)",
+      day_cos ~ "Seasonality (Cos)",
+      day_sin ~ "Seasonality (Sin)",
+      rain_yesterday ~ "Rain Yesterday (Persistence)",
       cloud_development ~ "Cloud Development",
-      pressure_change  ~ "Pressure Change"
+      pressure_change ~ "Pressure Change"
     )
   ) %>%
   bold_p() %>%
@@ -165,7 +165,7 @@ Model 2 incorporates **seasonality** (cyclical encoding) and **persistence** (Ma
 
 **2. Seasonality:** Both `day_cos` and `day_sin` are highly significant, mathematically confirming the "Summer Peak" pattern.
 
-**3. The "Persistence" Effect:** `rain_yesterdayYes` ($\beta = -1.42$) is the strongest predictor in the zero-inflation model. $\exp(-1.42) \approx 0.24$ — if it rained yesterday, the odds of today being dry drop by ~76%.
+**3. The "Persistence" Effect:** `rain_yesterdayYes` ($\beta = -1.42$) is the strongest predictor in the zero-inflation model. $\exp(-1.42) \approx 0.24$ , if it rained yesterday, the odds of today being dry drop by ~76%.
 
 ## Historical Context and Persistence
 
@@ -193,10 +193,10 @@ m3_history %>%
   tbl_regression(
     exponentiate = TRUE,
     label = list(
-      rainfall_ma7    ~ "Rainfall Trend (7-Day MA)",
-      humidity_ma7    ~ "Humidity Trend (7-Day MA)",
+      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
+      humidity_ma7 ~ "Humidity Trend (7-Day MA)",
       days_since_rain ~ "Dry Spell Length (Days)",
-      rain_yesterday  ~ "Rain Yesterday (Indicator)"
+      rain_yesterday ~ "Rain Yesterday (Indicator)"
     )
   ) %>%
   bold_p() %>%
@@ -205,16 +205,16 @@ m3_history %>%
   modify_caption("**Model 3: Historical Trends & Lagged Effects**")
 ```
 
-Model 3 integrates **history** — recent weather trends — to capture how the atmosphere's accumulated state affects today's rainfall intensity.
+Model 3 integrates **history** , recent weather trends , to capture how the atmosphere's accumulated state affects today's rainfall intensity.
 
-**1. Performance:** AIC = 404,936.2 ($\Delta AIC \approx 1,723$ vs M2) — meaningful improvement with diminishing returns compared to earlier leaps.
+**1. Performance:** AIC = 404,936.2 ($\Delta AIC \approx 1,723$ vs M2) , meaningful improvement with diminishing returns compared to earlier leaps.
 
 **2. Key Findings:**
 
 - `rain_yesterday` ($\beta = 0.31$): If it rained yesterday, today's rainfall is likely ~37% more intense ($e^{0.31} \approx 1.36$).
 - `rainfall_ma7` ($\beta = 0.13$): A wetter preceding week correlates with heavier rainfall today.
 - `humidity_ma7` ($\beta = -0.10$): A persistently humid week may indicate stable, low-intensity stratiform clouds rather than convective storms.
-- `days_since_rain`: **Not significant** for intensity ($p = 0.14$) — dry spell length predicts *whether* it rains, not *how much*.
+- `days_since_rain`: **Not significant** for intensity ($p = 0.14$) , dry spell length predicts *whether* it rains, not *how much*.
 
 ## Energy Dynamics and Interactions
 
@@ -247,11 +247,11 @@ m4_energy %>%
   tbl_regression(
     exponentiate = TRUE,
     label = list(
-      sunshine             ~ "Sunshine Duration (Hours)",
-      evaporation          ~ "Evaporation Rate",
-      instability_index    ~ "Instability Index (Derived)",
+      sunshine ~ "Sunshine Duration (Hours)",
+      evaporation ~ "Evaporation Rate",
+      instability_index ~ "Instability Index (Derived)",
       sun_humid_interaction ~ "Interaction: Sun * Humid",
-      cloud_development    ~ "Cloud Development (Delta)"
+      cloud_development ~ "Cloud Development (Delta)"
     )
   ) %>%
   bold_p() %>%
@@ -264,9 +264,9 @@ Model 4 incorporates **energy dynamics** (solar radiation, evaporation) and **at
 
 **1. Performance:** AIC = 403,051.8 ($\Delta AIC \approx 1,884$ vs M3).
 
-**2. The "Rain Corner" Interaction:** `sun_humid_interaction` ($\beta = -0.08$) is highly significant — the heaviest rain occurs when humidity is high *and* sunshine is low (deep cloud cover).
+**2. The "Rain Corner" Interaction:** `sun_humid_interaction` ($\beta = -0.08$) is highly significant , the heaviest rain occurs when humidity is high *and* sunshine is low (deep cloud cover).
 
-**3. Shift in Humidity Importance:** `humidity3pm` dropped from 0.39 (M3) to 0.08 (M4). This is not a loss of importance — the variance has been correctly partitioned into `instability_index` and `sun_humid_interaction`. The model now understands *why* humidity matters.
+**3. Shift in Humidity Importance:** `humidity3pm` dropped from 0.39 (M3) to 0.08 (M4). This is not a loss of importance , the variance has been correctly partitioned into `instability_index` and `sun_humid_interaction`. The model now understands *why* humidity matters.
 
 ## Wind Dynamics
 
@@ -294,8 +294,8 @@ m5_wind %>%
   tbl_regression(
     exponentiate = TRUE,
     label = list(
-      gust_U_EW    ~ "Gust Vector (East-West)",
-      gust_V_NS    ~ "Gust Vector (North-South)",
+      gust_U_EW ~ "Gust Vector (East-West)",
+      gust_V_NS ~ "Gust Vector (North-South)",
       wind9am_U_EW ~ "Wind 9am Vector (East-West)",
       wind9am_V_NS ~ "Wind 9am Vector (North-South)"
     )
@@ -308,12 +308,12 @@ m5_wind %>%
 
 Model 5 introduces **Wind Vector Decomposition** into North-South ($V$) and East-West ($U$) components, testing whether specific airflow origins drive rainfall intensity.
 
-**1. Performance:** AIC = 402,452.7 ($\Delta AIC \approx 600$ vs M4) — smaller but still highly significant.
+**1. Performance:** AIC = 402,452.7 ($\Delta AIC \approx 600$ vs M4) , smaller but still highly significant.
 
 **2. Physical Interpretation:**
 
-- `wind9am_V_NS` ($\beta = -0.088$): Southerly winds (negative $V$) increase rainfall — validating "Southerly Busters" from the Southern Ocean.
-- `wind9am_U_EW` ($\beta = -0.085$): Westerly winds (negative $U$) increase rainfall — capturing the "Roaring Forties."
+- `wind9am_V_NS` ($\beta = -0.088$): Southerly winds (negative $V$) increase rainfall , validating "Southerly Busters" from the Southern Ocean.
+- `wind9am_U_EW` ($\beta = -0.085$): Westerly winds (negative $U$) increase rainfall , capturing the "Roaring Forties."
 - Morning winds have coefficients ~3–4x larger than gusts, confirming that **prevailing air mass direction** matters more than localized turbulence.
 
 **3. Model Stability:** Coefficients for previous drivers remained stable, confirming wind vectors explain *new* variance rather than displacing existing predictors.
@@ -330,25 +330,46 @@ re_data <- select_model_features(df_final, keep_location = TRUE) %>%
 
 ctrl <- glmmTMBControl(
   optimizer = optim,
-  optArgs   = list(method = "BFGS"),
-  optCtrl   = list(maxit = 1000)
+  optArgs = list(method = "BFGS"),
+  optCtrl = list(maxit = 1000)
 )
 
 m6_mixed <- glmmTMB(
   rainfall ~
-    humidity3pm + dewpoint_9am + dewpoint_change + pressure_change +
-    day_cos + day_sin +
-    rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday +
-    sunshine + evaporation + instability_index + sun_humid_interaction +
+    humidity3pm +
+    dewpoint_9am +
+    dewpoint_change +
+    pressure_change +
+    day_cos +
+    day_sin +
+    rainfall_ma7 +
+    days_since_rain +
+    humidity_ma7 +
+    rain_yesterday +
+    sunshine +
+    evaporation +
+    instability_index +
+    sun_humid_interaction +
     cloud_development +
-    gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW +
+    gust_U_EW +
+    gust_V_NS +
+    wind9am_V_NS +
+    wind9am_U_EW +
     diag(1 + humidity3pm + rain_yesterday + dewpoint_change | location),
-  ziformula = ~ humidity3pm + dewpoint_9am + rain_yesterday +
-    cloud_development + pressure_change + sunshine + evaporation +
-    ns(days_since_rain, df = 4) + humidity_ma7 + day_cos + day_sin,
-  data    = re_data,
+  ziformula = ~ humidity3pm +
+    dewpoint_9am +
+    rain_yesterday +
+    cloud_development +
+    pressure_change +
+    sunshine +
+    evaporation +
+    ns(days_since_rain, df = 4) +
+    humidity_ma7 +
+    day_cos +
+    day_sin,
+  data = re_data,
   control = ctrl,
-  family  = ziGamma(link = "log")
+  family = ziGamma(link = "log")
 )
 ```
 
@@ -360,23 +381,25 @@ m6_mixed %>%
   tbl_regression(
     exponentiate = TRUE,
     label = list(
-      humidity3pm              ~ "Humidity (3pm)",
-      sunshine                 ~ "Sunshine Duration",
-      sun_humid_interaction    ~ "Interaction: Sun * Humid",
-      rainfall_ma7             ~ "Rainfall Trend (7-Day MA)",
-      days_since_rain          ~ "Dry Spell Length (Linear)",
-      rain_yesterday           ~ "Rain Yesterday (Indicator)",
-      gust_U_EW                ~ "Gust Vector (East-West)",
-      gust_V_NS                ~ "Gust Vector (North-South)",
-      instability_index        ~ "Instability Index",
-      day_cos                  ~ "Seasonality (Cos)",
-      day_sin                  ~ "Seasonality (Sin)"
+      humidity3pm ~ "Humidity (3pm)",
+      sunshine ~ "Sunshine Duration",
+      sun_humid_interaction ~ "Interaction: Sun * Humid",
+      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
+      days_since_rain ~ "Dry Spell Length (Linear)",
+      rain_yesterday ~ "Rain Yesterday (Indicator)",
+      gust_U_EW ~ "Gust Vector (East-West)",
+      gust_V_NS ~ "Gust Vector (North-South)",
+      instability_index ~ "Instability Index",
+      day_cos ~ "Seasonality (Cos)",
+      day_sin ~ "Seasonality (Sin)"
     )
   ) %>%
   bold_p() %>%
   add_glance_table(include = c("AIC", "BIC", "logLik", "nobs")) %>%
   modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 6: The Final Mixed-Effects Model (Random Slopes)**") %>%
+  modify_caption(
+    "**Model 6: The Final Mixed-Effects Model (Random Slopes)**"
+  ) %>%
   as_gt() %>%
   gt::tab_footnote(
     footnote = "Random Effects Structure: Uncorrelated random slopes for Humidity, Persistence, and Dewpoint by Location."
@@ -385,14 +408,14 @@ m6_mixed %>%
 
 The final model addresses the hierarchical nature of the data by introducing **Random Effects**, allowing parameters to vary by `location`.
 
-**1. Performance:** AIC = 394,854.0 ($\Delta AIC \approx 7,599$ vs M5) — a massive improvement confirming that **spatial heterogeneity** is a dominant source of variance.
+**1. Performance:** AIC = 394,854.0 ($\Delta AIC \approx 7,599$ vs M5) , a massive improvement confirming that **spatial heterogeneity** is a dominant source of variance.
 
 **2. Random Effects Structure:**
 
 - **Random Intercepts** ($\sigma^2 = 0.12$): Baseline rainfall varies significantly between locations.
-- **Random Slope — Humidity** ($\sigma^2 = 0.023$): The effect of humidity on rainfall differs by location.
-- **Random Slope — Persistence** ($\sigma^2 = 0.013$): The "stickiness" of wet weather varies spatially.
+- **Random Slope , Humidity** ($\sigma^2 = 0.023$): The effect of humidity on rainfall differs by location.
+- **Random Slope , Persistence** ($\sigma^2 = 0.013$): The "stickiness" of wet weather varies spatially.
 
-**3. Fixed Effects Stability:** Wind Vectors, Instability, and the "Rain Corner" interaction all remained highly significant globally — these are robust, continent-wide drivers.
+**3. Fixed Effects Stability:** Wind Vectors, Instability, and the "Rain Corner" interaction all remained highly significant globally , these are robust, continent-wide drivers.
 
 **4. Splines in Zero-Inflation:** `ns(days_since_rain, df=4)` allows the probability of a dry spell ending to vary non-linearly, capturing the complex "kink" observed in dry spell survival plots.

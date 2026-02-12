@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>4&nbsp; Modelling – Australian Rainfall Dynamics</title>
+<title>5&nbsp; Modelling – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./05-evaluation.html" rel="next">
-<link href="./03-features.html" rel="prev">
+<link href="./06-evaluation.html" rel="next">
+<link href="./04-features.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -314,7 +314,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./04-modeling.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./05-modeling.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -346,7 +346,13 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Predicting the Unpredictable</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -360,14 +366,14 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-data-prep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Computational Environment and Data Ingestion</span></span></a>
+  <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-eda.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  <a href="./03-eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -383,8 +389,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-features.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+  <a href="./04-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
   </div>
 </li>
       </ul>
@@ -400,28 +406,28 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-modeling.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  <a href="./05-modeling.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  <a href="./06-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-model-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  <a href="./07-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-conclusion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="./08-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -434,23 +440,23 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#establishing-the-baseline-null-model" id="toc-establishing-the-baseline-null-model" class="nav-link active" data-scroll-target="#establishing-the-baseline-null-model"><span class="header-section-number">4.1</span> Establishing the Baseline (Null Model)</a></li>
-  <li><a href="#moisture-dynamics" id="toc-moisture-dynamics" class="nav-link" data-scroll-target="#moisture-dynamics"><span class="header-section-number">4.2</span> Moisture Dynamics</a></li>
-  <li><a href="#temporal-dynamics-and-persistence" id="toc-temporal-dynamics-and-persistence" class="nav-link" data-scroll-target="#temporal-dynamics-and-persistence"><span class="header-section-number">4.3</span> Temporal Dynamics and Persistence</a></li>
-  <li><a href="#historical-context-and-persistence" id="toc-historical-context-and-persistence" class="nav-link" data-scroll-target="#historical-context-and-persistence"><span class="header-section-number">4.4</span> Historical Context and Persistence</a></li>
-  <li><a href="#energy-dynamics-and-interactions" id="toc-energy-dynamics-and-interactions" class="nav-link" data-scroll-target="#energy-dynamics-and-interactions"><span class="header-section-number">4.5</span> Energy Dynamics and Interactions</a></li>
-  <li><a href="#wind-dynamics" id="toc-wind-dynamics" class="nav-link" data-scroll-target="#wind-dynamics"><span class="header-section-number">4.6</span> Wind Dynamics</a></li>
-  <li><a href="#spatial-heterogeneity-mixed-effects" id="toc-spatial-heterogeneity-mixed-effects" class="nav-link" data-scroll-target="#spatial-heterogeneity-mixed-effects"><span class="header-section-number">4.7</span> Spatial Heterogeneity (Mixed Effects)</a></li>
+  <li><a href="#establishing-the-baseline-null-model" id="toc-establishing-the-baseline-null-model" class="nav-link active" data-scroll-target="#establishing-the-baseline-null-model"><span class="header-section-number">5.1</span> Establishing the Baseline (Null Model)</a></li>
+  <li><a href="#moisture-dynamics" id="toc-moisture-dynamics" class="nav-link" data-scroll-target="#moisture-dynamics"><span class="header-section-number">5.2</span> Moisture Dynamics</a></li>
+  <li><a href="#temporal-dynamics-and-persistence" id="toc-temporal-dynamics-and-persistence" class="nav-link" data-scroll-target="#temporal-dynamics-and-persistence"><span class="header-section-number">5.3</span> Temporal Dynamics and Persistence</a></li>
+  <li><a href="#historical-context-and-persistence" id="toc-historical-context-and-persistence" class="nav-link" data-scroll-target="#historical-context-and-persistence"><span class="header-section-number">5.4</span> Historical Context and Persistence</a></li>
+  <li><a href="#energy-dynamics-and-interactions" id="toc-energy-dynamics-and-interactions" class="nav-link" data-scroll-target="#energy-dynamics-and-interactions"><span class="header-section-number">5.5</span> Energy Dynamics and Interactions</a></li>
+  <li><a href="#wind-dynamics" id="toc-wind-dynamics" class="nav-link" data-scroll-target="#wind-dynamics"><span class="header-section-number">5.6</span> Wind Dynamics</a></li>
+  <li><a href="#spatial-heterogeneity-mixed-effects" id="toc-spatial-heterogeneity-mixed-effects" class="nav-link" data-scroll-target="#spatial-heterogeneity-mixed-effects"><span class="header-section-number">5.7</span> Spatial Heterogeneity (Mixed Effects)</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/04-modeling.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-modeling.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./04-modeling.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-modeling.html">Modelling</a></li><li class="breadcrumb-item"><a href="./05-modeling.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Modelling</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -468,16 +474,16 @@ window.Quarto = {
 
 
 <p>In this chapter, we progressively build our statistical framework, starting from a null baseline and adding layers of physical complexity. We utilize <strong>Zero-Inflated Gamma (ZIG)</strong> models to handle the dual nature of rainfall data (probability of occurrence vs.&nbsp;intensity).</p>
-<section id="establishing-the-baseline-null-model" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="establishing-the-baseline-null-model"><span class="header-section-number">4.1</span> Establishing the Baseline (Null Model)</h2>
+<section id="establishing-the-baseline-null-model" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="establishing-the-baseline-null-model"><span class="header-section-number">5.1</span> Establishing the Baseline (Null Model)</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>m0_null <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
-<span id="cb1-2"><a href="#cb1-2"></a>  <span class="at">formula   =</span> rainfall <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="at">formula =</span> rainfall <span class="sc">~</span> <span class="dv">1</span>,</span>
 <span id="cb1-3"><a href="#cb1-3"></a>  <span class="at">ziformula =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
-<span id="cb1-4"><a href="#cb1-4"></a>  <span class="at">family    =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
-<span id="cb1-5"><a href="#cb1-5"></a>  <span class="at">data      =</span> df_scaled</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="at">data =</span> df_scaled</span>
 <span id="cb1-6"><a href="#cb1-6"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -486,15 +492,15 @@ window.Quarto = {
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">tab_model</span>(</span>
 <span id="cb2-2"><a href="#cb2-2"></a>  m0_null,</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="at">show.se        =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>  <span class="at">show.aic       =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="at">transform      =</span> <span class="st">"exp"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>  <span class="at">collapse.se    =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>  <span class="at">p.style        =</span> <span class="st">"numeric_stars"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8"></a>  <span class="at">string.pred    =</span> <span class="st">"Parameter"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>  <span class="at">string.est     =</span> <span class="st">"Estimate (Exp)"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10"></a>  <span class="at">dv.labels      =</span> <span class="st">"Baseline Rainfall Model"</span>,</span>
-<span id="cb2-11"><a href="#cb2-11"></a>  <span class="at">title          =</span> <span class="st">"Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="at">show.se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="at">show.aic =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="at">transform =</span> <span class="st">"exp"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="at">collapse.se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="at">p.style =</span> <span class="st">"numeric_stars"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="at">string.pred =</span> <span class="st">"Parameter"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="at">string.est =</span> <span class="st">"Estimate (Exp)"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10"></a>  <span class="at">dv.labels =</span> <span class="st">"Baseline Rainfall Model"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="at">title =</span> <span class="st">"Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"</span></span>
 <span id="cb2-12"><a href="#cb2-12"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
@@ -582,8 +588,8 @@ window.Quarto = {
 <p><span class="math display">\[\mu_{\text{rain}} = e^{1.8825} \approx 6.57 \text{ mm}\]</span></p>
 <p><strong>3. Performance Baseline:</strong> AIC = 461,669.7. Any subsequent model must achieve a significantly lower AIC to demonstrate predictive power.</p>
 </section>
-<section id="moisture-dynamics" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="moisture-dynamics"><span class="header-section-number">4.2</span> Moisture Dynamics</h2>
+<section id="moisture-dynamics" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="moisture-dynamics"><span class="header-section-number">5.2</span> Moisture Dynamics</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -596,23 +602,23 @@ window.Quarto = {
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="hdsaesmczk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hdsaesmczk table {
+<div id="ymkgfmznxu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ymkgfmznxu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hdsaesmczk thead, #hdsaesmczk tbody, #hdsaesmczk tfoot, #hdsaesmczk tr, #hdsaesmczk td, #hdsaesmczk th {
+#ymkgfmznxu thead, #ymkgfmznxu tbody, #ymkgfmznxu tfoot, #ymkgfmznxu tr, #ymkgfmznxu td, #ymkgfmznxu th {
   border-style: none;
 }
 
-#hdsaesmczk p {
+#ymkgfmznxu p {
   margin: 0;
   padding: 0;
 }
 
-#hdsaesmczk .gt_table {
+#ymkgfmznxu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -638,12 +644,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_caption {
+#ymkgfmznxu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hdsaesmczk .gt_title {
+#ymkgfmznxu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -655,7 +661,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#hdsaesmczk .gt_subtitle {
+#ymkgfmznxu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -667,7 +673,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#hdsaesmczk .gt_heading {
+#ymkgfmznxu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -679,13 +685,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_bottom_border {
+#ymkgfmznxu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_col_headings {
+#ymkgfmznxu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -700,7 +706,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_col_heading {
+#ymkgfmznxu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -720,7 +726,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#hdsaesmczk .gt_column_spanner_outer {
+#ymkgfmznxu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -732,15 +738,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#hdsaesmczk .gt_column_spanner_outer:first-child {
+#ymkgfmznxu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hdsaesmczk .gt_column_spanner_outer:last-child {
+#ymkgfmznxu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hdsaesmczk .gt_column_spanner {
+#ymkgfmznxu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -752,11 +758,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#hdsaesmczk .gt_spanner_row {
+#ymkgfmznxu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hdsaesmczk .gt_group_heading {
+#ymkgfmznxu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -782,7 +788,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#hdsaesmczk .gt_empty_group_heading {
+#ymkgfmznxu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -797,15 +803,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#hdsaesmczk .gt_from_md > :first-child {
+#ymkgfmznxu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hdsaesmczk .gt_from_md > :last-child {
+#ymkgfmznxu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hdsaesmczk .gt_row {
+#ymkgfmznxu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -824,7 +830,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#hdsaesmczk .gt_stub {
+#ymkgfmznxu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -837,7 +843,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hdsaesmczk .gt_stub_row_group {
+#ymkgfmznxu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -851,15 +857,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#hdsaesmczk .gt_row_group_first td {
+#ymkgfmznxu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hdsaesmczk .gt_row_group_first th {
+#ymkgfmznxu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hdsaesmczk .gt_summary_row {
+#ymkgfmznxu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -869,16 +875,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hdsaesmczk .gt_first_summary_row {
+#ymkgfmznxu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_first_summary_row.thick {
+#ymkgfmznxu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hdsaesmczk .gt_last_summary_row {
+#ymkgfmznxu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -888,7 +894,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_grand_summary_row {
+#ymkgfmznxu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -898,7 +904,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hdsaesmczk .gt_first_grand_summary_row {
+#ymkgfmznxu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -908,7 +914,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_last_grand_summary_row_top {
+#ymkgfmznxu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -918,11 +924,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_striped {
+#ymkgfmznxu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hdsaesmczk .gt_table_body {
+#ymkgfmznxu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -931,7 +937,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_footnotes {
+#ymkgfmznxu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -945,7 +951,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_footnote {
+#ymkgfmznxu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -954,7 +960,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hdsaesmczk .gt_sourcenotes {
+#ymkgfmznxu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -968,7 +974,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hdsaesmczk .gt_sourcenote {
+#ymkgfmznxu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -976,72 +982,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hdsaesmczk .gt_left {
+#ymkgfmznxu .gt_left {
   text-align: left;
 }
 
-#hdsaesmczk .gt_center {
+#ymkgfmznxu .gt_center {
   text-align: center;
 }
 
-#hdsaesmczk .gt_right {
+#ymkgfmznxu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hdsaesmczk .gt_font_normal {
+#ymkgfmznxu .gt_font_normal {
   font-weight: normal;
 }
 
-#hdsaesmczk .gt_font_bold {
+#ymkgfmznxu .gt_font_bold {
   font-weight: bold;
 }
 
-#hdsaesmczk .gt_font_italic {
+#ymkgfmznxu .gt_font_italic {
   font-style: italic;
 }
 
-#hdsaesmczk .gt_super {
+#ymkgfmznxu .gt_super {
   font-size: 65%;
 }
 
-#hdsaesmczk .gt_footnote_marks {
+#ymkgfmznxu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hdsaesmczk .gt_asterisk {
+#ymkgfmznxu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hdsaesmczk .gt_indent_1 {
+#ymkgfmznxu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hdsaesmczk .gt_indent_2 {
+#ymkgfmznxu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hdsaesmczk .gt_indent_3 {
+#ymkgfmznxu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hdsaesmczk .gt_indent_4 {
+#ymkgfmznxu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hdsaesmczk .gt_indent_5 {
+#ymkgfmznxu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hdsaesmczk .katex-display {
+#ymkgfmznxu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hdsaesmczk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ymkgfmznxu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1144,12 +1150,12 @@ window.Quarto = {
 </div>
 </div>
 <p>Building upon the baseline, Model 1 incorporates the primary moisture and pressure drivers identified in EDA. We test the hypothesis that atmospheric moisture (<code>humidity</code>, <code>dewpoint</code>) and pressure stability (<code>pressure_change</code>) drive both the occurrence and intensity of rainfall.</p>
-<p><strong>1. Performance:</strong> AIC dropped from 461,669.7 to 422,847 — a reduction of <span class="math inline">\(\Delta AIC \approx 38,823\)</span>, confirming that moisture dynamics are foundational predictors.</p>
+<p><strong>1. Performance:</strong> AIC dropped from 461,669.7 to 422,847 , a reduction of <span class="math inline">\(\Delta AIC \approx 38,823\)</span>, confirming that moisture dynamics are foundational predictors.</p>
 <p><strong>2. Conditional Model:</strong> All predictors are statistically significant (<span class="math inline">\(p &lt; 2e^{-16}\)</span>). <code>humidity3pm</code> (<span class="math inline">\(\beta = 0.38\)</span>) and <code>dewpoint_9am</code> (<span class="math inline">\(\beta = 0.38\)</span>) both have strong positive effects on intensity.</p>
-<p><strong>3. Zero-Inflation Model:</strong> <code>humidity3pm</code> coefficient is <strong>-1.07</strong> — a negative value here means higher humidity <em>decreases</em> the probability of a dry day, i.e., increases the probability of rain. Notably, <code>dewpoint_9am</code> is not significant in the zero-inflation part (<span class="math inline">\(p = 0.907\)</span>), implying that <em>relative</em> saturation (humidity) determines <em>if</em> it rains, while <em>absolute</em> moisture (dewpoint) determines <em>how hard</em>.</p>
+<p><strong>3. Zero-Inflation Model:</strong> <code>humidity3pm</code> coefficient is <strong>-1.07</strong> , a negative value here means higher humidity <em>decreases</em> the probability of a dry day, i.e., increases the probability of rain. Notably, <code>dewpoint_9am</code> is not significant in the zero-inflation part (<span class="math inline">\(p = 0.907\)</span>), implying that <em>relative</em> saturation (humidity) determines <em>if</em> it rains, while <em>absolute</em> moisture (dewpoint) determines <em>how hard</em>.</p>
 </section>
-<section id="temporal-dynamics-and-persistence" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="temporal-dynamics-and-persistence"><span class="header-section-number">4.3</span> Temporal Dynamics and Persistence</h2>
+<section id="temporal-dynamics-and-persistence" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="temporal-dynamics-and-persistence"><span class="header-section-number">5.3</span> Temporal Dynamics and Persistence</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1166,23 +1172,23 @@ window.Quarto = {
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="hbcyvsrzjf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hbcyvsrzjf table {
+<div id="rwaceogtlf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rwaceogtlf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hbcyvsrzjf thead, #hbcyvsrzjf tbody, #hbcyvsrzjf tfoot, #hbcyvsrzjf tr, #hbcyvsrzjf td, #hbcyvsrzjf th {
+#rwaceogtlf thead, #rwaceogtlf tbody, #rwaceogtlf tfoot, #rwaceogtlf tr, #rwaceogtlf td, #rwaceogtlf th {
   border-style: none;
 }
 
-#hbcyvsrzjf p {
+#rwaceogtlf p {
   margin: 0;
   padding: 0;
 }
 
-#hbcyvsrzjf .gt_table {
+#rwaceogtlf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1208,12 +1214,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_caption {
+#rwaceogtlf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hbcyvsrzjf .gt_title {
+#rwaceogtlf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1225,7 +1231,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#hbcyvsrzjf .gt_subtitle {
+#rwaceogtlf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1237,7 +1243,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#hbcyvsrzjf .gt_heading {
+#rwaceogtlf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1249,13 +1255,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_bottom_border {
+#rwaceogtlf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_col_headings {
+#rwaceogtlf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1270,7 +1276,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_col_heading {
+#rwaceogtlf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1290,7 +1296,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#hbcyvsrzjf .gt_column_spanner_outer {
+#rwaceogtlf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1302,15 +1308,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#hbcyvsrzjf .gt_column_spanner_outer:first-child {
+#rwaceogtlf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hbcyvsrzjf .gt_column_spanner_outer:last-child {
+#rwaceogtlf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hbcyvsrzjf .gt_column_spanner {
+#rwaceogtlf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1322,11 +1328,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#hbcyvsrzjf .gt_spanner_row {
+#rwaceogtlf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hbcyvsrzjf .gt_group_heading {
+#rwaceogtlf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1352,7 +1358,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#hbcyvsrzjf .gt_empty_group_heading {
+#rwaceogtlf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1367,15 +1373,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#hbcyvsrzjf .gt_from_md > :first-child {
+#rwaceogtlf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hbcyvsrzjf .gt_from_md > :last-child {
+#rwaceogtlf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hbcyvsrzjf .gt_row {
+#rwaceogtlf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1394,7 +1400,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#hbcyvsrzjf .gt_stub {
+#rwaceogtlf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1407,7 +1413,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hbcyvsrzjf .gt_stub_row_group {
+#rwaceogtlf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1421,15 +1427,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#hbcyvsrzjf .gt_row_group_first td {
+#rwaceogtlf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hbcyvsrzjf .gt_row_group_first th {
+#rwaceogtlf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hbcyvsrzjf .gt_summary_row {
+#rwaceogtlf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1439,16 +1445,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hbcyvsrzjf .gt_first_summary_row {
+#rwaceogtlf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_first_summary_row.thick {
+#rwaceogtlf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hbcyvsrzjf .gt_last_summary_row {
+#rwaceogtlf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1458,7 +1464,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_grand_summary_row {
+#rwaceogtlf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1468,7 +1474,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hbcyvsrzjf .gt_first_grand_summary_row {
+#rwaceogtlf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1478,7 +1484,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_last_grand_summary_row_top {
+#rwaceogtlf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1488,11 +1494,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_striped {
+#rwaceogtlf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hbcyvsrzjf .gt_table_body {
+#rwaceogtlf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1501,7 +1507,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_footnotes {
+#rwaceogtlf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1515,7 +1521,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_footnote {
+#rwaceogtlf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1524,7 +1530,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hbcyvsrzjf .gt_sourcenotes {
+#rwaceogtlf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1538,7 +1544,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#hbcyvsrzjf .gt_sourcenote {
+#rwaceogtlf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1546,72 +1552,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#hbcyvsrzjf .gt_left {
+#rwaceogtlf .gt_left {
   text-align: left;
 }
 
-#hbcyvsrzjf .gt_center {
+#rwaceogtlf .gt_center {
   text-align: center;
 }
 
-#hbcyvsrzjf .gt_right {
+#rwaceogtlf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hbcyvsrzjf .gt_font_normal {
+#rwaceogtlf .gt_font_normal {
   font-weight: normal;
 }
 
-#hbcyvsrzjf .gt_font_bold {
+#rwaceogtlf .gt_font_bold {
   font-weight: bold;
 }
 
-#hbcyvsrzjf .gt_font_italic {
+#rwaceogtlf .gt_font_italic {
   font-style: italic;
 }
 
-#hbcyvsrzjf .gt_super {
+#rwaceogtlf .gt_super {
   font-size: 65%;
 }
 
-#hbcyvsrzjf .gt_footnote_marks {
+#rwaceogtlf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hbcyvsrzjf .gt_asterisk {
+#rwaceogtlf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hbcyvsrzjf .gt_indent_1 {
+#rwaceogtlf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hbcyvsrzjf .gt_indent_2 {
+#rwaceogtlf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hbcyvsrzjf .gt_indent_3 {
+#rwaceogtlf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hbcyvsrzjf .gt_indent_4 {
+#rwaceogtlf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hbcyvsrzjf .gt_indent_5 {
+#rwaceogtlf .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hbcyvsrzjf .katex-display {
+#rwaceogtlf .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hbcyvsrzjf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rwaceogtlf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1747,10 +1753,10 @@ window.Quarto = {
 <p>Model 2 incorporates <strong>seasonality</strong> (cyclical encoding) and <strong>persistence</strong> (Markov chains), as well as dynamic zero-inflation drivers like <code>cloud_development</code> and <code>pressure_change</code>.</p>
 <p><strong>1. Performance:</strong> AIC = 406,659 (<span class="math inline">\(\Delta AIC \approx 16,187\)</span> vs M1), confirming that knowing <em>when</em> in the year and <em>what happened yesterday</em> provides critical predictive information.</p>
 <p><strong>2. Seasonality:</strong> Both <code>day_cos</code> and <code>day_sin</code> are highly significant, mathematically confirming the “Summer Peak” pattern.</p>
-<p><strong>3. The “Persistence” Effect:</strong> <code>rain_yesterdayYes</code> (<span class="math inline">\(\beta = -1.42\)</span>) is the strongest predictor in the zero-inflation model. <span class="math inline">\(\exp(-1.42) \approx 0.24\)</span> — if it rained yesterday, the odds of today being dry drop by ~76%.</p>
+<p><strong>3. The “Persistence” Effect:</strong> <code>rain_yesterdayYes</code> (<span class="math inline">\(\beta = -1.42\)</span>) is the strongest predictor in the zero-inflation model. <span class="math inline">\(\exp(-1.42) \approx 0.24\)</span> , if it rained yesterday, the odds of today being dry drop by ~76%.</p>
 </section>
-<section id="historical-context-and-persistence" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="historical-context-and-persistence"><span class="header-section-number">4.4</span> Historical Context and Persistence</h2>
+<section id="historical-context-and-persistence" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="historical-context-and-persistence"><span class="header-section-number">5.4</span> Historical Context and Persistence</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1767,23 +1773,23 @@ window.Quarto = {
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="ylfmmvgpwd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ylfmmvgpwd table {
+<div id="xdqhkffxwz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xdqhkffxwz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ylfmmvgpwd thead, #ylfmmvgpwd tbody, #ylfmmvgpwd tfoot, #ylfmmvgpwd tr, #ylfmmvgpwd td, #ylfmmvgpwd th {
+#xdqhkffxwz thead, #xdqhkffxwz tbody, #xdqhkffxwz tfoot, #xdqhkffxwz tr, #xdqhkffxwz td, #xdqhkffxwz th {
   border-style: none;
 }
 
-#ylfmmvgpwd p {
+#xdqhkffxwz p {
   margin: 0;
   padding: 0;
 }
 
-#ylfmmvgpwd .gt_table {
+#xdqhkffxwz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1809,12 +1815,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_caption {
+#xdqhkffxwz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ylfmmvgpwd .gt_title {
+#xdqhkffxwz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1826,7 +1832,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#ylfmmvgpwd .gt_subtitle {
+#xdqhkffxwz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1838,7 +1844,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#ylfmmvgpwd .gt_heading {
+#xdqhkffxwz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1850,13 +1856,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_bottom_border {
+#xdqhkffxwz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_col_headings {
+#xdqhkffxwz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1871,7 +1877,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_col_heading {
+#xdqhkffxwz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1891,7 +1897,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#ylfmmvgpwd .gt_column_spanner_outer {
+#xdqhkffxwz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1903,15 +1909,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#ylfmmvgpwd .gt_column_spanner_outer:first-child {
+#xdqhkffxwz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ylfmmvgpwd .gt_column_spanner_outer:last-child {
+#xdqhkffxwz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ylfmmvgpwd .gt_column_spanner {
+#xdqhkffxwz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1923,11 +1929,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#ylfmmvgpwd .gt_spanner_row {
+#xdqhkffxwz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ylfmmvgpwd .gt_group_heading {
+#xdqhkffxwz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1953,7 +1959,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#ylfmmvgpwd .gt_empty_group_heading {
+#xdqhkffxwz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1968,15 +1974,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#ylfmmvgpwd .gt_from_md > :first-child {
+#xdqhkffxwz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ylfmmvgpwd .gt_from_md > :last-child {
+#xdqhkffxwz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ylfmmvgpwd .gt_row {
+#xdqhkffxwz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1995,7 +2001,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#ylfmmvgpwd .gt_stub {
+#xdqhkffxwz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2008,7 +2014,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#ylfmmvgpwd .gt_stub_row_group {
+#xdqhkffxwz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2022,15 +2028,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#ylfmmvgpwd .gt_row_group_first td {
+#xdqhkffxwz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ylfmmvgpwd .gt_row_group_first th {
+#xdqhkffxwz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ylfmmvgpwd .gt_summary_row {
+#xdqhkffxwz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2040,16 +2046,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#ylfmmvgpwd .gt_first_summary_row {
+#xdqhkffxwz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_first_summary_row.thick {
+#xdqhkffxwz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ylfmmvgpwd .gt_last_summary_row {
+#xdqhkffxwz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2059,7 +2065,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_grand_summary_row {
+#xdqhkffxwz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2069,7 +2075,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#ylfmmvgpwd .gt_first_grand_summary_row {
+#xdqhkffxwz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2079,7 +2085,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_last_grand_summary_row_top {
+#xdqhkffxwz .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2089,11 +2095,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_striped {
+#xdqhkffxwz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ylfmmvgpwd .gt_table_body {
+#xdqhkffxwz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2102,7 +2108,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_footnotes {
+#xdqhkffxwz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2116,7 +2122,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_footnote {
+#xdqhkffxwz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2125,7 +2131,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#ylfmmvgpwd .gt_sourcenotes {
+#xdqhkffxwz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2139,7 +2145,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#ylfmmvgpwd .gt_sourcenote {
+#xdqhkffxwz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2147,72 +2153,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#ylfmmvgpwd .gt_left {
+#xdqhkffxwz .gt_left {
   text-align: left;
 }
 
-#ylfmmvgpwd .gt_center {
+#xdqhkffxwz .gt_center {
   text-align: center;
 }
 
-#ylfmmvgpwd .gt_right {
+#xdqhkffxwz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ylfmmvgpwd .gt_font_normal {
+#xdqhkffxwz .gt_font_normal {
   font-weight: normal;
 }
 
-#ylfmmvgpwd .gt_font_bold {
+#xdqhkffxwz .gt_font_bold {
   font-weight: bold;
 }
 
-#ylfmmvgpwd .gt_font_italic {
+#xdqhkffxwz .gt_font_italic {
   font-style: italic;
 }
 
-#ylfmmvgpwd .gt_super {
+#xdqhkffxwz .gt_super {
   font-size: 65%;
 }
 
-#ylfmmvgpwd .gt_footnote_marks {
+#xdqhkffxwz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ylfmmvgpwd .gt_asterisk {
+#xdqhkffxwz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ylfmmvgpwd .gt_indent_1 {
+#xdqhkffxwz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ylfmmvgpwd .gt_indent_2 {
+#xdqhkffxwz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ylfmmvgpwd .gt_indent_3 {
+#xdqhkffxwz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ylfmmvgpwd .gt_indent_4 {
+#xdqhkffxwz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ylfmmvgpwd .gt_indent_5 {
+#xdqhkffxwz .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ylfmmvgpwd .katex-display {
+#xdqhkffxwz .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ylfmmvgpwd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xdqhkffxwz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2378,18 +2384,18 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Model 3 integrates <strong>history</strong> — recent weather trends — to capture how the atmosphere’s accumulated state affects today’s rainfall intensity.</p>
-<p><strong>1. Performance:</strong> AIC = 404,936.2 (<span class="math inline">\(\Delta AIC \approx 1,723\)</span> vs M2) — meaningful improvement with diminishing returns compared to earlier leaps.</p>
+<p>Model 3 integrates <strong>history</strong> , recent weather trends , to capture how the atmosphere’s accumulated state affects today’s rainfall intensity.</p>
+<p><strong>1. Performance:</strong> AIC = 404,936.2 (<span class="math inline">\(\Delta AIC \approx 1,723\)</span> vs M2) , meaningful improvement with diminishing returns compared to earlier leaps.</p>
 <p><strong>2. Key Findings:</strong></p>
 <ul>
 <li><code>rain_yesterday</code> (<span class="math inline">\(\beta = 0.31\)</span>): If it rained yesterday, today’s rainfall is likely ~37% more intense (<span class="math inline">\(e^{0.31} \approx 1.36\)</span>).</li>
 <li><code>rainfall_ma7</code> (<span class="math inline">\(\beta = 0.13\)</span>): A wetter preceding week correlates with heavier rainfall today.</li>
 <li><code>humidity_ma7</code> (<span class="math inline">\(\beta = -0.10\)</span>): A persistently humid week may indicate stable, low-intensity stratiform clouds rather than convective storms.</li>
-<li><code>days_since_rain</code>: <strong>Not significant</strong> for intensity (<span class="math inline">\(p = 0.14\)</span>) — dry spell length predicts <em>whether</em> it rains, not <em>how much</em>.</li>
+<li><code>days_since_rain</code>: <strong>Not significant</strong> for intensity (<span class="math inline">\(p = 0.14\)</span>) , dry spell length predicts <em>whether</em> it rains, not <em>how much</em>.</li>
 </ul>
 </section>
-<section id="energy-dynamics-and-interactions" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="energy-dynamics-and-interactions"><span class="header-section-number">4.5</span> Energy Dynamics and Interactions</h2>
+<section id="energy-dynamics-and-interactions" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="energy-dynamics-and-interactions"><span class="header-section-number">5.5</span> Energy Dynamics and Interactions</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2411,23 +2417,23 @@ window.Quarto = {
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="vhbripdfhm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vhbripdfhm table {
+<div id="pgpyztvnte" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pgpyztvnte table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vhbripdfhm thead, #vhbripdfhm tbody, #vhbripdfhm tfoot, #vhbripdfhm tr, #vhbripdfhm td, #vhbripdfhm th {
+#pgpyztvnte thead, #pgpyztvnte tbody, #pgpyztvnte tfoot, #pgpyztvnte tr, #pgpyztvnte td, #pgpyztvnte th {
   border-style: none;
 }
 
-#vhbripdfhm p {
+#pgpyztvnte p {
   margin: 0;
   padding: 0;
 }
 
-#vhbripdfhm .gt_table {
+#pgpyztvnte .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2453,12 +2459,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_caption {
+#pgpyztvnte .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vhbripdfhm .gt_title {
+#pgpyztvnte .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2470,7 +2476,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#vhbripdfhm .gt_subtitle {
+#pgpyztvnte .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2482,7 +2488,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#vhbripdfhm .gt_heading {
+#pgpyztvnte .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2494,13 +2500,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_bottom_border {
+#pgpyztvnte .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_col_headings {
+#pgpyztvnte .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2515,7 +2521,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_col_heading {
+#pgpyztvnte .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2535,7 +2541,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#vhbripdfhm .gt_column_spanner_outer {
+#pgpyztvnte .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2547,15 +2553,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#vhbripdfhm .gt_column_spanner_outer:first-child {
+#pgpyztvnte .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vhbripdfhm .gt_column_spanner_outer:last-child {
+#pgpyztvnte .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vhbripdfhm .gt_column_spanner {
+#pgpyztvnte .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2567,11 +2573,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#vhbripdfhm .gt_spanner_row {
+#pgpyztvnte .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vhbripdfhm .gt_group_heading {
+#pgpyztvnte .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2597,7 +2603,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#vhbripdfhm .gt_empty_group_heading {
+#pgpyztvnte .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2612,15 +2618,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#vhbripdfhm .gt_from_md > :first-child {
+#pgpyztvnte .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vhbripdfhm .gt_from_md > :last-child {
+#pgpyztvnte .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vhbripdfhm .gt_row {
+#pgpyztvnte .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2639,7 +2645,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#vhbripdfhm .gt_stub {
+#pgpyztvnte .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2652,7 +2658,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vhbripdfhm .gt_stub_row_group {
+#pgpyztvnte .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2666,15 +2672,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#vhbripdfhm .gt_row_group_first td {
+#pgpyztvnte .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vhbripdfhm .gt_row_group_first th {
+#pgpyztvnte .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vhbripdfhm .gt_summary_row {
+#pgpyztvnte .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2684,16 +2690,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vhbripdfhm .gt_first_summary_row {
+#pgpyztvnte .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_first_summary_row.thick {
+#pgpyztvnte .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vhbripdfhm .gt_last_summary_row {
+#pgpyztvnte .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2703,7 +2709,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_grand_summary_row {
+#pgpyztvnte .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2713,7 +2719,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vhbripdfhm .gt_first_grand_summary_row {
+#pgpyztvnte .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2723,7 +2729,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_last_grand_summary_row_top {
+#pgpyztvnte .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2733,11 +2739,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_striped {
+#pgpyztvnte .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vhbripdfhm .gt_table_body {
+#pgpyztvnte .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2746,7 +2752,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_footnotes {
+#pgpyztvnte .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2760,7 +2766,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_footnote {
+#pgpyztvnte .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2769,7 +2775,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vhbripdfhm .gt_sourcenotes {
+#pgpyztvnte .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2783,7 +2789,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#vhbripdfhm .gt_sourcenote {
+#pgpyztvnte .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2791,72 +2797,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#vhbripdfhm .gt_left {
+#pgpyztvnte .gt_left {
   text-align: left;
 }
 
-#vhbripdfhm .gt_center {
+#pgpyztvnte .gt_center {
   text-align: center;
 }
 
-#vhbripdfhm .gt_right {
+#pgpyztvnte .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vhbripdfhm .gt_font_normal {
+#pgpyztvnte .gt_font_normal {
   font-weight: normal;
 }
 
-#vhbripdfhm .gt_font_bold {
+#pgpyztvnte .gt_font_bold {
   font-weight: bold;
 }
 
-#vhbripdfhm .gt_font_italic {
+#pgpyztvnte .gt_font_italic {
   font-style: italic;
 }
 
-#vhbripdfhm .gt_super {
+#pgpyztvnte .gt_super {
   font-size: 65%;
 }
 
-#vhbripdfhm .gt_footnote_marks {
+#pgpyztvnte .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vhbripdfhm .gt_asterisk {
+#pgpyztvnte .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vhbripdfhm .gt_indent_1 {
+#pgpyztvnte .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vhbripdfhm .gt_indent_2 {
+#pgpyztvnte .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vhbripdfhm .gt_indent_3 {
+#pgpyztvnte .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vhbripdfhm .gt_indent_4 {
+#pgpyztvnte .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vhbripdfhm .gt_indent_5 {
+#pgpyztvnte .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vhbripdfhm .katex-display {
+#pgpyztvnte .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vhbripdfhm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#pgpyztvnte div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3054,11 +3060,11 @@ window.Quarto = {
 </div>
 <p>Model 4 incorporates <strong>energy dynamics</strong> (solar radiation, evaporation) and <strong>atmospheric instability</strong>, including the non-linear “Rain Corner” interaction term.</p>
 <p><strong>1. Performance:</strong> AIC = 403,051.8 (<span class="math inline">\(\Delta AIC \approx 1,884\)</span> vs M3).</p>
-<p><strong>2. The “Rain Corner” Interaction:</strong> <code>sun_humid_interaction</code> (<span class="math inline">\(\beta = -0.08\)</span>) is highly significant — the heaviest rain occurs when humidity is high <em>and</em> sunshine is low (deep cloud cover).</p>
-<p><strong>3. Shift in Humidity Importance:</strong> <code>humidity3pm</code> dropped from 0.39 (M3) to 0.08 (M4). This is not a loss of importance — the variance has been correctly partitioned into <code>instability_index</code> and <code>sun_humid_interaction</code>. The model now understands <em>why</em> humidity matters.</p>
+<p><strong>2. The “Rain Corner” Interaction:</strong> <code>sun_humid_interaction</code> (<span class="math inline">\(\beta = -0.08\)</span>) is highly significant , the heaviest rain occurs when humidity is high <em>and</em> sunshine is low (deep cloud cover).</p>
+<p><strong>3. Shift in Humidity Importance:</strong> <code>humidity3pm</code> dropped from 0.39 (M3) to 0.08 (M4). This is not a loss of importance , the variance has been correctly partitioned into <code>instability_index</code> and <code>sun_humid_interaction</code>. The model now understands <em>why</em> humidity matters.</p>
 </section>
-<section id="wind-dynamics" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="wind-dynamics"><span class="header-section-number">4.6</span> Wind Dynamics</h2>
+<section id="wind-dynamics" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="wind-dynamics"><span class="header-section-number">5.6</span> Wind Dynamics</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -3075,23 +3081,23 @@ window.Quarto = {
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="bnhhlofwwv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bnhhlofwwv table {
+<div id="ivhkjeotap" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ivhkjeotap table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bnhhlofwwv thead, #bnhhlofwwv tbody, #bnhhlofwwv tfoot, #bnhhlofwwv tr, #bnhhlofwwv td, #bnhhlofwwv th {
+#ivhkjeotap thead, #ivhkjeotap tbody, #ivhkjeotap tfoot, #ivhkjeotap tr, #ivhkjeotap td, #ivhkjeotap th {
   border-style: none;
 }
 
-#bnhhlofwwv p {
+#ivhkjeotap p {
   margin: 0;
   padding: 0;
 }
 
-#bnhhlofwwv .gt_table {
+#ivhkjeotap .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3117,12 +3123,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_caption {
+#ivhkjeotap .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bnhhlofwwv .gt_title {
+#ivhkjeotap .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3134,7 +3140,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#bnhhlofwwv .gt_subtitle {
+#ivhkjeotap .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3146,7 +3152,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#bnhhlofwwv .gt_heading {
+#ivhkjeotap .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3158,13 +3164,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_bottom_border {
+#ivhkjeotap .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_col_headings {
+#ivhkjeotap .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3179,7 +3185,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_col_heading {
+#ivhkjeotap .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3199,7 +3205,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#bnhhlofwwv .gt_column_spanner_outer {
+#ivhkjeotap .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3211,15 +3217,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#bnhhlofwwv .gt_column_spanner_outer:first-child {
+#ivhkjeotap .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bnhhlofwwv .gt_column_spanner_outer:last-child {
+#ivhkjeotap .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bnhhlofwwv .gt_column_spanner {
+#ivhkjeotap .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3231,11 +3237,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#bnhhlofwwv .gt_spanner_row {
+#ivhkjeotap .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bnhhlofwwv .gt_group_heading {
+#ivhkjeotap .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3261,7 +3267,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#bnhhlofwwv .gt_empty_group_heading {
+#ivhkjeotap .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3276,15 +3282,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#bnhhlofwwv .gt_from_md > :first-child {
+#ivhkjeotap .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bnhhlofwwv .gt_from_md > :last-child {
+#ivhkjeotap .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bnhhlofwwv .gt_row {
+#ivhkjeotap .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3303,7 +3309,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#bnhhlofwwv .gt_stub {
+#ivhkjeotap .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3316,7 +3322,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#bnhhlofwwv .gt_stub_row_group {
+#ivhkjeotap .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3330,15 +3336,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#bnhhlofwwv .gt_row_group_first td {
+#ivhkjeotap .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bnhhlofwwv .gt_row_group_first th {
+#ivhkjeotap .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bnhhlofwwv .gt_summary_row {
+#ivhkjeotap .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3348,16 +3354,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#bnhhlofwwv .gt_first_summary_row {
+#ivhkjeotap .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_first_summary_row.thick {
+#ivhkjeotap .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bnhhlofwwv .gt_last_summary_row {
+#ivhkjeotap .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3367,7 +3373,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_grand_summary_row {
+#ivhkjeotap .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3377,7 +3383,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#bnhhlofwwv .gt_first_grand_summary_row {
+#ivhkjeotap .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3387,7 +3393,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_last_grand_summary_row_top {
+#ivhkjeotap .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3397,11 +3403,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_striped {
+#ivhkjeotap .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bnhhlofwwv .gt_table_body {
+#ivhkjeotap .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3410,7 +3416,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_footnotes {
+#ivhkjeotap .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3424,7 +3430,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_footnote {
+#ivhkjeotap .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3433,7 +3439,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#bnhhlofwwv .gt_sourcenotes {
+#ivhkjeotap .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3447,7 +3453,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#bnhhlofwwv .gt_sourcenote {
+#ivhkjeotap .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3455,72 +3461,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#bnhhlofwwv .gt_left {
+#ivhkjeotap .gt_left {
   text-align: left;
 }
 
-#bnhhlofwwv .gt_center {
+#ivhkjeotap .gt_center {
   text-align: center;
 }
 
-#bnhhlofwwv .gt_right {
+#ivhkjeotap .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bnhhlofwwv .gt_font_normal {
+#ivhkjeotap .gt_font_normal {
   font-weight: normal;
 }
 
-#bnhhlofwwv .gt_font_bold {
+#ivhkjeotap .gt_font_bold {
   font-weight: bold;
 }
 
-#bnhhlofwwv .gt_font_italic {
+#ivhkjeotap .gt_font_italic {
   font-style: italic;
 }
 
-#bnhhlofwwv .gt_super {
+#ivhkjeotap .gt_super {
   font-size: 65%;
 }
 
-#bnhhlofwwv .gt_footnote_marks {
+#ivhkjeotap .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bnhhlofwwv .gt_asterisk {
+#ivhkjeotap .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bnhhlofwwv .gt_indent_1 {
+#ivhkjeotap .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bnhhlofwwv .gt_indent_2 {
+#ivhkjeotap .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bnhhlofwwv .gt_indent_3 {
+#ivhkjeotap .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bnhhlofwwv .gt_indent_4 {
+#ivhkjeotap .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bnhhlofwwv .gt_indent_5 {
+#ivhkjeotap .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bnhhlofwwv .katex-display {
+#ivhkjeotap .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bnhhlofwwv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ivhkjeotap div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3741,17 +3747,17 @@ window.Quarto = {
 </div>
 </div>
 <p>Model 5 introduces <strong>Wind Vector Decomposition</strong> into North-South (<span class="math inline">\(V\)</span>) and East-West (<span class="math inline">\(U\)</span>) components, testing whether specific airflow origins drive rainfall intensity.</p>
-<p><strong>1. Performance:</strong> AIC = 402,452.7 (<span class="math inline">\(\Delta AIC \approx 600\)</span> vs M4) — smaller but still highly significant.</p>
+<p><strong>1. Performance:</strong> AIC = 402,452.7 (<span class="math inline">\(\Delta AIC \approx 600\)</span> vs M4) , smaller but still highly significant.</p>
 <p><strong>2. Physical Interpretation:</strong></p>
 <ul>
-<li><code>wind9am_V_NS</code> (<span class="math inline">\(\beta = -0.088\)</span>): Southerly winds (negative <span class="math inline">\(V\)</span>) increase rainfall — validating “Southerly Busters” from the Southern Ocean.</li>
-<li><code>wind9am_U_EW</code> (<span class="math inline">\(\beta = -0.085\)</span>): Westerly winds (negative <span class="math inline">\(U\)</span>) increase rainfall — capturing the “Roaring Forties.”</li>
+<li><code>wind9am_V_NS</code> (<span class="math inline">\(\beta = -0.088\)</span>): Southerly winds (negative <span class="math inline">\(V\)</span>) increase rainfall , validating “Southerly Busters” from the Southern Ocean.</li>
+<li><code>wind9am_U_EW</code> (<span class="math inline">\(\beta = -0.085\)</span>): Westerly winds (negative <span class="math inline">\(U\)</span>) increase rainfall , capturing the “Roaring Forties.”</li>
 <li>Morning winds have coefficients ~3–4x larger than gusts, confirming that <strong>prevailing air mass direction</strong> matters more than localized turbulence.</li>
 </ul>
 <p><strong>3. Model Stability:</strong> Coefficients for previous drivers remained stable, confirming wind vectors explain <em>new</em> variance rather than displacing existing predictors.</p>
 </section>
-<section id="spatial-heterogeneity-mixed-effects" class="level2" data-number="4.7">
-<h2 data-number="4.7" class="anchored" data-anchor-id="spatial-heterogeneity-mixed-effects"><span class="header-section-number">4.7</span> Spatial Heterogeneity (Mixed Effects)</h2>
+<section id="spatial-heterogeneity-mixed-effects" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="spatial-heterogeneity-mixed-effects"><span class="header-section-number">5.7</span> Spatial Heterogeneity (Mixed Effects)</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -3760,47 +3766,68 @@ window.Quarto = {
 <span id="cb8-3"><a href="#cb8-3"></a></span>
 <span id="cb8-4"><a href="#cb8-4"></a>ctrl <span class="ot">&lt;-</span> <span class="fu">glmmTMBControl</span>(</span>
 <span id="cb8-5"><a href="#cb8-5"></a>  <span class="at">optimizer =</span> optim,</span>
-<span id="cb8-6"><a href="#cb8-6"></a>  <span class="at">optArgs   =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"BFGS"</span>),</span>
-<span id="cb8-7"><a href="#cb8-7"></a>  <span class="at">optCtrl   =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">1000</span>)</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="at">optArgs =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"BFGS"</span>),</span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="at">optCtrl =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">1000</span>)</span>
 <span id="cb8-8"><a href="#cb8-8"></a>)</span>
 <span id="cb8-9"><a href="#cb8-9"></a></span>
 <span id="cb8-10"><a href="#cb8-10"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
 <span id="cb8-11"><a href="#cb8-11"></a>  rainfall <span class="sc">~</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a>    humidity3pm <span class="sc">+</span> dewpoint_9am <span class="sc">+</span> dewpoint_change <span class="sc">+</span> pressure_change <span class="sc">+</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a>    day_cos <span class="sc">+</span> day_sin <span class="sc">+</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a>    rainfall_ma7 <span class="sc">+</span> days_since_rain <span class="sc">+</span> humidity_ma7 <span class="sc">+</span> rain_yesterday <span class="sc">+</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a>    sunshine <span class="sc">+</span> evaporation <span class="sc">+</span> instability_index <span class="sc">+</span> sun_humid_interaction <span class="sc">+</span></span>
-<span id="cb8-16"><a href="#cb8-16"></a>    cloud_development <span class="sc">+</span></span>
-<span id="cb8-17"><a href="#cb8-17"></a>    gust_U_EW <span class="sc">+</span> gust_V_NS <span class="sc">+</span> wind9am_V_NS <span class="sc">+</span> wind9am_U_EW <span class="sc">+</span></span>
-<span id="cb8-18"><a href="#cb8-18"></a>    <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">+</span> humidity3pm <span class="sc">+</span> rain_yesterday <span class="sc">+</span> dewpoint_change <span class="sc">|</span> location),</span>
-<span id="cb8-19"><a href="#cb8-19"></a>  <span class="at">ziformula =</span> <span class="sc">~</span> humidity3pm <span class="sc">+</span> dewpoint_9am <span class="sc">+</span> rain_yesterday <span class="sc">+</span></span>
-<span id="cb8-20"><a href="#cb8-20"></a>    cloud_development <span class="sc">+</span> pressure_change <span class="sc">+</span> sunshine <span class="sc">+</span> evaporation <span class="sc">+</span></span>
-<span id="cb8-21"><a href="#cb8-21"></a>    <span class="fu">ns</span>(days_since_rain, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">+</span> humidity_ma7 <span class="sc">+</span> day_cos <span class="sc">+</span> day_sin,</span>
-<span id="cb8-22"><a href="#cb8-22"></a>  <span class="at">data    =</span> re_data,</span>
-<span id="cb8-23"><a href="#cb8-23"></a>  <span class="at">control =</span> ctrl,</span>
-<span id="cb8-24"><a href="#cb8-24"></a>  <span class="at">family  =</span> <span class="fu">ziGamma</span>(<span class="at">link =</span> <span class="st">"log"</span>)</span>
-<span id="cb8-25"><a href="#cb8-25"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-12"><a href="#cb8-12"></a>    humidity3pm <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>    dewpoint_9am <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>    dewpoint_change <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>    pressure_change <span class="sc">+</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>    day_cos <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>    day_sin <span class="sc">+</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>    rainfall_ma7 <span class="sc">+</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>    days_since_rain <span class="sc">+</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a>    humidity_ma7 <span class="sc">+</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>    rain_yesterday <span class="sc">+</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a>    sunshine <span class="sc">+</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a>    evaporation <span class="sc">+</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a>    instability_index <span class="sc">+</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a>    sun_humid_interaction <span class="sc">+</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a>    cloud_development <span class="sc">+</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a>    gust_U_EW <span class="sc">+</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a>    gust_V_NS <span class="sc">+</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a>    wind9am_V_NS <span class="sc">+</span></span>
+<span id="cb8-30"><a href="#cb8-30"></a>    wind9am_U_EW <span class="sc">+</span></span>
+<span id="cb8-31"><a href="#cb8-31"></a>    <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">+</span> humidity3pm <span class="sc">+</span> rain_yesterday <span class="sc">+</span> dewpoint_change <span class="sc">|</span> location),</span>
+<span id="cb8-32"><a href="#cb8-32"></a>  <span class="at">ziformula =</span> <span class="sc">~</span> humidity3pm <span class="sc">+</span></span>
+<span id="cb8-33"><a href="#cb8-33"></a>    dewpoint_9am <span class="sc">+</span></span>
+<span id="cb8-34"><a href="#cb8-34"></a>    rain_yesterday <span class="sc">+</span></span>
+<span id="cb8-35"><a href="#cb8-35"></a>    cloud_development <span class="sc">+</span></span>
+<span id="cb8-36"><a href="#cb8-36"></a>    pressure_change <span class="sc">+</span></span>
+<span id="cb8-37"><a href="#cb8-37"></a>    sunshine <span class="sc">+</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a>    evaporation <span class="sc">+</span></span>
+<span id="cb8-39"><a href="#cb8-39"></a>    <span class="fu">ns</span>(days_since_rain, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb8-40"><a href="#cb8-40"></a>    humidity_ma7 <span class="sc">+</span></span>
+<span id="cb8-41"><a href="#cb8-41"></a>    day_cos <span class="sc">+</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>    day_sin,</span>
+<span id="cb8-43"><a href="#cb8-43"></a>  <span class="at">data =</span> re_data,</span>
+<span id="cb8-44"><a href="#cb8-44"></a>  <span class="at">control =</span> ctrl,</span>
+<span id="cb8-45"><a href="#cb8-45"></a>  <span class="at">family =</span> <span class="fu">ziGamma</span>(<span class="at">link =</span> <span class="st">"log"</span>)</span>
+<span id="cb8-46"><a href="#cb8-46"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="yarndgmmhj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#yarndgmmhj table {
+<div id="gelwrklzfz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gelwrklzfz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#yarndgmmhj thead, #yarndgmmhj tbody, #yarndgmmhj tfoot, #yarndgmmhj tr, #yarndgmmhj td, #yarndgmmhj th {
+#gelwrklzfz thead, #gelwrklzfz tbody, #gelwrklzfz tfoot, #gelwrklzfz tr, #gelwrklzfz td, #gelwrklzfz th {
   border-style: none;
 }
 
-#yarndgmmhj p {
+#gelwrklzfz p {
   margin: 0;
   padding: 0;
 }
 
-#yarndgmmhj .gt_table {
+#gelwrklzfz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3826,12 +3853,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_caption {
+#gelwrklzfz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#yarndgmmhj .gt_title {
+#gelwrklzfz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3843,7 +3870,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#yarndgmmhj .gt_subtitle {
+#gelwrklzfz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3855,7 +3882,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#yarndgmmhj .gt_heading {
+#gelwrklzfz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3867,13 +3894,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_bottom_border {
+#gelwrklzfz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_col_headings {
+#gelwrklzfz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3888,7 +3915,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_col_heading {
+#gelwrklzfz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3908,7 +3935,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#yarndgmmhj .gt_column_spanner_outer {
+#gelwrklzfz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3920,15 +3947,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#yarndgmmhj .gt_column_spanner_outer:first-child {
+#gelwrklzfz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#yarndgmmhj .gt_column_spanner_outer:last-child {
+#gelwrklzfz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#yarndgmmhj .gt_column_spanner {
+#gelwrklzfz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3940,11 +3967,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#yarndgmmhj .gt_spanner_row {
+#gelwrklzfz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#yarndgmmhj .gt_group_heading {
+#gelwrklzfz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3970,7 +3997,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#yarndgmmhj .gt_empty_group_heading {
+#gelwrklzfz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3985,15 +4012,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#yarndgmmhj .gt_from_md > :first-child {
+#gelwrklzfz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#yarndgmmhj .gt_from_md > :last-child {
+#gelwrklzfz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#yarndgmmhj .gt_row {
+#gelwrklzfz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4012,7 +4039,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#yarndgmmhj .gt_stub {
+#gelwrklzfz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4025,7 +4052,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#yarndgmmhj .gt_stub_row_group {
+#gelwrklzfz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4039,15 +4066,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#yarndgmmhj .gt_row_group_first td {
+#gelwrklzfz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#yarndgmmhj .gt_row_group_first th {
+#gelwrklzfz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#yarndgmmhj .gt_summary_row {
+#gelwrklzfz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4057,16 +4084,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#yarndgmmhj .gt_first_summary_row {
+#gelwrklzfz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_first_summary_row.thick {
+#gelwrklzfz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#yarndgmmhj .gt_last_summary_row {
+#gelwrklzfz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4076,7 +4103,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_grand_summary_row {
+#gelwrklzfz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4086,7 +4113,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#yarndgmmhj .gt_first_grand_summary_row {
+#gelwrklzfz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4096,7 +4123,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_last_grand_summary_row_top {
+#gelwrklzfz .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4106,11 +4133,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_striped {
+#gelwrklzfz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#yarndgmmhj .gt_table_body {
+#gelwrklzfz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4119,7 +4146,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_footnotes {
+#gelwrklzfz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4133,7 +4160,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_footnote {
+#gelwrklzfz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4142,7 +4169,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#yarndgmmhj .gt_sourcenotes {
+#gelwrklzfz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4156,7 +4183,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#yarndgmmhj .gt_sourcenote {
+#gelwrklzfz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4164,72 +4191,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#yarndgmmhj .gt_left {
+#gelwrklzfz .gt_left {
   text-align: left;
 }
 
-#yarndgmmhj .gt_center {
+#gelwrklzfz .gt_center {
   text-align: center;
 }
 
-#yarndgmmhj .gt_right {
+#gelwrklzfz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#yarndgmmhj .gt_font_normal {
+#gelwrklzfz .gt_font_normal {
   font-weight: normal;
 }
 
-#yarndgmmhj .gt_font_bold {
+#gelwrklzfz .gt_font_bold {
   font-weight: bold;
 }
 
-#yarndgmmhj .gt_font_italic {
+#gelwrklzfz .gt_font_italic {
   font-style: italic;
 }
 
-#yarndgmmhj .gt_super {
+#gelwrklzfz .gt_super {
   font-size: 65%;
 }
 
-#yarndgmmhj .gt_footnote_marks {
+#gelwrklzfz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#yarndgmmhj .gt_asterisk {
+#gelwrklzfz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#yarndgmmhj .gt_indent_1 {
+#gelwrklzfz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#yarndgmmhj .gt_indent_2 {
+#gelwrklzfz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#yarndgmmhj .gt_indent_3 {
+#gelwrklzfz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#yarndgmmhj .gt_indent_4 {
+#gelwrklzfz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#yarndgmmhj .gt_indent_5 {
+#gelwrklzfz .gt_indent_5 {
   text-indent: 25px;
 }
 
-#yarndgmmhj .katex-display {
+#gelwrklzfz .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#yarndgmmhj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#gelwrklzfz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4532,14 +4559,14 @@ window.Quarto = {
 </div>
 </div>
 <p>The final model addresses the hierarchical nature of the data by introducing <strong>Random Effects</strong>, allowing parameters to vary by <code>location</code>.</p>
-<p><strong>1. Performance:</strong> AIC = 394,854.0 (<span class="math inline">\(\Delta AIC \approx 7,599\)</span> vs M5) — a massive improvement confirming that <strong>spatial heterogeneity</strong> is a dominant source of variance.</p>
+<p><strong>1. Performance:</strong> AIC = 394,854.0 (<span class="math inline">\(\Delta AIC \approx 7,599\)</span> vs M5) , a massive improvement confirming that <strong>spatial heterogeneity</strong> is a dominant source of variance.</p>
 <p><strong>2. Random Effects Structure:</strong></p>
 <ul>
 <li><strong>Random Intercepts</strong> (<span class="math inline">\(\sigma^2 = 0.12\)</span>): Baseline rainfall varies significantly between locations.</li>
-<li><strong>Random Slope — Humidity</strong> (<span class="math inline">\(\sigma^2 = 0.023\)</span>): The effect of humidity on rainfall differs by location.</li>
-<li><strong>Random Slope — Persistence</strong> (<span class="math inline">\(\sigma^2 = 0.013\)</span>): The “stickiness” of wet weather varies spatially.</li>
+<li><strong>Random Slope , Humidity</strong> (<span class="math inline">\(\sigma^2 = 0.023\)</span>): The effect of humidity on rainfall differs by location.</li>
+<li><strong>Random Slope , Persistence</strong> (<span class="math inline">\(\sigma^2 = 0.013\)</span>): The “stickiness” of wet weather varies spatially.</li>
 </ul>
-<p><strong>3. Fixed Effects Stability:</strong> Wind Vectors, Instability, and the “Rain Corner” interaction all remained highly significant globally — these are robust, continent-wide drivers.</p>
+<p><strong>3. Fixed Effects Stability:</strong> Wind Vectors, Instability, and the “Rain Corner” interaction all remained highly significant globally , these are robust, continent-wide drivers.</p>
 <p><strong>4. Splines in Zero-Inflation:</strong> <code>ns(days_since_rain, df=4)</code> allows the probability of a dry spell ending to vary non-linearly, capturing the complex “kink” observed in dry spell survival plots.</p>
 
 
@@ -5020,13 +5047,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03-features.html" class="pagination-link" aria-label="Signal Extraction via Moving Averages">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span>
+      <a href="./04-features.html" class="pagination-link" aria-label="Signal Extraction via Moving Averages">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./05-evaluation.html" class="pagination-link" aria-label="Model Evaluation">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./06-evaluation.html" class="pagination-link" aria-label="Model Evaluation">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -5054,7 +5081,7 @@ window.Quarto = {
 <span id="cb9-24"><a href="#cb9-24"></a>)</span>
 <span id="cb9-25"><a href="#cb9-25"></a></span>
 <span id="cb9-26"><a href="#cb9-26"></a>df_scaled <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_scaled.csv"</span>))</span>
-<span id="cb9-27"><a href="#cb9-27"></a>df_final  <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_engineered.csv"</span>))</span>
+<span id="cb9-27"><a href="#cb9-27"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_engineered.csv"</span>))</span>
 <span id="cb9-28"><a href="#cb9-28"></a></span>
 <span id="cb9-29"><a href="#cb9-29"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
 <span id="cb9-30"><a href="#cb9-30"></a></span>
@@ -5072,10 +5099,10 @@ window.Quarto = {
 <span id="cb9-44"><a href="#cb9-44"></a><span class="co">#| eval: false</span></span>
 <span id="cb9-45"><a href="#cb9-45"></a></span>
 <span id="cb9-46"><a href="#cb9-46"></a>m0_null <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
-<span id="cb9-47"><a href="#cb9-47"></a>  <span class="at">formula   =</span> rainfall <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb9-47"><a href="#cb9-47"></a>  <span class="at">formula =</span> rainfall <span class="sc">~</span> <span class="dv">1</span>,</span>
 <span id="cb9-48"><a href="#cb9-48"></a>  <span class="at">ziformula =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
-<span id="cb9-49"><a href="#cb9-49"></a>  <span class="at">family    =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
-<span id="cb9-50"><a href="#cb9-50"></a>  <span class="at">data      =</span> df_scaled</span>
+<span id="cb9-49"><a href="#cb9-49"></a>  <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
+<span id="cb9-50"><a href="#cb9-50"></a>  <span class="at">data =</span> df_scaled</span>
 <span id="cb9-51"><a href="#cb9-51"></a>)</span>
 <span id="cb9-52"><a href="#cb9-52"></a><span class="in">```</span></span>
 <span id="cb9-53"><a href="#cb9-53"></a></span>
@@ -5084,15 +5111,15 @@ window.Quarto = {
 <span id="cb9-58"><a href="#cb9-58"></a></span>
 <span id="cb9-59"><a href="#cb9-59"></a><span class="fu">tab_model</span>(</span>
 <span id="cb9-60"><a href="#cb9-60"></a>  m0_null,</span>
-<span id="cb9-61"><a href="#cb9-61"></a>  <span class="at">show.se        =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-62"><a href="#cb9-62"></a>  <span class="at">show.aic       =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-63"><a href="#cb9-63"></a>  <span class="at">transform      =</span> <span class="st">"exp"</span>,</span>
-<span id="cb9-64"><a href="#cb9-64"></a>  <span class="at">collapse.se    =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-65"><a href="#cb9-65"></a>  <span class="at">p.style        =</span> <span class="st">"numeric_stars"</span>,</span>
-<span id="cb9-66"><a href="#cb9-66"></a>  <span class="at">string.pred    =</span> <span class="st">"Parameter"</span>,</span>
-<span id="cb9-67"><a href="#cb9-67"></a>  <span class="at">string.est     =</span> <span class="st">"Estimate (Exp)"</span>,</span>
-<span id="cb9-68"><a href="#cb9-68"></a>  <span class="at">dv.labels      =</span> <span class="st">"Baseline Rainfall Model"</span>,</span>
-<span id="cb9-69"><a href="#cb9-69"></a>  <span class="at">title          =</span> <span class="st">"Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"</span></span>
+<span id="cb9-61"><a href="#cb9-61"></a>  <span class="at">show.se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-62"><a href="#cb9-62"></a>  <span class="at">show.aic =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-63"><a href="#cb9-63"></a>  <span class="at">transform =</span> <span class="st">"exp"</span>,</span>
+<span id="cb9-64"><a href="#cb9-64"></a>  <span class="at">collapse.se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-65"><a href="#cb9-65"></a>  <span class="at">p.style =</span> <span class="st">"numeric_stars"</span>,</span>
+<span id="cb9-66"><a href="#cb9-66"></a>  <span class="at">string.pred =</span> <span class="st">"Parameter"</span>,</span>
+<span id="cb9-67"><a href="#cb9-67"></a>  <span class="at">string.est =</span> <span class="st">"Estimate (Exp)"</span>,</span>
+<span id="cb9-68"><a href="#cb9-68"></a>  <span class="at">dv.labels =</span> <span class="st">"Baseline Rainfall Model"</span>,</span>
+<span id="cb9-69"><a href="#cb9-69"></a>  <span class="at">title =</span> <span class="st">"Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"</span></span>
 <span id="cb9-70"><a href="#cb9-70"></a>)</span>
 <span id="cb9-71"><a href="#cb9-71"></a><span class="in">```</span></span>
 <span id="cb9-72"><a href="#cb9-72"></a></span>
@@ -5132,8 +5159,8 @@ window.Quarto = {
 <span id="cb9-110"><a href="#cb9-110"></a>  <span class="fu">tbl_regression</span>(</span>
 <span id="cb9-111"><a href="#cb9-111"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb9-112"><a href="#cb9-112"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb9-113"><a href="#cb9-113"></a>      humidity3pm    <span class="sc">~</span> <span class="st">"Humidity (3pm)"</span>,</span>
-<span id="cb9-114"><a href="#cb9-114"></a>      dewpoint_9am   <span class="sc">~</span> <span class="st">"Dewpoint (9am)"</span>,</span>
+<span id="cb9-113"><a href="#cb9-113"></a>      humidity3pm <span class="sc">~</span> <span class="st">"Humidity (3pm)"</span>,</span>
+<span id="cb9-114"><a href="#cb9-114"></a>      dewpoint_9am <span class="sc">~</span> <span class="st">"Dewpoint (9am)"</span>,</span>
 <span id="cb9-115"><a href="#cb9-115"></a>      dewpoint_change <span class="sc">~</span> <span class="st">"Dewpoint Change (Delta)"</span>,</span>
 <span id="cb9-116"><a href="#cb9-116"></a>      pressure_change <span class="sc">~</span> <span class="st">"Pressure Change (Delta)"</span></span>
 <span id="cb9-117"><a href="#cb9-117"></a>    )</span>
@@ -5146,11 +5173,11 @@ window.Quarto = {
 <span id="cb9-124"><a href="#cb9-124"></a></span>
 <span id="cb9-125"><a href="#cb9-125"></a>Building upon the baseline, Model 1 incorporates the primary moisture and pressure drivers identified in EDA. We test the hypothesis that atmospheric moisture (<span class="in">`humidity`</span>, <span class="in">`dewpoint`</span>) and pressure stability (<span class="in">`pressure_change`</span>) drive both the occurrence and intensity of rainfall.</span>
 <span id="cb9-126"><a href="#cb9-126"></a></span>
-<span id="cb9-127"><a href="#cb9-127"></a>**1. Performance:** AIC dropped from 461,669.7 to 422,847 — a reduction of $\Delta AIC \approx 38,823$, confirming that moisture dynamics are foundational predictors.</span>
+<span id="cb9-127"><a href="#cb9-127"></a>**1. Performance:** AIC dropped from 461,669.7 to 422,847 , a reduction of $\Delta AIC \approx 38,823$, confirming that moisture dynamics are foundational predictors.</span>
 <span id="cb9-128"><a href="#cb9-128"></a></span>
 <span id="cb9-129"><a href="#cb9-129"></a>**2. Conditional Model:** All predictors are statistically significant ($p &lt; 2e^{-16}$). <span class="in">`humidity3pm`</span> ($\beta = 0.38$) and <span class="in">`dewpoint_9am`</span> ($\beta = 0.38$) both have strong positive effects on intensity.</span>
 <span id="cb9-130"><a href="#cb9-130"></a></span>
-<span id="cb9-131"><a href="#cb9-131"></a>**3. Zero-Inflation Model:** `humidity3pm` coefficient is **-1.07** — a negative value here means higher humidity *decreases* the probability of a dry day, i.e., increases the probability of rain. Notably, `dewpoint_9am` is not significant in the zero-inflation part ($p = 0.907$), implying that *relative* saturation (humidity) determines *if* it rains, while *absolute* moisture (dewpoint) determines *how hard*.</span>
+<span id="cb9-131"><a href="#cb9-131"></a>**3. Zero-Inflation Model:** `humidity3pm` coefficient is **-1.07** , a negative value here means higher humidity *decreases* the probability of a dry day, i.e., increases the probability of rain. Notably, `dewpoint_9am` is not significant in the zero-inflation part ($p = 0.907$), implying that *relative* saturation (humidity) determines *if* it rains, while *absolute* moisture (dewpoint) determines *how hard*.</span>
 <span id="cb9-132"><a href="#cb9-132"></a></span>
 <span id="cb9-133"><a href="#cb9-133"></a><span class="fu">## Temporal Dynamics and Persistence</span></span>
 <span id="cb9-134"><a href="#cb9-134"></a></span>
@@ -5178,11 +5205,11 @@ window.Quarto = {
 <span id="cb9-160"><a href="#cb9-160"></a>  <span class="fu">tbl_regression</span>(</span>
 <span id="cb9-161"><a href="#cb9-161"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb9-162"><a href="#cb9-162"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb9-163"><a href="#cb9-163"></a>      day_cos          <span class="sc">~</span> <span class="st">"Seasonality (Cos)"</span>,</span>
-<span id="cb9-164"><a href="#cb9-164"></a>      day_sin          <span class="sc">~</span> <span class="st">"Seasonality (Sin)"</span>,</span>
-<span id="cb9-165"><a href="#cb9-165"></a>      rain_yesterday   <span class="sc">~</span> <span class="st">"Rain Yesterday (Persistence)"</span>,</span>
+<span id="cb9-163"><a href="#cb9-163"></a>      day_cos <span class="sc">~</span> <span class="st">"Seasonality (Cos)"</span>,</span>
+<span id="cb9-164"><a href="#cb9-164"></a>      day_sin <span class="sc">~</span> <span class="st">"Seasonality (Sin)"</span>,</span>
+<span id="cb9-165"><a href="#cb9-165"></a>      rain_yesterday <span class="sc">~</span> <span class="st">"Rain Yesterday (Persistence)"</span>,</span>
 <span id="cb9-166"><a href="#cb9-166"></a>      cloud_development <span class="sc">~</span> <span class="st">"Cloud Development"</span>,</span>
-<span id="cb9-167"><a href="#cb9-167"></a>      pressure_change  <span class="sc">~</span> <span class="st">"Pressure Change"</span></span>
+<span id="cb9-167"><a href="#cb9-167"></a>      pressure_change <span class="sc">~</span> <span class="st">"Pressure Change"</span></span>
 <span id="cb9-168"><a href="#cb9-168"></a>    )</span>
 <span id="cb9-169"><a href="#cb9-169"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb9-170"><a href="#cb9-170"></a>  <span class="fu">bold_p</span>() <span class="sc">%&gt;%</span></span>
@@ -5197,7 +5224,7 @@ window.Quarto = {
 <span id="cb9-179"><a href="#cb9-179"></a></span>
 <span id="cb9-180"><a href="#cb9-180"></a>**2. Seasonality:** Both <span class="in">`day_cos`</span> and <span class="in">`day_sin`</span> are highly significant, mathematically confirming the "Summer Peak" pattern.</span>
 <span id="cb9-181"><a href="#cb9-181"></a></span>
-<span id="cb9-182"><a href="#cb9-182"></a>**3. The "Persistence" Effect:** <span class="in">`rain_yesterdayYes`</span> ($\beta = -1.42$) is the strongest predictor in the zero-inflation model. $\exp(-1.42) \approx 0.24$ — if it rained yesterday, the odds of today being dry drop by ~76%.</span>
+<span id="cb9-182"><a href="#cb9-182"></a>**3. The "Persistence" Effect:** <span class="in">`rain_yesterdayYes`</span> ($\beta = -1.42$) is the strongest predictor in the zero-inflation model. $\exp(-1.42) \approx 0.24$ , if it rained yesterday, the odds of today being dry drop by ~76%.</span>
 <span id="cb9-183"><a href="#cb9-183"></a></span>
 <span id="cb9-184"><a href="#cb9-184"></a><span class="fu">## Historical Context and Persistence</span></span>
 <span id="cb9-185"><a href="#cb9-185"></a></span>
@@ -5225,10 +5252,10 @@ window.Quarto = {
 <span id="cb9-211"><a href="#cb9-211"></a>  <span class="fu">tbl_regression</span>(</span>
 <span id="cb9-212"><a href="#cb9-212"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb9-213"><a href="#cb9-213"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb9-214"><a href="#cb9-214"></a>      rainfall_ma7    <span class="sc">~</span> <span class="st">"Rainfall Trend (7-Day MA)"</span>,</span>
-<span id="cb9-215"><a href="#cb9-215"></a>      humidity_ma7    <span class="sc">~</span> <span class="st">"Humidity Trend (7-Day MA)"</span>,</span>
+<span id="cb9-214"><a href="#cb9-214"></a>      rainfall_ma7 <span class="sc">~</span> <span class="st">"Rainfall Trend (7-Day MA)"</span>,</span>
+<span id="cb9-215"><a href="#cb9-215"></a>      humidity_ma7 <span class="sc">~</span> <span class="st">"Humidity Trend (7-Day MA)"</span>,</span>
 <span id="cb9-216"><a href="#cb9-216"></a>      days_since_rain <span class="sc">~</span> <span class="st">"Dry Spell Length (Days)"</span>,</span>
-<span id="cb9-217"><a href="#cb9-217"></a>      rain_yesterday  <span class="sc">~</span> <span class="st">"Rain Yesterday (Indicator)"</span></span>
+<span id="cb9-217"><a href="#cb9-217"></a>      rain_yesterday <span class="sc">~</span> <span class="st">"Rain Yesterday (Indicator)"</span></span>
 <span id="cb9-218"><a href="#cb9-218"></a>    )</span>
 <span id="cb9-219"><a href="#cb9-219"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb9-220"><a href="#cb9-220"></a>  <span class="fu">bold_p</span>() <span class="sc">%&gt;%</span></span>
@@ -5237,16 +5264,16 @@ window.Quarto = {
 <span id="cb9-223"><a href="#cb9-223"></a>  <span class="fu">modify_caption</span>(<span class="st">"**Model 3: Historical Trends &amp; Lagged Effects**"</span>)</span>
 <span id="cb9-224"><a href="#cb9-224"></a><span class="in">```</span></span>
 <span id="cb9-225"><a href="#cb9-225"></a></span>
-<span id="cb9-226"><a href="#cb9-226"></a>Model 3 integrates **history** — recent weather trends — to capture how the atmosphere's accumulated state affects today's rainfall intensity.</span>
+<span id="cb9-226"><a href="#cb9-226"></a>Model 3 integrates **history** , recent weather trends , to capture how the atmosphere's accumulated state affects today's rainfall intensity.</span>
 <span id="cb9-227"><a href="#cb9-227"></a></span>
-<span id="cb9-228"><a href="#cb9-228"></a>**1. Performance:** AIC = 404,936.2 ($\Delta AIC \approx 1,723$ vs M2) — meaningful improvement with diminishing returns compared to earlier leaps.</span>
+<span id="cb9-228"><a href="#cb9-228"></a>**1. Performance:** AIC = 404,936.2 ($\Delta AIC \approx 1,723$ vs M2) , meaningful improvement with diminishing returns compared to earlier leaps.</span>
 <span id="cb9-229"><a href="#cb9-229"></a></span>
 <span id="cb9-230"><a href="#cb9-230"></a>**2. Key Findings:**</span>
 <span id="cb9-231"><a href="#cb9-231"></a></span>
 <span id="cb9-232"><a href="#cb9-232"></a><span class="ss">- </span><span class="in">`rain_yesterday`</span> ($\beta = 0.31$): If it rained yesterday, today's rainfall is likely ~37% more intense ($e^{0.31} \approx 1.36$).</span>
 <span id="cb9-233"><a href="#cb9-233"></a><span class="ss">- </span><span class="in">`rainfall_ma7`</span> ($\beta = 0.13$): A wetter preceding week correlates with heavier rainfall today.</span>
 <span id="cb9-234"><a href="#cb9-234"></a><span class="ss">- </span><span class="in">`humidity_ma7`</span> ($\beta = -0.10$): A persistently humid week may indicate stable, low-intensity stratiform clouds rather than convective storms.</span>
-<span id="cb9-235"><a href="#cb9-235"></a><span class="ss">- </span><span class="in">`days_since_rain`</span>: **Not significant** for intensity ($p = 0.14$) — dry spell length predicts *whether* it rains, not *how much*.</span>
+<span id="cb9-235"><a href="#cb9-235"></a><span class="ss">- </span><span class="in">`days_since_rain`</span>: **Not significant** for intensity ($p = 0.14$) , dry spell length predicts *whether* it rains, not *how much*.</span>
 <span id="cb9-236"><a href="#cb9-236"></a></span>
 <span id="cb9-237"><a href="#cb9-237"></a><span class="fu">## Energy Dynamics and Interactions</span></span>
 <span id="cb9-238"><a href="#cb9-238"></a></span>
@@ -5279,11 +5306,11 @@ window.Quarto = {
 <span id="cb9-269"><a href="#cb9-269"></a>  <span class="fu">tbl_regression</span>(</span>
 <span id="cb9-270"><a href="#cb9-270"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb9-271"><a href="#cb9-271"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb9-272"><a href="#cb9-272"></a>      sunshine             <span class="sc">~</span> <span class="st">"Sunshine Duration (Hours)"</span>,</span>
-<span id="cb9-273"><a href="#cb9-273"></a>      evaporation          <span class="sc">~</span> <span class="st">"Evaporation Rate"</span>,</span>
-<span id="cb9-274"><a href="#cb9-274"></a>      instability_index    <span class="sc">~</span> <span class="st">"Instability Index (Derived)"</span>,</span>
+<span id="cb9-272"><a href="#cb9-272"></a>      sunshine <span class="sc">~</span> <span class="st">"Sunshine Duration (Hours)"</span>,</span>
+<span id="cb9-273"><a href="#cb9-273"></a>      evaporation <span class="sc">~</span> <span class="st">"Evaporation Rate"</span>,</span>
+<span id="cb9-274"><a href="#cb9-274"></a>      instability_index <span class="sc">~</span> <span class="st">"Instability Index (Derived)"</span>,</span>
 <span id="cb9-275"><a href="#cb9-275"></a>      sun_humid_interaction <span class="sc">~</span> <span class="st">"Interaction: Sun * Humid"</span>,</span>
-<span id="cb9-276"><a href="#cb9-276"></a>      cloud_development    <span class="sc">~</span> <span class="st">"Cloud Development (Delta)"</span></span>
+<span id="cb9-276"><a href="#cb9-276"></a>      cloud_development <span class="sc">~</span> <span class="st">"Cloud Development (Delta)"</span></span>
 <span id="cb9-277"><a href="#cb9-277"></a>    )</span>
 <span id="cb9-278"><a href="#cb9-278"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb9-279"><a href="#cb9-279"></a>  <span class="fu">bold_p</span>() <span class="sc">%&gt;%</span></span>
@@ -5296,9 +5323,9 @@ window.Quarto = {
 <span id="cb9-286"><a href="#cb9-286"></a></span>
 <span id="cb9-287"><a href="#cb9-287"></a>**1. Performance:** AIC = 403,051.8 ($\Delta AIC \approx 1,884$ vs M3).</span>
 <span id="cb9-288"><a href="#cb9-288"></a></span>
-<span id="cb9-289"><a href="#cb9-289"></a>**2. The "Rain Corner" Interaction:** <span class="in">`sun_humid_interaction`</span> ($\beta = -0.08$) is highly significant — the heaviest rain occurs when humidity is high *and* sunshine is low (deep cloud cover).</span>
+<span id="cb9-289"><a href="#cb9-289"></a>**2. The "Rain Corner" Interaction:** <span class="in">`sun_humid_interaction`</span> ($\beta = -0.08$) is highly significant , the heaviest rain occurs when humidity is high *and* sunshine is low (deep cloud cover).</span>
 <span id="cb9-290"><a href="#cb9-290"></a></span>
-<span id="cb9-291"><a href="#cb9-291"></a>**3. Shift in Humidity Importance:** <span class="in">`humidity3pm`</span> dropped from 0.39 (M3) to 0.08 (M4). This is not a loss of importance — the variance has been correctly partitioned into <span class="in">`instability_index`</span> and <span class="in">`sun_humid_interaction`</span>. The model now understands *why* humidity matters.</span>
+<span id="cb9-291"><a href="#cb9-291"></a>**3. Shift in Humidity Importance:** <span class="in">`humidity3pm`</span> dropped from 0.39 (M3) to 0.08 (M4). This is not a loss of importance , the variance has been correctly partitioned into <span class="in">`instability_index`</span> and <span class="in">`sun_humid_interaction`</span>. The model now understands *why* humidity matters.</span>
 <span id="cb9-292"><a href="#cb9-292"></a></span>
 <span id="cb9-293"><a href="#cb9-293"></a><span class="fu">## Wind Dynamics</span></span>
 <span id="cb9-294"><a href="#cb9-294"></a></span>
@@ -5326,8 +5353,8 @@ window.Quarto = {
 <span id="cb9-320"><a href="#cb9-320"></a>  <span class="fu">tbl_regression</span>(</span>
 <span id="cb9-321"><a href="#cb9-321"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb9-322"><a href="#cb9-322"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb9-323"><a href="#cb9-323"></a>      gust_U_EW    <span class="sc">~</span> <span class="st">"Gust Vector (East-West)"</span>,</span>
-<span id="cb9-324"><a href="#cb9-324"></a>      gust_V_NS    <span class="sc">~</span> <span class="st">"Gust Vector (North-South)"</span>,</span>
+<span id="cb9-323"><a href="#cb9-323"></a>      gust_U_EW <span class="sc">~</span> <span class="st">"Gust Vector (East-West)"</span>,</span>
+<span id="cb9-324"><a href="#cb9-324"></a>      gust_V_NS <span class="sc">~</span> <span class="st">"Gust Vector (North-South)"</span>,</span>
 <span id="cb9-325"><a href="#cb9-325"></a>      wind9am_U_EW <span class="sc">~</span> <span class="st">"Wind 9am Vector (East-West)"</span>,</span>
 <span id="cb9-326"><a href="#cb9-326"></a>      wind9am_V_NS <span class="sc">~</span> <span class="st">"Wind 9am Vector (North-South)"</span></span>
 <span id="cb9-327"><a href="#cb9-327"></a>    )</span>
@@ -5340,12 +5367,12 @@ window.Quarto = {
 <span id="cb9-334"><a href="#cb9-334"></a></span>
 <span id="cb9-335"><a href="#cb9-335"></a>Model 5 introduces **Wind Vector Decomposition** into North-South ($V$) and East-West ($U$) components, testing whether specific airflow origins drive rainfall intensity.</span>
 <span id="cb9-336"><a href="#cb9-336"></a></span>
-<span id="cb9-337"><a href="#cb9-337"></a>**1. Performance:** AIC = 402,452.7 ($\Delta AIC \approx 600$ vs M4) — smaller but still highly significant.</span>
+<span id="cb9-337"><a href="#cb9-337"></a>**1. Performance:** AIC = 402,452.7 ($\Delta AIC \approx 600$ vs M4) , smaller but still highly significant.</span>
 <span id="cb9-338"><a href="#cb9-338"></a></span>
 <span id="cb9-339"><a href="#cb9-339"></a>**2. Physical Interpretation:**</span>
 <span id="cb9-340"><a href="#cb9-340"></a></span>
-<span id="cb9-341"><a href="#cb9-341"></a><span class="ss">- </span><span class="in">`wind9am_V_NS`</span> ($\beta = -0.088$): Southerly winds (negative $V$) increase rainfall — validating "Southerly Busters" from the Southern Ocean.</span>
-<span id="cb9-342"><a href="#cb9-342"></a><span class="ss">- </span><span class="in">`wind9am_U_EW`</span> ($\beta = -0.085$): Westerly winds (negative $U$) increase rainfall — capturing the "Roaring Forties."</span>
+<span id="cb9-341"><a href="#cb9-341"></a><span class="ss">- </span><span class="in">`wind9am_V_NS`</span> ($\beta = -0.088$): Southerly winds (negative $V$) increase rainfall , validating "Southerly Busters" from the Southern Ocean.</span>
+<span id="cb9-342"><a href="#cb9-342"></a><span class="ss">- </span><span class="in">`wind9am_U_EW`</span> ($\beta = -0.085$): Westerly winds (negative $U$) increase rainfall , capturing the "Roaring Forties."</span>
 <span id="cb9-343"><a href="#cb9-343"></a><span class="ss">- </span>Morning winds have coefficients ~3–4x larger than gusts, confirming that **prevailing air mass direction** matters more than localized turbulence.</span>
 <span id="cb9-344"><a href="#cb9-344"></a></span>
 <span id="cb9-345"><a href="#cb9-345"></a>**3. Model Stability:** Coefficients for previous drivers remained stable, confirming wind vectors explain *new* variance rather than displacing existing predictors.</span>
@@ -5362,72 +5389,95 @@ window.Quarto = {
 <span id="cb9-358"><a href="#cb9-358"></a></span>
 <span id="cb9-359"><a href="#cb9-359"></a>ctrl <span class="ot">&lt;-</span> <span class="fu">glmmTMBControl</span>(</span>
 <span id="cb9-360"><a href="#cb9-360"></a>  <span class="at">optimizer =</span> optim,</span>
-<span id="cb9-361"><a href="#cb9-361"></a>  <span class="at">optArgs   =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"BFGS"</span>),</span>
-<span id="cb9-362"><a href="#cb9-362"></a>  <span class="at">optCtrl   =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">1000</span>)</span>
+<span id="cb9-361"><a href="#cb9-361"></a>  <span class="at">optArgs =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"BFGS"</span>),</span>
+<span id="cb9-362"><a href="#cb9-362"></a>  <span class="at">optCtrl =</span> <span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">1000</span>)</span>
 <span id="cb9-363"><a href="#cb9-363"></a>)</span>
 <span id="cb9-364"><a href="#cb9-364"></a></span>
 <span id="cb9-365"><a href="#cb9-365"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
 <span id="cb9-366"><a href="#cb9-366"></a>  rainfall <span class="sc">~</span></span>
-<span id="cb9-367"><a href="#cb9-367"></a>    humidity3pm <span class="sc">+</span> dewpoint_9am <span class="sc">+</span> dewpoint_change <span class="sc">+</span> pressure_change <span class="sc">+</span></span>
-<span id="cb9-368"><a href="#cb9-368"></a>    day_cos <span class="sc">+</span> day_sin <span class="sc">+</span></span>
-<span id="cb9-369"><a href="#cb9-369"></a>    rainfall_ma7 <span class="sc">+</span> days_since_rain <span class="sc">+</span> humidity_ma7 <span class="sc">+</span> rain_yesterday <span class="sc">+</span></span>
-<span id="cb9-370"><a href="#cb9-370"></a>    sunshine <span class="sc">+</span> evaporation <span class="sc">+</span> instability_index <span class="sc">+</span> sun_humid_interaction <span class="sc">+</span></span>
-<span id="cb9-371"><a href="#cb9-371"></a>    cloud_development <span class="sc">+</span></span>
-<span id="cb9-372"><a href="#cb9-372"></a>    gust_U_EW <span class="sc">+</span> gust_V_NS <span class="sc">+</span> wind9am_V_NS <span class="sc">+</span> wind9am_U_EW <span class="sc">+</span></span>
-<span id="cb9-373"><a href="#cb9-373"></a>    <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">+</span> humidity3pm <span class="sc">+</span> rain_yesterday <span class="sc">+</span> dewpoint_change <span class="sc">|</span> location),</span>
-<span id="cb9-374"><a href="#cb9-374"></a>  <span class="at">ziformula =</span> <span class="sc">~</span> humidity3pm <span class="sc">+</span> dewpoint_9am <span class="sc">+</span> rain_yesterday <span class="sc">+</span></span>
-<span id="cb9-375"><a href="#cb9-375"></a>    cloud_development <span class="sc">+</span> pressure_change <span class="sc">+</span> sunshine <span class="sc">+</span> evaporation <span class="sc">+</span></span>
-<span id="cb9-376"><a href="#cb9-376"></a>    <span class="fu">ns</span>(days_since_rain, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">+</span> humidity_ma7 <span class="sc">+</span> day_cos <span class="sc">+</span> day_sin,</span>
-<span id="cb9-377"><a href="#cb9-377"></a>  <span class="at">data    =</span> re_data,</span>
-<span id="cb9-378"><a href="#cb9-378"></a>  <span class="at">control =</span> ctrl,</span>
-<span id="cb9-379"><a href="#cb9-379"></a>  <span class="at">family  =</span> <span class="fu">ziGamma</span>(<span class="at">link =</span> <span class="st">"log"</span>)</span>
-<span id="cb9-380"><a href="#cb9-380"></a>)</span>
-<span id="cb9-381"><a href="#cb9-381"></a><span class="in">```</span></span>
-<span id="cb9-382"><a href="#cb9-382"></a></span>
-<span id="cb9-385"><a href="#cb9-385"></a><span class="in">```{r}</span></span>
-<span id="cb9-386"><a href="#cb9-386"></a><span class="co">#| label: m6-mixed-output</span></span>
-<span id="cb9-387"><a href="#cb9-387"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-388"><a href="#cb9-388"></a></span>
-<span id="cb9-389"><a href="#cb9-389"></a>m6_mixed <span class="sc">%&gt;%</span></span>
-<span id="cb9-390"><a href="#cb9-390"></a>  <span class="fu">tbl_regression</span>(</span>
-<span id="cb9-391"><a href="#cb9-391"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-392"><a href="#cb9-392"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
-<span id="cb9-393"><a href="#cb9-393"></a>      humidity3pm              <span class="sc">~</span> <span class="st">"Humidity (3pm)"</span>,</span>
-<span id="cb9-394"><a href="#cb9-394"></a>      sunshine                 <span class="sc">~</span> <span class="st">"Sunshine Duration"</span>,</span>
-<span id="cb9-395"><a href="#cb9-395"></a>      sun_humid_interaction    <span class="sc">~</span> <span class="st">"Interaction: Sun * Humid"</span>,</span>
-<span id="cb9-396"><a href="#cb9-396"></a>      rainfall_ma7             <span class="sc">~</span> <span class="st">"Rainfall Trend (7-Day MA)"</span>,</span>
-<span id="cb9-397"><a href="#cb9-397"></a>      days_since_rain          <span class="sc">~</span> <span class="st">"Dry Spell Length (Linear)"</span>,</span>
-<span id="cb9-398"><a href="#cb9-398"></a>      rain_yesterday           <span class="sc">~</span> <span class="st">"Rain Yesterday (Indicator)"</span>,</span>
-<span id="cb9-399"><a href="#cb9-399"></a>      gust_U_EW                <span class="sc">~</span> <span class="st">"Gust Vector (East-West)"</span>,</span>
-<span id="cb9-400"><a href="#cb9-400"></a>      gust_V_NS                <span class="sc">~</span> <span class="st">"Gust Vector (North-South)"</span>,</span>
-<span id="cb9-401"><a href="#cb9-401"></a>      instability_index        <span class="sc">~</span> <span class="st">"Instability Index"</span>,</span>
-<span id="cb9-402"><a href="#cb9-402"></a>      day_cos                  <span class="sc">~</span> <span class="st">"Seasonality (Cos)"</span>,</span>
-<span id="cb9-403"><a href="#cb9-403"></a>      day_sin                  <span class="sc">~</span> <span class="st">"Seasonality (Sin)"</span></span>
-<span id="cb9-404"><a href="#cb9-404"></a>    )</span>
-<span id="cb9-405"><a href="#cb9-405"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb9-406"><a href="#cb9-406"></a>  <span class="fu">bold_p</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb9-407"><a href="#cb9-407"></a>  <span class="fu">add_glance_table</span>(<span class="at">include =</span> <span class="fu">c</span>(<span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"logLik"</span>, <span class="st">"nobs"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-408"><a href="#cb9-408"></a>  <span class="fu">modify_header</span>(<span class="at">label =</span> <span class="st">"**Predictor**"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-409"><a href="#cb9-409"></a>  <span class="fu">modify_caption</span>(<span class="st">"**Model 6: The Final Mixed-Effects Model (Random Slopes)**"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-410"><a href="#cb9-410"></a>  <span class="fu">as_gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb9-411"><a href="#cb9-411"></a>  gt<span class="sc">::</span><span class="fu">tab_footnote</span>(</span>
-<span id="cb9-412"><a href="#cb9-412"></a>    <span class="at">footnote =</span> <span class="st">"Random Effects Structure: Uncorrelated random slopes for Humidity, Persistence, and Dewpoint by Location."</span></span>
-<span id="cb9-413"><a href="#cb9-413"></a>  )</span>
-<span id="cb9-414"><a href="#cb9-414"></a><span class="in">```</span></span>
-<span id="cb9-415"><a href="#cb9-415"></a></span>
-<span id="cb9-416"><a href="#cb9-416"></a>The final model addresses the hierarchical nature of the data by introducing **Random Effects**, allowing parameters to vary by <span class="in">`location`</span>.</span>
-<span id="cb9-417"><a href="#cb9-417"></a></span>
-<span id="cb9-418"><a href="#cb9-418"></a>**1. Performance:** AIC = 394,854.0 ($\Delta AIC \approx 7,599$ vs M5) — a massive improvement confirming that **spatial heterogeneity** is a dominant source of variance.</span>
-<span id="cb9-419"><a href="#cb9-419"></a></span>
-<span id="cb9-420"><a href="#cb9-420"></a>**2. Random Effects Structure:**</span>
-<span id="cb9-421"><a href="#cb9-421"></a></span>
-<span id="cb9-422"><a href="#cb9-422"></a><span class="ss">- </span>**Random Intercepts** ($\sigma^2 = 0.12$): Baseline rainfall varies significantly between locations.</span>
-<span id="cb9-423"><a href="#cb9-423"></a><span class="ss">- </span>**Random Slope — Humidity** ($\sigma^2 = 0.023$): The effect of humidity on rainfall differs by location.</span>
-<span id="cb9-424"><a href="#cb9-424"></a><span class="ss">- </span>**Random Slope — Persistence** ($\sigma^2 = 0.013$): The "stickiness" of wet weather varies spatially.</span>
-<span id="cb9-425"><a href="#cb9-425"></a></span>
-<span id="cb9-426"><a href="#cb9-426"></a>**3. Fixed Effects Stability:** Wind Vectors, Instability, and the "Rain Corner" interaction all remained highly significant globally — these are robust, continent-wide drivers.</span>
-<span id="cb9-427"><a href="#cb9-427"></a></span>
-<span id="cb9-428"><a href="#cb9-428"></a>**4. Splines in Zero-Inflation:** <span class="in">`ns(days_since_rain, df=4)`</span> allows the probability of a dry spell ending to vary non-linearly, capturing the complex "kink" observed in dry spell survival plots.</span>
+<span id="cb9-367"><a href="#cb9-367"></a>    humidity3pm <span class="sc">+</span></span>
+<span id="cb9-368"><a href="#cb9-368"></a>    dewpoint_9am <span class="sc">+</span></span>
+<span id="cb9-369"><a href="#cb9-369"></a>    dewpoint_change <span class="sc">+</span></span>
+<span id="cb9-370"><a href="#cb9-370"></a>    pressure_change <span class="sc">+</span></span>
+<span id="cb9-371"><a href="#cb9-371"></a>    day_cos <span class="sc">+</span></span>
+<span id="cb9-372"><a href="#cb9-372"></a>    day_sin <span class="sc">+</span></span>
+<span id="cb9-373"><a href="#cb9-373"></a>    rainfall_ma7 <span class="sc">+</span></span>
+<span id="cb9-374"><a href="#cb9-374"></a>    days_since_rain <span class="sc">+</span></span>
+<span id="cb9-375"><a href="#cb9-375"></a>    humidity_ma7 <span class="sc">+</span></span>
+<span id="cb9-376"><a href="#cb9-376"></a>    rain_yesterday <span class="sc">+</span></span>
+<span id="cb9-377"><a href="#cb9-377"></a>    sunshine <span class="sc">+</span></span>
+<span id="cb9-378"><a href="#cb9-378"></a>    evaporation <span class="sc">+</span></span>
+<span id="cb9-379"><a href="#cb9-379"></a>    instability_index <span class="sc">+</span></span>
+<span id="cb9-380"><a href="#cb9-380"></a>    sun_humid_interaction <span class="sc">+</span></span>
+<span id="cb9-381"><a href="#cb9-381"></a>    cloud_development <span class="sc">+</span></span>
+<span id="cb9-382"><a href="#cb9-382"></a>    gust_U_EW <span class="sc">+</span></span>
+<span id="cb9-383"><a href="#cb9-383"></a>    gust_V_NS <span class="sc">+</span></span>
+<span id="cb9-384"><a href="#cb9-384"></a>    wind9am_V_NS <span class="sc">+</span></span>
+<span id="cb9-385"><a href="#cb9-385"></a>    wind9am_U_EW <span class="sc">+</span></span>
+<span id="cb9-386"><a href="#cb9-386"></a>    <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">+</span> humidity3pm <span class="sc">+</span> rain_yesterday <span class="sc">+</span> dewpoint_change <span class="sc">|</span> location),</span>
+<span id="cb9-387"><a href="#cb9-387"></a>  <span class="at">ziformula =</span> <span class="sc">~</span> humidity3pm <span class="sc">+</span></span>
+<span id="cb9-388"><a href="#cb9-388"></a>    dewpoint_9am <span class="sc">+</span></span>
+<span id="cb9-389"><a href="#cb9-389"></a>    rain_yesterday <span class="sc">+</span></span>
+<span id="cb9-390"><a href="#cb9-390"></a>    cloud_development <span class="sc">+</span></span>
+<span id="cb9-391"><a href="#cb9-391"></a>    pressure_change <span class="sc">+</span></span>
+<span id="cb9-392"><a href="#cb9-392"></a>    sunshine <span class="sc">+</span></span>
+<span id="cb9-393"><a href="#cb9-393"></a>    evaporation <span class="sc">+</span></span>
+<span id="cb9-394"><a href="#cb9-394"></a>    <span class="fu">ns</span>(days_since_rain, <span class="at">df =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb9-395"><a href="#cb9-395"></a>    humidity_ma7 <span class="sc">+</span></span>
+<span id="cb9-396"><a href="#cb9-396"></a>    day_cos <span class="sc">+</span></span>
+<span id="cb9-397"><a href="#cb9-397"></a>    day_sin,</span>
+<span id="cb9-398"><a href="#cb9-398"></a>  <span class="at">data =</span> re_data,</span>
+<span id="cb9-399"><a href="#cb9-399"></a>  <span class="at">control =</span> ctrl,</span>
+<span id="cb9-400"><a href="#cb9-400"></a>  <span class="at">family =</span> <span class="fu">ziGamma</span>(<span class="at">link =</span> <span class="st">"log"</span>)</span>
+<span id="cb9-401"><a href="#cb9-401"></a>)</span>
+<span id="cb9-402"><a href="#cb9-402"></a><span class="in">```</span></span>
+<span id="cb9-403"><a href="#cb9-403"></a></span>
+<span id="cb9-406"><a href="#cb9-406"></a><span class="in">```{r}</span></span>
+<span id="cb9-407"><a href="#cb9-407"></a><span class="co">#| label: m6-mixed-output</span></span>
+<span id="cb9-408"><a href="#cb9-408"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-409"><a href="#cb9-409"></a></span>
+<span id="cb9-410"><a href="#cb9-410"></a>m6_mixed <span class="sc">%&gt;%</span></span>
+<span id="cb9-411"><a href="#cb9-411"></a>  <span class="fu">tbl_regression</span>(</span>
+<span id="cb9-412"><a href="#cb9-412"></a>    <span class="at">exponentiate =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-413"><a href="#cb9-413"></a>    <span class="at">label =</span> <span class="fu">list</span>(</span>
+<span id="cb9-414"><a href="#cb9-414"></a>      humidity3pm <span class="sc">~</span> <span class="st">"Humidity (3pm)"</span>,</span>
+<span id="cb9-415"><a href="#cb9-415"></a>      sunshine <span class="sc">~</span> <span class="st">"Sunshine Duration"</span>,</span>
+<span id="cb9-416"><a href="#cb9-416"></a>      sun_humid_interaction <span class="sc">~</span> <span class="st">"Interaction: Sun * Humid"</span>,</span>
+<span id="cb9-417"><a href="#cb9-417"></a>      rainfall_ma7 <span class="sc">~</span> <span class="st">"Rainfall Trend (7-Day MA)"</span>,</span>
+<span id="cb9-418"><a href="#cb9-418"></a>      days_since_rain <span class="sc">~</span> <span class="st">"Dry Spell Length (Linear)"</span>,</span>
+<span id="cb9-419"><a href="#cb9-419"></a>      rain_yesterday <span class="sc">~</span> <span class="st">"Rain Yesterday (Indicator)"</span>,</span>
+<span id="cb9-420"><a href="#cb9-420"></a>      gust_U_EW <span class="sc">~</span> <span class="st">"Gust Vector (East-West)"</span>,</span>
+<span id="cb9-421"><a href="#cb9-421"></a>      gust_V_NS <span class="sc">~</span> <span class="st">"Gust Vector (North-South)"</span>,</span>
+<span id="cb9-422"><a href="#cb9-422"></a>      instability_index <span class="sc">~</span> <span class="st">"Instability Index"</span>,</span>
+<span id="cb9-423"><a href="#cb9-423"></a>      day_cos <span class="sc">~</span> <span class="st">"Seasonality (Cos)"</span>,</span>
+<span id="cb9-424"><a href="#cb9-424"></a>      day_sin <span class="sc">~</span> <span class="st">"Seasonality (Sin)"</span></span>
+<span id="cb9-425"><a href="#cb9-425"></a>    )</span>
+<span id="cb9-426"><a href="#cb9-426"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-427"><a href="#cb9-427"></a>  <span class="fu">bold_p</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-428"><a href="#cb9-428"></a>  <span class="fu">add_glance_table</span>(<span class="at">include =</span> <span class="fu">c</span>(<span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"logLik"</span>, <span class="st">"nobs"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-429"><a href="#cb9-429"></a>  <span class="fu">modify_header</span>(<span class="at">label =</span> <span class="st">"**Predictor**"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-430"><a href="#cb9-430"></a>  <span class="fu">modify_caption</span>(</span>
+<span id="cb9-431"><a href="#cb9-431"></a>    <span class="st">"**Model 6: The Final Mixed-Effects Model (Random Slopes)**"</span></span>
+<span id="cb9-432"><a href="#cb9-432"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-433"><a href="#cb9-433"></a>  <span class="fu">as_gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-434"><a href="#cb9-434"></a>  gt<span class="sc">::</span><span class="fu">tab_footnote</span>(</span>
+<span id="cb9-435"><a href="#cb9-435"></a>    <span class="at">footnote =</span> <span class="st">"Random Effects Structure: Uncorrelated random slopes for Humidity, Persistence, and Dewpoint by Location."</span></span>
+<span id="cb9-436"><a href="#cb9-436"></a>  )</span>
+<span id="cb9-437"><a href="#cb9-437"></a><span class="in">```</span></span>
+<span id="cb9-438"><a href="#cb9-438"></a></span>
+<span id="cb9-439"><a href="#cb9-439"></a>The final model addresses the hierarchical nature of the data by introducing **Random Effects**, allowing parameters to vary by <span class="in">`location`</span>.</span>
+<span id="cb9-440"><a href="#cb9-440"></a></span>
+<span id="cb9-441"><a href="#cb9-441"></a>**1. Performance:** AIC = 394,854.0 ($\Delta AIC \approx 7,599$ vs M5) , a massive improvement confirming that **spatial heterogeneity** is a dominant source of variance.</span>
+<span id="cb9-442"><a href="#cb9-442"></a></span>
+<span id="cb9-443"><a href="#cb9-443"></a>**2. Random Effects Structure:**</span>
+<span id="cb9-444"><a href="#cb9-444"></a></span>
+<span id="cb9-445"><a href="#cb9-445"></a><span class="ss">- </span>**Random Intercepts** ($\sigma^2 = 0.12$): Baseline rainfall varies significantly between locations.</span>
+<span id="cb9-446"><a href="#cb9-446"></a><span class="ss">- </span>**Random Slope , Humidity** ($\sigma^2 = 0.023$): The effect of humidity on rainfall differs by location.</span>
+<span id="cb9-447"><a href="#cb9-447"></a><span class="ss">- </span>**Random Slope , Persistence** ($\sigma^2 = 0.013$): The "stickiness" of wet weather varies spatially.</span>
+<span id="cb9-448"><a href="#cb9-448"></a></span>
+<span id="cb9-449"><a href="#cb9-449"></a>**3. Fixed Effects Stability:** Wind Vectors, Instability, and the "Rain Corner" interaction all remained highly significant globally , these are robust, continent-wide drivers.</span>
+<span id="cb9-450"><a href="#cb9-450"></a></span>
+<span id="cb9-451"><a href="#cb9-451"></a>**4. Splines in Zero-Inflation:** <span class="in">`ns(days_since_rain, df=4)`</span> allows the probability of a dry spell ending to vary non-linearly, capturing the complex "kink" observed in dry spell survival plots.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
@@ -5435,5 +5485,5 @@ window.Quarto = {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/04-modeling.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/05-modeling.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
