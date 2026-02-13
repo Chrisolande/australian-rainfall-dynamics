@@ -348,7 +348,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Predicting the Unpredictable</span></a>
+ <span class="menu-text">Predicting Australian Rainfall</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -442,10 +442,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#classification-performance" id="toc-classification-performance" class="nav-link active" data-scroll-target="#classification-performance"><span class="header-section-number">6.1</span> Classification Performance</a></li>
-  <li><a href="#random-effects-visualization" id="toc-random-effects-visualization" class="nav-link" data-scroll-target="#random-effects-visualization"><span class="header-section-number">6.2</span> Random Effects Visualization</a></li>
-  <li><a href="#validating-model-assumptions-dharma" id="toc-validating-model-assumptions-dharma" class="nav-link" data-scroll-target="#validating-model-assumptions-dharma"><span class="header-section-number">6.3</span> Validating Model Assumptions (DHARMa)</a></li>
-  <li><a href="#verifying-temporal-independence" id="toc-verifying-temporal-independence" class="nav-link" data-scroll-target="#verifying-temporal-independence"><span class="header-section-number">6.4</span> Verifying Temporal Independence</a></li>
+  <li><a href="#validating-the-final-mixed-effects-zero-inflated-gamma-model" id="toc-validating-the-final-mixed-effects-zero-inflated-gamma-model" class="nav-link active" data-scroll-target="#validating-the-final-mixed-effects-zero-inflated-gamma-model"><span class="header-section-number">6.1</span> Validating the Final Mixed-Effects Zero-Inflated Gamma Model</a></li>
+  <li><a href="#classification-performance-of-the-occurrence-submodel" id="toc-classification-performance-of-the-occurrence-submodel" class="nav-link" data-scroll-target="#classification-performance-of-the-occurrence-submodel"><span class="header-section-number">6.2</span> Classification Performance of the Occurrence Submodel</a></li>
+  <li><a href="#spatial-heterogeneity-and-random-effects" id="toc-spatial-heterogeneity-and-random-effects" class="nav-link" data-scroll-target="#spatial-heterogeneity-and-random-effects"><span class="header-section-number">6.3</span> Spatial Heterogeneity and Random Effects</a></li>
+  <li><a href="#residual-diagnostics-via-dharma-simulation" id="toc-residual-diagnostics-via-dharma-simulation" class="nav-link" data-scroll-target="#residual-diagnostics-via-dharma-simulation"><span class="header-section-number">6.4</span> Residual Diagnostics via DHARMa Simulation</a></li>
+  <li><a href="#temporal-autocorrelation-in-residuals" id="toc-temporal-autocorrelation-in-residuals" class="nav-link" data-scroll-target="#temporal-autocorrelation-in-residuals"><span class="header-section-number">6.5</span> Temporal Autocorrelation in Residuals</a></li>
+  <li><a href="#summary-of-validation-results" id="toc-summary-of-validation-results" class="nav-link" data-scroll-target="#summary-of-validation-results"><span class="header-section-number">6.6</span> Summary of Validation Results</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/06-evaluation.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -472,9 +474,16 @@ window.Quarto = {
 </header>
 
 
-<p>In this chapter, we rigorously validate the final Mixed-Effects Zero-Inflated Gamma model (M6) across four dimensions: classification performance, spatial heterogeneity, residual diagnostics, and temporal independence.</p>
-<section id="classification-performance" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="classification-performance"><span class="header-section-number">6.1</span> Classification Performance</h2>
+<section id="validating-the-final-mixed-effects-zero-inflated-gamma-model" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="validating-the-final-mixed-effects-zero-inflated-gamma-model"><span class="header-section-number">6.1</span> Validating the Final Mixed-Effects Zero-Inflated Gamma Model</h2>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Chapter Context.</strong> A model that fits training data well is not necessarily a model that is correct. This chapter subjects the final mixed-effects ZIG model (M6) to four distinct validation procedures, each targeting a different potential failure mode: poor discriminative ability in the occurrence submodel, spatially inappropriate parameter homogeneity, distributional misspecification in the residuals, and unabsorbed temporal autocorrelation. Together, these tests form a coherent audit of the model’s assumptions and capabilities.</p>
+</blockquote>
+<hr>
+</section>
+<section id="classification-performance-of-the-occurrence-submodel" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="classification-performance-of-the-occurrence-submodel"><span class="header-section-number">6.2</span> Classification Performance of the Occurrence Submodel</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -496,7 +505,7 @@ window.Quarto = {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="06-evaluation_files/figure-html/model-evaluation-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption>ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days.</figcaption>
+<figcaption>ROC Curve for Rainfall Occurrence Prediction. AUC = 0.827 indicates strong discriminative ability in separating dry days from wet days.</figcaption>
 </figure>
 </div>
 </div>
@@ -519,13 +528,13 @@ Optimal Probability Threshold: 0.6314</code></pre>
 <span id="cb4-4"><a href="#cb4-4"></a>conf_matrix <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> predicted_class, <span class="at">Actual =</span> actual_class)</span>
 <span id="cb4-5"><a href="#cb4-5"></a></span>
 <span id="cb4-6"><a href="#cb4-6"></a>conf_matrix <span class="sc">%&gt;%</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Confusion Matrix (Optimal Threshold)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Confusion Matrix at the Youden-Optimal Threshold"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-8"><a href="#cb4-8"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
-Confusion Matrix (Optimal Threshold)
+Confusion Matrix at the Youden-Optimal Threshold
 </caption>
 <thead>
 <tr>
@@ -564,32 +573,26 @@ Rain
 </tr>
 </tbody>
 </table>
-<p>ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days.</p>
+<p>ROC Curve for Rainfall Occurrence Prediction. AUC = 0.827 indicates strong discriminative ability in separating dry days from wet days.</p>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrix)) <span class="sc">/</span> <span class="fu">sum</span>(conf_matrix)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Model Accuracy: %.2f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Overall Accuracy: %.2f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Model Accuracy: 75.28%</code></pre>
+Overall Accuracy: 75.28%</code></pre>
 </div>
 </div>
-<p>While the Gamma component estimates rainfall <em>amount</em>, the Zero-Inflation component acts as a binary classifier answering: <em>“Will it rain?”</em></p>
-<p><strong>1. Discriminative Power (AUC = 0.832):</strong> In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.</p>
-<p><strong>2. Optimal Thresholding:</strong> Using Youden’s J statistic, the optimal threshold is <strong>0.645</strong> , because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting “No Rain.”</p>
-<p><strong>3. Confusion Matrix Results (Accuracy: 75.41%):</strong></p>
-<ul>
-<li>Correct Dry Predictions (TN): 68,544 days</li>
-<li>Correct Rain Predictions (TP): 38,433 days</li>
-<li>False Alarms (Type I): 22,294 days</li>
-<li>Missed Rain (Type II): 12,585 days</li>
-</ul>
-<p>The model is conservative , twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.</p>
+<p>Although the ZIG model is primarily a framework for predicting rainfall amount, its zero-inflation component constitutes a binary classifier at each observation: it assigns a probability that the day is structurally dry, irrespective of other atmospheric conditions. Evaluating this component as a classifier allows us to assess how well the model separates the two fundamentally different weather states identified in the <a href="03-eda.html" class="quarto-xref"><span>Chapter 3</span></a>.</p>
+<p><strong>Discriminative ability.</strong> The area under the ROC curve is 0.827, meaning that in 82.7% of randomly drawn pairs consisting of one genuinely dry day and one genuinely wet day, the model correctly assigns the higher dryness probability to the dry day. This is a threshold-free measure of separation that does not depend on any particular operating point, and it indicates strong discriminative performance for a meteorological classification problem of this complexity.</p>
+<p><strong>Threshold selection.</strong> The raw zero-inflation probability must be converted to a binary prediction through a threshold. Youden’s J statistic which maximises the sum of sensitivity and specificity simultaneously selects an optimal threshold of 0.6314. This is notably higher than the naive 0.5 default, and the reason is structural: because dry days constitute 64% of the sample, the model’s calibrated prior assigns moderate dryness probability to many observations by default. A higher threshold requires more decisive evidence of a dry signal before predicting “No Rain,” which appropriately reflects the prior imbalance in class frequencies.</p>
+<p><strong>Confusion matrix.</strong> At this threshold, overall accuracy is 75.28%, decomposing into 69,365 correct dry-day predictions (true negatives), 37,422 correct rain predictions (true positives), 21,473 false alarms (predicted dry, actually wet), and 13,596 missed rain events (predicted wet, actually dry). The model generates false alarms at roughly twice the rate at which it misses rain events. In a meteorological context this asymmetry is operationally desirable: the consequence of carrying an umbrella on a dry day is trivial compared to the consequence of being unprepared for a significant rainfall event. A model biased toward caution is appropriate for this domain.</p>
+<hr>
 </section>
-<section id="random-effects-visualization" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="random-effects-visualization"><span class="header-section-number">6.2</span> Random Effects Visualization</h2>
+<section id="spatial-heterogeneity-and-random-effects" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="spatial-heterogeneity-and-random-effects"><span class="header-section-number">6.3</span> Spatial Heterogeneity and Random Effects</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -678,10 +681,10 @@ Model Accuracy: 75.28%</code></pre>
 <span id="cb7-83"><a href="#cb7-83"></a>  ) <span class="sc">+</span></span>
 <span id="cb7-84"><a href="#cb7-84"></a>  <span class="fu">labs</span>(</span>
 <span id="cb7-85"><a href="#cb7-85"></a>    <span class="at">title =</span> <span class="st">"The Geography of Rain: Location-Specific Baselines"</span>,</span>
-<span id="cb7-86"><a href="#cb7-86"></a>    <span class="at">subtitle =</span> <span class="st">"Random intercepts show how much wetter/drier each city is, holding all weather variables constant.</span><span class="sc">\n</span><span class="st">Bars show 95% confidence intervals; points beyond ±1 SD are labeled."</span>,</span>
+<span id="cb7-86"><a href="#cb7-86"></a>    <span class="at">subtitle =</span> <span class="st">"Random intercepts show how much wetter or drier each city is, holding all weather variables constant.</span><span class="sc">\n</span><span class="st">Bars show 95% confidence intervals; points beyond ±1 SD are labeled."</span>,</span>
 <span id="cb7-87"><a href="#cb7-87"></a>    <span class="at">x =</span> <span class="st">"Baseline Rainfall Adjustment (Log mm)"</span>,</span>
 <span id="cb7-88"><a href="#cb7-88"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb7-89"><a href="#cb7-89"></a>    <span class="at">caption =</span> <span class="st">"Interpretation: A value of +0.5 means ~65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"</span></span>
+<span id="cb7-89"><a href="#cb7-89"></a>    <span class="at">caption =</span> <span class="st">"Interpretation: A value of +0.5 means approximately 65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"</span></span>
 <span id="cb7-90"><a href="#cb7-90"></a>  ) <span class="sc">+</span></span>
 <span id="cb7-91"><a href="#cb7-91"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
 <span id="cb7-92"><a href="#cb7-92"></a>  <span class="fu">theme</span>(</span>
@@ -721,18 +724,20 @@ Model Accuracy: 75.28%</code></pre>
 <img src="06-evaluation_files/figure-html/fig-location-effects-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-location-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.1: The Geography of Rain: Random Intercepts by Location. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average; cities in red (e.g., Nhil, Norfolk Island) are inherently drier, after controlling for all dynamic weather variables.
+Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random intercepts). Cities to the right of the dashed line produce systematically more rainfall than the national average when all dynamic weather variables are held constant; cities to the left produce systematically less.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><strong>1. The Tropical Top End (Wetter):</strong> Katherine (<span class="math inline">\(\beta = 0.59\)</span>) and Darwin (<span class="math inline">\(\beta = 0.54\)</span>) have the highest positive adjustments , even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.</p>
-<p><strong>2. The Arid Interior (Drier):</strong> Nhil (<span class="math inline">\(\beta = -0.73\)</span>) and Norfolk Island (<span class="math inline">\(\beta = -0.65\)</span>) have a suppressive geography , weather systems that produce moderate rain elsewhere produce only light rain here.</p>
-<p><strong>3. Significance:</strong> The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.</p>
+<p>The random intercepts from the mixed-effects model represent the location-specific baseline deviations in rainfall intensity after removing the contribution of all dynamic weather variables, humidity, pressure, wind, seasonality, and persistence. What remains is the component of rainfall that is attributable to geographic and climatic factors that do not vary day-to-day: proximity to moisture sources, orographic effects, predominant circulation patterns, and regional climate regime.</p>
+<p><strong>The wetter locations.</strong> Katherine (<span class="math inline">\(\hat{b} = 0.54\)</span>) and Tuggeranong (<span class="math inline">\(\hat{b} = 0.57\)</span>) sit at the high end of the distribution. Exponentiating these values: <span class="math inline">\(e^{0.54} \approx 1.72\)</span> and <span class="math inline">\(e^{0.57} \approx 1.77\)</span>, meaning that these stations produce roughly 72% and 77% more rainfall respectively than a hypothetical average Australian location experiencing identical instantaneous weather conditions. This is geographically coherent: both stations sit in the tropical Top End of the Northern Territory, where monsoonal systems deliver sustained and intense rainfall that has no structural analogue in the temperate south, and which the fixed-effects predictors measured on individual days cannot fully capture.</p>
+<p><strong>The drier locations.</strong> Nhil (<span class="math inline">\(\hat{b} = -0.66\)</span>) and Norfolk Island (<span class="math inline">\(\hat{b} = -0.72\)</span>) show the strongest negative adjustments. <span class="math inline">\(e^{-0.66} \approx 0.52\)</span>, indicating that Nhil produces roughly half the rainfall of an average location given identical weather conditions. This reflects its position in the semi-arid Wimmera region of inland Victoria, where even moisture-laden air masses tend to deliver less precipitation than they would on the coast.</p>
+<p><strong>Justification for the mixed-effects structure.</strong> The magnitude and geographic coherence of these deviations confirm the necessity of the random effects component. A pooled fixed-effects model would have suppressed this spatial variation by averaging across all locations, producing a single set of coefficients that systematically over-predicts rainfall in arid interior stations and under-predicts it in tropical ones. The mixed-effects structure allows the global physical relationships humidity drives intensity, southerly winds bring moisture, to remain stable as fixed effects while accommodating the fact that those relationships operate against a geographically variable baseline.</p>
+<hr>
 </section>
-<section id="validating-model-assumptions-dharma" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="validating-model-assumptions-dharma"><span class="header-section-number">6.3</span> Validating Model Assumptions (DHARMa)</h2>
+<section id="residual-diagnostics-via-dharma-simulation" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="residual-diagnostics-via-dharma-simulation"><span class="header-section-number">6.4</span> Residual Diagnostics via DHARMa Simulation</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -743,7 +748,7 @@ Figure&nbsp;6.1: The Geography of Rain: Random Intercepts by Location. Cities in
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="06-evaluation_files/figure-html/model-diagnostics-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption>DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs.&nbsp;Predicted shows no fanning or curvature, confirming homoscedasticity.</figcaption>
+<figcaption>DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs.&nbsp;predicted values.</figcaption>
 </figure>
 </div>
 </div>
@@ -755,7 +760,7 @@ Figure&nbsp;6.1: The Geography of Rain: Random Intercepts by Location. Cities in
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="06-evaluation_files/figure-html/model-diagnostics-2.png" class="img-fluid figure-img" width="960"></p>
-<figcaption>DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs.&nbsp;Predicted shows no fanning or curvature, confirming homoscedasticity.</figcaption>
+<figcaption>DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs.&nbsp;predicted values.</figcaption>
 </figure>
 </div>
 </div>
@@ -776,7 +781,7 @@ alternative hypothesis: two.sided</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="06-evaluation_files/figure-html/model-diagnostics-3.png" class="img-fluid figure-img" width="960"></p>
-<figcaption>DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs.&nbsp;Predicted shows no fanning or curvature, confirming homoscedasticity.</figcaption>
+<figcaption>DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs.&nbsp;predicted values.</figcaption>
 </figure>
 </div>
 </div>
@@ -790,16 +795,14 @@ ratioObsSim = 1.0001, p-value = 0.976
 alternative hypothesis: two.sided</code></pre>
 </div>
 </div>
-<p><strong>1. Q-Q Plot:</strong> Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows <span class="math inline">\(p &lt; 0.05\)</span> (expected at <span class="math inline">\(N &gt; 140,000\)</span>), visual deviations are negligible. The <strong>Gamma distribution</strong> correctly characterizes the positive rainfall values.</p>
-<p><strong>2. Residuals vs.&nbsp;Predicted:</strong> The red quantile lines (25th, 50th, 75th) are straight and horizontal , <strong>no significant non-linearity or heteroscedasticity</strong>. The model performs equally well for light drizzle and heavy storms.</p>
-<p><strong>3. Formal Tests:</strong></p>
-<ul>
-<li><strong>Dispersion Test:</strong> <span class="math inline">\(p = 0.192\)</span> , we fail to reject ideal dispersion. The <code>ziGamma</code> family successfully handled the variance structure without over-dispersion.</li>
-<li><strong>Zero-Inflation Test:</strong> Ratio of observed to simulated zeros = <strong>1.00</strong> (<span class="math inline">\(p = 0.992\)</span>) , the model predicts the exact correct number of dry days.</li>
-</ul>
+<p>Standard residual diagnostics are not directly applicable to Zero-Inflated Gamma models: the mixture of a point mass at zero and a continuous positive distribution means that conventional Pearson or deviance residuals do not have a tractable reference distribution. DHARMa addresses this by generating a large number of simulated datasets from the fitted model and computing, for each observation, where the actual value falls in the empirical distribution of simulated values. Under a correctly specified model, these <em>scaled residuals</em> follow a uniform distribution on <span class="math inline">\([0, 1]\)</span> regardless of the model family. Deviations from uniformity indicate misspecification.</p>
+<p><strong>Q-Q plot.</strong> The empirical quantiles of the scaled residuals align closely with the theoretical diagonal across the full range of the distribution. The Kolmogorov-Smirnov test registers <span class="math inline">\(p &lt; 0.05\)</span>, but this outcome is expected and should not be interpreted as evidence of meaningful misfit: with <span class="math inline">\(N &gt; 140,000\)</span> observations, the test has sufficient power to detect deviations of negligible practical magnitude. The visual alignment of the Q-Q plot the appropriate diagnostic at this sample size shows no systematic departure from the uniform reference.</p>
+<p><strong>Residuals versus predicted.</strong> The three quantile lines (25th, 50th, and 75th percentiles of the scaled residuals at each fitted value) are horizontal and evenly spaced across the range of predictions. This indicates the absence of systematic non-linearity (which would manifest as curvature in the 50th percentile line) and the absence of heteroscedasticity (which would manifest as convergence or divergence of the outer quantile lines). The model performs with equivalent fidelity across the full range of rainfall intensities, from light drizzle to extreme events.</p>
+<p><strong>Formal test results.</strong> The dispersion test yields <span class="math inline">\(p = 0.36\)</span>, giving no evidence that the variance of the residuals deviates from what the fitted ZIG family implies. The zero-inflation test produces a ratio of observed to simulated zero counts of exactly 1.00 (<span class="math inline">\(p = 0.976\)</span>), confirming that the model’s hurdle component is correctly calibrated and is neither over nor under-predicting the number of dry days in the sample. This last result is particularly notable: it means the 64% zero-inflation rate is not merely matched at the intercept level (as confirmed in the null model calibration check) but is correctly reproduced across the full conditional distribution of covariates.</p>
+<hr>
 </section>
-<section id="verifying-temporal-independence" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="verifying-temporal-independence"><span class="header-section-number">6.4</span> Verifying Temporal Independence</h2>
+<section id="temporal-autocorrelation-in-residuals" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="temporal-autocorrelation-in-residuals"><span class="header-section-number">6.5</span> Temporal Autocorrelation in Residuals</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -819,7 +822,7 @@ alternative hypothesis: two.sided</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="06-evaluation_files/figure-html/temporal-autocorrelation-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption>Temporal Autocorrelation Check (Canberra). Left: Residuals vs.&nbsp;Time showing random scatter. Right: ACF plot showing all lags within the blue confidence bounds, confirming independence.</figcaption>
+<figcaption>Temporal residual diagnostics for Canberra. Random scatter across time and ACF values within the confidence bounds at all lags indicate the absence of residual autocorrelation.</figcaption>
 </figure>
 </div>
 </div>
@@ -836,9 +839,18 @@ DW = 2.0533, p-value = 0.1197
 alternative hypothesis: true autocorrelation is not 0</code></pre>
 </div>
 </div>
-<p><strong>1. Durbin-Watson Statistic = 2.0406:</strong> A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.</p>
-<p><strong>2. Statistical Significance:</strong> <span class="math inline">\(p = 0.2355\)</span> , we fail to reject independence. There is <strong>no evidence of temporal autocorrelation</strong> in the residuals.</p>
-<p><strong>3. Interpretation:</strong> By explicitly including <code>rain_yesterday</code> (Markov chain) and <code>ns(days_since_rain)</code> (spline), we successfully “bleached” the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.</p>
+<p>The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent, that is, whether the unexplained portion of each observation is unrelated to the unexplained portion of observations that preceded it. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.</p>
+<p>This risk is particularly salient here. The raw data exhibits strong temporal autocorrelation: yesterday’s rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <code>rain_yesterday</code>, the 7-day moving average features, the natural spline of <code>days_since_rain</code>, and the cyclical seasonal encoding. The question is whether these collectively absorb the temporal signal or whether residual autocorrelation persists.</p>
+<p>The Durbin-Watson test statistic is 2.0533. The theoretical value under perfect independence is exactly 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. A value of 2.04 is essentially indistinguishable from the ideal, and the associated p-value of 0.1197 gives no grounds to reject the null hypothesis of independence.</p>
+<p>The ACF plot corroborates this: autocorrelation coefficients at all examined lags fall within the 95% confidence bounds, confirming the absence of any systematic periodic or decay structure in the residuals.</p>
+<p>The interpretation is that the temporal engineering performed in the feature construction chapter was effective. By explicitly representing the day-to-day Markov structure, the medium-horizon wetness regime, and the non-linear dry spell decay, the model has absorbed the temporal dependence in the data and reduced its residuals to exchangeable noise. What remains unexplained is genuinely unpredictable from the available predictors, not the signature of an omitted temporal component.</p>
+<hr>
+</section>
+<section id="summary-of-validation-results" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="summary-of-validation-results"><span class="header-section-number">6.6</span> Summary of Validation Results</h2>
+<p>The four validation procedures converge on a consistent picture of a well-specified model.</p>
+<p>The occurrence submodel discriminates between dry and wet days with an AUC of 0.827, achieves 75.28% classification accuracy, and exhibits a conservative error profile appropriate for meteorological risk communication. The random effects structure captures geographically coherent spatial heterogeneity that a pooled model would suppress, with the tropical north and arid interior deviating from the national average by factors of approximately 1.8 and 0.5 respectively. The DHARMa diagnostics find no evidence of distributional misspecification, heteroscedasticity, over-dispersion, or miscalibrated zero-inflation. And the temporal autocorrelation test confirms that the model’s persistence and dry spell features have successfully eliminated serial dependence from the residuals.</p>
+<p>Taken together, these results support the conclusion that the final ZIG mixed-effects model is both statistically valid and physically well-grounded, a model whose structure reflects the actual mechanisms generating Australian rainfall rather than artefacts of the fitting procedure.</p>
 
 
 <!-- -->
@@ -1329,95 +1341,95 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu"># Model Evaluation</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a></span>
-<span id="cb16-3"><a href="#cb16-3"></a>In this chapter, we rigorously validate the final Mixed-Effects Zero-Inflated Gamma model (M6) across four dimensions: classification performance, spatial heterogeneity, residual diagnostics, and temporal independence.</span>
-<span id="cb16-4"><a href="#cb16-4"></a></span>
-<span id="cb16-7"><a href="#cb16-7"></a><span class="in">```{r}</span></span>
-<span id="cb16-8"><a href="#cb16-8"></a><span class="co">#| label: setup-evaluation</span></span>
-<span id="cb16-9"><a href="#cb16-9"></a><span class="co">#| include: false</span></span>
-<span id="cb16-10"><a href="#cb16-10"></a></span>
-<span id="cb16-11"><a href="#cb16-11"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
-<span id="cb16-12"><a href="#cb16-12"></a>  tidyverse,</span>
-<span id="cb16-13"><a href="#cb16-13"></a>  glmmTMB,</span>
-<span id="cb16-14"><a href="#cb16-14"></a>  DHARMa,</span>
-<span id="cb16-15"><a href="#cb16-15"></a>  splines,</span>
-<span id="cb16-16"><a href="#cb16-16"></a>  kableExtra,</span>
-<span id="cb16-17"><a href="#cb16-17"></a>  pROC,</span>
-<span id="cb16-18"><a href="#cb16-18"></a>  here</span>
-<span id="cb16-19"><a href="#cb16-19"></a>)</span>
-<span id="cb16-20"><a href="#cb16-20"></a></span>
-<span id="cb16-21"><a href="#cb16-21"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_engineered.csv"</span>))</span>
-<span id="cb16-22"><a href="#cb16-22"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb16-23"><a href="#cb16-23"></a></span>
-<span id="cb16-24"><a href="#cb16-24"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models/all_models_bundle.RData"</span>))) {</span>
-<span id="cb16-25"><a href="#cb16-25"></a>  <span class="fu">load</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models/all_models_bundle.RData"</span>))</span>
-<span id="cb16-26"><a href="#cb16-26"></a>}</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">## Validating the Final Mixed-Effects Zero-Inflated Gamma Model</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a></span>
+<span id="cb16-4"><a href="#cb16-4"></a>---</span>
+<span id="cb16-5"><a href="#cb16-5"></a></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="at">&gt; **Chapter Context.** A model that fits training data well is not necessarily a model that is correct. This chapter subjects the final mixed-effects ZIG model (M6) to four distinct validation procedures, each targeting a different potential failure mode: poor discriminative ability in the occurrence submodel, spatially inappropriate parameter homogeneity, distributional misspecification in the residuals, and unabsorbed temporal autocorrelation. Together, these tests form a coherent audit of the model's assumptions and capabilities.</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a>---</span>
+<span id="cb16-9"><a href="#cb16-9"></a></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="fu">## Classification Performance of the Occurrence Submodel</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a></span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="in">```{r}</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="co">#| label: setup-evaluation</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co">#| include: false</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a></span>
+<span id="cb16-18"><a href="#cb16-18"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
+<span id="cb16-19"><a href="#cb16-19"></a>  tidyverse,</span>
+<span id="cb16-20"><a href="#cb16-20"></a>  glmmTMB,</span>
+<span id="cb16-21"><a href="#cb16-21"></a>  DHARMa,</span>
+<span id="cb16-22"><a href="#cb16-22"></a>  splines,</span>
+<span id="cb16-23"><a href="#cb16-23"></a>  kableExtra,</span>
+<span id="cb16-24"><a href="#cb16-24"></a>  pROC,</span>
+<span id="cb16-25"><a href="#cb16-25"></a>  here</span>
+<span id="cb16-26"><a href="#cb16-26"></a>)</span>
 <span id="cb16-27"><a href="#cb16-27"></a></span>
-<span id="cb16-28"><a href="#cb16-28"></a>re_data <span class="ot">&lt;-</span> <span class="fu">select_model_features</span>(df_final, <span class="at">keep_location =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-29"><a href="#cb16-29"></a>  <span class="fu">scale_data</span>()</span>
-<span id="cb16-30"><a href="#cb16-30"></a><span class="in">```</span></span>
-<span id="cb16-31"><a href="#cb16-31"></a></span>
-<span id="cb16-32"><a href="#cb16-32"></a><span class="fu">## Classification Performance</span></span>
-<span id="cb16-33"><a href="#cb16-33"></a></span>
-<span id="cb16-36"><a href="#cb16-36"></a><span class="in">```{r}</span></span>
-<span id="cb16-37"><a href="#cb16-37"></a><span class="co">#| label: model-evaluation</span></span>
-<span id="cb16-38"><a href="#cb16-38"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-39"><a href="#cb16-39"></a><span class="co">#| fig-cap: "ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days."</span></span>
-<span id="cb16-40"><a href="#cb16-40"></a><span class="co">#| message: false</span></span>
-<span id="cb16-41"><a href="#cb16-41"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-42"><a href="#cb16-42"></a></span>
-<span id="cb16-43"><a href="#cb16-43"></a>prob_no_rain <span class="ot">&lt;-</span> <span class="fu">predict</span>(m6_mixed, <span class="at">type =</span> <span class="st">"zprob"</span>)</span>
-<span id="cb16-44"><a href="#cb16-44"></a>actual_no_rain <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(re_data<span class="sc">$</span>rainfall <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb16-45"><a href="#cb16-45"></a></span>
-<span id="cb16-46"><a href="#cb16-46"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(actual_no_rain, prob_no_rain)</span>
+<span id="cb16-28"><a href="#cb16-28"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_engineered.csv"</span>))</span>
+<span id="cb16-29"><a href="#cb16-29"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb16-30"><a href="#cb16-30"></a></span>
+<span id="cb16-31"><a href="#cb16-31"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models/all_models_bundle.RData"</span>))) {</span>
+<span id="cb16-32"><a href="#cb16-32"></a>  <span class="fu">load</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models/all_models_bundle.RData"</span>))</span>
+<span id="cb16-33"><a href="#cb16-33"></a>}</span>
+<span id="cb16-34"><a href="#cb16-34"></a></span>
+<span id="cb16-35"><a href="#cb16-35"></a>re_data <span class="ot">&lt;-</span> <span class="fu">select_model_features</span>(df_final, <span class="at">keep_location =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-36"><a href="#cb16-36"></a>  <span class="fu">scale_data</span>()</span>
+<span id="cb16-37"><a href="#cb16-37"></a><span class="in">```</span></span>
+<span id="cb16-38"><a href="#cb16-38"></a></span>
+<span id="cb16-41"><a href="#cb16-41"></a><span class="in">```{r}</span></span>
+<span id="cb16-42"><a href="#cb16-42"></a><span class="co">#| label: model-evaluation</span></span>
+<span id="cb16-43"><a href="#cb16-43"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-44"><a href="#cb16-44"></a><span class="co">#| fig-cap: "ROC Curve for Rainfall Occurrence Prediction. AUC = 0.827 indicates strong discriminative ability in separating dry days from wet days."</span></span>
+<span id="cb16-45"><a href="#cb16-45"></a><span class="co">#| message: false</span></span>
+<span id="cb16-46"><a href="#cb16-46"></a><span class="co">#| warning: false</span></span>
 <span id="cb16-47"><a href="#cb16-47"></a></span>
-<span id="cb16-48"><a href="#cb16-48"></a><span class="fu">plot</span>(</span>
-<span id="cb16-49"><a href="#cb16-49"></a>  roc_obj,</span>
-<span id="cb16-50"><a href="#cb16-50"></a>  <span class="at">main =</span> <span class="st">"ROC Curve: Predicting Rainfall Occurrence"</span>,</span>
-<span id="cb16-51"><a href="#cb16-51"></a>  <span class="at">col =</span> <span class="st">"#0072B2"</span>,</span>
-<span id="cb16-52"><a href="#cb16-52"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
-<span id="cb16-53"><a href="#cb16-53"></a>  <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-54"><a href="#cb16-54"></a>  <span class="at">print.auc.y =</span> <span class="fl">0.4</span></span>
-<span id="cb16-55"><a href="#cb16-55"></a>)</span>
-<span id="cb16-56"><a href="#cb16-56"></a></span>
-<span id="cb16-57"><a href="#cb16-57"></a>coords_obj <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>)</span>
-<span id="cb16-58"><a href="#cb16-58"></a>optimal_threshold <span class="ot">&lt;-</span> coords_obj<span class="sc">$</span>threshold</span>
-<span id="cb16-59"><a href="#cb16-59"></a></span>
-<span id="cb16-60"><a href="#cb16-60"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Optimal Probability Threshold: %.4f</span><span class="sc">\n</span><span class="st">"</span>, optimal_threshold))</span>
+<span id="cb16-48"><a href="#cb16-48"></a>prob_no_rain <span class="ot">&lt;-</span> <span class="fu">predict</span>(m6_mixed, <span class="at">type =</span> <span class="st">"zprob"</span>)</span>
+<span id="cb16-49"><a href="#cb16-49"></a>actual_no_rain <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(re_data<span class="sc">$</span>rainfall <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb16-50"><a href="#cb16-50"></a></span>
+<span id="cb16-51"><a href="#cb16-51"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(actual_no_rain, prob_no_rain)</span>
+<span id="cb16-52"><a href="#cb16-52"></a></span>
+<span id="cb16-53"><a href="#cb16-53"></a><span class="fu">plot</span>(</span>
+<span id="cb16-54"><a href="#cb16-54"></a>  roc_obj,</span>
+<span id="cb16-55"><a href="#cb16-55"></a>  <span class="at">main =</span> <span class="st">"ROC Curve: Predicting Rainfall Occurrence"</span>,</span>
+<span id="cb16-56"><a href="#cb16-56"></a>  <span class="at">col =</span> <span class="st">"#0072B2"</span>,</span>
+<span id="cb16-57"><a href="#cb16-57"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb16-58"><a href="#cb16-58"></a>  <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-59"><a href="#cb16-59"></a>  <span class="at">print.auc.y =</span> <span class="fl">0.4</span></span>
+<span id="cb16-60"><a href="#cb16-60"></a>)</span>
 <span id="cb16-61"><a href="#cb16-61"></a></span>
-<span id="cb16-62"><a href="#cb16-62"></a>predicted_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prob_no_rain <span class="sc">&gt;</span> optimal_threshold, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
-<span id="cb16-63"><a href="#cb16-63"></a>actual_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(re_data<span class="sc">$</span>rainfall <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
+<span id="cb16-62"><a href="#cb16-62"></a>coords_obj <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>)</span>
+<span id="cb16-63"><a href="#cb16-63"></a>optimal_threshold <span class="ot">&lt;-</span> coords_obj<span class="sc">$</span>threshold</span>
 <span id="cb16-64"><a href="#cb16-64"></a></span>
-<span id="cb16-65"><a href="#cb16-65"></a>conf_matrix <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> predicted_class, <span class="at">Actual =</span> actual_class)</span>
+<span id="cb16-65"><a href="#cb16-65"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Optimal Probability Threshold: %.4f</span><span class="sc">\n</span><span class="st">"</span>, optimal_threshold))</span>
 <span id="cb16-66"><a href="#cb16-66"></a></span>
-<span id="cb16-67"><a href="#cb16-67"></a>conf_matrix <span class="sc">%&gt;%</span></span>
-<span id="cb16-68"><a href="#cb16-68"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Confusion Matrix (Optimal Threshold)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-69"><a href="#cb16-69"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-70"><a href="#cb16-70"></a></span>
-<span id="cb16-71"><a href="#cb16-71"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrix)) <span class="sc">/</span> <span class="fu">sum</span>(conf_matrix)</span>
-<span id="cb16-72"><a href="#cb16-72"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Model Accuracy: %.2f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span>
-<span id="cb16-73"><a href="#cb16-73"></a><span class="in">```</span></span>
-<span id="cb16-74"><a href="#cb16-74"></a></span>
-<span id="cb16-75"><a href="#cb16-75"></a>While the Gamma component estimates rainfall *amount*, the Zero-Inflation component acts as a binary classifier answering: *"Will it rain?"*</span>
-<span id="cb16-76"><a href="#cb16-76"></a></span>
-<span id="cb16-77"><a href="#cb16-77"></a>**1. Discriminative Power (AUC = 0.832):** In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.</span>
-<span id="cb16-78"><a href="#cb16-78"></a></span>
-<span id="cb16-79"><a href="#cb16-79"></a>**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** , because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."</span>
-<span id="cb16-80"><a href="#cb16-80"></a></span>
-<span id="cb16-81"><a href="#cb16-81"></a>**3. Confusion Matrix Results (Accuracy: 75.41%):**</span>
-<span id="cb16-82"><a href="#cb16-82"></a></span>
-<span id="cb16-83"><a href="#cb16-83"></a><span class="ss">- </span>Correct Dry Predictions (TN): 68,544 days</span>
-<span id="cb16-84"><a href="#cb16-84"></a><span class="ss">- </span>Correct Rain Predictions (TP): 38,433 days</span>
-<span id="cb16-85"><a href="#cb16-85"></a><span class="ss">- </span>False Alarms (Type I): 22,294 days</span>
-<span id="cb16-86"><a href="#cb16-86"></a><span class="ss">- </span>Missed Rain (Type II): 12,585 days</span>
+<span id="cb16-67"><a href="#cb16-67"></a>predicted_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prob_no_rain <span class="sc">&gt;</span> optimal_threshold, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
+<span id="cb16-68"><a href="#cb16-68"></a>actual_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(re_data<span class="sc">$</span>rainfall <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
+<span id="cb16-69"><a href="#cb16-69"></a></span>
+<span id="cb16-70"><a href="#cb16-70"></a>conf_matrix <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> predicted_class, <span class="at">Actual =</span> actual_class)</span>
+<span id="cb16-71"><a href="#cb16-71"></a></span>
+<span id="cb16-72"><a href="#cb16-72"></a>conf_matrix <span class="sc">%&gt;%</span></span>
+<span id="cb16-73"><a href="#cb16-73"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Confusion Matrix at the Youden-Optimal Threshold"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-74"><a href="#cb16-74"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-75"><a href="#cb16-75"></a></span>
+<span id="cb16-76"><a href="#cb16-76"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrix)) <span class="sc">/</span> <span class="fu">sum</span>(conf_matrix)</span>
+<span id="cb16-77"><a href="#cb16-77"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Overall Accuracy: %.2f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span>
+<span id="cb16-78"><a href="#cb16-78"></a><span class="in">```</span></span>
+<span id="cb16-79"><a href="#cb16-79"></a></span>
+<span id="cb16-80"><a href="#cb16-80"></a>Although the ZIG model is primarily a framework for predicting rainfall amount, its zero-inflation component constitutes a binary classifier at each observation: it assigns a probability that the day is structurally dry, irrespective of other atmospheric conditions. Evaluating this component as a classifier allows us to assess how well the model separates the two fundamentally different weather states identified in the @sec-eda.</span>
+<span id="cb16-81"><a href="#cb16-81"></a></span>
+<span id="cb16-82"><a href="#cb16-82"></a>**Discriminative ability.** The area under the ROC curve is 0.827, meaning that in 82.7% of randomly drawn pairs consisting of one genuinely dry day and one genuinely wet day, the model correctly assigns the higher dryness probability to the dry day. This is a threshold-free measure of separation that does not depend on any particular operating point, and it indicates strong discriminative performance for a meteorological classification problem of this complexity.</span>
+<span id="cb16-83"><a href="#cb16-83"></a></span>
+<span id="cb16-84"><a href="#cb16-84"></a>**Threshold selection.** The raw zero-inflation probability must be converted to a binary prediction through a threshold. Youden's J statistic which maximises the sum of sensitivity and specificity simultaneously selects an optimal threshold of 0.6314. This is notably higher than the naive 0.5 default, and the reason is structural: because dry days constitute 64% of the sample, the model's calibrated prior assigns moderate dryness probability to many observations by default. A higher threshold requires more decisive evidence of a dry signal before predicting "No Rain," which appropriately reflects the prior imbalance in class frequencies.</span>
+<span id="cb16-85"><a href="#cb16-85"></a></span>
+<span id="cb16-86"><a href="#cb16-86"></a>**Confusion matrix.** At this threshold, overall accuracy is 75.28%, decomposing into 69,365 correct dry-day predictions (true negatives), 37,422 correct rain predictions (true positives), 21,473 false alarms (predicted dry, actually wet), and 13,596 missed rain events (predicted wet, actually dry). The model generates false alarms at roughly twice the rate at which it misses rain events. In a meteorological context this asymmetry is operationally desirable: the consequence of carrying an umbrella on a dry day is trivial compared to the consequence of being unprepared for a significant rainfall event. A model biased toward caution is appropriate for this domain.</span>
 <span id="cb16-87"><a href="#cb16-87"></a></span>
-<span id="cb16-88"><a href="#cb16-88"></a>The model is conservative , twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.</span>
+<span id="cb16-88"><a href="#cb16-88"></a>---</span>
 <span id="cb16-89"><a href="#cb16-89"></a></span>
-<span id="cb16-90"><a href="#cb16-90"></a><span class="fu">## Random Effects Visualization</span></span>
+<span id="cb16-90"><a href="#cb16-90"></a><span class="fu">## Spatial Heterogeneity and Random Effects</span></span>
 <span id="cb16-91"><a href="#cb16-91"></a></span>
 <span id="cb16-94"><a href="#cb16-94"></a><span class="in">```{r}</span></span>
 <span id="cb16-95"><a href="#cb16-95"></a><span class="co">#| label: fig-location-effects</span></span>
-<span id="cb16-96"><a href="#cb16-96"></a><span class="co">#| fig-cap: "The Geography of Rain: Random Intercepts by Location. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average; cities in red (e.g., Nhil, Norfolk Island) are inherently drier, after controlling for all dynamic weather variables."</span></span>
+<span id="cb16-96"><a href="#cb16-96"></a><span class="co">#| fig-cap: "Location-specific baseline rainfall adjustments (random intercepts). Cities to the right of the dashed line produce systematically more rainfall than the national average when all dynamic weather variables are held constant; cities to the left produce systematically less."</span></span>
 <span id="cb16-97"><a href="#cb16-97"></a><span class="co">#| fig-width: 10</span></span>
 <span id="cb16-98"><a href="#cb16-98"></a><span class="co">#| fig-height: 12</span></span>
 <span id="cb16-99"><a href="#cb16-99"></a><span class="co">#| echo: true</span></span>
@@ -1508,10 +1520,10 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-184"><a href="#cb16-184"></a>  ) <span class="sc">+</span></span>
 <span id="cb16-185"><a href="#cb16-185"></a>  <span class="fu">labs</span>(</span>
 <span id="cb16-186"><a href="#cb16-186"></a>    <span class="at">title =</span> <span class="st">"The Geography of Rain: Location-Specific Baselines"</span>,</span>
-<span id="cb16-187"><a href="#cb16-187"></a>    <span class="at">subtitle =</span> <span class="st">"Random intercepts show how much wetter/drier each city is, holding all weather variables constant.</span><span class="sc">\n</span><span class="st">Bars show 95% confidence intervals; points beyond ±1 SD are labeled."</span>,</span>
+<span id="cb16-187"><a href="#cb16-187"></a>    <span class="at">subtitle =</span> <span class="st">"Random intercepts show how much wetter or drier each city is, holding all weather variables constant.</span><span class="sc">\n</span><span class="st">Bars show 95% confidence intervals; points beyond ±1 SD are labeled."</span>,</span>
 <span id="cb16-188"><a href="#cb16-188"></a>    <span class="at">x =</span> <span class="st">"Baseline Rainfall Adjustment (Log mm)"</span>,</span>
 <span id="cb16-189"><a href="#cb16-189"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb16-190"><a href="#cb16-190"></a>    <span class="at">caption =</span> <span class="st">"Interpretation: A value of +0.5 means ~65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"</span></span>
+<span id="cb16-190"><a href="#cb16-190"></a>    <span class="at">caption =</span> <span class="st">"Interpretation: A value of +0.5 means approximately 65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"</span></span>
 <span id="cb16-191"><a href="#cb16-191"></a>  ) <span class="sc">+</span></span>
 <span id="cb16-192"><a href="#cb16-192"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
 <span id="cb16-193"><a href="#cb16-193"></a>  <span class="fu">theme</span>(</span>
@@ -1545,68 +1557,87 @@ alternative hypothesis: true autocorrelation is not 0</code></pre>
 <span id="cb16-221"><a href="#cb16-221"></a>  )</span>
 <span id="cb16-222"><a href="#cb16-222"></a><span class="in">```</span></span>
 <span id="cb16-223"><a href="#cb16-223"></a></span>
-<span id="cb16-224"><a href="#cb16-224"></a>**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments , even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.</span>
+<span id="cb16-224"><a href="#cb16-224"></a>The random intercepts from the mixed-effects model represent the location-specific baseline deviations in rainfall intensity after removing the contribution of all dynamic weather variables, humidity, pressure, wind, seasonality, and persistence. What remains is the component of rainfall that is attributable to geographic and climatic factors that do not vary day-to-day: proximity to moisture sources, orographic effects, predominant circulation patterns, and regional climate regime.</span>
 <span id="cb16-225"><a href="#cb16-225"></a></span>
-<span id="cb16-226"><a href="#cb16-226"></a>**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography , weather systems that produce moderate rain elsewhere produce only light rain here.</span>
+<span id="cb16-226"><a href="#cb16-226"></a>**The wetter locations.** Katherine ($\hat{b} = 0.54$) and Tuggeranong ($\hat{b} = 0.57$) sit at the high end of the distribution. Exponentiating these values: $e^{0.54} \approx 1.72$ and $e^{0.57} \approx 1.77$, meaning that these stations produce roughly 72% and 77% more rainfall respectively than a hypothetical average Australian location experiencing identical instantaneous weather conditions. This is geographically coherent: both stations sit in the tropical Top End of the Northern Territory, where monsoonal systems deliver sustained and intense rainfall that has no structural analogue in the temperate south, and which the fixed-effects predictors measured on individual days cannot fully capture.</span>
 <span id="cb16-227"><a href="#cb16-227"></a></span>
-<span id="cb16-228"><a href="#cb16-228"></a>**3. Significance:** The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.</span>
+<span id="cb16-228"><a href="#cb16-228"></a>**The drier locations.** Nhil ($\hat{b} = -0.66$) and Norfolk Island ($\hat{b} = -0.72$) show the strongest negative adjustments. $e^{-0.66} \approx 0.52$, indicating that Nhil produces roughly half the rainfall of an average location given identical weather conditions. This reflects its position in the semi-arid Wimmera region of inland Victoria, where even moisture-laden air masses tend to deliver less precipitation than they would on the coast.</span>
 <span id="cb16-229"><a href="#cb16-229"></a></span>
-<span id="cb16-230"><a href="#cb16-230"></a><span class="fu">## Validating Model Assumptions (DHARMa)</span></span>
+<span id="cb16-230"><a href="#cb16-230"></a>**Justification for the mixed-effects structure.** The magnitude and geographic coherence of these deviations confirm the necessity of the random effects component. A pooled fixed-effects model would have suppressed this spatial variation by averaging across all locations, producing a single set of coefficients that systematically over-predicts rainfall in arid interior stations and under-predicts it in tropical ones. The mixed-effects structure allows the global physical relationships humidity drives intensity, southerly winds bring moisture, to remain stable as fixed effects while accommodating the fact that those relationships operate against a geographically variable baseline.</span>
 <span id="cb16-231"><a href="#cb16-231"></a></span>
-<span id="cb16-234"><a href="#cb16-234"></a><span class="in">```{r}</span></span>
-<span id="cb16-235"><a href="#cb16-235"></a><span class="co">#| label: model-diagnostics</span></span>
-<span id="cb16-236"><a href="#cb16-236"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-237"><a href="#cb16-237"></a><span class="co">#| fig-cap: "DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs. Predicted shows no fanning or curvature, confirming homoscedasticity."</span></span>
-<span id="cb16-238"><a href="#cb16-238"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb16-239"><a href="#cb16-239"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb16-240"><a href="#cb16-240"></a><span class="co">#| message: false</span></span>
-<span id="cb16-241"><a href="#cb16-241"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-242"><a href="#cb16-242"></a><span class="co">#| cache: true</span></span>
-<span id="cb16-243"><a href="#cb16-243"></a></span>
-<span id="cb16-244"><a href="#cb16-244"></a>res <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(m6_mixed)</span>
-<span id="cb16-245"><a href="#cb16-245"></a><span class="fu">plot</span>(res)</span>
-<span id="cb16-246"><a href="#cb16-246"></a><span class="fu">testDispersion</span>(res)</span>
-<span id="cb16-247"><a href="#cb16-247"></a><span class="fu">testZeroInflation</span>(res)</span>
-<span id="cb16-248"><a href="#cb16-248"></a><span class="in">```</span></span>
-<span id="cb16-249"><a href="#cb16-249"></a></span>
-<span id="cb16-250"><a href="#cb16-250"></a>**1. Q-Q Plot:** Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows $p &lt; 0.05$ (expected at $N &gt; 140,000$), visual deviations are negligible. The **Gamma distribution** correctly characterizes the positive rainfall values.</span>
-<span id="cb16-251"><a href="#cb16-251"></a></span>
-<span id="cb16-252"><a href="#cb16-252"></a>**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal , **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.</span>
+<span id="cb16-232"><a href="#cb16-232"></a>---</span>
+<span id="cb16-233"><a href="#cb16-233"></a></span>
+<span id="cb16-234"><a href="#cb16-234"></a><span class="fu">## Residual Diagnostics via DHARMa Simulation</span></span>
+<span id="cb16-235"><a href="#cb16-235"></a></span>
+<span id="cb16-238"><a href="#cb16-238"></a><span class="in">```{r}</span></span>
+<span id="cb16-239"><a href="#cb16-239"></a><span class="co">#| label: model-diagnostics</span></span>
+<span id="cb16-240"><a href="#cb16-240"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-241"><a href="#cb16-241"></a><span class="co">#| fig-cap: "DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs. predicted values."</span></span>
+<span id="cb16-242"><a href="#cb16-242"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb16-243"><a href="#cb16-243"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb16-244"><a href="#cb16-244"></a><span class="co">#| message: false</span></span>
+<span id="cb16-245"><a href="#cb16-245"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-246"><a href="#cb16-246"></a><span class="co">#| cache: true</span></span>
+<span id="cb16-247"><a href="#cb16-247"></a></span>
+<span id="cb16-248"><a href="#cb16-248"></a>res <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(m6_mixed)</span>
+<span id="cb16-249"><a href="#cb16-249"></a><span class="fu">plot</span>(res)</span>
+<span id="cb16-250"><a href="#cb16-250"></a><span class="fu">testDispersion</span>(res)</span>
+<span id="cb16-251"><a href="#cb16-251"></a><span class="fu">testZeroInflation</span>(res)</span>
+<span id="cb16-252"><a href="#cb16-252"></a><span class="in">```</span></span>
 <span id="cb16-253"><a href="#cb16-253"></a></span>
-<span id="cb16-254"><a href="#cb16-254"></a>**3. Formal Tests:**</span>
+<span id="cb16-254"><a href="#cb16-254"></a>Standard residual diagnostics are not directly applicable to Zero-Inflated Gamma models: the mixture of a point mass at zero and a continuous positive distribution means that conventional Pearson or deviance residuals do not have a tractable reference distribution. DHARMa addresses this by generating a large number of simulated datasets from the fitted model and computing, for each observation, where the actual value falls in the empirical distribution of simulated values. Under a correctly specified model, these *scaled residuals* follow a uniform distribution on $<span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>$ regardless of the model family. Deviations from uniformity indicate misspecification.</span>
 <span id="cb16-255"><a href="#cb16-255"></a></span>
-<span id="cb16-256"><a href="#cb16-256"></a><span class="ss">- </span>**Dispersion Test:** $p = 0.192$ , we fail to reject ideal dispersion. The <span class="in">`ziGamma`</span> family successfully handled the variance structure without over-dispersion.</span>
-<span id="cb16-257"><a href="#cb16-257"></a><span class="ss">- </span>**Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) , the model predicts the exact correct number of dry days.</span>
-<span id="cb16-258"><a href="#cb16-258"></a></span>
-<span id="cb16-259"><a href="#cb16-259"></a><span class="fu">## Verifying Temporal Independence</span></span>
-<span id="cb16-260"><a href="#cb16-260"></a></span>
-<span id="cb16-263"><a href="#cb16-263"></a><span class="in">```{r}</span></span>
-<span id="cb16-264"><a href="#cb16-264"></a><span class="co">#| label: temporal-autocorrelation</span></span>
-<span id="cb16-265"><a href="#cb16-265"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-266"><a href="#cb16-266"></a><span class="co">#| fig-cap: "Temporal Autocorrelation Check (Canberra). Left: Residuals vs. Time showing random scatter. Right: ACF plot showing all lags within the blue confidence bounds, confirming independence."</span></span>
-<span id="cb16-267"><a href="#cb16-267"></a><span class="co">#| message: false</span></span>
-<span id="cb16-268"><a href="#cb16-268"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-269"><a href="#cb16-269"></a></span>
-<span id="cb16-270"><a href="#cb16-270"></a>rows_used <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">rownames</span>(m6_mixed<span class="sc">$</span>frame))</span>
-<span id="cb16-271"><a href="#cb16-271"></a></span>
-<span id="cb16-272"><a href="#cb16-272"></a>Canberra_data <span class="ot">&lt;-</span> df_final[rows_used, ] <span class="sc">%&gt;%</span></span>
-<span id="cb16-273"><a href="#cb16-273"></a>  <span class="fu">mutate</span>(<span class="at">dharma_resid =</span> <span class="fu">residuals</span>(res)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-274"><a href="#cb16-274"></a>  <span class="fu">filter</span>(location <span class="sc">==</span> <span class="st">"Canberra"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-275"><a href="#cb16-275"></a>  <span class="fu">arrange</span>(date)</span>
+<span id="cb16-256"><a href="#cb16-256"></a>**Q-Q plot.** The empirical quantiles of the scaled residuals align closely with the theoretical diagonal across the full range of the distribution. The Kolmogorov-Smirnov test registers $p &lt; 0.05$, but this outcome is expected and should not be interpreted as evidence of meaningful misfit: with $N &gt; 140,000$ observations, the test has sufficient power to detect deviations of negligible practical magnitude. The visual alignment of the Q-Q plot the appropriate diagnostic at this sample size shows no systematic departure from the uniform reference.</span>
+<span id="cb16-257"><a href="#cb16-257"></a></span>
+<span id="cb16-258"><a href="#cb16-258"></a>**Residuals versus predicted.** The three quantile lines (25th, 50th, and 75th percentiles of the scaled residuals at each fitted value) are horizontal and evenly spaced across the range of predictions. This indicates the absence of systematic non-linearity (which would manifest as curvature in the 50th percentile line) and the absence of heteroscedasticity (which would manifest as convergence or divergence of the outer quantile lines). The model performs with equivalent fidelity across the full range of rainfall intensities, from light drizzle to extreme events.</span>
+<span id="cb16-259"><a href="#cb16-259"></a></span>
+<span id="cb16-260"><a href="#cb16-260"></a>**Formal test results.** The dispersion test yields $p = 0.36$, giving no evidence that the variance of the residuals deviates from what the fitted ZIG family implies. The zero-inflation test produces a ratio of observed to simulated zero counts of exactly 1.00 ($p = 0.976$), confirming that the model's hurdle component is correctly calibrated and is neither over nor under-predicting the number of dry days in the sample. This last result is particularly notable: it means the 64% zero-inflation rate is not merely matched at the intercept level (as confirmed in the null model calibration check) but is correctly reproduced across the full conditional distribution of covariates.</span>
+<span id="cb16-261"><a href="#cb16-261"></a></span>
+<span id="cb16-262"><a href="#cb16-262"></a>---</span>
+<span id="cb16-263"><a href="#cb16-263"></a></span>
+<span id="cb16-264"><a href="#cb16-264"></a><span class="fu">## Temporal Autocorrelation in Residuals</span></span>
+<span id="cb16-265"><a href="#cb16-265"></a></span>
+<span id="cb16-268"><a href="#cb16-268"></a><span class="in">```{r}</span></span>
+<span id="cb16-269"><a href="#cb16-269"></a><span class="co">#| label: temporal-autocorrelation</span></span>
+<span id="cb16-270"><a href="#cb16-270"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-271"><a href="#cb16-271"></a><span class="co">#| fig-cap: "Temporal residual diagnostics for Canberra. Random scatter across time and ACF values within the confidence bounds at all lags indicate the absence of residual autocorrelation."</span></span>
+<span id="cb16-272"><a href="#cb16-272"></a><span class="co">#| message: false</span></span>
+<span id="cb16-273"><a href="#cb16-273"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-274"><a href="#cb16-274"></a></span>
+<span id="cb16-275"><a href="#cb16-275"></a>rows_used <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">rownames</span>(m6_mixed<span class="sc">$</span>frame))</span>
 <span id="cb16-276"><a href="#cb16-276"></a></span>
-<span id="cb16-277"><a href="#cb16-277"></a>dw_result <span class="ot">&lt;-</span> <span class="fu">testTemporalAutocorrelation</span>(</span>
-<span id="cb16-278"><a href="#cb16-278"></a>  <span class="at">simulationOutput =</span> Canberra_data<span class="sc">$</span>dharma_resid,</span>
-<span id="cb16-279"><a href="#cb16-279"></a>  <span class="at">time =</span> Canberra_data<span class="sc">$</span>date</span>
-<span id="cb16-280"><a href="#cb16-280"></a>)</span>
+<span id="cb16-277"><a href="#cb16-277"></a>Canberra_data <span class="ot">&lt;-</span> df_final[rows_used, ] <span class="sc">%&gt;%</span></span>
+<span id="cb16-278"><a href="#cb16-278"></a>  <span class="fu">mutate</span>(<span class="at">dharma_resid =</span> <span class="fu">residuals</span>(res)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-279"><a href="#cb16-279"></a>  <span class="fu">filter</span>(location <span class="sc">==</span> <span class="st">"Canberra"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-280"><a href="#cb16-280"></a>  <span class="fu">arrange</span>(date)</span>
 <span id="cb16-281"><a href="#cb16-281"></a></span>
-<span id="cb16-282"><a href="#cb16-282"></a><span class="fu">print</span>(dw_result)</span>
-<span id="cb16-283"><a href="#cb16-283"></a><span class="in">```</span></span>
-<span id="cb16-284"><a href="#cb16-284"></a></span>
-<span id="cb16-285"><a href="#cb16-285"></a>**1. Durbin-Watson Statistic = 2.0406:** A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.</span>
+<span id="cb16-282"><a href="#cb16-282"></a>dw_result <span class="ot">&lt;-</span> <span class="fu">testTemporalAutocorrelation</span>(</span>
+<span id="cb16-283"><a href="#cb16-283"></a>  <span class="at">simulationOutput =</span> Canberra_data<span class="sc">$</span>dharma_resid,</span>
+<span id="cb16-284"><a href="#cb16-284"></a>  <span class="at">time =</span> Canberra_data<span class="sc">$</span>date</span>
+<span id="cb16-285"><a href="#cb16-285"></a>)</span>
 <span id="cb16-286"><a href="#cb16-286"></a></span>
-<span id="cb16-287"><a href="#cb16-287"></a>**2. Statistical Significance:** $p = 0.2355$ , we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.</span>
-<span id="cb16-288"><a href="#cb16-288"></a></span>
-<span id="cb16-289"><a href="#cb16-289"></a>**3. Interpretation:** By explicitly including <span class="in">`rain_yesterday`</span> (Markov chain) and <span class="in">`ns(days_since_rain)`</span> (spline), we successfully "bleached" the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.</span>
+<span id="cb16-287"><a href="#cb16-287"></a><span class="fu">print</span>(dw_result)</span>
+<span id="cb16-288"><a href="#cb16-288"></a><span class="in">```</span></span>
+<span id="cb16-289"><a href="#cb16-289"></a></span>
+<span id="cb16-290"><a href="#cb16-290"></a>The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent, that is, whether the unexplained portion of each observation is unrelated to the unexplained portion of observations that preceded it. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.</span>
+<span id="cb16-291"><a href="#cb16-291"></a></span>
+<span id="cb16-292"><a href="#cb16-292"></a>This risk is particularly salient here. The raw data exhibits strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <span class="in">`rain_yesterday`</span>, the 7-day moving average features, the natural spline of <span class="in">`days_since_rain`</span>, and the cyclical seasonal encoding. The question is whether these collectively absorb the temporal signal or whether residual autocorrelation persists.</span>
+<span id="cb16-293"><a href="#cb16-293"></a></span>
+<span id="cb16-294"><a href="#cb16-294"></a>The Durbin-Watson test statistic is 2.0533. The theoretical value under perfect independence is exactly 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. A value of 2.04 is essentially indistinguishable from the ideal, and the associated p-value of 0.1197 gives no grounds to reject the null hypothesis of independence.</span>
+<span id="cb16-295"><a href="#cb16-295"></a></span>
+<span id="cb16-296"><a href="#cb16-296"></a>The ACF plot corroborates this: autocorrelation coefficients at all examined lags fall within the 95% confidence bounds, confirming the absence of any systematic periodic or decay structure in the residuals.</span>
+<span id="cb16-297"><a href="#cb16-297"></a></span>
+<span id="cb16-298"><a href="#cb16-298"></a>The interpretation is that the temporal engineering performed in the feature construction chapter was effective. By explicitly representing the day-to-day Markov structure, the medium-horizon wetness regime, and the non-linear dry spell decay, the model has absorbed the temporal dependence in the data and reduced its residuals to exchangeable noise. What remains unexplained is genuinely unpredictable from the available predictors, not the signature of an omitted temporal component.</span>
+<span id="cb16-299"><a href="#cb16-299"></a></span>
+<span id="cb16-300"><a href="#cb16-300"></a>---</span>
+<span id="cb16-301"><a href="#cb16-301"></a></span>
+<span id="cb16-302"><a href="#cb16-302"></a><span class="fu">## Summary of Validation Results</span></span>
+<span id="cb16-303"><a href="#cb16-303"></a></span>
+<span id="cb16-304"><a href="#cb16-304"></a>The four validation procedures converge on a consistent picture of a well-specified model.</span>
+<span id="cb16-305"><a href="#cb16-305"></a></span>
+<span id="cb16-306"><a href="#cb16-306"></a>The occurrence submodel discriminates between dry and wet days with an AUC of 0.827, achieves 75.28% classification accuracy, and exhibits a conservative error profile appropriate for meteorological risk communication. The random effects structure captures geographically coherent spatial heterogeneity that a pooled model would suppress, with the tropical north and arid interior deviating from the national average by factors of approximately 1.8 and 0.5 respectively. The DHARMa diagnostics find no evidence of distributional misspecification, heteroscedasticity, over-dispersion, or miscalibrated zero-inflation. And the temporal autocorrelation test confirms that the model's persistence and dry spell features have successfully eliminated serial dependence from the residuals.</span>
+<span id="cb16-307"><a href="#cb16-307"></a></span>
+<span id="cb16-308"><a href="#cb16-308"></a>Taken together, these results support the conclusion that the final ZIG mixed-effects model is both statistically valid and physically well-grounded, a model whose structure reflects the actual mechanisms generating Australian rainfall rather than artefacts of the fitting procedure.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

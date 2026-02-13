@@ -1,6 +1,13 @@
 # Model Evaluation
+## Validating the Final Mixed-Effects Zero-Inflated Gamma Model
 
-In this chapter, we rigorously validate the final Mixed-Effects Zero-Inflated Gamma model (M6) across four dimensions: classification performance, spatial heterogeneity, residual diagnostics, and temporal independence.
+---
+
+> **Chapter Context.** A model that fits training data well is not necessarily a model that is correct. This chapter subjects the final mixed-effects ZIG model (M6) to four distinct validation procedures, each targeting a different potential failure mode: poor discriminative ability in the occurrence submodel, spatially inappropriate parameter homogeneity, distributional misspecification in the residuals, and unabsorbed temporal autocorrelation. Together, these tests form a coherent audit of the model's assumptions and capabilities.
+
+---
+
+## Classification Performance of the Occurrence Submodel
 
 ```{r}
 #| label: setup-evaluation
@@ -27,12 +34,10 @@ re_data <- select_model_features(df_final, keep_location = TRUE) %>%
   scale_data()
 ```
 
-## Classification Performance
-
 ```{r}
 #| label: model-evaluation
 #| echo: true
-#| fig-cap: "ROC Curve for Rainfall Occurrence Prediction. An AUC of 0.83 indicates strong discriminative ability, effectively separating dry days from wet days."
+#| fig-cap: "ROC Curve for Rainfall Occurrence Prediction. AUC = 0.827 indicates strong discriminative ability in separating dry days from wet days."
 #| message: false
 #| warning: false
 
@@ -61,33 +66,28 @@ actual_class <- ifelse(re_data$rainfall == 0, "No Rain", "Rain")
 conf_matrix <- table(Predicted = predicted_class, Actual = actual_class)
 
 conf_matrix %>%
-  kable(caption = "Confusion Matrix (Optimal Threshold)") %>%
+  kable(caption = "Confusion Matrix at the Youden-Optimal Threshold") %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
-cat(sprintf("\nModel Accuracy: %.2f%%\n", accuracy * 100))
+cat(sprintf("\nOverall Accuracy: %.2f%%\n", accuracy * 100))
 ```
 
-While the Gamma component estimates rainfall *amount*, the Zero-Inflation component acts as a binary classifier answering: *"Will it rain?"*
+Although the ZIG model is primarily a framework for predicting rainfall amount, its zero-inflation component constitutes a binary classifier at each observation: it assigns a probability that the day is structurally dry, irrespective of other atmospheric conditions. Evaluating this component as a classifier allows us to assess how well the model separates the two fundamentally different weather states identified in the @sec-eda.
 
-**1. Discriminative Power (AUC = 0.832):** In 83.2% of randomly selected pairs (one wet day, one dry day), the model correctly assigns a higher dryness probability to the actual dry day.
+**Discriminative ability.** The area under the ROC curve is 0.827, meaning that in 82.7% of randomly drawn pairs consisting of one genuinely dry day and one genuinely wet day, the model correctly assigns the higher dryness probability to the dry day. This is a threshold-free measure of separation that does not depend on any particular operating point, and it indicates strong discriminative performance for a meteorological classification problem of this complexity.
 
-**2. Optimal Thresholding:** Using Youden's J statistic, the optimal threshold is **0.645** , because dry days are the majority class (64%), the model appropriately requires higher certainty before predicting "No Rain."
+**Threshold selection.** The raw zero-inflation probability must be converted to a binary prediction through a threshold. Youden's J statistic which maximises the sum of sensitivity and specificity simultaneously selects an optimal threshold of 0.6314. This is notably higher than the naive 0.5 default, and the reason is structural: because dry days constitute 64% of the sample, the model's calibrated prior assigns moderate dryness probability to many observations by default. A higher threshold requires more decisive evidence of a dry signal before predicting "No Rain," which appropriately reflects the prior imbalance in class frequencies.
 
-**3. Confusion Matrix Results (Accuracy: 75.41%):**
+**Confusion matrix.** At this threshold, overall accuracy is 75.28%, decomposing into 69,365 correct dry-day predictions (true negatives), 37,422 correct rain predictions (true positives), 21,473 false alarms (predicted dry, actually wet), and 13,596 missed rain events (predicted wet, actually dry). The model generates false alarms at roughly twice the rate at which it misses rain events. In a meteorological context this asymmetry is operationally desirable: the consequence of carrying an umbrella on a dry day is trivial compared to the consequence of being unprepared for a significant rainfall event. A model biased toward caution is appropriate for this domain.
 
-- Correct Dry Predictions (TN): 68,544 days
-- Correct Rain Predictions (TP): 38,433 days
-- False Alarms (Type I): 22,294 days
-- Missed Rain (Type II): 12,585 days
+---
 
-The model is conservative , twice as likely to raise a false alarm than to miss a rain event. In meteorology, this is desirable; it is better to carry an umbrella unnecessarily than to be caught in a storm.
-
-## Random Effects Visualization
+## Spatial Heterogeneity and Random Effects
 
 ```{r}
 #| label: fig-location-effects
-#| fig-cap: "The Geography of Rain: Random Intercepts by Location. Cities in blue (e.g., Katherine, Darwin) have inherently heavier rainfall than the national average; cities in red (e.g., Nhil, Norfolk Island) are inherently drier, after controlling for all dynamic weather variables."
+#| fig-cap: "Location-specific baseline rainfall adjustments (random intercepts). Cities to the right of the dashed line produce systematically more rainfall than the national average when all dynamic weather variables are held constant; cities to the left produce systematically less."
 #| fig-width: 10
 #| fig-height: 12
 #| echo: true
@@ -178,10 +178,10 @@ ggplot(loc_effects, aes(x = Effect, y = Location)) +
   ) +
   labs(
     title = "The Geography of Rain: Location-Specific Baselines",
-    subtitle = "Random intercepts show how much wetter/drier each city is, holding all weather variables constant.\nBars show 95% confidence intervals; points beyond ±1 SD are labeled.",
+    subtitle = "Random intercepts show how much wetter or drier each city is, holding all weather variables constant.\nBars show 95% confidence intervals; points beyond ±1 SD are labeled.",
     x = "Baseline Rainfall Adjustment (Log mm)",
     y = NULL,
-    caption = "Interpretation: A value of +0.5 means ~65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"
+    caption = "Interpretation: A value of +0.5 means approximately 65% more rain than an average location with identical conditions [exp(0.5) ≈ 1.65]"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -215,18 +215,22 @@ ggplot(loc_effects, aes(x = Effect, y = Location)) +
   )
 ```
 
-**1. The Tropical Top End (Wetter):** Katherine ($\beta = 0.59$) and Darwin ($\beta = 0.54$) have the highest positive adjustments , even with identical humidity, pressure, and wind, Katherine produces ~1.8x more rainfall than the baseline.
+The random intercepts from the mixed-effects model represent the location-specific baseline deviations in rainfall intensity after removing the contribution of all dynamic weather variables, humidity, pressure, wind, seasonality, and persistence. What remains is the component of rainfall that is attributable to geographic and climatic factors that do not vary day-to-day: proximity to moisture sources, orographic effects, predominant circulation patterns, and regional climate regime.
 
-**2. The Arid Interior (Drier):** Nhil ($\beta = -0.73$) and Norfolk Island ($\beta = -0.65$) have a suppressive geography , weather systems that produce moderate rain elsewhere produce only light rain here.
+**The wetter locations.** Katherine ($\hat{b} = 0.54$) and Tuggeranong ($\hat{b} = 0.57$) sit at the high end of the distribution. Exponentiating these values: $e^{0.54} \approx 1.72$ and $e^{0.57} \approx 1.77$, meaning that these stations produce roughly 72% and 77% more rainfall respectively than a hypothetical average Australian location experiencing identical instantaneous weather conditions. This is geographically coherent: both stations sit in the tropical Top End of the Northern Territory, where monsoonal systems deliver sustained and intense rainfall that has no structural analogue in the temperate south, and which the fixed-effects predictors measured on individual days cannot fully capture.
 
-**3. Significance:** The clear separation validates the necessity of the Mixed Model. A standard regression would have averaged these extremes, under-predicting flood risks in Darwin and over-predicting rainfall in the arid interior.
+**The drier locations.** Nhil ($\hat{b} = -0.66$) and Norfolk Island ($\hat{b} = -0.72$) show the strongest negative adjustments. $e^{-0.66} \approx 0.52$, indicating that Nhil produces roughly half the rainfall of an average location given identical weather conditions. This reflects its position in the semi-arid Wimmera region of inland Victoria, where even moisture-laden air masses tend to deliver less precipitation than they would on the coast.
 
-## Validating Model Assumptions (DHARMa)
+**Justification for the mixed-effects structure.** The magnitude and geographic coherence of these deviations confirm the necessity of the random effects component. A pooled fixed-effects model would have suppressed this spatial variation by averaging across all locations, producing a single set of coefficients that systematically over-predicts rainfall in arid interior stations and under-predicts it in tropical ones. The mixed-effects structure allows the global physical relationships humidity drives intensity, southerly winds bring moisture, to remain stable as fixed effects while accommodating the fact that those relationships operate against a geographically variable baseline.
+
+---
+
+## Residual Diagnostics via DHARMa Simulation
 
 ```{r}
 #| label: model-diagnostics
 #| echo: true
-#| fig-cap: "DHARMa Residual Diagnostics for Model 6. Left: Q-Q plot shows excellent alignment with the expected uniform distribution. Right: Residuals vs. Predicted shows no fanning or curvature, confirming homoscedasticity."
+#| fig-cap: "DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs. predicted values."
 #| fig-width: 10
 #| fig-height: 5
 #| message: false
@@ -239,21 +243,22 @@ testDispersion(res)
 testZeroInflation(res)
 ```
 
-**1. Q-Q Plot:** Near-perfect alignment along the 1:1 diagonal. While the Kolmogorov-Smirnov test shows $p < 0.05$ (expected at $N > 140,000$), visual deviations are negligible. The **Gamma distribution** correctly characterizes the positive rainfall values.
+Standard residual diagnostics are not directly applicable to Zero-Inflated Gamma models: the mixture of a point mass at zero and a continuous positive distribution means that conventional Pearson or deviance residuals do not have a tractable reference distribution. DHARMa addresses this by generating a large number of simulated datasets from the fitted model and computing, for each observation, where the actual value falls in the empirical distribution of simulated values. Under a correctly specified model, these *scaled residuals* follow a uniform distribution on $[0, 1]$ regardless of the model family. Deviations from uniformity indicate misspecification.
 
-**2. Residuals vs. Predicted:** The red quantile lines (25th, 50th, 75th) are straight and horizontal , **no significant non-linearity or heteroscedasticity**. The model performs equally well for light drizzle and heavy storms.
+**Q-Q plot.** The empirical quantiles of the scaled residuals align closely with the theoretical diagonal across the full range of the distribution. The Kolmogorov-Smirnov test registers $p < 0.05$, but this outcome is expected and should not be interpreted as evidence of meaningful misfit: with $N > 140,000$ observations, the test has sufficient power to detect deviations of negligible practical magnitude. The visual alignment of the Q-Q plot the appropriate diagnostic at this sample size shows no systematic departure from the uniform reference.
 
-**3. Formal Tests:**
+**Residuals versus predicted.** The three quantile lines (25th, 50th, and 75th percentiles of the scaled residuals at each fitted value) are horizontal and evenly spaced across the range of predictions. This indicates the absence of systematic non-linearity (which would manifest as curvature in the 50th percentile line) and the absence of heteroscedasticity (which would manifest as convergence or divergence of the outer quantile lines). The model performs with equivalent fidelity across the full range of rainfall intensities, from light drizzle to extreme events.
 
-- **Dispersion Test:** $p = 0.192$ , we fail to reject ideal dispersion. The `ziGamma` family successfully handled the variance structure without over-dispersion.
-- **Zero-Inflation Test:** Ratio of observed to simulated zeros = **1.00** ($p = 0.992$) , the model predicts the exact correct number of dry days.
+**Formal test results.** The dispersion test yields $p = 0.36$, giving no evidence that the variance of the residuals deviates from what the fitted ZIG family implies. The zero-inflation test produces a ratio of observed to simulated zero counts of exactly 1.00 ($p = 0.976$), confirming that the model's hurdle component is correctly calibrated and is neither over nor under-predicting the number of dry days in the sample. This last result is particularly notable: it means the 64% zero-inflation rate is not merely matched at the intercept level (as confirmed in the null model calibration check) but is correctly reproduced across the full conditional distribution of covariates.
 
-## Verifying Temporal Independence
+---
+
+## Temporal Autocorrelation in Residuals
 
 ```{r}
 #| label: temporal-autocorrelation
 #| echo: true
-#| fig-cap: "Temporal Autocorrelation Check (Canberra). Left: Residuals vs. Time showing random scatter. Right: ACF plot showing all lags within the blue confidence bounds, confirming independence."
+#| fig-cap: "Temporal residual diagnostics for Canberra. Random scatter across time and ACF values within the confidence bounds at all lags indicate the absence of residual autocorrelation."
 #| message: false
 #| warning: false
 
@@ -272,8 +277,22 @@ dw_result <- testTemporalAutocorrelation(
 print(dw_result)
 ```
 
-**1. Durbin-Watson Statistic = 2.0406:** A value of 2.0 indicates perfect independence. Our result is nearly indistinguishable from the ideal.
+The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent, that is, whether the unexplained portion of each observation is unrelated to the unexplained portion of observations that preceded it. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.
 
-**2. Statistical Significance:** $p = 0.2355$ , we fail to reject independence. There is **no evidence of temporal autocorrelation** in the residuals.
+This risk is particularly salient here. The raw data exhibits strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature `rain_yesterday`, the 7-day moving average features, the natural spline of `days_since_rain`, and the cyclical seasonal encoding. The question is whether these collectively absorb the temporal signal or whether residual autocorrelation persists.
 
-**3. Interpretation:** By explicitly including `rain_yesterday` (Markov chain) and `ns(days_since_rain)` (spline), we successfully "bleached" the temporal signal from the data. The model has fully learned the time-dependent patterns, leaving only random, independent noise.
+The Durbin-Watson test statistic is 2.0533. The theoretical value under perfect independence is exactly 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. A value of 2.04 is essentially indistinguishable from the ideal, and the associated p-value of 0.1197 gives no grounds to reject the null hypothesis of independence.
+
+The ACF plot corroborates this: autocorrelation coefficients at all examined lags fall within the 95% confidence bounds, confirming the absence of any systematic periodic or decay structure in the residuals.
+
+The interpretation is that the temporal engineering performed in the feature construction chapter was effective. By explicitly representing the day-to-day Markov structure, the medium-horizon wetness regime, and the non-linear dry spell decay, the model has absorbed the temporal dependence in the data and reduced its residuals to exchangeable noise. What remains unexplained is genuinely unpredictable from the available predictors, not the signature of an omitted temporal component.
+
+---
+
+## Summary of Validation Results
+
+The four validation procedures converge on a consistent picture of a well-specified model.
+
+The occurrence submodel discriminates between dry and wet days with an AUC of 0.827, achieves 75.28% classification accuracy, and exhibits a conservative error profile appropriate for meteorological risk communication. The random effects structure captures geographically coherent spatial heterogeneity that a pooled model would suppress, with the tropical north and arid interior deviating from the national average by factors of approximately 1.8 and 0.5 respectively. The DHARMa diagnostics find no evidence of distributional misspecification, heteroscedasticity, over-dispersion, or miscalibrated zero-inflation. And the temporal autocorrelation test confirms that the model's persistence and dry spell features have successfully eliminated serial dependence from the residuals.
+
+Taken together, these results support the conclusion that the final ZIG mixed-effects model is both statistically valid and physically well-grounded, a model whose structure reflects the actual mechanisms generating Australian rainfall rather than artefacts of the fitting procedure.

@@ -1,61 +1,98 @@
 # Introduction {#sec-intro}
 
-Rainfall in Australia is not just weather; it is a story of extremes. Driven by massive climate cycles like El Nino, the continent swings violently between years of crippling drought and sudden, devastating floods.
+Rainfall in Australia is a problem of statistical extremes. The continent experiences some of the most pronounced hydrological variability on Earth: years of crippling drought give way to sudden, widespread flooding, driven by large-scale climate oscillations including the El Nino-Southern Oscillation and the Indian Ocean Dipole. For any predictive model, this variability is not background noise to be absorbed but a central structural feature to be represented.
 
-For data scientists and meteorologists, predicting this is a unique challenge. It requires solving two problems at once: predicting **if** it will rain and predicting **how much** will fall. This report analyzes daily rainfall across Australia, building a model that handles both dry spells and heavy storms using statistical techniques designed for the kind of data weather actually produces.
+The core challenge is that precipitation data violates the assumptions of standard regression in three simultaneous ways, each of which requires a distinct methodological response. This report develops a framework that addresses all three, building from first principles through empirical analysis to a validated hierarchical model.
 
-## Why Standard Models Fall Short
-
-Traditional regression methods assume data that behaves. Rainfall does not.
+## Why Standard Models Fail
 
 ::: {.callout-note appearance="simple"}
-## The Three Statistical Violations
-1.  **Too many zeros:** About **64%** of days in this dataset record exactly zero rain. Standard models try to average these dry days with wet ones, often predicting negative rainfall.
-2.  **Extreme variability:** When it rains, the amount can range from a trace to a cyclone. The distribution is heavily right-skewed; a handful of extreme storms drive most of the variance.
-3.  **Weather has memory:** Rain is not independent. A wet yesterday makes a wet today more likely. Standard models treat each day as a fresh roll of the dice.
+## Three Structural Violations in Australian Rainfall Data
+
+**Zero-inflation.** Approximately 64% of daily observations record exactly zero rainfall. A Gaussian linear model fitted to this data is forced to place probability mass on negative values in order to fit the bulk of the distribution correctly, producing predictions that are physically impossible. This is not a problem of outliers or transformations; it is a consequence of the data-generating process having two qualitatively different states.
+
+**Heavy right tail.** When rain does fall, the distribution of daily amounts is severely right-skewed, with a kurtosis of 181 and a maximum recorded value of 371 mm. The variance is approximately sixteen times the square of the mean. Standard models that assume a symmetric or light-tailed error distribution will systematically underestimate both the probability and the magnitude of extreme events.
+
+**Temporal dependence.** Daily observations are not independent. Whether it rained yesterday is one of the strongest predictors of whether it will rain today, with a transition probability of 47% from wet to wet compared to only 15% from dry to wet. Any model that treats consecutive observations as exchangeable ignores a substantial and recoverable source of predictive information.
 :::
 
-## A Model Built for the Problem
+Each of these violations is not merely a statistical inconvenience. Each reflects a physical property of the atmosphere: the discrete threshold between no-precipitation and precipitation conditions, the stochastic intensity of convective and frontal systems once that threshold is crossed, and the temporal persistence of synoptic weather regimes. A model that ignores these properties is not a simplification of the problem; it is a misspecification of it.
 
-This analysis uses a **Zero-Inflated Gamma (ZIG)** framework. Rather than forcing a single equation to predict both occurrence and intensity, the ZIG model splits the problem into two linked components:
+## The Modelling Framework
 
-1.  A **logistic model** predicts the probability that a day is dry versus wet ($\pi_i$).
-2.  A **Gamma model** predicts the rainfall volume on wet days ($\mu_i$).
+This analysis uses a **Zero-Inflated Gamma (ZIG)** hierarchical model. The core innovation is to treat rainfall occurrence and rainfall intensity as two distinct sub-problems with separate linear predictors, linked through a shared observation mechanism.
 
+The formal structure is as follows. For each observation $i$, the model defines:
 
+$$P(Y_i = 0) = \pi_i + (1 - \pi_i) \cdot f_\Gamma(0 \mid \mu_i, \phi)$$
 
-This dual structure allows the atmospheric triggers of rain, such as a dropping pressure front, to be modeled separately from the physical drivers of intensity like wind vectors and moisture availability.
+$$P(Y_i = y) = (1 - \pi_i) \cdot f_\Gamma(y \mid \mu_i, \phi), \quad y > 0$$
+
+where $\pi_i = \text{logit}^{-1}(\mathbf{z}_i^\top \boldsymbol{\gamma})$ governs the probability of a structurally dry day, and $\mu_i = \exp(\mathbf{x}_i^\top \boldsymbol{\beta})$ governs the expected intensity given that rain falls. The two predictor vectors $\mathbf{z}_i$ and $\mathbf{x}_i$ are estimated separately, allowing the atmospheric conditions that trigger rain to differ from those that determine how much falls.
 
 ::: {.callout-important}
-## Why not Tweedie?
-We considered a Tweedie distribution, which uses a single process for both outcomes. However, we rejected it because our exploratory analysis (see @sec-eda) showed that the drivers of occurrence are distinct from the drivers of intensity. Forcing a single parameter to capture both would obscure this physical reality.
+## Why Not Tweedie?
+The Tweedie distribution is a natural alternative for zero-inflated positive continuous data, using a compound Poisson-Gamma structure to accommodate zero values alongside a continuous positive component. It was evaluated here and rejected on empirical grounds. The exploratory analysis (see @sec-eda) demonstrates that the predictors of occurrence and the predictors of intensity are not the same: `rain_yesterday` and `pressure_change` operate primarily through the hurdle component, while wind vectors and the sunshine-humidity interaction drive the conditional intensity. A Tweedie model constrains both to share a single linear predictor, obscuring this physical distinction and reducing interpretability without improving fit.
 :::
 
 ## Report Structure
 
-This document is organized around the progressive validation of our modeling choices:
+This document is organised as a progressive validation of modelling choices, beginning with data quality and proceeding through feature design, model construction, diagnostic testing, and formal selection. Each chapter is motivated by empirical findings from the preceding one.
 
-| Chapter | Focus |
-| :--- | :--- |
-| **01 Intro** | Establishes the statistical pathology of rainfall and limitations of OLS. |
-| **02 Data** | Implements a three-stage imputation strategy to recover missing values. |
-| **03 EDA** | Quantifies zero-inflation, skewness, and Markovian persistence. |
-| **04 Features** | Engineers wind vectors, cyclical time, and interaction terms. |
-| **05 Modeling** | Builds the GLMM progressively from Null to Spatial Random Effects. |
-| **06 Eval** | Validates the model using DHARMa simulation-based diagnostics. |
-| **07 Selection** | Compares ZI-Gamma vs Tweedie and finalizes the model choice. |
-| **08 Conclusion** | Summarizes findings and states operational recommendations. |
+```{r}
+#| label: chapter-table
+#| echo: false
+#| warning: false
+#| message: false
 
-## Project Objectives
+library(tibble)
+library(dplyr)
+library(kableExtra)
 
-* **Recover missing data without bias.**
-    Weather sensors fail. We implement a three-stage imputation strategy that fills gaps using temporal neighbors, multivariate patterns, and domain-specific inference.
+chapter_matrix <- tibble(
+  Chapter = c(
+    "Introduction",
+    "Data",
+    "EDA",
+    "Feature Engineering",
+    "Modelling",
+    "Model Evaluation",
+    "Model Selection",
+    "Conclusion"
+  ),
+  Content = c(
+    "Statistical pathology of rainfall data and limitations of standard approaches.",
+    "Three-stage imputation strategy for the 42-48% missing rate in key meteorological variables.",
+    "Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions.",
+    "Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features.",
+    "Progressive construction of the ZIG model from null baseline through spatial mixed effects.",
+    "Validation via ROC analysis, random effects diagnostics, DHARMa simulation tests, and autocorrelation checks.",
+    "Formal comparison of distributional families, likelihood ratio tests, and variance decomposition.",
+    "Summary of findings, limitations, and deployment recommendations."
+  )
+)
 
-* **Capture weather dynamics.**
-    We model wind direction as continuous vectors, encode the non-linear interaction between sunshine and humidity, and quantify the Markovian persistence of weather states.
+chapter_matrix %>%
+  kable(
+    col.names = c("Chapter", "Content"),
+    align = "ll",
+    caption = "Project Structure and Content"
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "left"
+  ) %>%
+  column_spec(1, width = "4cm", bold = TRUE) %>%
+  column_spec(2, width = "12cm")
+```
 
-* **Account for spatial heterogeneity.**
-    A model that works for tropical Darwin will fail in arid Alice Springs. We introduce hierarchical random effects that allow rainfall relationships to vary by location.
+## Research Objectives
 
-* **Validate the model.**
-    Standard accuracy metrics can mask poor fit. We use simulation-based residual diagnostics to stress-test the model and confirm that it captures the true data-generating process.
+**Recover missing data without introducing bias.** Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a three-stage imputation strategy that uses temporal neighbourhood, multivariate relationships, and domain-specific inference to fill these gaps, preserving both sample size and predictive signal.
+
+**Represent weather dynamics as continuous physical processes.** Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. We develop features that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for seasonality, and a mean-centred multiplicative term for the humidity-sunshine interaction.
+
+**Account for spatial heterogeneity.** The relationship between atmospheric conditions and rainfall is not uniform across a continent as climatologically diverse as Australia. We introduce location-specific random effects that allow baseline rainfall levels and key covariate relationships to vary by station, without requiring a separate model for each location.
+
+**Validate against the data-generating process, not just the mean.** Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. We use simulation-based residual diagnostics to verify that the model replicates the full statistical distribution of Australian rainfall, including its zero-inflation rate, tail behaviour, and temporal independence structure.

@@ -348,7 +348,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Predicting the Unpredictable</span></a>
+ <span class="menu-text">Predicting Australian Rainfall</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -450,7 +450,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#sec-frequency" id="toc-sec-frequency" class="nav-link" data-scroll-target="#sec-frequency"><span class="header-section-number">3.5.1</span> Weekly and Seasonal Frequency</a></li>
   <li><a href="#sec-markov" id="toc-sec-markov" class="nav-link" data-scroll-target="#sec-markov"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</a></li>
-  <li><a href="#dry-spell-dynamics-and-temporal-decay" id="toc-dry-spell-dynamics-and-temporal-decay" class="nav-link" data-scroll-target="#dry-spell-dynamics-and-temporal-decay"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay</a></li>
+  <li><a href="#dry-spell-dynamics-and-temporal-decay-sec-dry-spell" id="toc-dry-spell-dynamics-and-temporal-decay-sec-dry-spell" class="nav-link" data-scroll-target="#dry-spell-dynamics-and-temporal-decay-sec-dry-spell"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay [#sec-dry-spell]</a></li>
   </ul></li>
   <li><a href="#atmospheric-pressure-dynamics" id="toc-atmospheric-pressure-dynamics" class="nav-link" data-scroll-target="#atmospheric-pressure-dynamics"><span class="header-section-number">3.6</span> Atmospheric Pressure Dynamics</a></li>
   <li><a href="#seasonal-rainfall-intensity" id="toc-seasonal-rainfall-intensity" class="nav-link" data-scroll-target="#seasonal-rainfall-intensity"><span class="header-section-number">3.7</span> Seasonal Rainfall Intensity</a>
@@ -1604,8 +1604,8 @@ Figure&nbsp;3.2: Markov Chain Transition Matrix: Visualizing the ‘Persistence 
 <p>The estimated transition matrix (<a href="#fig-markov-chain" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>) reveals an important asymmetry between the two weather states. When the previous day was dry, there is an 85% probability of remaining dry the high-pressure systems that suppress rainfall are persistent and self-reinforcing. When the previous day was wet, however, there is only a 47% probability of continued rain, meaning rain events are more transient and less self-sustaining than dry spells. This asymmetry has a clear atmospheric interpretation: large anticyclonic systems that block rainfall can persist for days to weeks, while frontal systems that bring rain typically pass through more quickly.</p>
 <p>The practical implication for modelling is that <code>rain_today</code> (lagged one day) carries meaningful predictive signal and should be considered as a candidate feature. However, its modest effect size also demonstrates that autocorrelation alone is insufficient as a predictor: the wet state is too transient for a persistence-only rule to be reliable, and other meteorological covariates are necessary to capture the onset and cessation of rainfall events.</p>
 </section>
-<section id="dry-spell-dynamics-and-temporal-decay" class="level3" data-number="3.5.3">
-<h3 data-number="3.5.3" class="anchored" data-anchor-id="dry-spell-dynamics-and-temporal-decay"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay</h3>
+<section id="dry-spell-dynamics-and-temporal-decay-sec-dry-spell" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="dry-spell-dynamics-and-temporal-decay-sec-dry-spell"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay [#sec-dry-spell]</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -3507,7 +3507,7 @@ Figure&nbsp;3.10: Bivariate Density of Humidity vs.&nbsp;Sunshine, faceted by Ra
 <span id="cb34-446"><a href="#cb34-446"></a></span>
 <span id="cb34-447"><a href="#cb34-447"></a>The practical implication for modelling is that <span class="in">`rain_today`</span> (lagged one day) carries meaningful predictive signal and should be considered as a candidate feature. However, its modest effect size also demonstrates that autocorrelation alone is insufficient as a predictor: the wet state is too transient for a persistence-only rule to be reliable, and other meteorological covariates are necessary to capture the onset and cessation of rainfall events.</span>
 <span id="cb34-448"><a href="#cb34-448"></a></span>
-<span id="cb34-449"><a href="#cb34-449"></a><span class="fu">### Dry Spell Dynamics and Temporal Decay</span></span>
+<span id="cb34-449"><a href="#cb34-449"></a><span class="fu">### Dry Spell Dynamics and Temporal Decay [#sec-dry-spell]</span></span>
 <span id="cb34-450"><a href="#cb34-450"></a></span>
 <span id="cb34-453"><a href="#cb34-453"></a><span class="in">```{r}</span></span>
 <span id="cb34-454"><a href="#cb34-454"></a><span class="co">#| label: dry-spell-prep</span></span>
