@@ -1,4 +1,4 @@
-# Feature Engineering
+# Feature Engineering {#sec-feature-eng}
 ## From Raw Meteorological Signals to Predictive Inputs
 
 ---

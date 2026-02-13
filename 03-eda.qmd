@@ -427,7 +427,7 @@ The estimated transition matrix (@fig-markov-chain) reveals an important asymmet
 
 The practical implication for modelling is that `rain_today` (lagged one day) carries meaningful predictive signal and should be considered as a candidate feature. However, its modest effect size also demonstrates that autocorrelation alone is insufficient as a predictor: the wet state is too transient for a persistence-only rule to be reliable, and other meteorological covariates are necessary to capture the onset and cessation of rainfall events.
 
-### Dry Spell Dynamics and Temporal Decay [#sec-dry-spell]
+### Dry Spell Dynamics and Temporal Decay {#sec-dry-spell}
 
 ```{r}
 #| label: dry-spell-prep

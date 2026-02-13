@@ -8,7 +8,7 @@
 
 <meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
-<title>2&nbsp; Data Cleaning and Preprocessing – Australian Rainfall Dynamics</title>
+<title>2&nbsp; Data Preparation – Australian Rainfall Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -316,7 +316,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./02-data-prep.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./02-data-prep.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Preparation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -369,7 +369,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Preparation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -442,21 +442,16 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#computational-environment-and-data-ingestion" id="toc-computational-environment-and-data-ingestion" class="nav-link active" data-scroll-target="#computational-environment-and-data-ingestion"><span class="header-section-number">2.1</span> Computational Environment and Data Ingestion</a></li>
-  <li><a href="#data-cleaning-and-preprocessing" id="toc-data-cleaning-and-preprocessing" class="nav-link" data-scroll-target="#data-cleaning-and-preprocessing"><span class="header-section-number">2.2</span> Data Cleaning and Preprocessing</a>
-  <ul class="collapse">
-  <li><a href="#syntactic-standardization" id="toc-syntactic-standardization" class="nav-link" data-scroll-target="#syntactic-standardization"><span class="header-section-number">2.2.1</span> Syntactic Standardization</a></li>
-  <li><a href="#temporal-feature-extraction" id="toc-temporal-feature-extraction" class="nav-link" data-scroll-target="#temporal-feature-extraction"><span class="header-section-number">2.2.2</span> Temporal Feature Extraction</a></li>
-  <li><a href="#target-integrity" id="toc-target-integrity" class="nav-link" data-scroll-target="#target-integrity"><span class="header-section-number">2.2.3</span> Target Integrity</a></li>
-  </ul></li>
+  <li><a href="#computational-environment" id="toc-computational-environment" class="nav-link active" data-scroll-target="#computational-environment"><span class="header-section-number">2.1</span> Computational Environment</a></li>
+  <li><a href="#initial-cleaning-and-standardisation" id="toc-initial-cleaning-and-standardisation" class="nav-link" data-scroll-target="#initial-cleaning-and-standardisation"><span class="header-section-number">2.2</span> Initial Cleaning and Standardisation</a></li>
   <li><a href="#hybrid-imputation-strategy" id="toc-hybrid-imputation-strategy" class="nav-link" data-scroll-target="#hybrid-imputation-strategy"><span class="header-section-number">2.3</span> Hybrid Imputation Strategy</a>
   <ul class="collapse">
-  <li><a href="#stage-1-informative-missingness-flags" id="toc-stage-1-informative-missingness-flags" class="nav-link" data-scroll-target="#stage-1-informative-missingness-flags"><span class="header-section-number">2.3.1</span> Stage 1: Informative Missingness Flags</a></li>
-  <li><a href="#stage-2-temporal-interpolation-time-series-logic" id="toc-stage-2-temporal-interpolation-time-series-logic" class="nav-link" data-scroll-target="#stage-2-temporal-interpolation-time-series-logic"><span class="header-section-number">2.3.2</span> Stage 2: Temporal Interpolation (Time-Series Logic)</a></li>
-  <li><a href="#stage-3-multivariate-imputation-via-chained-random-forests" id="toc-stage-3-multivariate-imputation-via-chained-random-forests" class="nav-link" data-scroll-target="#stage-3-multivariate-imputation-via-chained-random-forests"><span class="header-section-number">2.3.3</span> Stage 3: Multivariate Imputation via Chained Random Forests</a></li>
-  <li><a href="#ghost-sensor-detection-and-sanitization" id="toc-ghost-sensor-detection-and-sanitization" class="nav-link" data-scroll-target="#ghost-sensor-detection-and-sanitization"><span class="header-section-number">2.3.4</span> Ghost Sensor Detection and Sanitization</a></li>
+  <li><a href="#stage-1-missingness-flags" id="toc-stage-1-missingness-flags" class="nav-link" data-scroll-target="#stage-1-missingness-flags"><span class="header-section-number">2.3.1</span> Stage 1: Missingness Flags</a></li>
+  <li><a href="#stage-2-temporal-interpolation" id="toc-stage-2-temporal-interpolation" class="nav-link" data-scroll-target="#stage-2-temporal-interpolation"><span class="header-section-number">2.3.2</span> Stage 2: Temporal Interpolation</a></li>
+  <li><a href="#stage-3-multivariate-random-forest-imputation" id="toc-stage-3-multivariate-random-forest-imputation" class="nav-link" data-scroll-target="#stage-3-multivariate-random-forest-imputation"><span class="header-section-number">2.3.3</span> Stage 3: Multivariate Random Forest Imputation</a></li>
+  <li><a href="#ghost-sensor-detection" id="toc-ghost-sensor-detection" class="nav-link" data-scroll-target="#ghost-sensor-detection"><span class="header-section-number">2.3.4</span> Ghost Sensor Detection</a></li>
   </ul></li>
-  <li><a href="#outcome-complete-and-physically-realistic-data" id="toc-outcome-complete-and-physically-realistic-data" class="nav-link" data-scroll-target="#outcome-complete-and-physically-realistic-data"><span class="header-section-number">2.4</span> Outcome: Complete and Physically Realistic Data</a></li>
+  <li><a href="#post-imputation-dataset-properties" id="toc-post-imputation-dataset-properties" class="nav-link" data-scroll-target="#post-imputation-dataset-properties"><span class="header-section-number">2.4</span> Post-Imputation Dataset Properties</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/02-data-prep.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -464,9 +459,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./02-data-prep.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="./02-data-prep.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Preparation</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span id="sec-data" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Cleaning and Preprocessing</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-data" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Preparation</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -483,83 +478,62 @@ window.Quarto = {
 </header>
 
 
-<section id="computational-environment-and-data-ingestion" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="computational-environment-and-data-ingestion"><span class="header-section-number">2.1</span> Computational Environment and Data Ingestion</h2>
-<p>This analysis leverages a comprehensive suite of R libraries specifically selected to address the challenges of working with meteorological data. The toolkit is assembled to handle data wrangling, advanced statistical modeling, imputation, and publication-quality visualization.</p>
-<p>The analytical framework includes:</p>
-<ul>
-<li><strong>Data Wrangling &amp; Cleaning:</strong> Efficient manipulation and standardization of raw weather data using established best practices for variable naming and data structure.</li>
-<li><strong>Advanced Statistical Modeling:</strong> Tools designed specifically for zero-inflated models and Generalized Additive Models (GAMs), paired with rigorous diagnostic frameworks for model validation and residual analysis.</li>
-<li><strong>Imputation &amp; Machine Learning:</strong> Sophisticated algorithms for Random Forest-based imputation, enabling recovery of missing values while preserving distributional properties.</li>
-<li><strong>Visualization:</strong> Multi-panel visualization capabilities for generating publication-quality figures that communicate complex meteorological patterns.</li>
-</ul>
-<p>The primary dataset is ingested and prepared for the analysis pipeline.</p>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Chapter Context.</strong> Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, the design of a three-stage imputation pipeline for the substantial missingness in key meteorological variables, and the detection and conservative handling of extended sensor failures. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</p>
+</blockquote>
+<hr>
+<section id="computational-environment" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="computational-environment"><span class="header-section-number">2.1</span> Computational Environment</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Initialize environment and load dependencies</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
-<span id="cb1-3"><a href="#cb1-3"></a>  tidyverse,</span>
-<span id="cb1-4"><a href="#cb1-4"></a>  tidymodels,</span>
-<span id="cb1-5"><a href="#cb1-5"></a>  kableExtra,</span>
-<span id="cb1-6"><a href="#cb1-6"></a>  patchwork,</span>
-<span id="cb1-7"><a href="#cb1-7"></a>  skimr,</span>
-<span id="cb1-8"><a href="#cb1-8"></a>  gridExtra,</span>
-<span id="cb1-9"><a href="#cb1-9"></a>  gtsummary,</span>
-<span id="cb1-10"><a href="#cb1-10"></a>  janitor,</span>
-<span id="cb1-11"><a href="#cb1-11"></a>  corrplot,</span>
-<span id="cb1-12"><a href="#cb1-12"></a>  sjPlot,</span>
-<span id="cb1-13"><a href="#cb1-13"></a>  scales,</span>
-<span id="cb1-14"><a href="#cb1-14"></a>  GGally,</span>
-<span id="cb1-15"><a href="#cb1-15"></a>  car,</span>
-<span id="cb1-16"><a href="#cb1-16"></a>  forcats,</span>
-<span id="cb1-17"><a href="#cb1-17"></a>  performance,</span>
-<span id="cb1-18"><a href="#cb1-18"></a>  glmmTMB,</span>
-<span id="cb1-19"><a href="#cb1-19"></a>  splines,</span>
-<span id="cb1-20"><a href="#cb1-20"></a>  mgcv,</span>
-<span id="cb1-21"><a href="#cb1-21"></a>  DHARMa,</span>
-<span id="cb1-22"><a href="#cb1-22"></a>  zoo,</span>
-<span id="cb1-23"><a href="#cb1-23"></a>  ggpubr,</span>
-<span id="cb1-24"><a href="#cb1-24"></a>  ggridges,</span>
-<span id="cb1-25"><a href="#cb1-25"></a>  caret,</span>
-<span id="cb1-26"><a href="#cb1-26"></a>  rstatix,</span>
-<span id="cb1-27"><a href="#cb1-27"></a>  Metrics,</span>
-<span id="cb1-28"><a href="#cb1-28"></a>  mice,</span>
-<span id="cb1-29"><a href="#cb1-29"></a>  missRanger,</span>
-<span id="cb1-30"><a href="#cb1-30"></a>  ranger,</span>
-<span id="cb1-31"><a href="#cb1-31"></a>  cocor,</span>
-<span id="cb1-32"><a href="#cb1-32"></a>  splines,</span>
-<span id="cb1-33"><a href="#cb1-33"></a>  multcompView,</span>
-<span id="cb1-34"><a href="#cb1-34"></a>  lmtest,</span>
-<span id="cb1-35"><a href="#cb1-35"></a>  aod,</span>
-<span id="cb1-36"><a href="#cb1-36"></a>  pROC</span>
-<span id="cb1-37"><a href="#cb1-37"></a>)</span>
-<span id="cb1-38"><a href="#cb1-38"></a></span>
-<span id="cb1-39"><a href="#cb1-39"></a><span class="co"># Load the dataset</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/weatherAUS.csv"</span>)</span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  tidyverse,</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  tidymodels,</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  kableExtra,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  patchwork,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>  skimr,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  gridExtra,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  gtsummary,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>  janitor,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  corrplot,</span>
+<span id="cb1-11"><a href="#cb1-11"></a>  sjPlot,</span>
+<span id="cb1-12"><a href="#cb1-12"></a>  scales,</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  GGally,</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  car,</span>
+<span id="cb1-15"><a href="#cb1-15"></a>  forcats,</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  performance,</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  glmmTMB,</span>
+<span id="cb1-18"><a href="#cb1-18"></a>  splines,</span>
+<span id="cb1-19"><a href="#cb1-19"></a>  mgcv,</span>
+<span id="cb1-20"><a href="#cb1-20"></a>  DHARMa,</span>
+<span id="cb1-21"><a href="#cb1-21"></a>  zoo,</span>
+<span id="cb1-22"><a href="#cb1-22"></a>  ggpubr,</span>
+<span id="cb1-23"><a href="#cb1-23"></a>  ggridges,</span>
+<span id="cb1-24"><a href="#cb1-24"></a>  caret,</span>
+<span id="cb1-25"><a href="#cb1-25"></a>  rstatix,</span>
+<span id="cb1-26"><a href="#cb1-26"></a>  Metrics,</span>
+<span id="cb1-27"><a href="#cb1-27"></a>  mice,</span>
+<span id="cb1-28"><a href="#cb1-28"></a>  missRanger,</span>
+<span id="cb1-29"><a href="#cb1-29"></a>  ranger,</span>
+<span id="cb1-30"><a href="#cb1-30"></a>  cocor,</span>
+<span id="cb1-31"><a href="#cb1-31"></a>  multcompView,</span>
+<span id="cb1-32"><a href="#cb1-32"></a>  lmtest,</span>
+<span id="cb1-33"><a href="#cb1-33"></a>  aod,</span>
+<span id="cb1-34"><a href="#cb1-34"></a>  pROC</span>
+<span id="cb1-35"><a href="#cb1-35"></a>)</span>
+<span id="cb1-36"><a href="#cb1-36"></a></span>
+<span id="cb1-37"><a href="#cb1-37"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/weatherAUS.csv"</span>)</span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (<code>tidyverse</code>, <code>janitor</code>, <code>kableExtra</code>) handles the routine data manipulation. The modelling stack (<code>glmmTMB</code>, <code>DHARMa</code>, <code>splines</code>, <code>mgcv</code>) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (<code>missRanger</code>, <code>mice</code>, <code>ranger</code>) supports the Random Forest and chained imputation procedures described below. Libraries are loaded via <code>librarian</code>, which installs any missing packages automatically and ensures reproducibility across environments.</p>
+<hr>
 </section>
-<section id="data-cleaning-and-preprocessing" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="data-cleaning-and-preprocessing"><span class="header-section-number">2.2</span> Data Cleaning and Preprocessing</h2>
-<p>The raw dataset undergoes a three-step transformation into a standardized format suitable for advanced modeling.</p>
-<section id="syntactic-standardization" class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" class="anchored" data-anchor-id="syntactic-standardization"><span class="header-section-number">2.2.1</span> Syntactic Standardization</h3>
-<p>All column headers are converted to <code>snake_case</code> notation, ensuring consistent variable naming conventions across the entire dataset. This foundational step eliminates ambiguity in variable references and facilitates reproducible analysis.</p>
-</section>
-<section id="temporal-feature-extraction" class="level3" data-number="2.2.2">
-<h3 data-number="2.2.2" class="anchored" data-anchor-id="temporal-feature-extraction"><span class="header-section-number">2.2.2</span> Temporal Feature Extraction</h3>
-<p>The <code>date</code> column is properly typed as a Date object. From this temporal reference, two critical categorical variables are engineered:</p>
-<ul>
-<li><strong>Month:</strong> Captures seasonal rainfall variations by organizing observations into twelve categories. This allows the model to detect systematic differences in precipitation patterns across Australia’s seasons.</li>
-<li><strong>Day of Week:</strong> Represents the day of the week for each observation. While weather itself is not driven by calendar artifacts, this feature can capture artifacts in observation or reporting procedures.</li>
-</ul>
-<p>These derived temporal features are essential for identifying systematic patterns in precipitation and accounting for any measurement bias correlated with day-of-week effects.</p>
-</section>
-<section id="target-integrity" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="target-integrity"><span class="header-section-number">2.2.3</span> Target Integrity</h3>
-<p>Observations where the target variable <strong>rainfall</strong> is missing are explicitly removed from the dataset. Since the primary objective is to model rainfall occurrence and intensity, records without ground truth rainfall measurements provide no supervised learning value. This filtering ensures that all subsequent analysis operates on a complete target variable.</p>
+<section id="initial-cleaning-and-standardisation" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="initial-cleaning-and-standardisation"><span class="header-section-number">2.2</span> Initial Cleaning and Standardisation</h2>
+<p>The raw dataset undergoes three transformations before imputation.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -570,14 +544,12 @@ window.Quarto = {
 <span id="cb2-5"><a href="#cb2-5"></a>    <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
 <span id="cb2-6"><a href="#cb2-6"></a>    <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))</span>
 <span id="cb2-7"><a href="#cb2-7"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>  <span class="co"># Remove records where the target variable (rainfall) is missing</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall))</span>
-<span id="cb2-10"><a href="#cb2-10"></a></span>
-<span id="cb2-11"><a href="#cb2-11"></a></span>
-<span id="cb2-12"><a href="#cb2-12"></a>df_clean <span class="sc">%&gt;%</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Head of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall))</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Head of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
@@ -983,231 +955,203 @@ window.Quarto = {
 </table>
 </div>
 </div>
-<p>The cleaned dataset confirms successful standardization of variables and proper creation of temporal features.</p>
-</section>
+<p><strong>Column standardisation.</strong> All variable names are converted to <code>snake_case</code> via <code>janitor::clean_names()</code>. This is a low-cost operation that eliminates downstream ambiguity in variable references and ensures that the codebase is internally consistent across all chapters.</p>
+<p><strong>Temporal feature extraction.</strong> The <code>date</code> column is typed as a <code>Date</code> object and two derived features are extracted immediately: <code>month</code> (as a factor) and <code>day</code> (day of week, labelled). Both are used in the EDA (<a href="03-eda.html" class="quarto-xref"><span>Chapter 3</span></a>) and feature engineering(<a href="04-features.html" class="quarto-xref"><span>Chapter 4</span></a>) chapters. Month captures the seasonal structure of Australian precipitation; day of week, while not expected to carry physical signal, is retained as a potential control variable for reporting artefacts in the raw data.</p>
+<p><strong>Target filtering.</strong> Observations where <code>rainfall</code> is missing are removed. Because the primary modelling objective is to predict rainfall occurrence and intensity, records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</p>
+<hr>
 </section>
 <section id="hybrid-imputation-strategy" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="hybrid-imputation-strategy"><span class="header-section-number">2.3</span> Hybrid Imputation Strategy</h2>
-<p>Missing data presents a critical challenge in meteorological analysis. Weather sensors fail, transmission errors occur, and equipment maintenance creates gaps. Rather than discarding incomplete observations or applying crude imputation methods, we implement a sophisticated three-stage imputation strategy designed to preserve the statistical properties and physical realism of meteorological data.</p>
-<section id="stage-1-informative-missingness-flags" class="level3" data-number="2.3.1">
-<h3 data-number="2.3.1" class="anchored" data-anchor-id="stage-1-informative-missingness-flags"><span class="header-section-number">2.3.1</span> Stage 1: Informative Missingness Flags</h3>
-<p>Before imputation occurs, binary indicators are created for variables with high missingness. These flags (e.g., <code>sunshine_imp_flagged</code>, <code>evaporation_imp_flagged</code>) preserve the information that data was missing at particular times and locations.</p>
-<blockquote class="blockquote">
-<p><strong>Rationale:</strong> The absence of data itself may carry information. A broken sunshine sensor during a tropical storm, for example, represents a specific atmospheric condition. By flagging imputed values, the model retains the capacity to learn whether missingness itself is predictive of rainfall a phenomenon that could reflect systematic sensor failures during extreme weather.</p>
-</blockquote>
+<p>The EDA chapter documents that <code>sunshine</code> is missing in 47.7% of records and <code>evaporation</code> in 42.5%, while cloud cover variables are missing in 37 to 40% of records. Standard listwise deletion, which removes any row containing a missing value, would eliminate nearly half the dataset and introduce a systematic geographic bias toward well-instrumented stations. Standard mean or median imputation would fill the gaps but would shrink the marginal variance of the imputed variables and distort their correlations with other predictors.</p>
+<p>The imputation pipeline described here addresses these problems through a three-stage strategy, each stage targeting a different structural type of missingness.</p>
+<section id="stage-1-missingness-flags" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="stage-1-missingness-flags"><span class="header-section-number">2.3.1</span> Stage 1: Missingness Flags</h3>
+<p>Before any imputation takes place, binary indicator variables are created for the four variables with high missingness: <code>sunshine_imp_flagged</code>, <code>evap_imp_flagged</code>, <code>cloud3pm_imp_flagged</code>, and <code>cloud9am_imp_flagged</code>. A flag value of 1 indicates that the corresponding observation was subsequently imputed.</p>
+<p>The motivation is that the pattern of missingness is not random with respect to atmospheric conditions. Sunshine sensors may fail more frequently during prolonged cloud cover or heavy rain, and evaporation pan measurements may be suspended during equipment maintenance that is itself weather-triggered. If missingness is informative in this way, the imputation flags allow the model to learn this association rather than treating the imputed and observed values as exchangeable.</p>
 </section>
-<section id="stage-2-temporal-interpolation-time-series-logic" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" class="anchored" data-anchor-id="stage-2-temporal-interpolation-time-series-logic"><span class="header-section-number">2.3.2</span> Stage 2: Temporal Interpolation (Time-Series Logic)</h3>
-<p>Meteorological variables exhibit strong temporal autocorrelation. Temperature, pressure, and humidity do not fluctuate randomly they evolve smoothly over time. For these continuous variables with short gaps, linear interpolation grouped by location is applied.</p>
-<blockquote class="blockquote">
-<p><strong>Rationale:</strong> If the temperature is 20 <span class="math inline">\(^\circ\)</span>C on Monday and 22 <span class="math inline">\(^\circ\)</span>C on Wednesday, it is physically sound to estimate Tuesday’s temperature as 21 <span class="math inline">\(^\circ\)</span>C rather than using a global average or a seasonal climatology. This approach respects the inherent temporal structure of weather data.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p><strong>Constraint:</strong> Interpolation is limited to a maximum gap of 5 consecutive days. This prevents creating artificial data over extended periods of sensor failure, which could introduce systematic bias into the analysis.</p>
-</blockquote>
-<p>Variables suitable for temporal interpolation include minimum and maximum temperatures, 9 AM and 3 PM temperatures, 9 AM and 3 PM pressure readings, and 9 AM and 3 PM humidity measurements. These are all variables that exhibit strong day-to-day persistence and smooth trajectories.</p>
+<section id="stage-2-temporal-interpolation" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="stage-2-temporal-interpolation"><span class="header-section-number">2.3.2</span> Stage 2: Temporal Interpolation</h3>
+<p>The eight variables with strong day-to-day persistence and smooth trajectories; minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location. The interpolation is bounded by a maximum gap of five consecutive missing days.</p>
+<p>The physical rationale is direct. Atmospheric temperature, pressure, and humidity evolve as continuous functions of time: a value of <span class="math inline">\(20^\circ\)</span>C on Monday and <span class="math inline">\(22^\circ\)</span>C on Wednesday implies a physically reasonable estimate of <span class="math inline">\(21^\circ\)</span>C on Tuesday. Filling this gap with a global mean or a seasonal climatology would ignore the temporal context that makes the missing value estimable with high confidence. The five-day cap prevents the interpolation from producing extended sequences of synthetic data over sustained sensor outages, which would introduce artificial smoothness into periods that may have been meteorologically volatile.</p>
 </section>
-<section id="stage-3-multivariate-imputation-via-chained-random-forests" class="level3" data-number="2.3.3">
-<h3 data-number="2.3.3" class="anchored" data-anchor-id="stage-3-multivariate-imputation-via-chained-random-forests"><span class="header-section-number">2.3.3</span> Stage 3: Multivariate Imputation via Chained Random Forests</h3>
-<p>For remaining gaps, particularly in variables with complex non-linear relationships to other meteorological features, a more sophisticated approach is required. Variables such as sunshine, evaporation, and cloud cover do not evolve smoothly; their relationships to other variables are non-linear and conditional on specific atmospheric states.</p>
-<ul>
-<li><strong>Method:</strong> Random Forest-based imputation iteratively predicts missing values using all other available variables. This technique exploits the fact that the multivariate distribution of weather variables contains strong predictive signals.</li>
-<li><strong>Advantage:</strong> Unlike mean imputation, which artificially shrinks variance and distorts correlations, Random Forest imputation with Predictive Mean Matching (PMM) preserves the original marginal distributions and the complex non-linear correlations between weather features. This is critical for maintaining the physical realism of the data.</li>
-</ul>
-<p><strong>Targeted Predictors:</strong> For each variable with missing values, a scientifically-motivated set of predictor variables is selected:</p>
-<ul>
-<li><strong>Sunshine duration</strong> is predicted using cloud cover measurements and temperature, since clear skies (low cloud cover) are associated with longer sunshine duration and higher temperatures.</li>
-<li><strong>Evaporation</strong> is predicted using wind speed, temperature, humidity, sunshine duration, and location, reflecting the physical drivers of evaporative demand in the atmosphere.</li>
-<li><strong>Cloud cover</strong> measurements are predicted using humidity and pressure, which are strongly linked to atmospheric stability and cloud formation.</li>
-</ul>
-<p>This targeted approach ensures that imputation respects physical meteorological principles rather than treating all variables equally.</p>
+<section id="stage-3-multivariate-random-forest-imputation" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="stage-3-multivariate-random-forest-imputation"><span class="header-section-number">2.3.3</span> Stage 3: Multivariate Random Forest Imputation</h3>
+<p>The remaining gaps, concentrated in <code>sunshine</code>, <code>evaporation</code>, and cloud cover, cannot be addressed by temporal interpolation because these variables do not exhibit simple smooth trajectories. Their behaviour is conditional on specific atmospheric configurations and their relationships to other predictors are non-linear.</p>
+<p>A two-pass approach is used. The first pass applies <code>missRanger</code>, iterative Random Forest imputation with Predictive Mean Matching across the dataset as a whole. PMM ensures that imputed values are drawn from the observed distribution of each variable rather than extrapolated from the regression surface, which preserves the marginal distributions and prevents the variance shrinkage associated with direct regression imputation.</p>
+<p>The second pass applies targeted <code>mice</code> imputation using Random Forest as the imputation method, with scientifically motivated predictor sets for each variable. Cloud cover at 9 AM and 3 PM are predicted from humidity and pressure, which are the direct physical precursors of atmospheric stability and cloud formation. Sunshine duration is predicted from cloud cover and temperature, reflecting the inverse relationship between overcast conditions and insolation. Evaporation is predicted from wind speed, temperature, humidity, sunshine, and location, corresponding to the Penman-Monteith physical drivers of evaporative demand.</p>
+<p>Using targeted predictors rather than allowing the algorithm to use all available variables serves two purposes: it reduces the risk of imputing on spurious correlations present in the training data but absent from the physical system, and it makes the imputation procedure interpretable and auditable.</p>
 </section>
-<section id="ghost-sensor-detection-and-sanitization" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="ghost-sensor-detection-and-sanitization"><span class="header-section-number">2.3.4</span> Ghost Sensor Detection and Sanitization</h3>
-<p>Some weather stations experience prolonged equipment failures where sensors cease recording entirely. These “ghost sensors” are identified by detecting variables at specific locations where missingness exceeds 90%.</p>
-<p>Rather than allow Random Forest imputation to fill these extended gaps (which could create unrealistic data for entire seasons), observations from ghost sensors are reverted to missing status after the imputation process. This preserves data integrity by acknowledging that we genuinely do not know these values, while still allowing imputation to work effectively on shorter gaps from transient sensor failures.</p>
+<section id="ghost-sensor-detection" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="ghost-sensor-detection"><span class="header-section-number">2.3.4</span> Ghost Sensor Detection</h3>
+<p>Some stations in the network experience sustained equipment failures in which a specific sensor records no values for an entire season or longer. If these extended gaps are passed to the Random Forest imputer, the algorithm will produce synthetic values for the entire period using correlations with other variables from the same location. This is methodologically unsound: the correlations learned from the observed periods at that station may not hold during the failure period, and producing a long uninterrupted synthetic series could create artificial patterns that mislead downstream analysis.</p>
+<p>Ghost sensors are identified as any location-variable pair where the missingness rate exceeds 90%. After the full imputation pipeline runs, values for these pairs are reverted to missing. This conservative treatment accepts that some data is genuinely unrecoverable, while allowing the imputation to work effectively on the shorter gaps that constitute recoverable missingness.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>clean_and_impute_weather <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="co"># Configuration</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>  MAXGAP <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a>  GHOST_THRESHOLD <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>  PMM_K <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>  MAXITER <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a></span>
-<span id="cb4-8"><a href="#cb4-8"></a>  <span class="co"># Initial cleaning</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a>    <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb4-12"><a href="#cb4-12"></a>      <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
-<span id="cb4-13"><a href="#cb4-13"></a>      <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
-<span id="cb4-14"><a href="#cb4-14"></a>      <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb4-15"><a href="#cb4-15"></a>      <span class="at">day_of_year =</span> <span class="fu">yday</span>(date)</span>
-<span id="cb4-16"><a href="#cb4-16"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a>    <span class="fu">select</span>(<span class="sc">-</span>rain_tomorrow)</span>
-<span id="cb4-19"><a href="#cb4-19"></a></span>
-<span id="cb4-20"><a href="#cb4-20"></a>  <span class="co"># Create imputation flags</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a></span>
-<span id="cb4-22"><a href="#cb4-22"></a>  df_flagged <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb4-24"><a href="#cb4-24"></a>      <span class="at">sunshine_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sunshine), <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb4-25"><a href="#cb4-25"></a>      <span class="at">evap_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(evaporation), <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb4-26"><a href="#cb4-26"></a>      <span class="at">cloud3pm_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud3pm), <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb4-27"><a href="#cb4-27"></a>      <span class="at">cloud9am_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud9am), <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb4-28"><a href="#cb4-28"></a>    )</span>
-<span id="cb4-29"><a href="#cb4-29"></a></span>
-<span id="cb4-30"><a href="#cb4-30"></a>  <span class="co"># Temporal interpolation</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a></span>
-<span id="cb4-32"><a href="#cb4-32"></a>  interp_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-33"><a href="#cb4-33"></a>    <span class="st">"min_temp"</span>,</span>
-<span id="cb4-34"><a href="#cb4-34"></a>    <span class="st">"max_temp"</span>,</span>
-<span id="cb4-35"><a href="#cb4-35"></a>    <span class="st">"temp9am"</span>,</span>
-<span id="cb4-36"><a href="#cb4-36"></a>    <span class="st">"temp3pm"</span>,</span>
-<span id="cb4-37"><a href="#cb4-37"></a>    <span class="st">"pressure9am"</span>,</span>
-<span id="cb4-38"><a href="#cb4-38"></a>    <span class="st">"pressure3pm"</span>,</span>
-<span id="cb4-39"><a href="#cb4-39"></a>    <span class="st">"humidity9am"</span>,</span>
-<span id="cb4-40"><a href="#cb4-40"></a>    <span class="st">"humidity3pm"</span></span>
-<span id="cb4-41"><a href="#cb4-41"></a>  )</span>
-<span id="cb4-42"><a href="#cb4-42"></a></span>
-<span id="cb4-43"><a href="#cb4-43"></a>  df_interp <span class="ot">&lt;-</span> df_flagged <span class="sc">%&gt;%</span></span>
-<span id="cb4-44"><a href="#cb4-44"></a>    <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
-<span id="cb4-45"><a href="#cb4-45"></a>    <span class="fu">arrange</span>(date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-46"><a href="#cb4-46"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
-<span id="cb4-47"><a href="#cb4-47"></a>      <span class="fu">all_of</span>(interp_vars),</span>
-<span id="cb4-48"><a href="#cb4-48"></a>      <span class="sc">~</span> <span class="fu">na.approx</span>(., <span class="at">maxgap =</span> MAXGAP, <span class="at">na.rm =</span> <span class="cn">FALSE</span>, <span class="at">rule =</span> <span class="dv">2</span>)</span>
-<span id="cb4-49"><a href="#cb4-49"></a>    )) <span class="sc">%&gt;%</span></span>
-<span id="cb4-50"><a href="#cb4-50"></a>    <span class="fu">ungroup</span>()</span>
-<span id="cb4-51"><a href="#cb4-51"></a></span>
-<span id="cb4-52"><a href="#cb4-52"></a>  <span class="co"># Identify ghost sensors</span></span>
-<span id="cb4-53"><a href="#cb4-53"></a></span>
-<span id="cb4-54"><a href="#cb4-54"></a>  ghost_prone_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"cloud9am"</span>)</span>
-<span id="cb4-55"><a href="#cb4-55"></a></span>
-<span id="cb4-56"><a href="#cb4-56"></a>  ghost_pairs <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
-<span id="cb4-57"><a href="#cb4-57"></a>    <span class="fu">select</span>(location, <span class="fu">all_of</span>(ghost_prone_vars)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-58"><a href="#cb4-58"></a>    <span class="fu">pivot_longer</span>(</span>
-<span id="cb4-59"><a href="#cb4-59"></a>      <span class="at">cols =</span> <span class="fu">all_of</span>(ghost_prone_vars),</span>
-<span id="cb4-60"><a href="#cb4-60"></a>      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
-<span id="cb4-61"><a href="#cb4-61"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>  MAXGAP <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  GHOST_THRESHOLD <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>  PMM_K <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>  MAXITER <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-10"><a href="#cb4-10"></a>      <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb4-11"><a href="#cb4-11"></a>      <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb4-12"><a href="#cb4-12"></a>      <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb4-13"><a href="#cb4-13"></a>      <span class="at">day_of_year =</span> <span class="fu">yday</span>(date)</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>    <span class="fu">select</span>(<span class="sc">-</span>rain_tomorrow)</span>
+<span id="cb4-17"><a href="#cb4-17"></a></span>
+<span id="cb4-18"><a href="#cb4-18"></a>  <span class="co"># Missingness flags</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a>  df_flagged <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-21"><a href="#cb4-21"></a>      <span class="at">sunshine_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sunshine), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb4-22"><a href="#cb4-22"></a>      <span class="at">evap_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(evaporation), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb4-23"><a href="#cb4-23"></a>      <span class="at">cloud3pm_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud3pm), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb4-24"><a href="#cb4-24"></a>      <span class="at">cloud9am_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud9am), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    )</span>
+<span id="cb4-26"><a href="#cb4-26"></a></span>
+<span id="cb4-27"><a href="#cb4-27"></a>  <span class="co"># Temporal interpolation for smooth continuous variables</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a>  interp_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-29"><a href="#cb4-29"></a>    <span class="st">"min_temp"</span>,</span>
+<span id="cb4-30"><a href="#cb4-30"></a>    <span class="st">"max_temp"</span>,</span>
+<span id="cb4-31"><a href="#cb4-31"></a>    <span class="st">"temp9am"</span>,</span>
+<span id="cb4-32"><a href="#cb4-32"></a>    <span class="st">"temp3pm"</span>,</span>
+<span id="cb4-33"><a href="#cb4-33"></a>    <span class="st">"pressure9am"</span>,</span>
+<span id="cb4-34"><a href="#cb4-34"></a>    <span class="st">"pressure3pm"</span>,</span>
+<span id="cb4-35"><a href="#cb4-35"></a>    <span class="st">"humidity9am"</span>,</span>
+<span id="cb4-36"><a href="#cb4-36"></a>    <span class="st">"humidity3pm"</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a>  )</span>
+<span id="cb4-38"><a href="#cb4-38"></a></span>
+<span id="cb4-39"><a href="#cb4-39"></a>  df_interp <span class="ot">&lt;-</span> df_flagged <span class="sc">%&gt;%</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a>    <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a>    <span class="fu">arrange</span>(date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb4-43"><a href="#cb4-43"></a>      <span class="fu">all_of</span>(interp_vars),</span>
+<span id="cb4-44"><a href="#cb4-44"></a>      <span class="sc">~</span> <span class="fu">na.approx</span>(., <span class="at">maxgap =</span> MAXGAP, <span class="at">na.rm =</span> <span class="cn">FALSE</span>, <span class="at">rule =</span> <span class="dv">2</span>)</span>
+<span id="cb4-45"><a href="#cb4-45"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb4-47"><a href="#cb4-47"></a></span>
+<span id="cb4-48"><a href="#cb4-48"></a>  <span class="co"># Ghost sensor identification</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a>  ghost_prone_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"cloud9am"</span>)</span>
+<span id="cb4-50"><a href="#cb4-50"></a></span>
+<span id="cb4-51"><a href="#cb4-51"></a>  ghost_pairs <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb4-52"><a href="#cb4-52"></a>    <span class="fu">select</span>(location, <span class="fu">all_of</span>(ghost_prone_vars)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb4-54"><a href="#cb4-54"></a>      <span class="at">cols =</span> <span class="fu">all_of</span>(ghost_prone_vars),</span>
+<span id="cb4-55"><a href="#cb4-55"></a>      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb4-56"><a href="#cb4-56"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a>    <span class="fu">group_by</span>(location, variable) <span class="sc">%&gt;%</span></span>
+<span id="cb4-59"><a href="#cb4-59"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb4-60"><a href="#cb4-60"></a>      <span class="at">miss_rate =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(value)) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb4-61"><a href="#cb4-61"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
 <span id="cb4-62"><a href="#cb4-62"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-63"><a href="#cb4-63"></a>    <span class="fu">group_by</span>(location, variable) <span class="sc">%&gt;%</span></span>
-<span id="cb4-64"><a href="#cb4-64"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb4-65"><a href="#cb4-65"></a>      <span class="at">miss_rate =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(value)) <span class="sc">*</span> <span class="dv">100</span>,</span>
-<span id="cb4-66"><a href="#cb4-66"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb4-67"><a href="#cb4-67"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-68"><a href="#cb4-68"></a>    <span class="fu">filter</span>(miss_rate <span class="sc">&gt;</span> (GHOST_THRESHOLD <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-69"><a href="#cb4-69"></a>    <span class="fu">select</span>(location, variable)</span>
-<span id="cb4-70"><a href="#cb4-70"></a></span>
-<span id="cb4-71"><a href="#cb4-71"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Found %d ghost sensor instances</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
-<span id="cb4-72"><a href="#cb4-72"></a></span>
-<span id="cb4-73"><a href="#cb4-73"></a>  <span class="co"># missRanger imputation (first pass for general variables)</span></span>
-<span id="cb4-74"><a href="#cb4-74"></a></span>
-<span id="cb4-75"><a href="#cb4-75"></a>  imputation_data <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
-<span id="cb4-76"><a href="#cb4-76"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb4-77"><a href="#cb4-77"></a>      <span class="at">sin_month =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
-<span id="cb4-78"><a href="#cb4-78"></a>      <span class="at">cos_month =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
-<span id="cb4-79"><a href="#cb4-79"></a>      <span class="at">sin_doy =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>),</span>
-<span id="cb4-80"><a href="#cb4-80"></a>      <span class="at">cos_doy =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>)</span>
-<span id="cb4-81"><a href="#cb4-81"></a>    )</span>
-<span id="cb4-82"><a href="#cb4-82"></a></span>
-<span id="cb4-83"><a href="#cb4-83"></a>  metadata_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(date)</span>
-<span id="cb4-84"><a href="#cb4-84"></a>  imputation_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>date)</span>
-<span id="cb4-85"><a href="#cb4-85"></a></span>
-<span id="cb4-86"><a href="#cb4-86"></a>  imputed_data <span class="ot">&lt;-</span> <span class="fu">missRanger</span>(</span>
-<span id="cb4-87"><a href="#cb4-87"></a>    <span class="at">data =</span> imputation_cols,</span>
-<span id="cb4-88"><a href="#cb4-88"></a>    <span class="at">pmm.k =</span> PMM_K,</span>
-<span id="cb4-89"><a href="#cb4-89"></a>    <span class="at">num.trees =</span> <span class="dv">100</span>,</span>
-<span id="cb4-90"><a href="#cb4-90"></a>    <span class="at">sample.fraction =</span> <span class="fl">0.3</span>,</span>
-<span id="cb4-91"><a href="#cb4-91"></a>    <span class="at">min.node.size =</span> <span class="dv">10</span>,</span>
-<span id="cb4-92"><a href="#cb4-92"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
-<span id="cb4-93"><a href="#cb4-93"></a>    <span class="at">verbose =</span> <span class="dv">1</span>,</span>
-<span id="cb4-94"><a href="#cb4-94"></a>    <span class="at">maxiter =</span> MAXITER</span>
-<span id="cb4-95"><a href="#cb4-95"></a>  )</span>
-<span id="cb4-96"><a href="#cb4-96"></a></span>
-<span id="cb4-97"><a href="#cb4-97"></a>  df_imputed <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(metadata_cols, imputed_data) <span class="sc">%&gt;%</span></span>
-<span id="cb4-98"><a href="#cb4-98"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"sin_"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"cos_"</span>))</span>
-<span id="cb4-99"><a href="#cb4-99"></a></span>
-<span id="cb4-100"><a href="#cb4-100"></a>  <span class="co"># Sanitize ghost sensors</span></span>
-<span id="cb4-101"><a href="#cb4-101"></a></span>
-<span id="cb4-102"><a href="#cb4-102"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(ghost_pairs) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb4-103"><a href="#cb4-103"></a>    ghost_map <span class="ot">&lt;-</span> <span class="fu">split</span>(ghost_pairs<span class="sc">$</span>location, ghost_pairs<span class="sc">$</span>variable)</span>
+<span id="cb4-63"><a href="#cb4-63"></a>    <span class="fu">filter</span>(miss_rate <span class="sc">&gt;</span> (GHOST_THRESHOLD <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a>    <span class="fu">select</span>(location, variable)</span>
+<span id="cb4-65"><a href="#cb4-65"></a></span>
+<span id="cb4-66"><a href="#cb4-66"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Found %d ghost sensor instances</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb4-67"><a href="#cb4-67"></a></span>
+<span id="cb4-68"><a href="#cb4-68"></a>  <span class="co"># missRanger first pass</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a>  imputation_data <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb4-70"><a href="#cb4-70"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-71"><a href="#cb4-71"></a>      <span class="at">sin_month =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb4-72"><a href="#cb4-72"></a>      <span class="at">cos_month =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb4-73"><a href="#cb4-73"></a>      <span class="at">sin_doy =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>),</span>
+<span id="cb4-74"><a href="#cb4-74"></a>      <span class="at">cos_doy =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>)</span>
+<span id="cb4-75"><a href="#cb4-75"></a>    )</span>
+<span id="cb4-76"><a href="#cb4-76"></a></span>
+<span id="cb4-77"><a href="#cb4-77"></a>  metadata_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(date)</span>
+<span id="cb4-78"><a href="#cb4-78"></a>  imputation_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>date)</span>
+<span id="cb4-79"><a href="#cb4-79"></a></span>
+<span id="cb4-80"><a href="#cb4-80"></a>  imputed_data <span class="ot">&lt;-</span> <span class="fu">missRanger</span>(</span>
+<span id="cb4-81"><a href="#cb4-81"></a>    <span class="at">data =</span> imputation_cols,</span>
+<span id="cb4-82"><a href="#cb4-82"></a>    <span class="at">pmm.k =</span> PMM_K,</span>
+<span id="cb4-83"><a href="#cb4-83"></a>    <span class="at">num.trees =</span> <span class="dv">100</span>,</span>
+<span id="cb4-84"><a href="#cb4-84"></a>    <span class="at">sample.fraction =</span> <span class="fl">0.3</span>,</span>
+<span id="cb4-85"><a href="#cb4-85"></a>    <span class="at">min.node.size =</span> <span class="dv">10</span>,</span>
+<span id="cb4-86"><a href="#cb4-86"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb4-87"><a href="#cb4-87"></a>    <span class="at">verbose =</span> <span class="dv">1</span>,</span>
+<span id="cb4-88"><a href="#cb4-88"></a>    <span class="at">maxiter =</span> MAXITER</span>
+<span id="cb4-89"><a href="#cb4-89"></a>  )</span>
+<span id="cb4-90"><a href="#cb4-90"></a></span>
+<span id="cb4-91"><a href="#cb4-91"></a>  df_imputed <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(metadata_cols, imputed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb4-92"><a href="#cb4-92"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"sin_"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"cos_"</span>))</span>
+<span id="cb4-93"><a href="#cb4-93"></a></span>
+<span id="cb4-94"><a href="#cb4-94"></a>  <span class="co"># Ghost sensor sanitisation</span></span>
+<span id="cb4-95"><a href="#cb4-95"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(ghost_pairs) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb4-96"><a href="#cb4-96"></a>    ghost_map <span class="ot">&lt;-</span> <span class="fu">split</span>(ghost_pairs<span class="sc">$</span>location, ghost_pairs<span class="sc">$</span>variable)</span>
+<span id="cb4-97"><a href="#cb4-97"></a>    df_imputed <span class="ot">&lt;-</span> df_imputed <span class="sc">%&gt;%</span></span>
+<span id="cb4-98"><a href="#cb4-98"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb4-99"><a href="#cb4-99"></a>        <span class="fu">names</span>(ghost_map),</span>
+<span id="cb4-100"><a href="#cb4-100"></a>        <span class="sc">~</span> <span class="fu">replace</span>(., location <span class="sc">%in%</span> ghost_map[[<span class="fu">cur_column</span>()]], <span class="cn">NA</span>)</span>
+<span id="cb4-101"><a href="#cb4-101"></a>      ))</span>
+<span id="cb4-102"><a href="#cb4-102"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Reverted %d instances to NA</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb4-103"><a href="#cb4-103"></a>  }</span>
 <span id="cb4-104"><a href="#cb4-104"></a></span>
-<span id="cb4-105"><a href="#cb4-105"></a>    df_imputed <span class="ot">&lt;-</span> df_imputed <span class="sc">%&gt;%</span></span>
-<span id="cb4-106"><a href="#cb4-106"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
-<span id="cb4-107"><a href="#cb4-107"></a>        <span class="fu">names</span>(ghost_map),</span>
-<span id="cb4-108"><a href="#cb4-108"></a>        <span class="sc">~</span> <span class="fu">replace</span>(., location <span class="sc">%in%</span> ghost_map[[<span class="fu">cur_column</span>()]], <span class="cn">NA</span>)</span>
-<span id="cb4-109"><a href="#cb4-109"></a>      ))</span>
+<span id="cb4-105"><a href="#cb4-105"></a>  <span class="co"># Targeted MICE with Random Forest</span></span>
+<span id="cb4-106"><a href="#cb4-106"></a>  init <span class="ot">&lt;-</span> <span class="fu">mice</span>(df_imputed, <span class="at">maxit =</span> <span class="dv">0</span>)</span>
+<span id="cb4-107"><a href="#cb4-107"></a>  pred <span class="ot">&lt;-</span> init<span class="sc">$</span>predictorMatrix</span>
+<span id="cb4-108"><a href="#cb4-108"></a>  meth <span class="ot">&lt;-</span> init<span class="sc">$</span>method</span>
+<span id="cb4-109"><a href="#cb4-109"></a>  pred[,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb4-110"><a href="#cb4-110"></a></span>
-<span id="cb4-111"><a href="#cb4-111"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Reverted %d instances to NA</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
-<span id="cb4-112"><a href="#cb4-112"></a>  }</span>
-<span id="cb4-113"><a href="#cb4-113"></a></span>
-<span id="cb4-114"><a href="#cb4-114"></a>  <span class="co"># Targeted MICE with Random Forest for high-missingness variables</span></span>
+<span id="cb4-111"><a href="#cb4-111"></a>  meth[<span class="st">"sunshine"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-112"><a href="#cb4-112"></a>  meth[<span class="st">"evaporation"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-113"><a href="#cb4-113"></a>  meth[<span class="st">"cloud9am"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb4-114"><a href="#cb4-114"></a>  meth[<span class="st">"cloud3pm"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
 <span id="cb4-115"><a href="#cb4-115"></a></span>
-<span id="cb4-116"><a href="#cb4-116"></a>  init <span class="ot">&lt;-</span> <span class="fu">mice</span>(df_imputed, <span class="at">maxit =</span> <span class="dv">0</span>)</span>
-<span id="cb4-117"><a href="#cb4-117"></a>  pred <span class="ot">&lt;-</span> init<span class="sc">$</span>predictorMatrix</span>
-<span id="cb4-118"><a href="#cb4-118"></a>  meth <span class="ot">&lt;-</span> init<span class="sc">$</span>method</span>
-<span id="cb4-119"><a href="#cb4-119"></a>  pred[,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb4-120"><a href="#cb4-120"></a></span>
-<span id="cb4-121"><a href="#cb4-121"></a>  <span class="co"># Set method to random forest for target variables</span></span>
-<span id="cb4-122"><a href="#cb4-122"></a>  meth[<span class="st">"sunshine"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb4-123"><a href="#cb4-123"></a>  meth[<span class="st">"evaporation"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb4-124"><a href="#cb4-124"></a>  meth[<span class="st">"cloud9am"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb4-125"><a href="#cb4-125"></a>  meth[<span class="st">"cloud3pm"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb4-126"><a href="#cb4-126"></a></span>
-<span id="cb4-127"><a href="#cb4-127"></a>  <span class="co"># Define predictors for each variable</span></span>
-<span id="cb4-128"><a href="#cb4-128"></a>  sun_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
-<span id="cb4-129"><a href="#cb4-129"></a>    <span class="fu">colnames</span>(df_imputed),</span>
-<span id="cb4-130"><a href="#cb4-130"></a>    <span class="fu">c</span>(<span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"max_temp"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
-<span id="cb4-131"><a href="#cb4-131"></a>  )</span>
-<span id="cb4-132"><a href="#cb4-132"></a></span>
-<span id="cb4-133"><a href="#cb4-133"></a>  evap_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
-<span id="cb4-134"><a href="#cb4-134"></a>    <span class="fu">colnames</span>(df_imputed),</span>
-<span id="cb4-135"><a href="#cb4-135"></a>    <span class="fu">c</span>(</span>
-<span id="cb4-136"><a href="#cb4-136"></a>      <span class="st">"wind_gust_speed"</span>,</span>
-<span id="cb4-137"><a href="#cb4-137"></a>      <span class="st">"max_temp"</span>,</span>
-<span id="cb4-138"><a href="#cb4-138"></a>      <span class="st">"humidity3pm"</span>,</span>
-<span id="cb4-139"><a href="#cb4-139"></a>      <span class="st">"sunshine"</span>,</span>
-<span id="cb4-140"><a href="#cb4-140"></a>      <span class="st">"location"</span>,</span>
-<span id="cb4-141"><a href="#cb4-141"></a>      <span class="st">"month"</span></span>
-<span id="cb4-142"><a href="#cb4-142"></a>    )</span>
-<span id="cb4-143"><a href="#cb4-143"></a>  )</span>
-<span id="cb4-144"><a href="#cb4-144"></a></span>
-<span id="cb4-145"><a href="#cb4-145"></a>  cloud_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
-<span id="cb4-146"><a href="#cb4-146"></a>    <span class="fu">colnames</span>(df_imputed),</span>
-<span id="cb4-147"><a href="#cb4-147"></a>    <span class="fu">c</span>(<span class="st">"humidity9am"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"pressure9am"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
-<span id="cb4-148"><a href="#cb4-148"></a>  )</span>
-<span id="cb4-149"><a href="#cb4-149"></a></span>
-<span id="cb4-150"><a href="#cb4-150"></a>  <span class="cf">if</span> (<span class="st">"sunshine"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb4-151"><a href="#cb4-151"></a>    pred[<span class="st">"sunshine"</span>, sun_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb4-152"><a href="#cb4-152"></a>  }</span>
-<span id="cb4-153"><a href="#cb4-153"></a>  <span class="cf">if</span> (<span class="st">"evaporation"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb4-154"><a href="#cb4-154"></a>    pred[<span class="st">"evaporation"</span>, evap_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb4-155"><a href="#cb4-155"></a>  }</span>
-<span id="cb4-156"><a href="#cb4-156"></a>  <span class="cf">if</span> (<span class="st">"cloud9am"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb4-157"><a href="#cb4-157"></a>    pred[<span class="st">"cloud9am"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb4-158"><a href="#cb4-158"></a>  }</span>
-<span id="cb4-159"><a href="#cb4-159"></a>  <span class="cf">if</span> (<span class="st">"cloud3pm"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb4-160"><a href="#cb4-160"></a>    pred[<span class="st">"cloud3pm"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb4-161"><a href="#cb4-161"></a>  }</span>
-<span id="cb4-162"><a href="#cb4-162"></a></span>
-<span id="cb4-163"><a href="#cb4-163"></a>  ignore_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"_flagged$|^date$"</span>, <span class="fu">colnames</span>(pred), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-164"><a href="#cb4-164"></a>  pred[, ignore_cols] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb4-165"><a href="#cb4-165"></a></span>
-<span id="cb4-166"><a href="#cb4-166"></a>  imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
-<span id="cb4-167"><a href="#cb4-167"></a>    df_imputed,</span>
-<span id="cb4-168"><a href="#cb4-168"></a>    <span class="at">method =</span> meth,</span>
-<span id="cb4-169"><a href="#cb4-169"></a>    <span class="at">predictorMatrix =</span> pred,</span>
-<span id="cb4-170"><a href="#cb4-170"></a>    <span class="at">m =</span> <span class="dv">1</span>,</span>
-<span id="cb4-171"><a href="#cb4-171"></a>    <span class="at">maxit =</span> <span class="dv">5</span>,</span>
-<span id="cb4-172"><a href="#cb4-172"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
-<span id="cb4-173"><a href="#cb4-173"></a>    <span class="at">printFlag =</span> <span class="cn">FALSE</span></span>
-<span id="cb4-174"><a href="#cb4-174"></a>  )</span>
-<span id="cb4-175"><a href="#cb4-175"></a></span>
-<span id="cb4-176"><a href="#cb4-176"></a>  df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp)</span>
-<span id="cb4-177"><a href="#cb4-177"></a></span>
-<span id="cb4-178"><a href="#cb4-178"></a>  <span class="fu">return</span>(df_final)</span>
-<span id="cb4-179"><a href="#cb4-179"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-116"><a href="#cb4-116"></a>  sun_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb4-117"><a href="#cb4-117"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb4-118"><a href="#cb4-118"></a>    <span class="fu">c</span>(<span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"max_temp"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb4-119"><a href="#cb4-119"></a>  )</span>
+<span id="cb4-120"><a href="#cb4-120"></a>  evap_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb4-121"><a href="#cb4-121"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb4-122"><a href="#cb4-122"></a>    <span class="fu">c</span>(</span>
+<span id="cb4-123"><a href="#cb4-123"></a>      <span class="st">"wind_gust_speed"</span>,</span>
+<span id="cb4-124"><a href="#cb4-124"></a>      <span class="st">"max_temp"</span>,</span>
+<span id="cb4-125"><a href="#cb4-125"></a>      <span class="st">"humidity3pm"</span>,</span>
+<span id="cb4-126"><a href="#cb4-126"></a>      <span class="st">"sunshine"</span>,</span>
+<span id="cb4-127"><a href="#cb4-127"></a>      <span class="st">"location"</span>,</span>
+<span id="cb4-128"><a href="#cb4-128"></a>      <span class="st">"month"</span></span>
+<span id="cb4-129"><a href="#cb4-129"></a>    )</span>
+<span id="cb4-130"><a href="#cb4-130"></a>  )</span>
+<span id="cb4-131"><a href="#cb4-131"></a>  cloud_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb4-132"><a href="#cb4-132"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb4-133"><a href="#cb4-133"></a>    <span class="fu">c</span>(<span class="st">"humidity9am"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"pressure9am"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb4-134"><a href="#cb4-134"></a>  )</span>
+<span id="cb4-135"><a href="#cb4-135"></a></span>
+<span id="cb4-136"><a href="#cb4-136"></a>  <span class="cf">if</span> (<span class="st">"sunshine"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-137"><a href="#cb4-137"></a>    pred[<span class="st">"sunshine"</span>, sun_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-138"><a href="#cb4-138"></a>  }</span>
+<span id="cb4-139"><a href="#cb4-139"></a>  <span class="cf">if</span> (<span class="st">"evaporation"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-140"><a href="#cb4-140"></a>    pred[<span class="st">"evaporation"</span>, evap_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-141"><a href="#cb4-141"></a>  }</span>
+<span id="cb4-142"><a href="#cb4-142"></a>  <span class="cf">if</span> (<span class="st">"cloud9am"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-143"><a href="#cb4-143"></a>    pred[<span class="st">"cloud9am"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-144"><a href="#cb4-144"></a>  }</span>
+<span id="cb4-145"><a href="#cb4-145"></a>  <span class="cf">if</span> (<span class="st">"cloud3pm"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb4-146"><a href="#cb4-146"></a>    pred[<span class="st">"cloud3pm"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-147"><a href="#cb4-147"></a>  }</span>
+<span id="cb4-148"><a href="#cb4-148"></a></span>
+<span id="cb4-149"><a href="#cb4-149"></a>  ignore_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"_flagged$|^date$"</span>, <span class="fu">colnames</span>(pred), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-150"><a href="#cb4-150"></a>  pred[, ignore_cols] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-151"><a href="#cb4-151"></a></span>
+<span id="cb4-152"><a href="#cb4-152"></a>  imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
+<span id="cb4-153"><a href="#cb4-153"></a>    df_imputed,</span>
+<span id="cb4-154"><a href="#cb4-154"></a>    <span class="at">method =</span> meth,</span>
+<span id="cb4-155"><a href="#cb4-155"></a>    <span class="at">predictorMatrix =</span> pred,</span>
+<span id="cb4-156"><a href="#cb4-156"></a>    <span class="at">m =</span> <span class="dv">1</span>,</span>
+<span id="cb4-157"><a href="#cb4-157"></a>    <span class="at">maxit =</span> <span class="dv">5</span>,</span>
+<span id="cb4-158"><a href="#cb4-158"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb4-159"><a href="#cb4-159"></a>    <span class="at">printFlag =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-160"><a href="#cb4-160"></a>  )</span>
+<span id="cb4-161"><a href="#cb4-161"></a></span>
+<span id="cb4-162"><a href="#cb4-162"></a>  df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp)</span>
+<span id="cb4-163"><a href="#cb4-163"></a>  <span class="fu">return</span>(df_final)</span>
+<span id="cb4-164"><a href="#cb4-164"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -1217,19 +1161,16 @@ window.Quarto = {
 <span id="cb5-2"><a href="#cb5-2"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_final.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<hr>
 </section>
 </section>
-<section id="outcome-complete-and-physically-realistic-data" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="outcome-complete-and-physically-realistic-data"><span class="header-section-number">2.4</span> Outcome: Complete and Physically Realistic Data</h2>
-<p>The three-stage imputation strategy produces a complete dataset where:</p>
-<ul>
-<li><strong>No information is discarded:</strong> Observations with some missing values are retained and improved rather than deleted.</li>
-<li><strong>Temporal structure is preserved:</strong> Weather variables maintain their inherent autocorrelation and smooth trajectories.</li>
-<li><strong>Physical relationships are respected:</strong> Imputed values reflect the conditional dependencies between meteorological variables.</li>
-<li><strong>Uncertainty is acknowledged:</strong> Flagged imputed values allow the model to potentially learn whether missingness itself is informative.</li>
-<li><strong>Extreme gaps are handled conservatively:</strong> Extended sensor failures are not artificially filled; genuine missing data remains missing.</li>
-</ul>
-<p>The resulting dataset is complete, statistically sound, and ready for exploratory data analysis and advanced modeling.</p>
+<section id="post-imputation-dataset-properties" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="post-imputation-dataset-properties"><span class="header-section-number">2.4</span> Post-Imputation Dataset Properties</h2>
+<p>The three-stage pipeline produces a dataset with the following properties, which collectively justify the methodological investment relative to simpler alternatives.</p>
+<p><strong>Retention.</strong> No observations are discarded on the basis of partial missingness. The imputation flags preserve the distinction between observed and imputed values, allowing downstream models to treat the two categories differently if the flag coefficients prove significant.</p>
+<p><strong>Temporal coherence.</strong> The interpolated variables maintain their within-location autocorrelation structure. The five-day cap prevents the interpolation from extending across genuine data voids.</p>
+<p><strong>Distributional fidelity.</strong> Predictive Mean Matching in Stage 3 ensures that imputed values for <code>sunshine</code>, <code>evaporation</code>, and cloud cover are drawn from the observed empirical distribution of each variable rather than from the regression surface. The marginal distributions and cross-variable correlations of these features are preserved, which is critical for the interaction terms and derived meteorological indices constructed in the feature engineering chapter.</p>
+<p><strong>Conservative treatment of extended failures.</strong> Observations from ghost sensors remain missing rather than being synthetically reconstructed. This is a deliberate acceptance of reduced sample size in exchange for data integrity: a complete but fabricated series is more damaging to downstream inference than an honest gap.</p>
 
 
 <!-- -->
@@ -1719,398 +1660,352 @@ window.Quarto = {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu"># Data Cleaning and Preprocessing {#sec-data}</span></span>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu"># Data Preparation {#sec-data}</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">## Computational Environment and Data Ingestion</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>---</span>
 <span id="cb6-4"><a href="#cb6-4"></a></span>
-<span id="cb6-5"><a href="#cb6-5"></a>This analysis leverages a comprehensive suite of R libraries specifically selected to address the challenges of working with meteorological data. The toolkit is assembled to handle data wrangling, advanced statistical modeling, imputation, and publication-quality visualization.</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="at">&gt; **Chapter Context.** Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, the design of a three-stage imputation pipeline for the substantial missingness in key meteorological variables, and the detection and conservative handling of extended sensor failures. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</span></span>
 <span id="cb6-6"><a href="#cb6-6"></a></span>
-<span id="cb6-7"><a href="#cb6-7"></a>The analytical framework includes:</span>
+<span id="cb6-7"><a href="#cb6-7"></a>---</span>
 <span id="cb6-8"><a href="#cb6-8"></a></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="ss">* </span>**Data Wrangling &amp; Cleaning:** Efficient manipulation and standardization of raw weather data using established best practices for variable naming and data structure.</span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="ss">* </span>**Advanced Statistical Modeling:** Tools designed specifically for zero-inflated models and Generalized Additive Models (GAMs), paired with rigorous diagnostic frameworks for model validation and residual analysis.</span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="ss">* </span>**Imputation &amp; Machine Learning:** Sophisticated algorithms for Random Forest-based imputation, enabling recovery of missing values while preserving distributional properties.</span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="ss">* </span>**Visualization:** Multi-panel visualization capabilities for generating publication-quality figures that communicate complex meteorological patterns.</span>
-<span id="cb6-13"><a href="#cb6-13"></a></span>
-<span id="cb6-14"><a href="#cb6-14"></a>The primary dataset is ingested and prepared for the analysis pipeline.</span>
-<span id="cb6-15"><a href="#cb6-15"></a></span>
-<span id="cb6-18"><a href="#cb6-18"></a><span class="in">```{r}</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#| label: setup-libraries-data</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#| echo: true</span></span>
-<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#| message: false</span></span>
-<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#| warning: false</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#| results: 'hide'</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a></span>
-<span id="cb6-25"><a href="#cb6-25"></a><span class="co"># Initialize environment and load dependencies</span></span>
-<span id="cb6-26"><a href="#cb6-26"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
-<span id="cb6-27"><a href="#cb6-27"></a>  tidyverse,</span>
-<span id="cb6-28"><a href="#cb6-28"></a>  tidymodels,</span>
-<span id="cb6-29"><a href="#cb6-29"></a>  kableExtra,</span>
-<span id="cb6-30"><a href="#cb6-30"></a>  patchwork,</span>
-<span id="cb6-31"><a href="#cb6-31"></a>  skimr,</span>
-<span id="cb6-32"><a href="#cb6-32"></a>  gridExtra,</span>
-<span id="cb6-33"><a href="#cb6-33"></a>  gtsummary,</span>
-<span id="cb6-34"><a href="#cb6-34"></a>  janitor,</span>
-<span id="cb6-35"><a href="#cb6-35"></a>  corrplot,</span>
-<span id="cb6-36"><a href="#cb6-36"></a>  sjPlot,</span>
-<span id="cb6-37"><a href="#cb6-37"></a>  scales,</span>
-<span id="cb6-38"><a href="#cb6-38"></a>  GGally,</span>
-<span id="cb6-39"><a href="#cb6-39"></a>  car,</span>
-<span id="cb6-40"><a href="#cb6-40"></a>  forcats,</span>
-<span id="cb6-41"><a href="#cb6-41"></a>  performance,</span>
-<span id="cb6-42"><a href="#cb6-42"></a>  glmmTMB,</span>
-<span id="cb6-43"><a href="#cb6-43"></a>  splines,</span>
-<span id="cb6-44"><a href="#cb6-44"></a>  mgcv,</span>
-<span id="cb6-45"><a href="#cb6-45"></a>  DHARMa,</span>
-<span id="cb6-46"><a href="#cb6-46"></a>  zoo,</span>
-<span id="cb6-47"><a href="#cb6-47"></a>  ggpubr,</span>
-<span id="cb6-48"><a href="#cb6-48"></a>  ggridges,</span>
-<span id="cb6-49"><a href="#cb6-49"></a>  caret,</span>
-<span id="cb6-50"><a href="#cb6-50"></a>  rstatix,</span>
-<span id="cb6-51"><a href="#cb6-51"></a>  Metrics,</span>
-<span id="cb6-52"><a href="#cb6-52"></a>  mice,</span>
-<span id="cb6-53"><a href="#cb6-53"></a>  missRanger,</span>
-<span id="cb6-54"><a href="#cb6-54"></a>  ranger,</span>
-<span id="cb6-55"><a href="#cb6-55"></a>  cocor,</span>
-<span id="cb6-56"><a href="#cb6-56"></a>  splines,</span>
-<span id="cb6-57"><a href="#cb6-57"></a>  multcompView,</span>
-<span id="cb6-58"><a href="#cb6-58"></a>  lmtest,</span>
-<span id="cb6-59"><a href="#cb6-59"></a>  aod,</span>
-<span id="cb6-60"><a href="#cb6-60"></a>  pROC</span>
-<span id="cb6-61"><a href="#cb6-61"></a>)</span>
-<span id="cb6-62"><a href="#cb6-62"></a></span>
-<span id="cb6-63"><a href="#cb6-63"></a><span class="co"># Load the dataset</span></span>
-<span id="cb6-64"><a href="#cb6-64"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/weatherAUS.csv"</span>)</span>
-<span id="cb6-65"><a href="#cb6-65"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb6-66"><a href="#cb6-66"></a></span>
-<span id="cb6-67"><a href="#cb6-67"></a><span class="in">```</span></span>
-<span id="cb6-68"><a href="#cb6-68"></a></span>
-<span id="cb6-69"><a href="#cb6-69"></a><span class="fu">## Data Cleaning and Preprocessing</span></span>
-<span id="cb6-70"><a href="#cb6-70"></a></span>
-<span id="cb6-71"><a href="#cb6-71"></a>The raw dataset undergoes a three-step transformation into a standardized format suitable for advanced modeling.</span>
-<span id="cb6-72"><a href="#cb6-72"></a></span>
-<span id="cb6-73"><a href="#cb6-73"></a><span class="fu">### Syntactic Standardization</span></span>
-<span id="cb6-74"><a href="#cb6-74"></a></span>
-<span id="cb6-75"><a href="#cb6-75"></a>All column headers are converted to <span class="in">`snake_case`</span> notation, ensuring consistent variable naming conventions across the entire dataset. This foundational step eliminates ambiguity in variable references and facilitates reproducible analysis.</span>
-<span id="cb6-76"><a href="#cb6-76"></a></span>
-<span id="cb6-77"><a href="#cb6-77"></a><span class="fu">### Temporal Feature Extraction</span></span>
-<span id="cb6-78"><a href="#cb6-78"></a></span>
-<span id="cb6-79"><a href="#cb6-79"></a>The <span class="in">`date`</span> column is properly typed as a Date object. From this temporal reference, two critical categorical variables are engineered:</span>
-<span id="cb6-80"><a href="#cb6-80"></a></span>
-<span id="cb6-81"><a href="#cb6-81"></a><span class="ss">* </span>**Month:** Captures seasonal rainfall variations by organizing observations into twelve categories. This allows the model to detect systematic differences in precipitation patterns across Australia's seasons.</span>
-<span id="cb6-82"><a href="#cb6-82"></a><span class="ss">* </span>**Day of Week:** Represents the day of the week for each observation. While weather itself is not driven by calendar artifacts, this feature can capture artifacts in observation or reporting procedures.</span>
-<span id="cb6-83"><a href="#cb6-83"></a></span>
-<span id="cb6-84"><a href="#cb6-84"></a>These derived temporal features are essential for identifying systematic patterns in precipitation and accounting for any measurement bias correlated with day-of-week effects.</span>
-<span id="cb6-85"><a href="#cb6-85"></a></span>
-<span id="cb6-86"><a href="#cb6-86"></a><span class="fu">### Target Integrity</span></span>
-<span id="cb6-87"><a href="#cb6-87"></a></span>
-<span id="cb6-88"><a href="#cb6-88"></a>Observations where the target variable **rainfall** is missing are explicitly removed from the dataset. Since the primary objective is to model rainfall occurrence and intensity, records without ground truth rainfall measurements provide no supervised learning value. This filtering ensures that all subsequent analysis operates on a complete target variable.</span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="fu">## Computational Environment</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="in">```{r}</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#| label: setup-libraries-data</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#| message: false</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#| results: 'hide'</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-20"><a href="#cb6-20"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(</span>
+<span id="cb6-21"><a href="#cb6-21"></a>  tidyverse,</span>
+<span id="cb6-22"><a href="#cb6-22"></a>  tidymodels,</span>
+<span id="cb6-23"><a href="#cb6-23"></a>  kableExtra,</span>
+<span id="cb6-24"><a href="#cb6-24"></a>  patchwork,</span>
+<span id="cb6-25"><a href="#cb6-25"></a>  skimr,</span>
+<span id="cb6-26"><a href="#cb6-26"></a>  gridExtra,</span>
+<span id="cb6-27"><a href="#cb6-27"></a>  gtsummary,</span>
+<span id="cb6-28"><a href="#cb6-28"></a>  janitor,</span>
+<span id="cb6-29"><a href="#cb6-29"></a>  corrplot,</span>
+<span id="cb6-30"><a href="#cb6-30"></a>  sjPlot,</span>
+<span id="cb6-31"><a href="#cb6-31"></a>  scales,</span>
+<span id="cb6-32"><a href="#cb6-32"></a>  GGally,</span>
+<span id="cb6-33"><a href="#cb6-33"></a>  car,</span>
+<span id="cb6-34"><a href="#cb6-34"></a>  forcats,</span>
+<span id="cb6-35"><a href="#cb6-35"></a>  performance,</span>
+<span id="cb6-36"><a href="#cb6-36"></a>  glmmTMB,</span>
+<span id="cb6-37"><a href="#cb6-37"></a>  splines,</span>
+<span id="cb6-38"><a href="#cb6-38"></a>  mgcv,</span>
+<span id="cb6-39"><a href="#cb6-39"></a>  DHARMa,</span>
+<span id="cb6-40"><a href="#cb6-40"></a>  zoo,</span>
+<span id="cb6-41"><a href="#cb6-41"></a>  ggpubr,</span>
+<span id="cb6-42"><a href="#cb6-42"></a>  ggridges,</span>
+<span id="cb6-43"><a href="#cb6-43"></a>  caret,</span>
+<span id="cb6-44"><a href="#cb6-44"></a>  rstatix,</span>
+<span id="cb6-45"><a href="#cb6-45"></a>  Metrics,</span>
+<span id="cb6-46"><a href="#cb6-46"></a>  mice,</span>
+<span id="cb6-47"><a href="#cb6-47"></a>  missRanger,</span>
+<span id="cb6-48"><a href="#cb6-48"></a>  ranger,</span>
+<span id="cb6-49"><a href="#cb6-49"></a>  cocor,</span>
+<span id="cb6-50"><a href="#cb6-50"></a>  multcompView,</span>
+<span id="cb6-51"><a href="#cb6-51"></a>  lmtest,</span>
+<span id="cb6-52"><a href="#cb6-52"></a>  aod,</span>
+<span id="cb6-53"><a href="#cb6-53"></a>  pROC</span>
+<span id="cb6-54"><a href="#cb6-54"></a>)</span>
+<span id="cb6-55"><a href="#cb6-55"></a></span>
+<span id="cb6-56"><a href="#cb6-56"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/weatherAUS.csv"</span>)</span>
+<span id="cb6-57"><a href="#cb6-57"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb6-58"><a href="#cb6-58"></a><span class="in">```</span></span>
+<span id="cb6-59"><a href="#cb6-59"></a></span>
+<span id="cb6-60"><a href="#cb6-60"></a>The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (<span class="in">`tidyverse`</span>, <span class="in">`janitor`</span>, <span class="in">`kableExtra`</span>) handles the routine data manipulation. The modelling stack (<span class="in">`glmmTMB`</span>, <span class="in">`DHARMa`</span>, <span class="in">`splines`</span>, <span class="in">`mgcv`</span>) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (<span class="in">`missRanger`</span>, <span class="in">`mice`</span>, <span class="in">`ranger`</span>) supports the Random Forest and chained imputation procedures described below. Libraries are loaded via <span class="in">`librarian`</span>, which installs any missing packages automatically and ensures reproducibility across environments.</span>
+<span id="cb6-61"><a href="#cb6-61"></a></span>
+<span id="cb6-62"><a href="#cb6-62"></a>---</span>
+<span id="cb6-63"><a href="#cb6-63"></a></span>
+<span id="cb6-64"><a href="#cb6-64"></a><span class="fu">## Initial Cleaning and Standardisation</span></span>
+<span id="cb6-65"><a href="#cb6-65"></a></span>
+<span id="cb6-66"><a href="#cb6-66"></a>The raw dataset undergoes three transformations before imputation.</span>
+<span id="cb6-67"><a href="#cb6-67"></a></span>
+<span id="cb6-70"><a href="#cb6-70"></a><span class="in">```{r}</span></span>
+<span id="cb6-71"><a href="#cb6-71"></a><span class="co">#| label: data-cleaning</span></span>
+<span id="cb6-72"><a href="#cb6-72"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-73"><a href="#cb6-73"></a><span class="co">#| message: false</span></span>
+<span id="cb6-74"><a href="#cb6-74"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-75"><a href="#cb6-75"></a></span>
+<span id="cb6-76"><a href="#cb6-76"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-77"><a href="#cb6-77"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-78"><a href="#cb6-78"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-79"><a href="#cb6-79"></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb6-80"><a href="#cb6-80"></a>    <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb6-81"><a href="#cb6-81"></a>    <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb6-82"><a href="#cb6-82"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-83"><a href="#cb6-83"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall))</span>
+<span id="cb6-84"><a href="#cb6-84"></a></span>
+<span id="cb6-85"><a href="#cb6-85"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb6-86"><a href="#cb6-86"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-87"><a href="#cb6-87"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Head of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-88"><a href="#cb6-88"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span>
 <span id="cb6-89"><a href="#cb6-89"></a></span>
-<span id="cb6-92"><a href="#cb6-92"></a><span class="in">```{r}</span></span>
-<span id="cb6-93"><a href="#cb6-93"></a><span class="co">#| label: data-cleaning</span></span>
-<span id="cb6-94"><a href="#cb6-94"></a><span class="co">#| echo: true</span></span>
-<span id="cb6-95"><a href="#cb6-95"></a><span class="co">#| message: false</span></span>
-<span id="cb6-96"><a href="#cb6-96"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-90"><a href="#cb6-90"></a>df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb6-91"><a href="#cb6-91"></a>  <span class="fu">tail</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-92"><a href="#cb6-92"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Tail of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-93"><a href="#cb6-93"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb6-94"><a href="#cb6-94"></a><span class="in">```</span></span>
+<span id="cb6-95"><a href="#cb6-95"></a></span>
+<span id="cb6-96"><a href="#cb6-96"></a>**Column standardisation.** All variable names are converted to <span class="in">`snake_case`</span> via <span class="in">`janitor::clean_names()`</span>. This is a low-cost operation that eliminates downstream ambiguity in variable references and ensures that the codebase is internally consistent across all chapters.</span>
 <span id="cb6-97"><a href="#cb6-97"></a></span>
-<span id="cb6-98"><a href="#cb6-98"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb6-99"><a href="#cb6-99"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb6-100"><a href="#cb6-100"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-101"><a href="#cb6-101"></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
-<span id="cb6-102"><a href="#cb6-102"></a>    <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
-<span id="cb6-103"><a href="#cb6-103"></a>    <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb6-104"><a href="#cb6-104"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-105"><a href="#cb6-105"></a>  <span class="co"># Remove records where the target variable (rainfall) is missing</span></span>
-<span id="cb6-106"><a href="#cb6-106"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall))</span>
+<span id="cb6-98"><a href="#cb6-98"></a>**Temporal feature extraction.** The <span class="in">`date`</span> column is typed as a <span class="in">`Date`</span> object and two derived features are extracted immediately: <span class="in">`month`</span> (as a factor) and <span class="in">`day`</span> (day of week, labelled). Both are used in the EDA (@sec-eda) and feature engineering(@sec-feature-eng) chapters. Month captures the seasonal structure of Australian precipitation; day of week, while not expected to carry physical signal, is retained as a potential control variable for reporting artefacts in the raw data.</span>
+<span id="cb6-99"><a href="#cb6-99"></a></span>
+<span id="cb6-100"><a href="#cb6-100"></a>**Target filtering.** Observations where <span class="in">`rainfall`</span> is missing are removed. Because the primary modelling objective is to predict rainfall occurrence and intensity, records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</span>
+<span id="cb6-101"><a href="#cb6-101"></a></span>
+<span id="cb6-102"><a href="#cb6-102"></a>---</span>
+<span id="cb6-103"><a href="#cb6-103"></a></span>
+<span id="cb6-104"><a href="#cb6-104"></a><span class="fu">## Hybrid Imputation Strategy</span></span>
+<span id="cb6-105"><a href="#cb6-105"></a></span>
+<span id="cb6-106"><a href="#cb6-106"></a>The EDA chapter documents that <span class="in">`sunshine`</span> is missing in 47.7% of records and <span class="in">`evaporation`</span> in 42.5%, while cloud cover variables are missing in 37 to 40% of records. Standard listwise deletion, which removes any row containing a missing value, would eliminate nearly half the dataset and introduce a systematic geographic bias toward well-instrumented stations. Standard mean or median imputation would fill the gaps but would shrink the marginal variance of the imputed variables and distort their correlations with other predictors.</span>
 <span id="cb6-107"><a href="#cb6-107"></a></span>
-<span id="cb6-108"><a href="#cb6-108"></a></span>
-<span id="cb6-109"><a href="#cb6-109"></a>df_clean <span class="sc">%&gt;%</span></span>
-<span id="cb6-110"><a href="#cb6-110"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb6-111"><a href="#cb6-111"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Head of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-112"><a href="#cb6-112"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span>
+<span id="cb6-108"><a href="#cb6-108"></a>The imputation pipeline described here addresses these problems through a three-stage strategy, each stage targeting a different structural type of missingness.</span>
+<span id="cb6-109"><a href="#cb6-109"></a></span>
+<span id="cb6-110"><a href="#cb6-110"></a><span class="fu">### Stage 1: Missingness Flags</span></span>
+<span id="cb6-111"><a href="#cb6-111"></a></span>
+<span id="cb6-112"><a href="#cb6-112"></a>Before any imputation takes place, binary indicator variables are created for the four variables with high missingness: <span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, and <span class="in">`cloud9am_imp_flagged`</span>. A flag value of 1 indicates that the corresponding observation was subsequently imputed.</span>
 <span id="cb6-113"><a href="#cb6-113"></a></span>
-<span id="cb6-114"><a href="#cb6-114"></a>df_clean <span class="sc">%&gt;%</span></span>
-<span id="cb6-115"><a href="#cb6-115"></a>  <span class="fu">tail</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb6-116"><a href="#cb6-116"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Tail of Cleaned Dataset"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-117"><a href="#cb6-117"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span>
-<span id="cb6-118"><a href="#cb6-118"></a></span>
-<span id="cb6-119"><a href="#cb6-119"></a><span class="in">```</span></span>
-<span id="cb6-120"><a href="#cb6-120"></a></span>
-<span id="cb6-121"><a href="#cb6-121"></a>The cleaned dataset confirms successful standardization of variables and proper creation of temporal features.</span>
-<span id="cb6-122"><a href="#cb6-122"></a></span>
-<span id="cb6-123"><a href="#cb6-123"></a><span class="fu">## Hybrid Imputation Strategy</span></span>
-<span id="cb6-124"><a href="#cb6-124"></a></span>
-<span id="cb6-125"><a href="#cb6-125"></a>Missing data presents a critical challenge in meteorological analysis. Weather sensors fail, transmission errors occur, and equipment maintenance creates gaps. Rather than discarding incomplete observations or applying crude imputation methods, we implement a sophisticated three-stage imputation strategy designed to preserve the statistical properties and physical realism of meteorological data.</span>
-<span id="cb6-126"><a href="#cb6-126"></a></span>
-<span id="cb6-127"><a href="#cb6-127"></a><span class="fu">### Stage 1: Informative Missingness Flags</span></span>
-<span id="cb6-128"><a href="#cb6-128"></a></span>
-<span id="cb6-129"><a href="#cb6-129"></a>Before imputation occurs, binary indicators are created for variables with high missingness. These flags (e.g., <span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evaporation_imp_flagged`</span>) preserve the information that data was missing at particular times and locations.</span>
-<span id="cb6-130"><a href="#cb6-130"></a></span>
-<span id="cb6-131"><a href="#cb6-131"></a><span class="at">&gt; **Rationale:** The absence of data itself may carry information. A broken sunshine sensor during a tropical storm, for example, represents a specific atmospheric condition. By flagging imputed values, the model retains the capacity to learn whether missingness itself is predictive of rainfall a phenomenon that could reflect systematic sensor failures during extreme weather.</span></span>
-<span id="cb6-132"><a href="#cb6-132"></a></span>
-<span id="cb6-133"><a href="#cb6-133"></a><span class="fu">### Stage 2: Temporal Interpolation (Time-Series Logic)</span></span>
-<span id="cb6-134"><a href="#cb6-134"></a></span>
-<span id="cb6-135"><a href="#cb6-135"></a>Meteorological variables exhibit strong temporal autocorrelation. Temperature, pressure, and humidity do not fluctuate randomly they evolve smoothly over time. For these continuous variables with short gaps, linear interpolation grouped by location is applied.</span>
-<span id="cb6-136"><a href="#cb6-136"></a></span>
-<span id="cb6-137"><a href="#cb6-137"></a><span class="at">&gt; **Rationale:** If the temperature is 20 $^\circ$C on Monday and 22 $^\circ$C on Wednesday, it is physically sound to estimate Tuesday's temperature as 21 $^\circ$C rather than using a global average or a seasonal climatology. This approach respects the inherent temporal structure of weather data.</span></span>
-<span id="cb6-138"><a href="#cb6-138"></a></span>
-<span id="cb6-139"><a href="#cb6-139"></a><span class="at">&gt; **Constraint:** Interpolation is limited to a maximum gap of 5 consecutive days. This prevents creating artificial data over extended periods of sensor failure, which could introduce systematic bias into the analysis.</span></span>
-<span id="cb6-140"><a href="#cb6-140"></a></span>
-<span id="cb6-141"><a href="#cb6-141"></a>Variables suitable for temporal interpolation include minimum and maximum temperatures, 9 AM and 3 PM temperatures, 9 AM and 3 PM pressure readings, and 9 AM and 3 PM humidity measurements. These are all variables that exhibit strong day-to-day persistence and smooth trajectories.</span>
-<span id="cb6-142"><a href="#cb6-142"></a></span>
-<span id="cb6-143"><a href="#cb6-143"></a><span class="fu">### Stage 3: Multivariate Imputation via Chained Random Forests</span></span>
+<span id="cb6-114"><a href="#cb6-114"></a>The motivation is that the pattern of missingness is not random with respect to atmospheric conditions. Sunshine sensors may fail more frequently during prolonged cloud cover or heavy rain, and evaporation pan measurements may be suspended during equipment maintenance that is itself weather-triggered. If missingness is informative in this way, the imputation flags allow the model to learn this association rather than treating the imputed and observed values as exchangeable.</span>
+<span id="cb6-115"><a href="#cb6-115"></a></span>
+<span id="cb6-116"><a href="#cb6-116"></a><span class="fu">### Stage 2: Temporal Interpolation</span></span>
+<span id="cb6-117"><a href="#cb6-117"></a></span>
+<span id="cb6-118"><a href="#cb6-118"></a>The eight variables with strong day-to-day persistence and smooth trajectories; minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location. The interpolation is bounded by a maximum gap of five consecutive missing days.</span>
+<span id="cb6-119"><a href="#cb6-119"></a></span>
+<span id="cb6-120"><a href="#cb6-120"></a>The physical rationale is direct. Atmospheric temperature, pressure, and humidity evolve as continuous functions of time: a value of $20^\circ$C on Monday and $22^\circ$C on Wednesday implies a physically reasonable estimate of $21^\circ$C on Tuesday. Filling this gap with a global mean or a seasonal climatology would ignore the temporal context that makes the missing value estimable with high confidence. The five-day cap prevents the interpolation from producing extended sequences of synthetic data over sustained sensor outages, which would introduce artificial smoothness into periods that may have been meteorologically volatile.</span>
+<span id="cb6-121"><a href="#cb6-121"></a></span>
+<span id="cb6-122"><a href="#cb6-122"></a><span class="fu">### Stage 3: Multivariate Random Forest Imputation</span></span>
+<span id="cb6-123"><a href="#cb6-123"></a></span>
+<span id="cb6-124"><a href="#cb6-124"></a>The remaining gaps, concentrated in <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, and cloud cover, cannot be addressed by temporal interpolation because these variables do not exhibit simple smooth trajectories. Their behaviour is conditional on specific atmospheric configurations and their relationships to other predictors are non-linear.</span>
+<span id="cb6-125"><a href="#cb6-125"></a></span>
+<span id="cb6-126"><a href="#cb6-126"></a>A two-pass approach is used. The first pass applies <span class="in">`missRanger`</span>, iterative Random Forest imputation with Predictive Mean Matching across the dataset as a whole. PMM ensures that imputed values are drawn from the observed distribution of each variable rather than extrapolated from the regression surface, which preserves the marginal distributions and prevents the variance shrinkage associated with direct regression imputation.</span>
+<span id="cb6-127"><a href="#cb6-127"></a></span>
+<span id="cb6-128"><a href="#cb6-128"></a>The second pass applies targeted <span class="in">`mice`</span> imputation using Random Forest as the imputation method, with scientifically motivated predictor sets for each variable. Cloud cover at 9 AM and 3 PM are predicted from humidity and pressure, which are the direct physical precursors of atmospheric stability and cloud formation. Sunshine duration is predicted from cloud cover and temperature, reflecting the inverse relationship between overcast conditions and insolation. Evaporation is predicted from wind speed, temperature, humidity, sunshine, and location, corresponding to the Penman-Monteith physical drivers of evaporative demand.</span>
+<span id="cb6-129"><a href="#cb6-129"></a></span>
+<span id="cb6-130"><a href="#cb6-130"></a>Using targeted predictors rather than allowing the algorithm to use all available variables serves two purposes: it reduces the risk of imputing on spurious correlations present in the training data but absent from the physical system, and it makes the imputation procedure interpretable and auditable.</span>
+<span id="cb6-131"><a href="#cb6-131"></a></span>
+<span id="cb6-132"><a href="#cb6-132"></a><span class="fu">### Ghost Sensor Detection</span></span>
+<span id="cb6-133"><a href="#cb6-133"></a></span>
+<span id="cb6-134"><a href="#cb6-134"></a>Some stations in the network experience sustained equipment failures in which a specific sensor records no values for an entire season or longer. If these extended gaps are passed to the Random Forest imputer, the algorithm will produce synthetic values for the entire period using correlations with other variables from the same location. This is methodologically unsound: the correlations learned from the observed periods at that station may not hold during the failure period, and producing a long uninterrupted synthetic series could create artificial patterns that mislead downstream analysis.</span>
+<span id="cb6-135"><a href="#cb6-135"></a></span>
+<span id="cb6-136"><a href="#cb6-136"></a>Ghost sensors are identified as any location-variable pair where the missingness rate exceeds 90%. After the full imputation pipeline runs, values for these pairs are reverted to missing. This conservative treatment accepts that some data is genuinely unrecoverable, while allowing the imputation to work effectively on the shorter gaps that constitute recoverable missingness.</span>
+<span id="cb6-137"><a href="#cb6-137"></a></span>
+<span id="cb6-140"><a href="#cb6-140"></a><span class="in">```{r}</span></span>
+<span id="cb6-141"><a href="#cb6-141"></a><span class="co">#| label: imputation-strategy</span></span>
+<span id="cb6-142"><a href="#cb6-142"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-143"><a href="#cb6-143"></a><span class="co">#| eval: false</span></span>
 <span id="cb6-144"><a href="#cb6-144"></a></span>
-<span id="cb6-145"><a href="#cb6-145"></a>For remaining gaps, particularly in variables with complex non-linear relationships to other meteorological features, a more sophisticated approach is required. Variables such as sunshine, evaporation, and cloud cover do not evolve smoothly; their relationships to other variables are non-linear and conditional on specific atmospheric states.</span>
-<span id="cb6-146"><a href="#cb6-146"></a></span>
-<span id="cb6-147"><a href="#cb6-147"></a><span class="ss">* </span>**Method:** Random Forest-based imputation iteratively predicts missing values using all other available variables. This technique exploits the fact that the multivariate distribution of weather variables contains strong predictive signals.</span>
-<span id="cb6-148"><a href="#cb6-148"></a><span class="ss">* </span>**Advantage:** Unlike mean imputation, which artificially shrinks variance and distorts correlations, Random Forest imputation with Predictive Mean Matching (PMM) preserves the original marginal distributions and the complex non-linear correlations between weather features. This is critical for maintaining the physical realism of the data.</span>
-<span id="cb6-149"><a href="#cb6-149"></a></span>
-<span id="cb6-150"><a href="#cb6-150"></a>**Targeted Predictors:**</span>
-<span id="cb6-151"><a href="#cb6-151"></a>For each variable with missing values, a scientifically-motivated set of predictor variables is selected:</span>
-<span id="cb6-152"><a href="#cb6-152"></a></span>
-<span id="cb6-153"><a href="#cb6-153"></a><span class="ss">* </span>**Sunshine duration** is predicted using cloud cover measurements and temperature, since clear skies (low cloud cover) are associated with longer sunshine duration and higher temperatures.</span>
-<span id="cb6-154"><a href="#cb6-154"></a><span class="ss">* </span>**Evaporation** is predicted using wind speed, temperature, humidity, sunshine duration, and location, reflecting the physical drivers of evaporative demand in the atmosphere.</span>
-<span id="cb6-155"><a href="#cb6-155"></a><span class="ss">* </span>**Cloud cover** measurements are predicted using humidity and pressure, which are strongly linked to atmospheric stability and cloud formation.</span>
-<span id="cb6-156"><a href="#cb6-156"></a></span>
-<span id="cb6-157"><a href="#cb6-157"></a>This targeted approach ensures that imputation respects physical meteorological principles rather than treating all variables equally.</span>
-<span id="cb6-158"><a href="#cb6-158"></a></span>
-<span id="cb6-159"><a href="#cb6-159"></a><span class="fu">### Ghost Sensor Detection and Sanitization</span></span>
-<span id="cb6-160"><a href="#cb6-160"></a></span>
-<span id="cb6-161"><a href="#cb6-161"></a>Some weather stations experience prolonged equipment failures where sensors cease recording entirely. These "ghost sensors" are identified by detecting variables at specific locations where missingness exceeds 90%.</span>
-<span id="cb6-162"><a href="#cb6-162"></a></span>
-<span id="cb6-163"><a href="#cb6-163"></a>Rather than allow Random Forest imputation to fill these extended gaps (which could create unrealistic data for entire seasons), observations from ghost sensors are reverted to missing status after the imputation process. This preserves data integrity by acknowledging that we genuinely do not know these values, while still allowing imputation to work effectively on shorter gaps from transient sensor failures.</span>
-<span id="cb6-164"><a href="#cb6-164"></a></span>
-<span id="cb6-167"><a href="#cb6-167"></a><span class="in">```{r}</span></span>
-<span id="cb6-168"><a href="#cb6-168"></a><span class="co">#| label: imputation-strategy</span></span>
-<span id="cb6-169"><a href="#cb6-169"></a><span class="co">#| echo: true</span></span>
-<span id="cb6-170"><a href="#cb6-170"></a><span class="co">#| eval: false</span></span>
-<span id="cb6-171"><a href="#cb6-171"></a></span>
-<span id="cb6-172"><a href="#cb6-172"></a>clean_and_impute_weather <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb6-173"><a href="#cb6-173"></a>  <span class="co"># Configuration</span></span>
-<span id="cb6-174"><a href="#cb6-174"></a>  MAXGAP <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb6-175"><a href="#cb6-175"></a>  GHOST_THRESHOLD <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
-<span id="cb6-176"><a href="#cb6-176"></a>  PMM_K <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb6-177"><a href="#cb6-177"></a>  MAXITER <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb6-178"><a href="#cb6-178"></a></span>
-<span id="cb6-179"><a href="#cb6-179"></a>  <span class="co"># Initial cleaning</span></span>
-<span id="cb6-180"><a href="#cb6-180"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb6-181"><a href="#cb6-181"></a>    <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb6-182"><a href="#cb6-182"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb6-183"><a href="#cb6-183"></a>      <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
-<span id="cb6-184"><a href="#cb6-184"></a>      <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
-<span id="cb6-185"><a href="#cb6-185"></a>      <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb6-186"><a href="#cb6-186"></a>      <span class="at">day_of_year =</span> <span class="fu">yday</span>(date)</span>
-<span id="cb6-187"><a href="#cb6-187"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-188"><a href="#cb6-188"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-189"><a href="#cb6-189"></a>    <span class="fu">select</span>(<span class="sc">-</span>rain_tomorrow)</span>
-<span id="cb6-190"><a href="#cb6-190"></a></span>
-<span id="cb6-191"><a href="#cb6-191"></a>  <span class="co"># Create imputation flags</span></span>
-<span id="cb6-192"><a href="#cb6-192"></a></span>
-<span id="cb6-193"><a href="#cb6-193"></a>  df_flagged <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb6-194"><a href="#cb6-194"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb6-195"><a href="#cb6-195"></a>      <span class="at">sunshine_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sunshine), <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb6-196"><a href="#cb6-196"></a>      <span class="at">evap_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(evaporation), <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb6-197"><a href="#cb6-197"></a>      <span class="at">cloud3pm_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud3pm), <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb6-198"><a href="#cb6-198"></a>      <span class="at">cloud9am_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud9am), <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb6-199"><a href="#cb6-199"></a>    )</span>
-<span id="cb6-200"><a href="#cb6-200"></a></span>
-<span id="cb6-201"><a href="#cb6-201"></a>  <span class="co"># Temporal interpolation</span></span>
-<span id="cb6-202"><a href="#cb6-202"></a></span>
-<span id="cb6-203"><a href="#cb6-203"></a>  interp_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb6-204"><a href="#cb6-204"></a>    <span class="st">"min_temp"</span>,</span>
-<span id="cb6-205"><a href="#cb6-205"></a>    <span class="st">"max_temp"</span>,</span>
-<span id="cb6-206"><a href="#cb6-206"></a>    <span class="st">"temp9am"</span>,</span>
-<span id="cb6-207"><a href="#cb6-207"></a>    <span class="st">"temp3pm"</span>,</span>
-<span id="cb6-208"><a href="#cb6-208"></a>    <span class="st">"pressure9am"</span>,</span>
-<span id="cb6-209"><a href="#cb6-209"></a>    <span class="st">"pressure3pm"</span>,</span>
-<span id="cb6-210"><a href="#cb6-210"></a>    <span class="st">"humidity9am"</span>,</span>
-<span id="cb6-211"><a href="#cb6-211"></a>    <span class="st">"humidity3pm"</span></span>
-<span id="cb6-212"><a href="#cb6-212"></a>  )</span>
-<span id="cb6-213"><a href="#cb6-213"></a></span>
-<span id="cb6-214"><a href="#cb6-214"></a>  df_interp <span class="ot">&lt;-</span> df_flagged <span class="sc">%&gt;%</span></span>
-<span id="cb6-215"><a href="#cb6-215"></a>    <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
-<span id="cb6-216"><a href="#cb6-216"></a>    <span class="fu">arrange</span>(date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-217"><a href="#cb6-217"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
-<span id="cb6-218"><a href="#cb6-218"></a>      <span class="fu">all_of</span>(interp_vars),</span>
-<span id="cb6-219"><a href="#cb6-219"></a>      <span class="sc">~</span> <span class="fu">na.approx</span>(., <span class="at">maxgap =</span> MAXGAP, <span class="at">na.rm =</span> <span class="cn">FALSE</span>, <span class="at">rule =</span> <span class="dv">2</span>)</span>
-<span id="cb6-220"><a href="#cb6-220"></a>    )) <span class="sc">%&gt;%</span></span>
-<span id="cb6-221"><a href="#cb6-221"></a>    <span class="fu">ungroup</span>()</span>
-<span id="cb6-222"><a href="#cb6-222"></a></span>
-<span id="cb6-223"><a href="#cb6-223"></a>  <span class="co"># Identify ghost sensors</span></span>
-<span id="cb6-224"><a href="#cb6-224"></a></span>
-<span id="cb6-225"><a href="#cb6-225"></a>  ghost_prone_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"cloud9am"</span>)</span>
-<span id="cb6-226"><a href="#cb6-226"></a></span>
-<span id="cb6-227"><a href="#cb6-227"></a>  ghost_pairs <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
-<span id="cb6-228"><a href="#cb6-228"></a>    <span class="fu">select</span>(location, <span class="fu">all_of</span>(ghost_prone_vars)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-229"><a href="#cb6-229"></a>    <span class="fu">pivot_longer</span>(</span>
-<span id="cb6-230"><a href="#cb6-230"></a>      <span class="at">cols =</span> <span class="fu">all_of</span>(ghost_prone_vars),</span>
-<span id="cb6-231"><a href="#cb6-231"></a>      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
-<span id="cb6-232"><a href="#cb6-232"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
-<span id="cb6-233"><a href="#cb6-233"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-234"><a href="#cb6-234"></a>    <span class="fu">group_by</span>(location, variable) <span class="sc">%&gt;%</span></span>
-<span id="cb6-235"><a href="#cb6-235"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb6-236"><a href="#cb6-236"></a>      <span class="at">miss_rate =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(value)) <span class="sc">*</span> <span class="dv">100</span>,</span>
-<span id="cb6-237"><a href="#cb6-237"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb6-238"><a href="#cb6-238"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-239"><a href="#cb6-239"></a>    <span class="fu">filter</span>(miss_rate <span class="sc">&gt;</span> (GHOST_THRESHOLD <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-240"><a href="#cb6-240"></a>    <span class="fu">select</span>(location, variable)</span>
-<span id="cb6-241"><a href="#cb6-241"></a></span>
-<span id="cb6-242"><a href="#cb6-242"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Found %d ghost sensor instances</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
-<span id="cb6-243"><a href="#cb6-243"></a></span>
-<span id="cb6-244"><a href="#cb6-244"></a>  <span class="co"># missRanger imputation (first pass for general variables)</span></span>
-<span id="cb6-245"><a href="#cb6-245"></a></span>
-<span id="cb6-246"><a href="#cb6-246"></a>  imputation_data <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
-<span id="cb6-247"><a href="#cb6-247"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb6-248"><a href="#cb6-248"></a>      <span class="at">sin_month =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
-<span id="cb6-249"><a href="#cb6-249"></a>      <span class="at">cos_month =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
-<span id="cb6-250"><a href="#cb6-250"></a>      <span class="at">sin_doy =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>),</span>
-<span id="cb6-251"><a href="#cb6-251"></a>      <span class="at">cos_doy =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>)</span>
-<span id="cb6-252"><a href="#cb6-252"></a>    )</span>
-<span id="cb6-253"><a href="#cb6-253"></a></span>
-<span id="cb6-254"><a href="#cb6-254"></a>  metadata_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(date)</span>
-<span id="cb6-255"><a href="#cb6-255"></a>  imputation_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>date)</span>
-<span id="cb6-256"><a href="#cb6-256"></a></span>
-<span id="cb6-257"><a href="#cb6-257"></a>  imputed_data <span class="ot">&lt;-</span> <span class="fu">missRanger</span>(</span>
-<span id="cb6-258"><a href="#cb6-258"></a>    <span class="at">data =</span> imputation_cols,</span>
-<span id="cb6-259"><a href="#cb6-259"></a>    <span class="at">pmm.k =</span> PMM_K,</span>
-<span id="cb6-260"><a href="#cb6-260"></a>    <span class="at">num.trees =</span> <span class="dv">100</span>,</span>
-<span id="cb6-261"><a href="#cb6-261"></a>    <span class="at">sample.fraction =</span> <span class="fl">0.3</span>,</span>
-<span id="cb6-262"><a href="#cb6-262"></a>    <span class="at">min.node.size =</span> <span class="dv">10</span>,</span>
-<span id="cb6-263"><a href="#cb6-263"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
-<span id="cb6-264"><a href="#cb6-264"></a>    <span class="at">verbose =</span> <span class="dv">1</span>,</span>
-<span id="cb6-265"><a href="#cb6-265"></a>    <span class="at">maxiter =</span> MAXITER</span>
-<span id="cb6-266"><a href="#cb6-266"></a>  )</span>
-<span id="cb6-267"><a href="#cb6-267"></a></span>
-<span id="cb6-268"><a href="#cb6-268"></a>  df_imputed <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(metadata_cols, imputed_data) <span class="sc">%&gt;%</span></span>
-<span id="cb6-269"><a href="#cb6-269"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"sin_"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"cos_"</span>))</span>
-<span id="cb6-270"><a href="#cb6-270"></a></span>
-<span id="cb6-271"><a href="#cb6-271"></a>  <span class="co"># Sanitize ghost sensors</span></span>
-<span id="cb6-272"><a href="#cb6-272"></a></span>
-<span id="cb6-273"><a href="#cb6-273"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(ghost_pairs) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb6-274"><a href="#cb6-274"></a>    ghost_map <span class="ot">&lt;-</span> <span class="fu">split</span>(ghost_pairs<span class="sc">$</span>location, ghost_pairs<span class="sc">$</span>variable)</span>
-<span id="cb6-275"><a href="#cb6-275"></a></span>
-<span id="cb6-276"><a href="#cb6-276"></a>    df_imputed <span class="ot">&lt;-</span> df_imputed <span class="sc">%&gt;%</span></span>
-<span id="cb6-277"><a href="#cb6-277"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
-<span id="cb6-278"><a href="#cb6-278"></a>        <span class="fu">names</span>(ghost_map),</span>
-<span id="cb6-279"><a href="#cb6-279"></a>        <span class="sc">~</span> <span class="fu">replace</span>(., location <span class="sc">%in%</span> ghost_map[[<span class="fu">cur_column</span>()]], <span class="cn">NA</span>)</span>
-<span id="cb6-280"><a href="#cb6-280"></a>      ))</span>
-<span id="cb6-281"><a href="#cb6-281"></a></span>
-<span id="cb6-282"><a href="#cb6-282"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Reverted %d instances to NA</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
-<span id="cb6-283"><a href="#cb6-283"></a>  }</span>
-<span id="cb6-284"><a href="#cb6-284"></a></span>
-<span id="cb6-285"><a href="#cb6-285"></a>  <span class="co"># Targeted MICE with Random Forest for high-missingness variables</span></span>
-<span id="cb6-286"><a href="#cb6-286"></a></span>
-<span id="cb6-287"><a href="#cb6-287"></a>  init <span class="ot">&lt;-</span> <span class="fu">mice</span>(df_imputed, <span class="at">maxit =</span> <span class="dv">0</span>)</span>
-<span id="cb6-288"><a href="#cb6-288"></a>  pred <span class="ot">&lt;-</span> init<span class="sc">$</span>predictorMatrix</span>
-<span id="cb6-289"><a href="#cb6-289"></a>  meth <span class="ot">&lt;-</span> init<span class="sc">$</span>method</span>
-<span id="cb6-290"><a href="#cb6-290"></a>  pred[,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb6-291"><a href="#cb6-291"></a></span>
-<span id="cb6-292"><a href="#cb6-292"></a>  <span class="co"># Set method to random forest for target variables</span></span>
-<span id="cb6-293"><a href="#cb6-293"></a>  meth[<span class="st">"sunshine"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb6-294"><a href="#cb6-294"></a>  meth[<span class="st">"evaporation"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb6-295"><a href="#cb6-295"></a>  meth[<span class="st">"cloud9am"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb6-296"><a href="#cb6-296"></a>  meth[<span class="st">"cloud3pm"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
-<span id="cb6-297"><a href="#cb6-297"></a></span>
-<span id="cb6-298"><a href="#cb6-298"></a>  <span class="co"># Define predictors for each variable</span></span>
-<span id="cb6-299"><a href="#cb6-299"></a>  sun_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
-<span id="cb6-300"><a href="#cb6-300"></a>    <span class="fu">colnames</span>(df_imputed),</span>
-<span id="cb6-301"><a href="#cb6-301"></a>    <span class="fu">c</span>(<span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"max_temp"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
-<span id="cb6-302"><a href="#cb6-302"></a>  )</span>
-<span id="cb6-303"><a href="#cb6-303"></a></span>
-<span id="cb6-304"><a href="#cb6-304"></a>  evap_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
-<span id="cb6-305"><a href="#cb6-305"></a>    <span class="fu">colnames</span>(df_imputed),</span>
-<span id="cb6-306"><a href="#cb6-306"></a>    <span class="fu">c</span>(</span>
-<span id="cb6-307"><a href="#cb6-307"></a>      <span class="st">"wind_gust_speed"</span>,</span>
-<span id="cb6-308"><a href="#cb6-308"></a>      <span class="st">"max_temp"</span>,</span>
-<span id="cb6-309"><a href="#cb6-309"></a>      <span class="st">"humidity3pm"</span>,</span>
-<span id="cb6-310"><a href="#cb6-310"></a>      <span class="st">"sunshine"</span>,</span>
-<span id="cb6-311"><a href="#cb6-311"></a>      <span class="st">"location"</span>,</span>
-<span id="cb6-312"><a href="#cb6-312"></a>      <span class="st">"month"</span></span>
-<span id="cb6-313"><a href="#cb6-313"></a>    )</span>
-<span id="cb6-314"><a href="#cb6-314"></a>  )</span>
-<span id="cb6-315"><a href="#cb6-315"></a></span>
-<span id="cb6-316"><a href="#cb6-316"></a>  cloud_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
-<span id="cb6-317"><a href="#cb6-317"></a>    <span class="fu">colnames</span>(df_imputed),</span>
-<span id="cb6-318"><a href="#cb6-318"></a>    <span class="fu">c</span>(<span class="st">"humidity9am"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"pressure9am"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
-<span id="cb6-319"><a href="#cb6-319"></a>  )</span>
-<span id="cb6-320"><a href="#cb6-320"></a></span>
-<span id="cb6-321"><a href="#cb6-321"></a>  <span class="cf">if</span> (<span class="st">"sunshine"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb6-322"><a href="#cb6-322"></a>    pred[<span class="st">"sunshine"</span>, sun_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb6-323"><a href="#cb6-323"></a>  }</span>
-<span id="cb6-324"><a href="#cb6-324"></a>  <span class="cf">if</span> (<span class="st">"evaporation"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb6-325"><a href="#cb6-325"></a>    pred[<span class="st">"evaporation"</span>, evap_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb6-326"><a href="#cb6-326"></a>  }</span>
-<span id="cb6-327"><a href="#cb6-327"></a>  <span class="cf">if</span> (<span class="st">"cloud9am"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb6-328"><a href="#cb6-328"></a>    pred[<span class="st">"cloud9am"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb6-329"><a href="#cb6-329"></a>  }</span>
-<span id="cb6-330"><a href="#cb6-330"></a>  <span class="cf">if</span> (<span class="st">"cloud3pm"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
-<span id="cb6-331"><a href="#cb6-331"></a>    pred[<span class="st">"cloud3pm"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb6-332"><a href="#cb6-332"></a>  }</span>
+<span id="cb6-145"><a href="#cb6-145"></a>clean_and_impute_weather <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb6-146"><a href="#cb6-146"></a>  MAXGAP <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-147"><a href="#cb6-147"></a>  GHOST_THRESHOLD <span class="ot">&lt;-</span> <span class="fl">0.90</span></span>
+<span id="cb6-148"><a href="#cb6-148"></a>  PMM_K <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-149"><a href="#cb6-149"></a>  MAXITER <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb6-150"><a href="#cb6-150"></a></span>
+<span id="cb6-151"><a href="#cb6-151"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-152"><a href="#cb6-152"></a>    <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-153"><a href="#cb6-153"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-154"><a href="#cb6-154"></a>      <span class="at">date =</span> <span class="fu">as.Date</span>(date),</span>
+<span id="cb6-155"><a href="#cb6-155"></a>      <span class="at">month =</span> <span class="fu">as.factor</span>(<span class="fu">month</span>(date)),</span>
+<span id="cb6-156"><a href="#cb6-156"></a>      <span class="at">day =</span> <span class="fu">as.factor</span>(<span class="fu">wday</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb6-157"><a href="#cb6-157"></a>      <span class="at">day_of_year =</span> <span class="fu">yday</span>(date)</span>
+<span id="cb6-158"><a href="#cb6-158"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-159"><a href="#cb6-159"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rainfall)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-160"><a href="#cb6-160"></a>    <span class="fu">select</span>(<span class="sc">-</span>rain_tomorrow)</span>
+<span id="cb6-161"><a href="#cb6-161"></a></span>
+<span id="cb6-162"><a href="#cb6-162"></a>  <span class="co"># Missingness flags</span></span>
+<span id="cb6-163"><a href="#cb6-163"></a>  df_flagged <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb6-164"><a href="#cb6-164"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-165"><a href="#cb6-165"></a>      <span class="at">sunshine_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sunshine), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb6-166"><a href="#cb6-166"></a>      <span class="at">evap_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(evaporation), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb6-167"><a href="#cb6-167"></a>      <span class="at">cloud3pm_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud3pm), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb6-168"><a href="#cb6-168"></a>      <span class="at">cloud9am_imp_flagged =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cloud9am), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-169"><a href="#cb6-169"></a>    )</span>
+<span id="cb6-170"><a href="#cb6-170"></a></span>
+<span id="cb6-171"><a href="#cb6-171"></a>  <span class="co"># Temporal interpolation for smooth continuous variables</span></span>
+<span id="cb6-172"><a href="#cb6-172"></a>  interp_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-173"><a href="#cb6-173"></a>    <span class="st">"min_temp"</span>,</span>
+<span id="cb6-174"><a href="#cb6-174"></a>    <span class="st">"max_temp"</span>,</span>
+<span id="cb6-175"><a href="#cb6-175"></a>    <span class="st">"temp9am"</span>,</span>
+<span id="cb6-176"><a href="#cb6-176"></a>    <span class="st">"temp3pm"</span>,</span>
+<span id="cb6-177"><a href="#cb6-177"></a>    <span class="st">"pressure9am"</span>,</span>
+<span id="cb6-178"><a href="#cb6-178"></a>    <span class="st">"pressure3pm"</span>,</span>
+<span id="cb6-179"><a href="#cb6-179"></a>    <span class="st">"humidity9am"</span>,</span>
+<span id="cb6-180"><a href="#cb6-180"></a>    <span class="st">"humidity3pm"</span></span>
+<span id="cb6-181"><a href="#cb6-181"></a>  )</span>
+<span id="cb6-182"><a href="#cb6-182"></a></span>
+<span id="cb6-183"><a href="#cb6-183"></a>  df_interp <span class="ot">&lt;-</span> df_flagged <span class="sc">%&gt;%</span></span>
+<span id="cb6-184"><a href="#cb6-184"></a>    <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
+<span id="cb6-185"><a href="#cb6-185"></a>    <span class="fu">arrange</span>(date, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-186"><a href="#cb6-186"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb6-187"><a href="#cb6-187"></a>      <span class="fu">all_of</span>(interp_vars),</span>
+<span id="cb6-188"><a href="#cb6-188"></a>      <span class="sc">~</span> <span class="fu">na.approx</span>(., <span class="at">maxgap =</span> MAXGAP, <span class="at">na.rm =</span> <span class="cn">FALSE</span>, <span class="at">rule =</span> <span class="dv">2</span>)</span>
+<span id="cb6-189"><a href="#cb6-189"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb6-190"><a href="#cb6-190"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb6-191"><a href="#cb6-191"></a></span>
+<span id="cb6-192"><a href="#cb6-192"></a>  <span class="co"># Ghost sensor identification</span></span>
+<span id="cb6-193"><a href="#cb6-193"></a>  ghost_prone_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"cloud9am"</span>)</span>
+<span id="cb6-194"><a href="#cb6-194"></a></span>
+<span id="cb6-195"><a href="#cb6-195"></a>  ghost_pairs <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb6-196"><a href="#cb6-196"></a>    <span class="fu">select</span>(location, <span class="fu">all_of</span>(ghost_prone_vars)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-197"><a href="#cb6-197"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb6-198"><a href="#cb6-198"></a>      <span class="at">cols =</span> <span class="fu">all_of</span>(ghost_prone_vars),</span>
+<span id="cb6-199"><a href="#cb6-199"></a>      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb6-200"><a href="#cb6-200"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb6-201"><a href="#cb6-201"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-202"><a href="#cb6-202"></a>    <span class="fu">group_by</span>(location, variable) <span class="sc">%&gt;%</span></span>
+<span id="cb6-203"><a href="#cb6-203"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb6-204"><a href="#cb6-204"></a>      <span class="at">miss_rate =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(value)) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb6-205"><a href="#cb6-205"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb6-206"><a href="#cb6-206"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-207"><a href="#cb6-207"></a>    <span class="fu">filter</span>(miss_rate <span class="sc">&gt;</span> (GHOST_THRESHOLD <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-208"><a href="#cb6-208"></a>    <span class="fu">select</span>(location, variable)</span>
+<span id="cb6-209"><a href="#cb6-209"></a></span>
+<span id="cb6-210"><a href="#cb6-210"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Found %d ghost sensor instances</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb6-211"><a href="#cb6-211"></a></span>
+<span id="cb6-212"><a href="#cb6-212"></a>  <span class="co"># missRanger first pass</span></span>
+<span id="cb6-213"><a href="#cb6-213"></a>  imputation_data <span class="ot">&lt;-</span> df_interp <span class="sc">%&gt;%</span></span>
+<span id="cb6-214"><a href="#cb6-214"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-215"><a href="#cb6-215"></a>      <span class="at">sin_month =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb6-216"><a href="#cb6-216"></a>      <span class="at">cos_month =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> <span class="fu">as.numeric</span>(month) <span class="sc">/</span> <span class="dv">12</span>),</span>
+<span id="cb6-217"><a href="#cb6-217"></a>      <span class="at">sin_doy =</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>),</span>
+<span id="cb6-218"><a href="#cb6-218"></a>      <span class="at">cos_doy =</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> day_of_year <span class="sc">/</span> <span class="dv">365</span>)</span>
+<span id="cb6-219"><a href="#cb6-219"></a>    )</span>
+<span id="cb6-220"><a href="#cb6-220"></a></span>
+<span id="cb6-221"><a href="#cb6-221"></a>  metadata_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(date)</span>
+<span id="cb6-222"><a href="#cb6-222"></a>  imputation_cols <span class="ot">&lt;-</span> imputation_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>date)</span>
+<span id="cb6-223"><a href="#cb6-223"></a></span>
+<span id="cb6-224"><a href="#cb6-224"></a>  imputed_data <span class="ot">&lt;-</span> <span class="fu">missRanger</span>(</span>
+<span id="cb6-225"><a href="#cb6-225"></a>    <span class="at">data =</span> imputation_cols,</span>
+<span id="cb6-226"><a href="#cb6-226"></a>    <span class="at">pmm.k =</span> PMM_K,</span>
+<span id="cb6-227"><a href="#cb6-227"></a>    <span class="at">num.trees =</span> <span class="dv">100</span>,</span>
+<span id="cb6-228"><a href="#cb6-228"></a>    <span class="at">sample.fraction =</span> <span class="fl">0.3</span>,</span>
+<span id="cb6-229"><a href="#cb6-229"></a>    <span class="at">min.node.size =</span> <span class="dv">10</span>,</span>
+<span id="cb6-230"><a href="#cb6-230"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb6-231"><a href="#cb6-231"></a>    <span class="at">verbose =</span> <span class="dv">1</span>,</span>
+<span id="cb6-232"><a href="#cb6-232"></a>    <span class="at">maxiter =</span> MAXITER</span>
+<span id="cb6-233"><a href="#cb6-233"></a>  )</span>
+<span id="cb6-234"><a href="#cb6-234"></a></span>
+<span id="cb6-235"><a href="#cb6-235"></a>  df_imputed <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(metadata_cols, imputed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb6-236"><a href="#cb6-236"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"sin_"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"cos_"</span>))</span>
+<span id="cb6-237"><a href="#cb6-237"></a></span>
+<span id="cb6-238"><a href="#cb6-238"></a>  <span class="co"># Ghost sensor sanitisation</span></span>
+<span id="cb6-239"><a href="#cb6-239"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(ghost_pairs) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb6-240"><a href="#cb6-240"></a>    ghost_map <span class="ot">&lt;-</span> <span class="fu">split</span>(ghost_pairs<span class="sc">$</span>location, ghost_pairs<span class="sc">$</span>variable)</span>
+<span id="cb6-241"><a href="#cb6-241"></a>    df_imputed <span class="ot">&lt;-</span> df_imputed <span class="sc">%&gt;%</span></span>
+<span id="cb6-242"><a href="#cb6-242"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb6-243"><a href="#cb6-243"></a>        <span class="fu">names</span>(ghost_map),</span>
+<span id="cb6-244"><a href="#cb6-244"></a>        <span class="sc">~</span> <span class="fu">replace</span>(., location <span class="sc">%in%</span> ghost_map[[<span class="fu">cur_column</span>()]], <span class="cn">NA</span>)</span>
+<span id="cb6-245"><a href="#cb6-245"></a>      ))</span>
+<span id="cb6-246"><a href="#cb6-246"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Reverted %d instances to NA</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(ghost_pairs)))</span>
+<span id="cb6-247"><a href="#cb6-247"></a>  }</span>
+<span id="cb6-248"><a href="#cb6-248"></a></span>
+<span id="cb6-249"><a href="#cb6-249"></a>  <span class="co"># Targeted MICE with Random Forest</span></span>
+<span id="cb6-250"><a href="#cb6-250"></a>  init <span class="ot">&lt;-</span> <span class="fu">mice</span>(df_imputed, <span class="at">maxit =</span> <span class="dv">0</span>)</span>
+<span id="cb6-251"><a href="#cb6-251"></a>  pred <span class="ot">&lt;-</span> init<span class="sc">$</span>predictorMatrix</span>
+<span id="cb6-252"><a href="#cb6-252"></a>  meth <span class="ot">&lt;-</span> init<span class="sc">$</span>method</span>
+<span id="cb6-253"><a href="#cb6-253"></a>  pred[,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-254"><a href="#cb6-254"></a></span>
+<span id="cb6-255"><a href="#cb6-255"></a>  meth[<span class="st">"sunshine"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-256"><a href="#cb6-256"></a>  meth[<span class="st">"evaporation"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-257"><a href="#cb6-257"></a>  meth[<span class="st">"cloud9am"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-258"><a href="#cb6-258"></a>  meth[<span class="st">"cloud3pm"</span>] <span class="ot">&lt;-</span> <span class="st">"rf"</span></span>
+<span id="cb6-259"><a href="#cb6-259"></a></span>
+<span id="cb6-260"><a href="#cb6-260"></a>  sun_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb6-261"><a href="#cb6-261"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb6-262"><a href="#cb6-262"></a>    <span class="fu">c</span>(<span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>, <span class="st">"max_temp"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb6-263"><a href="#cb6-263"></a>  )</span>
+<span id="cb6-264"><a href="#cb6-264"></a>  evap_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb6-265"><a href="#cb6-265"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb6-266"><a href="#cb6-266"></a>    <span class="fu">c</span>(</span>
+<span id="cb6-267"><a href="#cb6-267"></a>      <span class="st">"wind_gust_speed"</span>,</span>
+<span id="cb6-268"><a href="#cb6-268"></a>      <span class="st">"max_temp"</span>,</span>
+<span id="cb6-269"><a href="#cb6-269"></a>      <span class="st">"humidity3pm"</span>,</span>
+<span id="cb6-270"><a href="#cb6-270"></a>      <span class="st">"sunshine"</span>,</span>
+<span id="cb6-271"><a href="#cb6-271"></a>      <span class="st">"location"</span>,</span>
+<span id="cb6-272"><a href="#cb6-272"></a>      <span class="st">"month"</span></span>
+<span id="cb6-273"><a href="#cb6-273"></a>    )</span>
+<span id="cb6-274"><a href="#cb6-274"></a>  )</span>
+<span id="cb6-275"><a href="#cb6-275"></a>  cloud_predictors <span class="ot">&lt;-</span> <span class="fu">intersect</span>(</span>
+<span id="cb6-276"><a href="#cb6-276"></a>    <span class="fu">colnames</span>(df_imputed),</span>
+<span id="cb6-277"><a href="#cb6-277"></a>    <span class="fu">c</span>(<span class="st">"humidity9am"</span>, <span class="st">"humidity3pm"</span>, <span class="st">"pressure9am"</span>, <span class="st">"location"</span>, <span class="st">"month"</span>)</span>
+<span id="cb6-278"><a href="#cb6-278"></a>  )</span>
+<span id="cb6-279"><a href="#cb6-279"></a></span>
+<span id="cb6-280"><a href="#cb6-280"></a>  <span class="cf">if</span> (<span class="st">"sunshine"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-281"><a href="#cb6-281"></a>    pred[<span class="st">"sunshine"</span>, sun_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-282"><a href="#cb6-282"></a>  }</span>
+<span id="cb6-283"><a href="#cb6-283"></a>  <span class="cf">if</span> (<span class="st">"evaporation"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-284"><a href="#cb6-284"></a>    pred[<span class="st">"evaporation"</span>, evap_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-285"><a href="#cb6-285"></a>  }</span>
+<span id="cb6-286"><a href="#cb6-286"></a>  <span class="cf">if</span> (<span class="st">"cloud9am"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-287"><a href="#cb6-287"></a>    pred[<span class="st">"cloud9am"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-288"><a href="#cb6-288"></a>  }</span>
+<span id="cb6-289"><a href="#cb6-289"></a>  <span class="cf">if</span> (<span class="st">"cloud3pm"</span> <span class="sc">%in%</span> <span class="fu">rownames</span>(pred)) {</span>
+<span id="cb6-290"><a href="#cb6-290"></a>    pred[<span class="st">"cloud3pm"</span>, cloud_predictors] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb6-291"><a href="#cb6-291"></a>  }</span>
+<span id="cb6-292"><a href="#cb6-292"></a></span>
+<span id="cb6-293"><a href="#cb6-293"></a>  ignore_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"_flagged$|^date$"</span>, <span class="fu">colnames</span>(pred), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-294"><a href="#cb6-294"></a>  pred[, ignore_cols] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-295"><a href="#cb6-295"></a></span>
+<span id="cb6-296"><a href="#cb6-296"></a>  imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
+<span id="cb6-297"><a href="#cb6-297"></a>    df_imputed,</span>
+<span id="cb6-298"><a href="#cb6-298"></a>    <span class="at">method =</span> meth,</span>
+<span id="cb6-299"><a href="#cb6-299"></a>    <span class="at">predictorMatrix =</span> pred,</span>
+<span id="cb6-300"><a href="#cb6-300"></a>    <span class="at">m =</span> <span class="dv">1</span>,</span>
+<span id="cb6-301"><a href="#cb6-301"></a>    <span class="at">maxit =</span> <span class="dv">5</span>,</span>
+<span id="cb6-302"><a href="#cb6-302"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb6-303"><a href="#cb6-303"></a>    <span class="at">printFlag =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-304"><a href="#cb6-304"></a>  )</span>
+<span id="cb6-305"><a href="#cb6-305"></a></span>
+<span id="cb6-306"><a href="#cb6-306"></a>  df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp)</span>
+<span id="cb6-307"><a href="#cb6-307"></a>  <span class="fu">return</span>(df_final)</span>
+<span id="cb6-308"><a href="#cb6-308"></a>}</span>
+<span id="cb6-309"><a href="#cb6-309"></a><span class="in">```</span></span>
+<span id="cb6-310"><a href="#cb6-310"></a></span>
+<span id="cb6-313"><a href="#cb6-313"></a><span class="in">```{r}</span></span>
+<span id="cb6-314"><a href="#cb6-314"></a><span class="co">#| label: clean-and-save-imputed</span></span>
+<span id="cb6-315"><a href="#cb6-315"></a><span class="co">#| message: false</span></span>
+<span id="cb6-316"><a href="#cb6-316"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-317"><a href="#cb6-317"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-318"><a href="#cb6-318"></a></span>
+<span id="cb6-319"><a href="#cb6-319"></a>df_final <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
+<span id="cb6-320"><a href="#cb6-320"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_final.csv"</span>)</span>
+<span id="cb6-321"><a href="#cb6-321"></a><span class="in">```</span></span>
+<span id="cb6-322"><a href="#cb6-322"></a></span>
+<span id="cb6-325"><a href="#cb6-325"></a><span class="in">```{r}</span></span>
+<span id="cb6-326"><a href="#cb6-326"></a><span class="co">#| label: load-imputed-data</span></span>
+<span id="cb6-327"><a href="#cb6-327"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-328"><a href="#cb6-328"></a><span class="co">#| message: false</span></span>
+<span id="cb6-329"><a href="#cb6-329"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-330"><a href="#cb6-330"></a></span>
+<span id="cb6-331"><a href="#cb6-331"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/df_final.csv"</span>)</span>
+<span id="cb6-332"><a href="#cb6-332"></a><span class="in">```</span></span>
 <span id="cb6-333"><a href="#cb6-333"></a></span>
-<span id="cb6-334"><a href="#cb6-334"></a>  ignore_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"_flagged$|^date$"</span>, <span class="fu">colnames</span>(pred), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-335"><a href="#cb6-335"></a>  pred[, ignore_cols] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb6-336"><a href="#cb6-336"></a></span>
-<span id="cb6-337"><a href="#cb6-337"></a>  imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(</span>
-<span id="cb6-338"><a href="#cb6-338"></a>    df_imputed,</span>
-<span id="cb6-339"><a href="#cb6-339"></a>    <span class="at">method =</span> meth,</span>
-<span id="cb6-340"><a href="#cb6-340"></a>    <span class="at">predictorMatrix =</span> pred,</span>
-<span id="cb6-341"><a href="#cb6-341"></a>    <span class="at">m =</span> <span class="dv">1</span>,</span>
-<span id="cb6-342"><a href="#cb6-342"></a>    <span class="at">maxit =</span> <span class="dv">5</span>,</span>
-<span id="cb6-343"><a href="#cb6-343"></a>    <span class="at">seed =</span> <span class="dv">123</span>,</span>
-<span id="cb6-344"><a href="#cb6-344"></a>    <span class="at">printFlag =</span> <span class="cn">FALSE</span></span>
-<span id="cb6-345"><a href="#cb6-345"></a>  )</span>
-<span id="cb6-346"><a href="#cb6-346"></a></span>
-<span id="cb6-347"><a href="#cb6-347"></a>  df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp)</span>
-<span id="cb6-348"><a href="#cb6-348"></a></span>
-<span id="cb6-349"><a href="#cb6-349"></a>  <span class="fu">return</span>(df_final)</span>
-<span id="cb6-350"><a href="#cb6-350"></a>}</span>
-<span id="cb6-351"><a href="#cb6-351"></a></span>
-<span id="cb6-352"><a href="#cb6-352"></a><span class="in">```</span></span>
+<span id="cb6-334"><a href="#cb6-334"></a>---</span>
+<span id="cb6-335"><a href="#cb6-335"></a></span>
+<span id="cb6-336"><a href="#cb6-336"></a><span class="fu">## Post-Imputation Dataset Properties</span></span>
+<span id="cb6-337"><a href="#cb6-337"></a></span>
+<span id="cb6-338"><a href="#cb6-338"></a>The three-stage pipeline produces a dataset with the following properties, which collectively justify the methodological investment relative to simpler alternatives.</span>
+<span id="cb6-339"><a href="#cb6-339"></a></span>
+<span id="cb6-340"><a href="#cb6-340"></a>**Retention.** No observations are discarded on the basis of partial missingness. The imputation flags preserve the distinction between observed and imputed values, allowing downstream models to treat the two categories differently if the flag coefficients prove significant.</span>
+<span id="cb6-341"><a href="#cb6-341"></a></span>
+<span id="cb6-342"><a href="#cb6-342"></a>**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap prevents the interpolation from extending across genuine data voids.</span>
+<span id="cb6-343"><a href="#cb6-343"></a></span>
+<span id="cb6-344"><a href="#cb6-344"></a>**Distributional fidelity.** Predictive Mean Matching in Stage 3 ensures that imputed values for <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, and cloud cover are drawn from the observed empirical distribution of each variable rather than from the regression surface. The marginal distributions and cross-variable correlations of these features are preserved, which is critical for the interaction terms and derived meteorological indices constructed in the feature engineering chapter.</span>
+<span id="cb6-345"><a href="#cb6-345"></a></span>
+<span id="cb6-346"><a href="#cb6-346"></a>**Conservative treatment of extended failures.** Observations from ghost sensors remain missing rather than being synthetically reconstructed. This is a deliberate acceptance of reduced sample size in exchange for data integrity: a complete but fabricated series is more damaging to downstream inference than an honest gap.</span>
+<span id="cb6-347"><a href="#cb6-347"></a></span>
+<span id="cb6-350"><a href="#cb6-350"></a><span class="in">```{r}</span></span>
+<span id="cb6-351"><a href="#cb6-351"></a><span class="co">#| label: save-clean-data</span></span>
+<span id="cb6-352"><a href="#cb6-352"></a><span class="co">#| include: false</span></span>
 <span id="cb6-353"><a href="#cb6-353"></a></span>
-<span id="cb6-356"><a href="#cb6-356"></a><span class="in">```{r}</span></span>
-<span id="cb6-357"><a href="#cb6-357"></a><span class="co">#| label: clean-and-save-imputed</span></span>
-<span id="cb6-358"><a href="#cb6-358"></a><span class="co">#| message: false</span></span>
-<span id="cb6-359"><a href="#cb6-359"></a><span class="co">#| warning: false</span></span>
-<span id="cb6-360"><a href="#cb6-360"></a><span class="co">#| eval: false</span></span>
-<span id="cb6-361"><a href="#cb6-361"></a></span>
-<span id="cb6-362"><a href="#cb6-362"></a>df_final <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
-<span id="cb6-363"><a href="#cb6-363"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_final.csv"</span>)</span>
-<span id="cb6-364"><a href="#cb6-364"></a></span>
-<span id="cb6-365"><a href="#cb6-365"></a><span class="in">```</span></span>
-<span id="cb6-366"><a href="#cb6-366"></a></span>
-<span id="cb6-369"><a href="#cb6-369"></a><span class="in">```{r}</span></span>
-<span id="cb6-370"><a href="#cb6-370"></a><span class="co">#| label: load-imputed-data</span></span>
-<span id="cb6-371"><a href="#cb6-371"></a><span class="co">#| echo: false</span></span>
-<span id="cb6-372"><a href="#cb6-372"></a><span class="co">#| message: false</span></span>
-<span id="cb6-373"><a href="#cb6-373"></a><span class="co">#| warning: false</span></span>
-<span id="cb6-374"><a href="#cb6-374"></a></span>
-<span id="cb6-375"><a href="#cb6-375"></a><span class="co"># Load the pre-computed dataset to save rendering time</span></span>
-<span id="cb6-376"><a href="#cb6-376"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/df_final.csv"</span>)</span>
-<span id="cb6-377"><a href="#cb6-377"></a></span>
-<span id="cb6-378"><a href="#cb6-378"></a><span class="in">```</span></span>
-<span id="cb6-379"><a href="#cb6-379"></a></span>
-<span id="cb6-380"><a href="#cb6-380"></a><span class="fu">## Outcome: Complete and Physically Realistic Data</span></span>
-<span id="cb6-381"><a href="#cb6-381"></a></span>
-<span id="cb6-382"><a href="#cb6-382"></a>The three-stage imputation strategy produces a complete dataset where:</span>
-<span id="cb6-383"><a href="#cb6-383"></a></span>
-<span id="cb6-384"><a href="#cb6-384"></a><span class="ss">* </span>**No information is discarded:** Observations with some missing values are retained and improved rather than deleted.</span>
-<span id="cb6-385"><a href="#cb6-385"></a><span class="ss">* </span>**Temporal structure is preserved:** Weather variables maintain their inherent autocorrelation and smooth trajectories.</span>
-<span id="cb6-386"><a href="#cb6-386"></a><span class="ss">* </span>**Physical relationships are respected:** Imputed values reflect the conditional dependencies between meteorological variables.</span>
-<span id="cb6-387"><a href="#cb6-387"></a><span class="ss">* </span>**Uncertainty is acknowledged:** Flagged imputed values allow the model to potentially learn whether missingness itself is informative.</span>
-<span id="cb6-388"><a href="#cb6-388"></a><span class="ss">* </span>**Extreme gaps are handled conservatively:** Extended sensor failures are not artificially filled; genuine missing data remains missing.</span>
-<span id="cb6-389"><a href="#cb6-389"></a></span>
-<span id="cb6-390"><a href="#cb6-390"></a>The resulting dataset is complete, statistically sound, and ready for exploratory data analysis and advanced modeling.</span>
-<span id="cb6-391"><a href="#cb6-391"></a></span>
-<span id="cb6-394"><a href="#cb6-394"></a><span class="in">```{r}</span></span>
-<span id="cb6-395"><a href="#cb6-395"></a><span class="co">#| label: save-clean-data</span></span>
-<span id="cb6-396"><a href="#cb6-396"></a><span class="co">#| include: false</span></span>
-<span id="cb6-397"><a href="#cb6-397"></a></span>
-<span id="cb6-398"><a href="#cb6-398"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"data"</span>)) {</span>
-<span id="cb6-399"><a href="#cb6-399"></a>  <span class="fu">dir.create</span>(<span class="st">"data"</span>)</span>
-<span id="cb6-400"><a href="#cb6-400"></a>}</span>
-<span id="cb6-401"><a href="#cb6-401"></a></span>
-<span id="cb6-402"><a href="#cb6-402"></a><span class="fu">saveRDS</span>(df_clean, <span class="st">"data/df_clean.rds"</span>)</span>
-<span id="cb6-403"><a href="#cb6-403"></a></span>
-<span id="cb6-404"><a href="#cb6-404"></a><span class="in">```</span></span>
+<span id="cb6-354"><a href="#cb6-354"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"data"</span>)) {</span>
+<span id="cb6-355"><a href="#cb6-355"></a>  <span class="fu">dir.create</span>(<span class="st">"data"</span>)</span>
+<span id="cb6-356"><a href="#cb6-356"></a>}</span>
+<span id="cb6-357"><a href="#cb6-357"></a><span class="fu">saveRDS</span>(df_clean, <span class="st">"data/df_clean.rds"</span>)</span>
+<span id="cb6-358"><a href="#cb6-358"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
