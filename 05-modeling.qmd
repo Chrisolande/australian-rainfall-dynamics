@@ -502,7 +502,7 @@ model_summary %>%
     full_width = FALSE,
     position = "center"
   ) %>%
-  row_spec(7, bold = TRUE, background = "#e6f3ff") %>%
+  row_spec(7, bold = TRUE, background = "#e6f3ff", color = "#212529") %>%
   add_footnote(
     c("AIC: Akaike Information Criterion (Lower is better)", 
       "Total Gain is calculated relative to the maximum improvement achieved by Model 6."),

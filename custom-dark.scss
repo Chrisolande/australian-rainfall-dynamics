@@ -17,7 +17,7 @@ pre.sourceCode {
     border-left-color: $primary;
 }
 
-// table styling for dark mode
+// Standard tables
 table {
     thead {
         background-color: #2d2d2d;
@@ -50,7 +50,7 @@ table {
     }
 }
 
-// callouts for dark mode
+// Callouts
 .callout {
     &.callout-note {
         background-color: rgba(13, 202, 240, 0.1);
@@ -69,20 +69,19 @@ table {
     }
 }
 
-// code blocks
+// Code & Blockquotes
 code {
     background-color: #2d2d2d;
     color: #ff79c6;
 }
 
-// blockquotes
 blockquote {
     background-color: #2d2d2d;
     color: #adb5bd;
     border-left-color: $primary;
 }
 
-// R output
+// R Output
 .cell-output-stdout,
 .cell-output-stderr {
     background-color: #2d2d2d;
@@ -95,7 +94,6 @@ blockquote {
     border-left-color: #dc3545;
 }
 
-// copy button
 .code-copy-button {
     background-color: transparent;
     border-color: #495057;
@@ -106,4 +104,67 @@ blockquote {
         border-color: $primary;
         color: $primary;
     }
+}
+
+// Force Override for Generated Models (sjPlot/gt)
+.sjTable,
+.gt_table,
+.texreg {
+    color: inherit !important;
+    background-color: transparent !important;
+    border: none !important;
+    font-family: inherit !important;
+
+    caption {
+        color: #e9ecef !important;
+        font-weight: bold;
+    }
+
+    thead {
+        background-color: #2d2d2d !important;
+
+        tr,
+        th {
+            background-color: #2d2d2d !important;
+            color: #e9ecef !important;
+            border-bottom: 2px solid $primary !important;
+        }
+    }
+
+    tbody {
+        tr {
+            background-color: #1a1a1a !important;
+            color: #e9ecef !important;
+
+            &:nth-child(even) {
+                background-color: #252525 !important;
+            }
+
+            &:hover {
+                background-color: #2d2d2d !important;
+            }
+
+            // Fixes the "cond" / "zi" section headers
+            &.first-table-row,
+            &.tdata-first {
+                background-color: #1a1a1a !important;
+                color: $primary !important;
+                font-weight: bold;
+            }
+        }
+
+        td {
+            // Vital: Transparent bg allows dark row color to show
+            background-color: transparent !important;
+            color: #e9ecef !important;
+            border-bottom: 1px solid #3d3d3d !important;
+            border-top: none !important;
+        }
+    }
+}
+
+.sjTable a,
+.gt_table a {
+    color: $primary !important;
+    text-decoration: none;
 }
