@@ -1,10 +1,9 @@
-
 # Exploratory Data Analysis {#sec-eda}
 ## Temporal and Meteorological Drivers of Australian Rainfall
 
 ---
 
-> **Study Context.** This analysis investigates the distributional and structural properties of daily rainfall data collected across Australian weather stations. The findings reported here directly inform the feature engineering and model architecture decisions made in subsequent modelling stages.
+> **Chapter Context.** This chapter investigates the distributional and structural properties of the daily rainfall data, using findings from the data preparation chapter (@sec-data) as its starting point rather than repeating the missingness diagnostics performed there. The analyses proceed in a deliberate sequence: target variable distribution, bivariate predictor correlations, temporal dynamics, pressure analysis, seasonal patterns, and feature interactions. Each section produces a specific finding that motivates a corresponding decision in the feature engineering or model specification stages.
 
 ---
 
@@ -28,43 +27,45 @@ librarian::shelf(
   patchwork
 )
 
-
 df_clean <- readRDS(here::here("data", "df_clean.rds"))
 df_final <- read_csv(here::here("data", "df_final.csv"))
 
 source(here::here("utils.R"))
 ```
 
+---
 
-## Data Quality and Missingness
+## Data Quality Summary {#sec-data-quality}
 
-Before any substantive analysis can proceed, a thorough audit of data completeness is necessary. Modelling decisions made in response to missing data have cascading consequences for statistical validity.
+A thorough investigation of missingness is documented in @sec-data and summarised briefly here for continuity. The full diagnostic pipeline co-missingness analysis, temporal structural break detection, ghost sensor identification, and a weather-conditionality test established the following picture.
+
+The dataset contains 314,146 missing entries in total, distributed highly unevenly across features. The four most affected variables are `sunshine` (47.7% missing), `evaporation` (42.5%), `cloud9am` (approximately 40%), and `cloud3pm` (approximately 37%). Their missingness is not independent: co-missing rates between any pair of these four variables range from 67% to 93%, confirming that they fail together at the station level rather than through separate independent sensor faults. This is Missing Not At Random at the station level, driven by instrumentation deployment profiles.
+
+A weather-conditionality test confirmed that sunshine missingness does not covary with rainfall amounts: the missing rate is 47.8% on dry days and 47.2% on rainy days. Missingness is station-conditional rather than outcome-conditional, meaning imputed values do not introduce directional bias into the training labels.
+
+The core dynamic variables pressure, wind speed, temperature, and humidity exhibit missingness below 10% and are available across virtually all observations.
 
 ```{r}
-#| label: missing-values
+#| label: missing-values-summary
 #| echo: true
 #| message: false
 #| warning: false
 
 total_na <- sum(is.na(df_clean))
-print(paste("Total Missing values:", total_na))
+print(paste("Total missing values:", total_na))
 
 missing_val(df_clean)
 ```
 
-The dataset contains 314,146 missing entries in total, but the distribution of this missingness is highly uneven across features and carries interpretable meaning.
+**Resolution.** A three-stage hybrid imputation pipeline was applied in @sec-data: binary missingness flags, linear temporal interpolation bounded by a five-day cap, and two-pass Random Forest imputation via `missRanger` and targeted `mice`. Ghost sensor observations, station-variable pairs with more than 90% missingness across the full window, were reverted to missing after the pipeline rather than filled with unsupported synthetic values. The imputed dataset `df_final` is used throughout the remainder of this chapter. The raw dataset `df_clean` is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.
 
-The most severely affected variables are `sunshine` (47.7% missing) and `evaporation` (42.5% missing). Both require specialised instrumentation, sunshine recorders and evaporation pans, that are not uniformly deployed across all weather stations in the network. Their missingness is therefore not random with respect to geography, which means simple listwise deletion (discarding any row containing a missing value) would eliminate nearly half the dataset and introduce a systematic geographic bias toward well-resourced stations. Cloud cover observations (`cloud3pm` and `cloud9am`) are missing in approximately 37–40% of records, consistent with the same station-coverage explanation.
-
-By contrast, the core dynamic variables; pressure, wind speed, and temperature exhibit missingness below 10%. These instruments are standard across virtually all monitoring stations.
-
-**Modelling implication.** The concentration of missingness in potentially predictive features (sunshine and evaporation both exhibit meaningful correlation with rainfall, as shown in @sec-correlation) creates a direct conflict: discarding these variables avoids imputation complexity but sacrifices predictive signal, while discarding rows sacrifices sample size and introduces bias. This finding provides the empirical justification for the **Random Forest imputation strategy** adopted in this study. Imputation preserves both the sample and the features, at the cost of introducing uncertainty that should be acknowledged in downstream inference.
+**Modelling implication.** The concentration of missingness in `sunshine` and `evaporation`, both of which exhibit meaningful correlation with rainfall, as shown in @sec-correlation, creates a direct trade-off: discarding these variables avoids imputation complexity but sacrifices predictive signal, while listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations. The Random Forest imputation strategy in @sec-data resolves this trade-off by preserving both sample and features.
 
 ---
 
 ## Distributional Properties of the Target Variable
 
-Understanding the marginal distribution of the response variable is a prerequisite for selecting an appropriate model family. A Gaussian assumption, for instance, is not merely a computational convenience it carries substantive claims about the data-generating process.
+Understanding the marginal distribution of the response variable is a prerequisite for selecting an appropriate model family. A Gaussian assumption carries substantive claims about the data-generating process that can be directly tested.
 
 ```{r}
 #| label: target-stats
@@ -81,7 +82,7 @@ rainfall_stats <- df_clean %>%
     min = min(rainfall),
     max = max(rainfall),
     q25 = quantile(rainfall, 0.25),
-    q75 = quantile(rainfall, .75),
+    q75 = quantile(rainfall, 0.75),
     iqr = IQR(rainfall),
     n_zeros = sum(rainfall == 0),
     pct_zeros = mean(rainfall == 0) * 100,
@@ -130,19 +131,19 @@ rain_check %>%
   )
 ```
 
-The descriptive statistics reveal a distribution that is fundamentally incompatible with standard Gaussian modelling assumptions.
+The descriptive statistics reveal a distribution fundamentally incompatible with Gaussian modelling assumptions.
 
-**Zero-inflation.** The most consequential property is that 64.05% of the 142,199 recorded observations are dry days (rainfall = 0 mm). The median is zero. This is not a quirk of rounding or encoding: the data-generating mechanism genuinely produces two qualitatively different outcomes, no rain falling at all, versus some positive amount of rain falling. Any model that treats the response as a single continuous variable will be forced to place probability mass on negative values and will systematically misestimate the probability of the zero outcome.
+**Zero-inflation.** 64.05% of the 142,199 recorded observations are dry days (rainfall = 0 mm). The median is zero. The data-generating mechanism genuinely produces two qualitatively different outcomes, no rain at all versus some positive amount and any model treating the response as a single continuous variable will be forced to place probability mass on negative values and will systematically misestimate the probability of the zero outcome.
 
-**Heavy tails.** Among the non-zero observations, the distribution is severely right-skewed (skewness = 9.84). The standard deviation (8.48 mm) is nearly four times the mean (2.36 mm), indicating that the "average" is being pulled by a small number of extreme events. Kurtosis of 181.15 compared to 3 for a normal distribution confirms that such extremes occur far more frequently than a Gaussian model would predict. The maximum recorded value is 371 mm, and 151 events exceed 100 mm.
+**Heavy tails.** Among non-zero observations, the distribution is severely right-skewed (skewness = 9.84). The standard deviation (8.48 mm) is nearly four times the mean (2.36 mm). Kurtosis of 181.15 compared to 3 for a normal distribution confirms that extreme events occur far more frequently than a Gaussian model would predict. The maximum recorded value is 371 mm, and 151 events exceed 100 mm.
 
-**Modelling implication.** The conjunction of zero-inflation and extreme positive skew means that a single-component model is insufficient. The data implicitly poses two separate questions: **Does rain occur?** (a binary classification problem) and **Given that it does, how much falls?** (a positive continuous regression problem). This motivates the **Hurdle Model** or **Zero-Inflated Gamma** framework adopted in subsequent analysis, which explicitly separates these two sub-problems rather than conflating them.
+**Modelling implication.** The conjunction of zero-inflation and extreme positive skew means a single-component model is insufficient. The data implicitly poses two separate questions: does rain occur (binary classification) and, given that it does, how much falls (positive continuous regression). This motivates the Zero-Inflated Gamma framework adopted in subsequent analysis.
 
 ---
 
 ## Bivariate Correlation Structure {#sec-correlation}
 
-With the distributional properties established, we next examine the linear and monotonic relationships between the candidate predictors and the rainfall response. Because rainfall is heavily skewed and the relationships are unlikely to be linear, Spearman rank correlation is used throughout a non-parametric measure that captures monotonic association without requiring linearity or normality.
+Because rainfall is heavily skewed and the relationships are unlikely to be linear, Spearman rank correlation is used throughout, a non-parametric measure that captures monotonic association without requiring linearity or normality.
 
 ```{r}
 #| label: correlation-table
@@ -183,7 +184,7 @@ cors %>%
 
 ```{r}
 #| label: fig-correlation-matrix
-#| fig-cap: "Spearman Correlation Matrix of Meteorological Features. Red indicates negative correlation; Blue indicates positive correlation."
+#| fig-cap: "Spearman Correlation Matrix of Meteorological Features. Red indicates negative correlation; blue indicates positive correlation. Coefficients shown for pairs where |r| > 0.3."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -225,7 +226,7 @@ cor_melt %>%
   ) +
   labs(
     title = "Feature Correlation Matrix",
-    subtitle = "Strongest predictors: Humidity (Positive) and Sunshine (Negative)"
+    subtitle = "Strongest predictors: Humidity (positive) and Sunshine (negative)"
   )
 ```
 
@@ -263,15 +264,13 @@ cocor_result <- cocor.dep.groups.overlap(
 print(cocor_result)
 ```
 
-The correlation analysis reveals two coherent clusters of meteorological drivers, each with a clear physical interpretation.
+**Moisture indicators (positive association).** `Humidity3pm` ($r = 0.44$) and cloud cover ($r \approx 0.37$) show the strongest positive associations. High afternoon humidity indicates moisture has accumulated in the lower atmosphere over the course of the day. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics.
 
-**Moisture indicators (positive association).** `Humidity3pm` ($r = 0.44$) and cloud cover ($r \approx 0.37$) show the strongest positive associations with rainfall. High afternoon humidity indicates that moisture has accumulated in the lower atmosphere over the course of the day, creating conditions favourable for precipitation. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics that generate it.
+**Radiation and evaporation indicators (negative association).** `Sunshine` ($r = -0.40$) and `evaporation` ($r = -0.31$) exhibit the strongest negative associations. Long sunshine hours proxy clear-sky, high-pressure conditions. High evaporation signals warm, dry, low-humidity surface conditions.
 
-**Radiation and evaporation indicators (negative association).** `Sunshine` ($r = -0.40$) and `evaporation` ($r = -0.31$) exhibit the strongest negative associations. Long sunshine hours are a proxy for clear-sky, high-pressure conditions in which precipitation is unlikely. High evaporation similarly signals warm, dry, low-humidity surface conditions.
+**Multicollinearity.** The correlation heatmap (@fig-correlation-matrix) reveals substantial redundancy among predictors. `pressure9am` and `pressure3pm` share $r = 0.96$, and the two temperature readings are similarly collinear. This directly motivates VIF-based feature selection in the feature engineering chapter.
 
-**Multicollinearity.** The correlation heatmap (@fig-correlation-matrix) also reveals substantial redundancy among predictors. The morning and afternoon readings of the same variable are typically highly correlated `pressure9am` and `pressure3pm` share a Spearman correlation of $r = 0.96$, and the two temperature readings are similarly collinear. Including both members of such pairs in a regression model inflates standard errors and destabilises coefficient estimates, a problem known as multicollinearity. This observation directly motivates VIF-based feature selection in the modelling stage.
-
-**Statistical validation.** A formal comparison of the two strongest opposing predictors (humidity and sunshine) using Steiger's Z-test for dependent correlations yields $z \approx 188.9$, $p < 2.2 \times 10^{-16}$. With $N > 140,000$ observations, virtually any non-trivial effect will achieve statistical significance, so the p-value alone is uninformative here. The magnitude of the Z-statistic, however, confirms that the differential predictive strength of these two variables is not a sampling artefact. Humidity and sunshine represent genuinely distinct physical forces operating in opposing directions on the probability of precipitation.
+**Statistical validation.** Steiger's Z-test comparing the two strongest opposing predictors yields $z \approx 188.9$, $p < 2.2 \times 10^{-16}$. With $N > 140,000$, the p-value alone is uninformative; the Z-statistic magnitude confirms the differential predictive strength is not a sampling artefact. Humidity and sunshine represent genuinely distinct physical forces operating in opposing directions.
 
 ---
 
@@ -319,11 +318,9 @@ df_clean %>%
   scroll_box(width = "100%")
 ```
 
-Two temporal scales are examined here: the seven-day weekly cycle (which reflects human activity patterns) and the twelve-month annual cycle (which reflects the Earth's orbital and atmospheric patterns). Their effects on rainfall frequency are qualitatively different.
+**Weekly cycle.** The distribution of wet days across the days of the week is approximately uniform, ranging from 13.8% to 14.7%. This near-uniformity is physically expected: atmospheric processes operate independently of the social calendar. The slight variation is consistent with sampling noise, suggesting `Day` carries little predictive information.
 
-**Weekly cycle.** The distribution of wet days across the days of the week is approximately uniform, ranging from 13.8% on weekends to 14.7% on Tuesdays. This near-uniformity is physically expected: the atmospheric processes that produce precipitation operate independently of the human social calendar. The slight variation observed is consistent with random sampling noise rather than a systematic signal. This suggests that `Day` carries little predictive information and, at best, warrants treatment as a minor control variable rather than a substantive predictor.
-
-**Annual cycle.** The monthly distribution tells a markedly different story. June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with the Southern Hemisphere winter, when frontal weather systems from the Southern Ocean bring prolonged rainfall to southern Australia. The summer months February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation of month by day confirms that this seasonal signal is not an artefact of any particular day of the week: June and July show consistently elevated counts across all seven days (roughly 750–800 events per day), while February counts drop uniformly to approximately 450–480 per day. `Month` is thus a legitimate predictor warranting explicit inclusion in the model specification.
+**Annual cycle.** June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with Southern Hemisphere winter frontal systems from the Southern Ocean. February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation confirms this seasonal signal is not an artefact of any particular day of the week. `Month` is therefore a legitimate predictor warranting explicit model inclusion.
 
 ### Day-to-Day Persistence: A Markov Chain Analysis {#sec-markov}
 
@@ -361,6 +358,7 @@ cramers_v <- cramer_v(cont_table)
 
 cat("\nEffect Size Interpretation\n")
 cat(sprintf("V = %.4f: ", cramers_v))
+
 if (cramers_v < 0.1) {
   cat("Negligible Association\n")
 } else if (cramers_v < 0.3) {
@@ -374,7 +372,7 @@ if (cramers_v < 0.1) {
 
 ```{r}
 #| label: fig-markov-chain
-#| fig-cap: "Markov Chain Transition Matrix: Visualizing the 'Persistence Effect' in Australian Rainfall."
+#| fig-cap: "Markov Chain Transition Matrix. The asymmetry between dry-to-dry (85%) and wet-to-wet (47%) probabilities is the central finding: dry states are self-reinforcing, wet states are transient."
 #| fig-width: 8
 #| fig-height: 7
 #| echo: true
@@ -403,7 +401,7 @@ markov_data %>%
   labs(
     title = "Markov Chain: Rain Persistence Effect",
     subtitle = sprintf(
-      "X^2 = %.2f, p < 0.001, Cramer's V = %.3f (Moderate Association)\nYesterday's rain strongly predicts today's rain state.",
+      "X^2 = %.2f, p < 0.001, Cramer's V = %.3f (Moderate Association)\nYesterday's rain state strongly predicts today's rain state.",
       chi_result$statistic,
       cramers_v
     ),
@@ -419,13 +417,11 @@ markov_data %>%
   )
 ```
 
-A natural question when analysing time-series weather data is whether consecutive days exhibit statistical dependence, in other words, does knowing whether it rained yesterday improve our prediction of whether it will rain today? We model this as a first-order Markov Chain, where the state space is binary (rain / no rain) and the transition probabilities are estimated directly from the data.
+The Chi-squared test yields $\chi^2 \approx 13,718$, $p < 0.001$, rejecting daily independence by a large margin. Cramer's V ($V \approx 0.31$) confirms a moderate practical effect size.
 
-The Pearson Chi-squared test of independence yields $\chi^2 \approx 13,718$, $p < 0.001$, rejecting the null hypothesis of daily independence by a large margin. Cramer's V ($V \approx 0.31$) translates this to a moderate practical effect size, confirming that the relationship is not merely a consequence of the large sample.
+The transition matrix (@fig-markov-chain) reveals an important asymmetry. When the previous day was dry, there is an 85% probability of remaining dry, high-pressure systems are persistent and self-reinforcing. When the previous day was wet, there is only a 47% probability of continued rain, meaning wet events are more transient. This asymmetry has a direct atmospheric interpretation: anticyclonic systems can persist for days to weeks, while frontal systems pass through more quickly.
 
-The estimated transition matrix (@fig-markov-chain) reveals an important asymmetry between the two weather states. When the previous day was dry, there is an 85% probability of remaining dry the high-pressure systems that suppress rainfall are persistent and self-reinforcing. When the previous day was wet, however, there is only a 47% probability of continued rain, meaning rain events are more transient and less self-sustaining than dry spells. This asymmetry has a clear atmospheric interpretation: large anticyclonic systems that block rainfall can persist for days to weeks, while frontal systems that bring rain typically pass through more quickly.
-
-The practical implication for modelling is that `rain_today` (lagged one day) carries meaningful predictive signal and should be considered as a candidate feature. However, its modest effect size also demonstrates that autocorrelation alone is insufficient as a predictor: the wet state is too transient for a persistence-only rule to be reliable, and other meteorological covariates are necessary to capture the onset and cessation of rainfall events.
+`rain_today` (lagged one day) carries meaningful predictive signal. Its modest effect size also demonstrates that autocorrelation alone is insufficient: the wet state is too transient for a persistence-only rule, and other meteorological covariates are necessary.
 
 ### Dry Spell Dynamics and Temporal Decay {#sec-dry-spell}
 
@@ -465,7 +461,6 @@ wald_test <- aod::wald.test(
   Sigma = vcov(logit_model),
   Terms = 2
 )
-
 or_results <- tidy(logit_model, conf.int = TRUE, exponentiate = TRUE) %>%
   filter(term == "days_since_rain")
 
@@ -498,7 +493,7 @@ print(lrt_result)
 
 ```{r}
 #| label: fig-dry-spell
-#| fig-cap: "The 'Drying Effect': Empirical vs. Modeled Probability of Rainfall. The probability of rain decays exponentially as the dry spell lengthens."
+#| fig-cap: "The drying effect: empirical vs. modelled probability of rainfall by days since last rain. The rapid initial decline followed by a plateau motivates a spline parameterisation rather than a linear logistic term."
 #| fig-width: 9
 #| fig-height: 7
 #| echo: true
@@ -564,23 +559,19 @@ ggplot() +
     y = "Probability of Rainfall",
     title = "Dry Spell Effect on Rain Probability",
     subtitle = sprintf(
-      "Logistic Regression: B = %.4f, Wald χ2 = %.2f, p < 0.001\nEach additional dry day reduces odds of rain by %.1f%%",
+      "Logistic Regression: B = %.4f, Wald chi2 = %.2f, p < 0.001\nEach additional dry day reduces odds of rain by %.1f%%",
       coef(logit_model)[2],
       wald_test$result$chi2[1],
       (1 - or_results$estimate) * 100
     ),
-    caption = "Points: Empirical probabilities ± 95% CI | Line: Logistic model fit"
+    caption = "Points: Empirical probabilities +/- 95% CI | Line: Logistic model fit"
   ) +
   theme_minimal()
 ```
 
-Beyond the day-to-day Markov persistence documented above, we investigate a longer-horizon question: does the *cumulative length* of an ongoing dry spell influence the probability of rain on any given day? This is framed as a survival-style problem in which the "event" is the return of rainfall after a period of absence.
+A logistic regression of daily rain occurrence on `days_since_rain` yields $OR = 0.835$ (Wald $\chi^2 \approx 8099$, $p < 0.001$): each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the progressive establishment of stable high-pressure ridges documented in the Markov analysis.
 
-A logistic regression of daily rain occurrence on `days_since_rain` yields a significant negative coefficient (Wald $\chi^2 \approx 8099$, $p < 0.001$), with an odds ratio of $OR = 0.835$. Concretely, each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the feedback mechanism described in the Markov analysis: prolonged dry conditions are associated with the establishment of stable high-pressure ridges that become progressively more resistant to disruption by incoming frontal systems.
-
-The linear logistic model is, however, an approximation. A Likelihood Ratio Test comparing it against a four-degree-of-freedom natural spline model is highly significant (LRT $\chi^2 \approx 7678$, $p < 0.001$), indicating meaningful non-linearity in the decay trajectory. Examining the empirical probabilities in @fig-dry-spell, the pattern is clear: rain probability falls sharply from approximately 48% on Day 1 to around 18% by Day 10, after which the decline slows considerably, plateauing in the 12–16% range through Days 15 to 30. The linear model underestimates the steepness of the initial decline and overestimates the rate of decline in long droughts.
-
-This "rapid-then-gradual" decay pattern suggests that models incorporating dry spell duration as a predictor would benefit from a spline parameterisation of `days_since_rain` rather than a simple linear term.
+The linear model is however an approximation. The LRT against a four-knot natural spline is highly significant ($\chi^2 \approx 7678$, $p < 0.001$). The empirical pattern (@fig-dry-spell) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12–16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates long-drought decline rates. This "rapid-then-gradual" decay motivates a spline parameterisation of `days_since_rain` rather than a simple linear term.
 
 ---
 
@@ -609,8 +600,8 @@ pressure_data %>%
   stat_qq_line(color = "red") +
   facet_wrap(~metric, scales = "free") +
   labs(
-    title = "Q-Q Plots: Checking Normality Assumption",
-    subtitle = "Points should hug the red line. Slight deviations are acceptable due to large N (CLT)."
+    title = "Q-Q Plots: Normality Check for Pressure Variables",
+    subtitle = "Modest tail deviations acceptable at N > 140,000 (CLT applies)."
   ) +
   theme_minimal()
 ```
@@ -636,7 +627,7 @@ stats_results <- test_data %>%
 stats_results %>%
   select(metric, group1, group2, statistic, df, p.adj, p.adj.signif) %>%
   kable(
-    caption = "Welch's Two Sample t-test Results (Bonferroni-Holm Corrected)",
+    caption = "Welch Two-Sample t-test Results (Bonferroni-Holm Corrected)",
     digits = 3,
     col.names = c(
       "Metric",
@@ -680,7 +671,7 @@ effect_sizes %>%
 
 ```{r}
 #| label: fig-pressure-violin
-#| fig-cap: "Violin Plots of Atmospheric Pressure Variables by Rainfall State."
+#| fig-cap: "Violin plots of atmospheric pressure variables by rainfall state. The pressure_change panel shows the most pronounced separation."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -717,7 +708,7 @@ ggplot(test_data, aes(rain_today, value, fill = rain_today)) +
   scale_fill_manual(values = c("No" = "#B0B0B0", "Yes" = "#0072B2")) +
   labs(
     title = "Atmospheric Pressure vs. Rainfall",
-    subtitle = "Statistical validation using Welch's t-test and Cohen's d effect size",
+    subtitle = "Welch's t-test with Cohen's d effect sizes",
     y = "Pressure (hPa)",
     x = "Did it rain?"
   ) +
@@ -730,7 +721,7 @@ ggplot(test_data, aes(rain_today, value, fill = rain_today)) +
 
 ```{r}
 #| label: fig-pressure-means
-#| fig-cap: "Mean Pressure Levels and Diurnal Drop by Rainfall State."
+#| fig-cap: "Mean pressure levels and diurnal drop by rainfall state. The suppressed pressure drop on rainy days (1.3 vs. 2.7 hPa) is a stronger discriminating signal than the absolute pressure baseline."
 #| fig-width: 10
 #| fig-height: 6
 #| echo: true
@@ -757,8 +748,8 @@ ggplot(data_wide, aes(x = rain_today, y = value, fill = rain_today)) +
   scale_fill_manual(values = c("No" = "#B0B0B0", "Yes" = "#0072B2")) +
   scale_x_discrete(labels = c("No" = "Dry Days", "Yes" = "Rainy Days")) +
   labs(
-    title = "Rainy Days Exhibit Lower Baseline Pressure and Suppressed Diurnal Variation",
-    subtitle = "Lower absolute pressure at 9am is the key distinguishing factor",
+    title = "Rainy Days Show Lower Baseline Pressure and Suppressed Diurnal Variation",
+    subtitle = "The diurnal pressure drop is the stronger discriminating signal",
     y = "Pressure (hPa) / Drop (hPa)",
     x = NULL
   ) +
@@ -772,15 +763,11 @@ ggplot(data_wide, aes(x = rain_today, y = value, fill = rain_today)) +
   )
 ```
 
-Atmospheric pressure is one of the most physically direct predictors of precipitation: low-pressure systems force air upward, promoting cooling, condensation, and rainfall, while high-pressure systems suppress this process. We analyse both the absolute pressure level and its diurnal change (morning to afternoon) as potential features.
+**Normality.** Q-Q plots show modest tail deviations, but with $N > 140,000$ the CLT ensures normally distributed sample means. Welch's t-test is therefore valid without equal-variance assumptions, and Bonferroni-Holm correction is applied for multiple comparisons.
 
-**Normality.** The Q-Q plots show modest tail deviations from normality in the pressure variables, but with $N > 140,000$ observations the Central Limit Theorem ensures that sample means are approximately normally distributed regardless. Welch's t-test which does not assume equal variances is therefore valid here, and multiple comparison correction is applied via the Bonferroni-Holm procedure.
+**Baseline pressure.** Rainy days show mean pressure of 1015 hPa at 9:00 AM versus 1018.5 hPa on dry days. Cohen's $d \approx 0.28$–$0.48$ represents a small-to-medium effect, consistent with absolute pressure being necessary but not sufficient for rain.
 
-**Baseline pressure.** Rainy days are characterised by measurably lower mean pressure: 1015 hPa at 9:00 AM compared to 1018.5 hPa on dry days (@fig-pressure-means). Welch's t-test confirms the difference is highly significant ($p < 0.001$), with Cohen's $d \approx 0.28$–$0.48$ a small-to-medium effect that is consistent with the expectation that absolute pressure is necessary but not sufficient for rain.
-
-**Diurnal pressure change.** The more distinctive signal lies in the *change* in pressure across the day. On dry days, pressure drops by a mean of 2.7 hPa from morning to afternoon the standard thermal low driven by daytime solar heating of the surface. On rainy days, this drop is suppressed to just 1.3 hPa, because cloud cover reduces insolation and limits surface warming. This suppression of the normal diurnal cycle is a subtler but remarkably informative signal: Cohen's $d = -0.72$ for `pressure_change` represents a medium effect size, stronger than either of the absolute pressure readings individually.
-
-This finding suggests that the *rate of pressure change* during the day  not just its absolute level may be a more discriminating feature for modelling rainfall occurrence.
+**Diurnal pressure change.** On dry days, pressure drops 2.7 hPa from morning to afternoon, the standard thermal low from daytime surface heating. On rainy days, this drop is suppressed to 1.3 hPa, because cloud cover reduces insolation. Cohen's $d = -0.72$ for `pressure_change` is a medium effect, stronger than either absolute pressure reading individually. The rate of pressure change during the day is the more discriminating feature.
 
 ---
 
@@ -816,7 +803,7 @@ plot_data <- df_final %>%
 
 ```{r}
 #| label: fig-monthly-dist
-#| fig-cap: "Ridgeline Plot of Monthly Log-Rainfall Distributions. Shifting peaks illustrate how rainfall intensity varies across the year relative to the global median (dashed line)."
+#| fig-cap: "Ridgeline plot of monthly log-rainfall distributions. Shifting peaks illustrate how rainfall intensity varies cyclically relative to the global median (dashed line)."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -844,7 +831,7 @@ ggplot(plot_data, aes(log_rain, month_label, fill = after_stat(x))) +
   scale_x_continuous(breaks = pretty_breaks()) +
   labs(
     title = "Monthly Rainfall Distribution Patterns",
-    subtitle = "Solid lines mark monthly medians vs. the Global Median (dashed).\nDistribution shape and centre shift cyclically relative to the global baseline.",
+    subtitle = "Solid lines mark monthly medians vs. the global median (dashed).",
     x = "Rainfall Amount (mm, log scale)",
     y = NULL
   ) +
@@ -853,7 +840,7 @@ ggplot(plot_data, aes(log_rain, month_label, fill = after_stat(x))) +
 
 ```{r}
 #| label: fig-seasonal-facet
-#| fig-cap: "Seasonal Rainfall Patterns by Meteorological Season. Summer months exhibit higher variance and intensity compared to Winter."
+#| fig-cap: "Seasonal rainfall patterns by meteorological season. Summer exhibits high variance and a pronounced right tail; winter shows narrower, more predictable distributions."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -871,10 +858,9 @@ seasonal_data <- df_final %>%
     season = factor(season, levels = c("Summer", "Autumn", "Winter", "Spring"))
   )
 
-plot_data_seasonal <- seasonal_data %>%
-  mutate(month_label = factor(month.abb[month], levels = month.abb))
-
-ggplot(plot_data_seasonal, aes(rainfall, month_label, fill = season)) +
+seasonal_data %>%
+  mutate(month_label = factor(month.abb[month], levels = month.abb)) %>%
+  ggplot(aes(rainfall, month_label, fill = season)) +
   geom_density_ridges(
     scale = 1.5,
     alpha = 0.7,
@@ -905,7 +891,7 @@ ggplot(plot_data_seasonal, aes(rainfall, month_label, fill = season)) +
 
 ```{r}
 #| label: fig-mean-rain-bar
-#| fig-cap: "Average Rainfall Intensity (Non-Zero Days) by Month."
+#| fig-cap: "Average rainfall intensity on non-zero days by month. February records the highest mean intensity at 10.1 mm, nearly double July's 4.9 mm."
 #| fig-width: 10
 #| fig-height: 6
 #| echo: true
@@ -924,7 +910,7 @@ monthly_stats %>%
   scale_fill_viridis_c(option = "mako", direction = -1) +
   labs(
     title = "Mean Rainfall by Month (Non-Zero Days)",
-    subtitle = "Confirms seasonal variation justifying cyclical encoding",
+    subtitle = "Seasonal variation in intensity is distinct from seasonal variation in frequency",
     y = "Mean Rainfall (mm)",
     x = NULL
   ) +
@@ -937,15 +923,13 @@ monthly_stats %>%
   )
 ```
 
-The earlier analysis of monthly wet-day frequency @sec-frequency established *when* rain tends to occur. This section investigates a separate question: when rain does occur, does the season affect *how much falls*?
+The earlier frequency analysis (@sec-frequency) established *when* rain tends to occur. This section investigates *how much* falls when it does.
 
-The ridgeline plots (@fig-monthly-dist) reveal a clear and cyclical pattern in rainfall intensity. January and February distributions are shifted systematically to the right of the global median, indicating that summer storms though they occur less frequently than winter fronts are considerably more intense when they do arrive. The distributions for June through August cluster to the left, representing lower but more consistent rainfall. The transition months (March–May and September–November) occupy an intermediate position that smoothly connects these two poles.
+January and February distributions are shifted systematically right of the global median: summer storms are considerably more intense when they arrive, even though they occur less frequently. June through August cluster left, representing lower but more consistent rainfall. February records the highest mean intensity per wet day at 10.1 mm, nearly double July's 4.9 mm.
 
-The seasonal breakdown (@fig-seasonal-facet) reveals an additional distinction in distributional *shape*. Summer rainfall has a wide interquartile range and a pronounced right tail extending beyond 100 mm per day, reflecting the episodic and convective nature of summer storms. Winter rainfall has a narrower, more peaked distribution: events are more predictable in magnitude but lighter on average. February records the highest mean intensity per wet day at 10.1 mm, nearly double July's 4.9 mm (@fig-mean-rain-bar).
+Summer rainfall has a wide interquartile range and a pronounced right tail beyond 100 mm per day, reflecting episodic convective storms. Winter shows a narrower, more peaked distribution. Both the frequency variation (more rain in winter) and the intensity variation (heavier rain in summer) carry independent information; a complete model must account for both dimensions.
 
-Critically, this seasonal variation in intensity is *separate* from the seasonal variation in frequency. Both dimensions carry independent information: a model must account not only for the higher probability of rain in winter but also for the greater potential severity of rain in summer.
-
-**Encoding implication.** Because the seasonal cycle is continuous the transition from December to January is climatologically smooth treating `Month` as an unordered categorical variable discards information about the ordering and proximity of months. The preferred approach is **cyclical encoding** via sine and cosine transformations of the month number, which preserves the circular geometry of the annual cycle and allows the model to represent the smooth intensification from winter trough to summer peak.
+**Encoding implication.** Because the seasonal cycle is continuous the transition from December to January is climatologically smooth treating `Month` as unordered discards proximity information. Cyclical encoding via sine and cosine transformations of the month number preserves the circular geometry of the annual cycle.
 
 ### Statistical Validation
 
@@ -954,12 +938,10 @@ Critically, this seasonal variation in intensity is *separate* from the seasonal
 #| echo: true
 #| message: false
 
-seasonal_stats <- seasonal_data %>%
+seasonal_data %>%
   select(season, rainfall) %>%
   group_by(season) %>%
-  get_summary_stats(rainfall, type = "mean_sd")
-
-seasonal_stats %>%
+  get_summary_stats(rainfall, type = "mean_sd") %>%
   kable(
     caption = "Descriptive Statistics of Rainfall Intensity by Season",
     col.names = c("Season", "Variable", "N (Events)", "Mean (mm)", "SD (mm)")
@@ -977,17 +959,12 @@ epsilon_sq <- kruskal_effsize(rainfall ~ season, data = seasonal_data)
 
 tibble(
   Test = "Kruskal-Wallis Rank Sum Test",
-  `Chi-squared` = kw_result$statistic,
+  `Chi-squared` = round(kw_result$statistic, 2),
   df = kw_result$df,
-  `P-value` = kw_result$p,
-  `Effect Size` = epsilon_sq$effsize,
+  `P-value` = scales::pvalue(kw_result$p, accuracy = 0.001),
+  `Effect Size` = round(epsilon_sq$effsize, 4),
   Magnitude = as.character(epsilon_sq$magnitude)
 ) %>%
-  mutate(
-    `Chi-squared` = round(`Chi-squared`, 2),
-    `Effect Size` = round(`Effect Size`, 4),
-    `P-value` = scales::pvalue(`P-value`, accuracy = 0.001)
-  ) %>%
   kable(
     caption = "Statistical Significance of Seasonal Differences (Non-Parametric)",
     align = "lccccr"
@@ -998,10 +975,7 @@ tibble(
     position = "left"
   ) %>%
   add_footnote(
-    c(
-      "Effect size measured by Epsilon-squared.",
-      "Significance level: alpha = 0.05"
-    ),
+    c("Effect size: Epsilon-squared.", "Alpha = 0.05"),
     notation = "symbol"
   )
 ```
@@ -1034,7 +1008,7 @@ dunn_result %>%
 
 ```{r}
 #| label: fig-seasonal-stat-groups
-#| fig-cap: "Mean Seasonal Rainfall with Statistical Groupings. Shared letters indicate seasons that are not significantly different from one another (Dunn's test, p < 0.05)."
+#| fig-cap: "Mean seasonal rainfall with statistical groupings. Shared letters indicate seasons not significantly different from one another (Dunn's test, p < 0.05)."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -1043,15 +1017,13 @@ dunn_result %>%
 p_vals <- dunn_result$p.adj
 names(p_vals) <- paste(dunn_result$group1, dunn_result$group2, sep = "-")
 letters_vec <- multcompLetters(p_vals)$Letters
-
 letters_df <- data.frame(season = names(letters_vec), Letter = letters_vec)
 
-plot_data <- seasonal_data %>%
+seasonal_data %>%
   group_by(season) %>%
   summarise(mean_rain = mean(rainfall, na.rm = TRUE), n = n()) %>%
-  left_join(letters_df, by = "season")
-
-ggplot(plot_data, aes(x = season, y = mean_rain, fill = season)) +
+  left_join(letters_df, by = "season") %>%
+  ggplot(aes(x = season, y = mean_rain, fill = season)) +
   geom_col(alpha = 0.8, width = 0.7) +
   geom_text(aes(label = Letter), vjust = -0.5, size = 8, fontface = "bold") +
   geom_text(
@@ -1087,11 +1059,9 @@ ggplot(plot_data, aes(x = season, y = mean_rain, fill = season)) +
   )
 ```
 
-To move beyond visual inspection, we apply the Kruskal-Wallis test the non-parametric counterpart to one-way ANOVA, appropriate here because the rainfall distribution is far from normal. The null hypothesis is that the four seasons are drawn from the same underlying distribution of rainfall intensity.
+The Kruskal-Wallis test yields $\chi^2 = 230$, $p < 0.001$, strongly rejecting the null. The epsilon-squared effect size ($\eta^2 \approx 0.004$) is small the seasonal signal is real but accounts for only a minor fraction of total variance in rainfall intensity, reinforcing the necessity of a multivariate approach.
 
-The test yields $\chi^2 = 230$, $p < 0.001$, strongly rejecting the null. The epsilon-squared effect size ($\eta^2 \approx 0.004$), however, is classified as small. This warrants careful interpretation: the seasonal signal is real and not a sampling artefact, but season alone accounts for only a minor fraction of the total variance in rainfall intensity. Location, pressure regime, and other meteorological covariates contribute substantially to the remaining variance, an observation that reinforces the necessity of a multivariate modelling approach.
-
-Post-hoc pairwise comparisons via Dunn's test with Bonferroni correction identify three distinct statistical groups (@fig-seasonal-stat-groups). Summer stands alone as the most intense season ($\bar{x} = 9.1$ mm, significantly different from all others, $p < 0.001$). Autumn and Spring are statistically indistinguishable from each other ($p = 1.0$), forming a middle group of transitional intensity. Winter registers the lowest mean intensity ($\bar{x} = 5.5$ mm) and, while visually similar to Spring, is statistically distinct from it ($p_{\text{adj}} = 0.026$).
+Post-hoc Dunn's tests identify three distinct statistical groups (@fig-seasonal-stat-groups). Summer stands alone as the most intense season ($\bar{x} = 9.1$ mm, $p < 0.001$ vs. all others). Autumn and Spring are statistically indistinguishable ($p = 1.0$). Winter registers the lowest mean intensity ($\bar{x} = 5.5$ mm) and is statistically distinct from Spring ($p_\text{adj} = 0.026$).
 
 ---
 
@@ -1099,7 +1069,7 @@ Post-hoc pairwise comparisons via Dunn's test with Bonferroni correction identif
 
 ```{r}
 #| label: fig-interaction-rain-corner
-#| fig-cap: "Bivariate Density of Humidity vs. Sunshine, faceted by Rainfall Occurrence. Rain events concentrate tightly in the upper-left 'Rain Corner', justifying a multiplicative interaction term."
+#| fig-cap: "Bivariate density of Humidity3pm vs. Sunshine, faceted by rainfall occurrence. Rain events concentrate tightly in the upper-left 'Rain Corner' (high humidity, low sunshine), while dry days are dispersed broadly. This structural asymmetry justifies a multiplicative interaction term."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -1108,13 +1078,9 @@ Post-hoc pairwise comparisons via Dunn's test with Bonferroni correction identif
 df_final %>%
   group_by(location) %>%
   arrange(date) %>%
-  mutate(
-    rain_index_ref = ifelse(rainfall > 0, row_number(), NA_integer_)
-  ) %>%
+  mutate(rain_index_ref = ifelse(rainfall > 0, row_number(), NA_integer_)) %>%
   fill(rain_index_ref, .direction = "down") %>%
-  mutate(
-    days_since_rain = row_number() - lag(rain_index_ref)
-  ) %>%
+  mutate(days_since_rain = row_number() - lag(rain_index_ref)) %>%
   select(-rain_index_ref) %>%
   ggplot(aes(sunshine, humidity3pm)) +
   geom_density2d_filled(continuous_var = "ndensity", bins = 7) +
@@ -1122,7 +1088,7 @@ df_final %>%
   scale_fill_brewer(palette = "Blues") +
   labs(
     title = "Justifying Interaction: The 'Rain Corner'",
-    subtitle = "Rain (Right) concentrates in High Humidity/Low Sun, while No Rain (Left) is spread out.\nThis structural difference justifies a 'Sunshine * Humidity' interaction feature.",
+    subtitle = "Rain (right panel) concentrates in high humidity / low sunshine.\nDry days (left panel) are dispersed across feature space.\nThis structural asymmetry justifies a sunshine * humidity interaction term.",
     x = "Sunshine (hours)",
     y = "Humidity 3pm (%)"
   ) +
@@ -1134,32 +1100,28 @@ df_final %>%
   )
 ```
 
-The correlation analysis in @sec-correlation established that humidity and sunshine are individually among the strongest predictors of rainfall. A standard additive model would treat their effects as independent meaning the influence of humidity on rainfall probability does not depend on how much sunshine has occurred, and vice versa. This section tests whether that independence assumption is justified.
+The correlation analysis in @sec-correlation established that humidity and sunshine are individually among the strongest predictors. A standard additive model treats their effects as independent. This section tests whether that assumption holds.
 
-To do so, we examine the joint distribution of `Humidity3pm` and `Sunshine`, separately for days on which rain did and did not occur. If the two variables act independently, the joint distributions for the two weather states should be geometrically similar shifted, perhaps, but with the same basic shape. If they interact, the shapes will differ fundamentally.
+The bivariate density plots (@fig-interaction-rain-corner) reveal a striking structural difference. On dry days, the density is dispersed broadly across the humidity-sunshine space: high humidity can occur without rain under high-pressure suppression, and low sunshine can occur without rain under thin overcast. No single region clearly separates the two states.
 
-The bivariate density plots (@fig-interaction-rain-corner) reveal a striking structural difference. On dry days, the density is dispersed broadly across the humidity-sunshine space: it is possible to observe high humidity without rain (if other conditions, such as elevated pressure, suppress precipitation) and it is possible to have low sunshine without rain. There is no single region of feature space that cleanly separates dry from wet conditions based on these two variables alone.
+On rainy days, the density collapses into a tight cluster in the upper-left quadrant: high afternoon humidity (above approximately 50%) combined with low sunshine (below approximately 5 hours). This is the "Rain Corner". Neither condition alone is sufficient; both must coincide simultaneously. This is statistical interaction: the effect of one variable on the outcome is conditional on the level of the other.
 
-On rainy days, the picture is qualitatively different. The density collapses into a tight, concentrated cluster in the upper-left quadrant: high afternoon humidity (above approximately 50%) combined with low sunshine (below approximately 5 hours). This region which we call the **"Rain Corner"** captures the simultaneous presence of atmospheric moisture and the absence of solar conditions that would otherwise inhibit precipitation.
-
-The physical interpretation is intuitive: neither high humidity alone nor low sunshine alone is sufficient to produce rain. Both conditions must coincide. This is the definition of statistical interaction: the effect of one variable on the outcome is conditional on the level of another.
-
-**Modelling implication.** An additive model that includes `Humidity3pm` and `Sunshine` as separate terms will fail to recover this corner structure because it cannot represent the idea that their joint occurrence, rather than their individual magnitudes, is what matters. Capturing this behaviour requires a multiplicative interaction term ($\text{Humidity} \times \text{Sunshine}$) in the model specification, allowing the model to assign elevated probability to the "Rain Corner" region while leaving other areas of feature space relatively unaffected.
+**Modelling implication.** An additive model that includes `Humidity3pm` and `Sunshine` as separate terms cannot express the idea that their joint occurrence not their individual magnitudes is what matters. Capturing the Rain Corner requires a multiplicative interaction term ($\text{Humidity} \times \text{Sunshine}$) in the model specification.
 
 ---
 
 ## Summary and Modelling Implications
 
-The preceding analyses characterise the Australian rainfall dataset along several interconnected dimensions. Taken together, they point toward a specific set of modelling requirements.
+The preceding analyses characterise the dataset along six interconnected dimensions, each producing a specific modelling requirement.
 
-The **distributional structure** of the target variable 64% zeros, extreme positive skew, and kurtosis of 181 rules out any single-component Gaussian model. A two-part framework (Hurdle or Zero-Inflated Gamma) that separately models the occurrence and the intensity of rainfall is the appropriate response to this structure.
+The **distributional structure** of the target variable 64% zeros, extreme positive skew, kurtosis of 181 rules out any single-component Gaussian model. A two-part framework separating occurrence from intensity is the appropriate response.
 
-The **missingness analysis** establishes that imputation, rather than deletion, is necessary to preserve both sample size and the predictive signal contained in `sunshine` and `evaporation`. Random Forest imputation is well-suited to this task because it can exploit correlations among the observed variables to generate principled estimates for missing ones.
+The **missingness analysis** (documented in @sec-data, summarised in Section 1 above) establishes that imputation is necessary to preserve both sample size and the predictive signal in `sunshine` and `evaporation`, and that the imputed values do not introduce outcome-related bias.
 
-The **correlation structure** identifies humidity, cloud cover, sunshine, and evaporation as the strongest individual predictors, while also flagging severe multicollinearity among the morning-afternoon pairs of pressure and temperature readings. VIF-based feature selection is required to address this.
+The **correlation structure** identifies humidity, cloud cover, sunshine, and evaporation as the strongest individual predictors, and flags severe multicollinearity among morning-afternoon pairs. VIF-based feature selection is required.
 
-The **temporal analyses** establish that both the day-to-day Markov state and the cumulative dry spell duration carry meaningful predictive signal, though neither is sufficient on its own. Month should be cyclically encoded to preserve the circular geometry of the seasonal cycle.
+The **temporal analyses** establish that both the day-to-day Markov state and the cumulative dry spell duration carry predictive signal. Month should be cyclically encoded. The dry spell decay is non-linear and warrants a natural spline parameterisation of `days_since_rain`.
 
-The **pressure analysis** identifies the diurnal pressure change not merely the absolute pressure level as the most discriminating pressure-derived feature, with a medium Cohen's $d$ of 0.72 separating rainy from dry days.
+The **pressure analysis** identifies the diurnal pressure change as the more discriminating pressure-derived feature, with Cohen's $d = 0.72$ separating rainy from dry days more effectively than absolute pressure level.
 
-Finally, the **interaction analysis** provides empirical justification for including a $\text{Humidity} \times \text{Sunshine}$ interaction term, reflecting the physical reality that precipitation is most likely when high moisture and low solar radiation coincide simultaneously.
+The **interaction analysis** provides empirical justification for a $\text{Humidity} \times \text{Sunshine}$ interaction term, reflecting the physical reality that precipitation concentrates where high moisture and low solar radiation coincide in the "Rain Corner" of the feature space.
