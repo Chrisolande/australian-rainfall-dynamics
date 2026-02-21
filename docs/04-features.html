@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,18 +70,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./03-eda.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5f9457399cb503d1c34ffd8fbac5e1f9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-e66b50aa4120364bfa72329fe8653b98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d3b9742b9ff5b22559c24e86974f6d61.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c16d967f7cb0c9f8ebae126fb3a45419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-463e05341c278a50bd9d8b9e5c352418.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c16d967f7cb0c9f8ebae126fb3a45419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -127,7 +128,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -497,7 +498,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>ma_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>ma_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a>  <span class="fu">mutate</span>(</span>
@@ -506,7 +507,7 @@ window.Quarto = {
 <span id="cb1-7"><a href="#cb1-7"></a>    <span class="at">humidity_ma3 =</span> <span class="fu">rollmean</span>(humidity3pm, <span class="at">k =</span> <span class="dv">3</span>, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">align =</span> <span class="st">"right"</span>),</span>
 <span id="cb1-8"><a href="#cb1-8"></a>    <span class="at">humidity_ma7 =</span> <span class="fu">rollmean</span>(humidity3pm, <span class="at">k =</span> <span class="dv">7</span>, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">align =</span> <span class="st">"right"</span>)</span>
 <span id="cb1-9"><a href="#cb1-9"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-10"><a href="#cb1-10"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="noise-reduction" class="level3" data-number="4.2.1">
@@ -514,7 +515,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>p1_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>p1_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">select</span>(rainfall, rainfall_ma3, rainfall_ma7) <span class="sc">%&gt;%</span></span>
 <span id="cb2-4"><a href="#cb2-4"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"metric"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
@@ -571,7 +572,7 @@ window.Quarto = {
 <span id="cb2-55"><a href="#cb2-55"></a>      <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">15</span>)</span>
 <span id="cb2-56"><a href="#cb2-56"></a>    ),</span>
 <span id="cb2-57"><a href="#cb2-57"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">5</span>))</span>
-<span id="cb2-58"><a href="#cb2-58"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-58"><a href="#cb2-58"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-signal-extraction" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -589,7 +590,7 @@ Figure&nbsp;4.1: Signal Extraction: Moving Averages Filter High-Frequency Noise.
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>variance_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>variance_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb3-4"><a href="#cb3-4"></a>    <span class="at">Raw =</span> <span class="fu">sd</span>(rainfall, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
@@ -631,7 +632,7 @@ Figure&nbsp;4.1: Signal Extraction: Moving Averages Filter High-Frequency Noise.
 <span id="cb3-40"><a href="#cb3-40"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb3-41"><a href="#cb3-41"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
 <span id="cb3-42"><a href="#cb3-42"></a>  ) <span class="sc">+</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="fu">max</span>(variance_data<span class="sc">$</span>sd) <span class="sc">*</span> <span class="fl">1.15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-43"><a href="#cb3-43"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="fu">max</span>(variance_data<span class="sc">$</span>sd) <span class="sc">*</span> <span class="fl">1.15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-variance-reduction" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -649,7 +650,7 @@ Figure&nbsp;4.2: Variance Reduction by Window Size. Standard deviation falls sub
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ridge_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ridge_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">select</span>(rainfall, rainfall_ma3, rainfall_ma7) <span class="sc">%&gt;%</span></span>
 <span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"metric"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
@@ -694,7 +695,7 @@ Figure&nbsp;4.2: Variance Reduction by Window Size. Standard deviation falls sub
 <span id="cb4-43"><a href="#cb4-43"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
 <span id="cb4-44"><a href="#cb4-44"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb4-45"><a href="#cb4-45"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb4-46"><a href="#cb4-46"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-46"><a href="#cb4-46"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-ma-ridgeline" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -709,15 +710,15 @@ Figure&nbsp;4.3: Distribution Tightening with Moving Averages. Peaks sharpen and
 </div>
 </div>
 </div>
-<p>The density plots in <a href="#fig-signal-extraction" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-signal-extraction</span></a> make the smoothing effect immediately apparent. The raw daily distribution (pink) is severely right-skewed with a long tail reaching into the hundreds of millimetres, a consequence of the extreme kurtosis documented in the <a href="#sec-eda" class="quarto-xref"><span class="quarto-unresolved-ref">sec-eda</span></a>. The 3-day moving average (orange) begins to suppress this variance, and the 7-day average (green) produces a substantially more concentrated distribution whose peak is considerably higher and whose tails are dramatically shorter.</p>
-<p>Quantitatively (<a href="#fig-variance-reduction" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-variance-reduction</span></a>), the standard deviation of rainfall intensity falls from 13.1 mm in the raw series to 5.8 mm under the 7-day average, a reduction of 56%. The ridgeline plot (<a href="#fig-ma-ridgeline" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-ma-ridgeline</span></a>) confirms that this compression is not an artefact of the summary statistic: the entire shape of the distribution tightens, with each additional day of averaging producing a distribution that is more peaked and less diffuse. The 7-day average can therefore be interpreted as a measure of the “weekly wetness regime”.A smoothed characterisation of whether the preceding week has been generally wet or generally dry rather than the unpredictability of any single day’s precipitation.</p>
+<p>The density plots in <a href="#fig-signal-extraction" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> make the smoothing effect immediately apparent. The raw daily distribution (pink) is severely right-skewed with a long tail reaching into the hundreds of millimetres, a consequence of the extreme kurtosis documented in the <a href="03-eda.html" class="quarto-xref"><span>Chapter 3</span></a>. The 3-day moving average (orange) begins to suppress this variance, and the 7-day average (green) produces a substantially more concentrated distribution whose peak is considerably higher and whose tails are dramatically shorter.</p>
+<p>Quantitatively (<a href="#fig-variance-reduction" class="quarto-xref">Figure&nbsp;<span>4.2</span></a>), the standard deviation of rainfall intensity falls from 13.1 mm in the raw series to 5.8 mm under the 7-day average, a reduction of 56%. The ridgeline plot (<a href="#fig-ma-ridgeline" class="quarto-xref">Figure&nbsp;<span>4.3</span></a>) confirms that this compression is not an artefact of the summary statistic: the entire shape of the distribution tightens, with each additional day of averaging producing a distribution that is more peaked and less diffuse. The 7-day average can therefore be interpreted as a measure of the “weekly wetness regime”.A smoothed characterisation of whether the preceding week has been generally wet or generally dry rather than the unpredictability of any single day’s precipitation.</p>
 </section>
 <section id="multicollinearity-trade-off" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="multicollinearity-trade-off"><span class="header-section-number">4.2.2</span> Multicollinearity Trade-off</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>cor_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>cor_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb5-3"><a href="#cb5-3"></a>    rainfall,</span>
 <span id="cb5-4"><a href="#cb5-4"></a>    rainfall_ma3,</span>
@@ -783,7 +784,7 @@ Figure&nbsp;4.3: Distribution Tightening with Moving Averages. Peaks sharpen and
 <span id="cb5-64"><a href="#cb5-64"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
 <span id="cb5-65"><a href="#cb5-65"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
 <span id="cb5-66"><a href="#cb5-66"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb5-67"><a href="#cb5-67"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-67"><a href="#cb5-67"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-ma-correlation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -798,7 +799,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 </div>
 </div>
 </div>
-<p>The noise-reduction benefit of moving averages comes at a cost. As shown in <a href="#fig-ma-correlation" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-ma-correlation</span></a>, the 3-day and 7-day humidity moving averages share a Spearman correlation of 0.89, and the equivalent rainfall moving averages are similarly collinear with each other and with the raw series. Including multiple moving average windows alongside their source variables in the same linear model would produce a near-singular design matrix, inflating coefficient standard errors and making the model numerically unstable.</p>
+<p>The noise-reduction benefit of moving averages comes at a cost. As shown in <a href="#fig-ma-correlation" class="quarto-xref">Figure&nbsp;<span>4.4</span></a>, the 3-day and 7-day humidity moving averages share a Spearman correlation of 0.89, and the equivalent rainfall moving averages are similarly collinear with each other and with the raw series. Including multiple moving average windows alongside their source variables in the same linear model would produce a near-singular design matrix, inflating coefficient standard errors and making the model numerically unstable.</p>
 <p>This presents a choice between responsiveness and stability. The 3-day average reacts more quickly to changing conditions but retains more of the day-to-day variability. The 7-day average is more stable but slower to reflect recent changes in the weather regime. For linear model families such as logistic regression, only one window can be safely retained per variable; including both is not viable. For tree-based models like Random Forest and Gradient Boosting, this constraint does not apply, since these methods select among correlated features at each split rather than inverting the full covariance matrix. The moving average selection strategy therefore depends on the model family, a consideration that informs the variable selection carried out in the subsequent modelling chapter.</p>
 <hr>
 </section>
@@ -809,7 +810,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>compass_lookup <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>compass_lookup <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="st">"N"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="st">"NNE"</span> <span class="ot">=</span> <span class="fl">22.5</span>,</span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="st">"NE"</span> <span class="ot">=</span> <span class="dv">45</span>,</span>
@@ -884,7 +885,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <span id="cb6-73"><a href="#cb6-73"></a>  <span class="fu">relocate</span>(rain_today, date, location) <span class="sc">%&gt;%</span></span>
 <span id="cb6-74"><a href="#cb6-74"></a>  <span class="fu">relocate</span>(rain_yesterday, days_since_rain, <span class="at">.after =</span> location) <span class="sc">%&gt;%</span></span>
 <span id="cb6-75"><a href="#cb6-75"></a>  <span class="fu">relocate</span>(<span class="fu">ends_with</span>(<span class="st">"_ma7"</span>), <span class="at">.after =</span> days_since_rain) <span class="sc">%&gt;%</span></span>
-<span id="cb6-76"><a href="#cb6-76"></a>  <span class="fu">relocate</span>(day_sin, day_cos, <span class="at">.after =</span> date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-76"><a href="#cb6-76"></a>  <span class="fu">relocate</span>(day_sin, day_cos, <span class="at">.after =</span> date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>The pipeline is organised into four conceptually distinct transformations, each addressing a specific structural property identified in the EDA.</p>
@@ -897,13 +898,13 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 </section>
 <section id="temporal-persistence-features" class="level3" data-number="4.3.2">
 <h3 data-number="4.3.2" class="anchored" data-anchor-id="temporal-persistence-features"><span class="header-section-number">4.3.2</span> Temporal Persistence Features</h3>
-<p>The Markov Chain analysis (<a href="#sec-markov" class="quarto-xref"><span class="quarto-unresolved-ref">sec-markov</span></a>) demonstrated that the previous day’s rain state carries a moderate but meaningful signal (<span class="math inline">\(V \approx 0.31\)</span>), and the dry spell analysis showed that the probability of rain decays in a non-linear pattern as dry spells lengthen. Three features capture these dynamics.</p>
+<p>The Markov Chain analysis (<a href="03-eda.html#sec-markov" class="quarto-xref"><span>Section 3.5.2</span></a>) demonstrated that the previous day’s rain state carries a moderate but meaningful signal (<span class="math inline">\(V \approx 0.31\)</span>), and the dry spell analysis showed that the probability of rain decays in a non-linear pattern as dry spells lengthen. Three features capture these dynamics.</p>
 <p><code>rain_yesterday</code> is a direct binary indicator of the previous day’s state, encoding the first-order Markov transition directly as a predictor. <code>days_since_rain</code> counts the number of consecutive dry days preceding the current observation, capturing the progressive stabilisation of dry conditions that the logistic regression and spline analysis identified. <code>rainfall_ma7</code> and <code>humidity_ma7</code> provide a smoothed weekly context for both the rainfall and moisture signals, lagged by one additional day beyond the rolling window to ensure that no same-day information is included when predicting today’s outcome.</p>
 <p>The lagging step deserves emphasis. Without it, the 7-day moving average at time <span class="math inline">\(t\)</span> includes the observation at time <span class="math inline">\(t\)</span> itself, meaning a model trained on this feature would have access to the value it is trying to predict. This form of data leakage produces artificially optimistic training metrics that do not generalise to deployment, where future observations are unavailable by definition.</p>
 </section>
 <section id="physical-interaction-and-derived-indices" class="level3" data-number="4.3.3">
 <h3 data-number="4.3.3" class="anchored" data-anchor-id="physical-interaction-and-derived-indices"><span class="header-section-number">4.3.3</span> Physical Interaction and Derived Indices</h3>
-<p>The bivariate density analysis (<a href="#sec-bivariate-density" class="quarto-xref"><span class="quarto-unresolved-ref">sec-bivariate-density</span></a>) identified a qualitative difference in the joint distribution of humidity and sunshine between rainy and dry days: rain occurs almost exclusively when afternoon humidity is high and sunshine hours are low simultaneously, the “Rain Corner” phenomenon. An additive model cannot represent this conditional structure; a multiplicative interaction term is required.</p>
+<p>The bivariate density analysis (<a href="03-eda.html#sec-bivariate-density" class="quarto-xref"><span>Section 3.8</span></a>) identified a qualitative difference in the joint distribution of humidity and sunshine between rainy and dry days: rain occurs almost exclusively when afternoon humidity is high and sunshine hours are low simultaneously, the “Rain Corner” phenomenon. An additive model cannot represent this conditional structure; a multiplicative interaction term is required.</p>
 <p>Prior to computing the interaction, both <code>sunshine</code> and <code>humidity3pm</code> are mean-centred (their grand means are subtracted). This is not merely a cosmetic step. When an interaction term is formed from un-centred variables, the resulting product is algebraically correlated with both main effects, inflating the VIF of all three terms and making their individual coefficients difficult to interpret. Centring removes this artificial correlation: the main effects then represent the effect of each variable at the average level of the other, and the interaction term represents the additional effect of their joint deviation. This is confirmed empirically in the VIF diagnostics in Section 3.</p>
 <p>Beyond the interaction term, five derived meteorological indices are constructed from physically motivated combinations of the available variables. The dewpoint temperatures at 9:00 AM and 3:00 PM computed from the Magnus approximation <span class="math inline">\(T_d \approx T - \frac{100 - RH}{5}\)</span> represent the temperature at which the air would become saturated if cooled at constant pressure. The change in dewpoint across the day (<code>dewpoint_change</code>) measures whether the atmosphere is gaining or losing moisture over the course of the day, a signal not directly recoverable from temperature or humidity alone. The <code>moisture_index</code> encodes the combined effect of high humidity and limited solar exposure. The <code>instability_index</code> combines pressure deficit from the standard 1020 hPa baseline with humidity, approximating the atmospheric conditions that favour convective development. <code>cloud_development</code> captures upward cloud formation during the day, which the pressure analysis identified as a meaningful precursor to precipitation.</p>
 </section>
@@ -921,7 +922,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_engineered.csv"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_engineered.csv"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
 <span id="cb7-3"><a href="#cb7-3"></a>df_wo_location <span class="ot">&lt;-</span> <span class="fu">select_model_features</span>(df_final, <span class="at">keep_location =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb7-4"><a href="#cb7-4"></a></span>
@@ -934,10 +935,10 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <span id="cb7-11"><a href="#cb7-11"></a>    <span class="at">caption =</span> <span class="st">"Variance Inflation Factor (VIF) for Selected Predictors"</span>,</span>
 <span id="cb7-12"><a href="#cb7-12"></a>    <span class="at">digits =</span> <span class="dv">3</span></span>
 <span id="cb7-13"><a href="#cb7-13"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Variance Inflation Factor (VIF) for Selected Predictors</caption>
 <thead>
 <tr class="header">
@@ -954,219 +955,219 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">humidity3pm</td>
-<td style="text-align: right;">5.580</td>
-<td style="text-align: right;">5.497</td>
-<td style="text-align: right;">5.664</td>
-<td style="text-align: right;">2.362</td>
-<td style="text-align: right;">0.179</td>
-<td style="text-align: right;">0.177</td>
-<td style="text-align: right;">0.182</td>
+<td style="text-align: right;">4.728</td>
+<td style="text-align: right;">4.684</td>
+<td style="text-align: right;">4.772</td>
+<td style="text-align: right;">2.174</td>
+<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">0.210</td>
+<td style="text-align: right;">0.213</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">humidity9am</td>
-<td style="text-align: right;">3.302</td>
-<td style="text-align: right;">3.256</td>
-<td style="text-align: right;">3.348</td>
-<td style="text-align: right;">1.817</td>
-<td style="text-align: right;">0.303</td>
-<td style="text-align: right;">0.299</td>
-<td style="text-align: right;">0.307</td>
+<td style="text-align: right;">2.589</td>
+<td style="text-align: right;">2.567</td>
+<td style="text-align: right;">2.611</td>
+<td style="text-align: right;">1.609</td>
+<td style="text-align: right;">0.386</td>
+<td style="text-align: right;">0.383</td>
+<td style="text-align: right;">0.390</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">humidity_ma7</td>
-<td style="text-align: right;">2.590</td>
-<td style="text-align: right;">2.556</td>
-<td style="text-align: right;">2.625</td>
-<td style="text-align: right;">1.609</td>
-<td style="text-align: right;">0.386</td>
-<td style="text-align: right;">0.381</td>
-<td style="text-align: right;">0.391</td>
+<td style="text-align: right;">2.334</td>
+<td style="text-align: right;">2.315</td>
+<td style="text-align: right;">2.354</td>
+<td style="text-align: right;">1.528</td>
+<td style="text-align: right;">0.428</td>
+<td style="text-align: right;">0.425</td>
+<td style="text-align: right;">0.432</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">2.550</td>
-<td style="text-align: right;">2.516</td>
-<td style="text-align: right;">2.584</td>
-<td style="text-align: right;">1.597</td>
-<td style="text-align: right;">0.392</td>
-<td style="text-align: right;">0.387</td>
-<td style="text-align: right;">0.397</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">dewpoint_9am</td>
-<td style="text-align: right;">2.535</td>
-<td style="text-align: right;">2.502</td>
-<td style="text-align: right;">2.569</td>
-<td style="text-align: right;">1.592</td>
-<td style="text-align: right;">0.394</td>
-<td style="text-align: right;">0.389</td>
-<td style="text-align: right;">0.400</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">dewpoint_change</td>
-<td style="text-align: right;">2.427</td>
-<td style="text-align: right;">2.396</td>
-<td style="text-align: right;">2.459</td>
-<td style="text-align: right;">1.558</td>
-<td style="text-align: right;">0.412</td>
-<td style="text-align: right;">0.407</td>
-<td style="text-align: right;">0.417</td>
+<td style="text-align: right;">2.150</td>
+<td style="text-align: right;">2.133</td>
+<td style="text-align: right;">2.167</td>
+<td style="text-align: right;">1.466</td>
+<td style="text-align: right;">0.465</td>
+<td style="text-align: right;">0.461</td>
+<td style="text-align: right;">0.469</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">instability_index</td>
-<td style="text-align: right;">2.160</td>
-<td style="text-align: right;">2.133</td>
-<td style="text-align: right;">2.188</td>
-<td style="text-align: right;">1.470</td>
-<td style="text-align: right;">0.463</td>
-<td style="text-align: right;">0.457</td>
-<td style="text-align: right;">0.469</td>
+<td style="text-align: right;">2.076</td>
+<td style="text-align: right;">2.060</td>
+<td style="text-align: right;">2.092</td>
+<td style="text-align: right;">1.441</td>
+<td style="text-align: right;">0.482</td>
+<td style="text-align: right;">0.478</td>
+<td style="text-align: right;">0.486</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">2.046</td>
-<td style="text-align: right;">2.021</td>
-<td style="text-align: right;">2.072</td>
-<td style="text-align: right;">1.430</td>
-<td style="text-align: right;">0.489</td>
-<td style="text-align: right;">0.483</td>
-<td style="text-align: right;">0.495</td>
+<td style="text-align: right;">1.918</td>
+<td style="text-align: right;">1.904</td>
+<td style="text-align: right;">1.933</td>
+<td style="text-align: right;">1.385</td>
+<td style="text-align: right;">0.521</td>
+<td style="text-align: right;">0.517</td>
+<td style="text-align: right;">0.525</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">day_cos</td>
-<td style="text-align: right;">1.975</td>
-<td style="text-align: right;">1.951</td>
-<td style="text-align: right;">2.000</td>
-<td style="text-align: right;">1.405</td>
-<td style="text-align: right;">0.506</td>
-<td style="text-align: right;">0.500</td>
-<td style="text-align: right;">0.513</td>
+<td style="text-align: right;">1.868</td>
+<td style="text-align: right;">1.854</td>
+<td style="text-align: right;">1.882</td>
+<td style="text-align: right;">1.367</td>
+<td style="text-align: right;">0.535</td>
+<td style="text-align: right;">0.531</td>
+<td style="text-align: right;">0.539</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">evaporation</td>
+<td style="text-align: right;">1.786</td>
+<td style="text-align: right;">1.773</td>
+<td style="text-align: right;">1.800</td>
+<td style="text-align: right;">1.336</td>
+<td style="text-align: right;">0.560</td>
+<td style="text-align: right;">0.556</td>
+<td style="text-align: right;">0.564</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dewpoint_change</td>
+<td style="text-align: right;">1.762</td>
+<td style="text-align: right;">1.749</td>
+<td style="text-align: right;">1.775</td>
+<td style="text-align: right;">1.327</td>
+<td style="text-align: right;">0.567</td>
+<td style="text-align: right;">0.563</td>
+<td style="text-align: right;">0.572</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">wind9am_U_EW</td>
-<td style="text-align: right;">1.880</td>
-<td style="text-align: right;">1.858</td>
-<td style="text-align: right;">1.903</td>
-<td style="text-align: right;">1.371</td>
-<td style="text-align: right;">0.532</td>
-<td style="text-align: right;">0.525</td>
-<td style="text-align: right;">0.538</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">gust_V_NS</td>
-<td style="text-align: right;">1.878</td>
-<td style="text-align: right;">1.855</td>
-<td style="text-align: right;">1.901</td>
-<td style="text-align: right;">1.370</td>
-<td style="text-align: right;">0.533</td>
-<td style="text-align: right;">0.526</td>
-<td style="text-align: right;">0.539</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">gust_U_EW</td>
-<td style="text-align: right;">1.850</td>
-<td style="text-align: right;">1.828</td>
-<td style="text-align: right;">1.873</td>
-<td style="text-align: right;">1.360</td>
-<td style="text-align: right;">0.540</td>
-<td style="text-align: right;">0.534</td>
-<td style="text-align: right;">0.547</td>
+<td style="text-align: right;">1.642</td>
+<td style="text-align: right;">1.630</td>
+<td style="text-align: right;">1.654</td>
+<td style="text-align: right;">1.281</td>
+<td style="text-align: right;">0.609</td>
+<td style="text-align: right;">0.605</td>
+<td style="text-align: right;">0.613</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">wind9am_V_NS</td>
-<td style="text-align: right;">1.843</td>
-<td style="text-align: right;">1.821</td>
-<td style="text-align: right;">1.865</td>
-<td style="text-align: right;">1.357</td>
-<td style="text-align: right;">0.543</td>
-<td style="text-align: right;">0.536</td>
-<td style="text-align: right;">0.549</td>
+<td style="text-align: right;">1.639</td>
+<td style="text-align: right;">1.627</td>
+<td style="text-align: right;">1.651</td>
+<td style="text-align: right;">1.280</td>
+<td style="text-align: right;">0.610</td>
+<td style="text-align: right;">0.606</td>
+<td style="text-align: right;">0.614</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pressure_change</td>
-<td style="text-align: right;">1.833</td>
-<td style="text-align: right;">1.812</td>
-<td style="text-align: right;">1.855</td>
-<td style="text-align: right;">1.354</td>
-<td style="text-align: right;">0.545</td>
-<td style="text-align: right;">0.539</td>
-<td style="text-align: right;">0.552</td>
+<td style="text-align: left;">gust_V_NS</td>
+<td style="text-align: right;">1.629</td>
+<td style="text-align: right;">1.618</td>
+<td style="text-align: right;">1.641</td>
+<td style="text-align: right;">1.277</td>
+<td style="text-align: right;">0.614</td>
+<td style="text-align: right;">0.609</td>
+<td style="text-align: right;">0.618</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">gust_U_EW</td>
+<td style="text-align: right;">1.614</td>
+<td style="text-align: right;">1.602</td>
+<td style="text-align: right;">1.626</td>
+<td style="text-align: right;">1.270</td>
+<td style="text-align: right;">0.620</td>
+<td style="text-align: right;">0.615</td>
+<td style="text-align: right;">0.624</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">rainfall_ma7</td>
-<td style="text-align: right;">1.383</td>
-<td style="text-align: right;">1.368</td>
-<td style="text-align: right;">1.398</td>
-<td style="text-align: right;">1.176</td>
-<td style="text-align: right;">0.723</td>
-<td style="text-align: right;">0.716</td>
-<td style="text-align: right;">0.731</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">sun_humid_interaction</td>
-<td style="text-align: right;">1.235</td>
-<td style="text-align: right;">1.223</td>
-<td style="text-align: right;">1.247</td>
-<td style="text-align: right;">1.111</td>
-<td style="text-align: right;">0.810</td>
-<td style="text-align: right;">0.802</td>
-<td style="text-align: right;">0.818</td>
+<td style="text-align: right;">1.327</td>
+<td style="text-align: right;">1.318</td>
+<td style="text-align: right;">1.336</td>
+<td style="text-align: right;">1.152</td>
+<td style="text-align: right;">0.754</td>
+<td style="text-align: right;">0.749</td>
+<td style="text-align: right;">0.758</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">day_sin</td>
-<td style="text-align: right;">1.210</td>
-<td style="text-align: right;">1.199</td>
-<td style="text-align: right;">1.222</td>
-<td style="text-align: right;">1.100</td>
-<td style="text-align: right;">0.826</td>
-<td style="text-align: right;">0.818</td>
-<td style="text-align: right;">0.834</td>
+<td style="text-align: left;">sun_humid_interaction</td>
+<td style="text-align: right;">1.185</td>
+<td style="text-align: right;">1.178</td>
+<td style="text-align: right;">1.192</td>
+<td style="text-align: right;">1.089</td>
+<td style="text-align: right;">0.844</td>
+<td style="text-align: right;">0.839</td>
+<td style="text-align: right;">0.849</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rain_yesterday</td>
-<td style="text-align: right;">1.209</td>
-<td style="text-align: right;">1.197</td>
-<td style="text-align: right;">1.221</td>
-<td style="text-align: right;">1.099</td>
-<td style="text-align: right;">0.827</td>
-<td style="text-align: right;">0.819</td>
-<td style="text-align: right;">0.835</td>
+<td style="text-align: right;">1.183</td>
+<td style="text-align: right;">1.176</td>
+<td style="text-align: right;">1.190</td>
+<td style="text-align: right;">1.088</td>
+<td style="text-align: right;">0.845</td>
+<td style="text-align: right;">0.840</td>
+<td style="text-align: right;">0.850</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">day_sin</td>
+<td style="text-align: right;">1.161</td>
+<td style="text-align: right;">1.154</td>
+<td style="text-align: right;">1.168</td>
+<td style="text-align: right;">1.077</td>
+<td style="text-align: right;">0.862</td>
+<td style="text-align: right;">0.856</td>
+<td style="text-align: right;">0.867</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pressure_change</td>
+<td style="text-align: right;">1.110</td>
+<td style="text-align: right;">1.104</td>
+<td style="text-align: right;">1.117</td>
+<td style="text-align: right;">1.054</td>
+<td style="text-align: right;">0.901</td>
+<td style="text-align: right;">0.896</td>
+<td style="text-align: right;">0.906</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">cloud_development</td>
-<td style="text-align: right;">1.047</td>
-<td style="text-align: right;">1.039</td>
-<td style="text-align: right;">1.057</td>
-<td style="text-align: right;">1.023</td>
-<td style="text-align: right;">0.955</td>
-<td style="text-align: right;">0.946</td>
-<td style="text-align: right;">0.963</td>
+<td style="text-align: right;">1.032</td>
+<td style="text-align: right;">1.026</td>
+<td style="text-align: right;">1.038</td>
+<td style="text-align: right;">1.016</td>
+<td style="text-align: right;">0.969</td>
+<td style="text-align: right;">0.964</td>
+<td style="text-align: right;">0.974</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">days_since_rain</td>
-<td style="text-align: right;">1.008</td>
-<td style="text-align: right;">1.003</td>
-<td style="text-align: right;">1.023</td>
 <td style="text-align: right;">1.004</td>
-<td style="text-align: right;">0.992</td>
-<td style="text-align: right;">0.978</td>
-<td style="text-align: right;">0.997</td>
+<td style="text-align: right;">1.001</td>
+<td style="text-align: right;">1.015</td>
+<td style="text-align: right;">1.002</td>
+<td style="text-align: right;">0.996</td>
+<td style="text-align: right;">0.986</td>
+<td style="text-align: right;">0.999</td>
 </tr>
 </tbody>
 </table>
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>df_scaled <span class="ot">&lt;-</span> df_wo_location <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>df_scaled <span class="ot">&lt;-</span> df_wo_location <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">scale_data</span>()</span>
 <span id="cb8-3"><a href="#cb8-3"></a></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="fu">write_csv</span>(df_scaled, <span class="st">"data/df_scaled.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="fu">write_csv</span>(df_scaled, <span class="st">"data/df_scaled.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Feature engineering that introduces interaction terms, composite indices, and temporal aggregates necessarily creates new correlational structure in the design matrix. After constructing the full feature set, it is therefore essential to verify that no predictor has become so collinear with the others that its coefficient in a linear model would be effectively unidentifiable. We use the Variance Inflation Factor (VIF) for this diagnosis. The VIF for a given predictor quantifies how much its coefficient variance is inflated relative to what it would be in an orthogonal design: a VIF of <span class="math inline">\(k\)</span> indicates that the standard error of that coefficient is <span class="math inline">\(\sqrt{k}\)</span> times larger than it would be if the predictor were uncorrelated with all others. Values above 10 are conventionally treated as indicating severe collinearity requiring remediation.</p>
 <p><strong>Cyclical and wind components.</strong> The <code>day_sin</code>, <code>day_cos</code>, <code>gust_V_NS</code>, and <code>gust_U_EW</code> features all show VIF values well below 3. This confirms that the decomposition strategies, sine/cosine for the annual cycle and U/V projection for wind direction, successfully converted circular variables into continuous representations without introducing redundancy. Each component carries information that is approximately orthogonal to its pair.</p>
 <p><strong>Interaction stability.</strong> The <code>sun_humid_interaction</code> term has a VIF of 1.188, which is exceptionally low for a multiplicative interaction. Without mean-centring the constituent variables before multiplication, interaction terms routinely exhibit VIFs above 10 due to their algebraic overlap with the main effects. The observed value of 1.188 provides empirical confirmation that centring eliminated this artificial correlation, and that the interaction term is capturing a genuinely distinct dimension of the feature space, the joint “Rain Corner” structure identified in the EDA.</p>
-<p><strong>Elevated collinearity in humidity.</strong> The highest observed VIF is for <code>humidity3pm</code> at approximately 4.832. This is expected: humidity participates structurally in three of the derived features (<code>moisture_index</code>, <code>instability_index</code>, and <code>sun_humid_interaction</code>), and its 7-day moving average is also present in the feature set. A VIF of 5 lies below the conventional threshold of 10 for severe concern and is consistent with what the literature describes as moderate collinearity. The decision to retain <code>humidity3pm</code> despite this inflation is deliberate: it is the single strongest individual predictor of rainfall in the dataset (Spearman <span class="math inline">\(r = 0.44\)</span>, as established in the <a href="#sec-eda" class="quarto-xref"><span class="quarto-unresolved-ref">sec-eda</span></a>), and removing it in favour of its derived aggregates would sacrifice the direct same-day atmospheric moisture signal for the sake of a marginal improvement in collinearity. For tree-based models, this trade-off does not arise, since these methods are not sensitive to multicollinearity by design.</p>
+<p><strong>Elevated collinearity in humidity.</strong> The highest observed VIF is for <code>humidity3pm</code> at approximately 4.832. This is expected: humidity participates structurally in three of the derived features (<code>moisture_index</code>, <code>instability_index</code>, and <code>sun_humid_interaction</code>), and its 7-day moving average is also present in the feature set. A VIF of 5 lies below the conventional threshold of 10 for severe concern and is consistent with what the literature describes as moderate collinearity. The decision to retain <code>humidity3pm</code> despite this inflation is deliberate: it is the single strongest individual predictor of rainfall in the dataset (Spearman <span class="math inline">\(r = 0.44\)</span>, as established in the <a href="03-eda.html" class="quarto-xref"><span>Chapter 3</span></a>), and removing it in favour of its derived aggregates would sacrifice the direct same-day atmospheric moisture signal for the sake of a marginal improvement in collinearity. For tree-based models, this trade-off does not arise, since these methods are not sensitive to multicollinearity by design.</p>
 <p><strong>Overall assessment.</strong> The full engineered feature set is numerically stable for use in linear model families. No VIF exceeds the critical threshold of 10, and the majority of features show values below 3. The pipeline has successfully converted the raw meteorological signals into a representation that is both physically interpretable and statistically well-conditioned for the modelling stage.</p>
 
 
@@ -1239,13 +1240,14 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1657,7 +1659,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu"># Feature Engineering {#sec-feature-eng}</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu"># Feature Engineering {#sec-feature-eng}</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="fu">## From Raw Meteorological Signals to Predictive Inputs</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
 <span id="cb9-4"><a href="#cb9-4"></a>---</span>
@@ -2143,7 +2145,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <span id="cb9-500"><a href="#cb9-500"></a>**Elevated collinearity in humidity.** The highest observed VIF is for <span class="in">`humidity3pm`</span> at approximately 4.832. This is expected: humidity participates structurally in three of the derived features (<span class="in">`moisture_index`</span>, <span class="in">`instability_index`</span>, and <span class="in">`sun_humid_interaction`</span>), and its 7-day moving average is also present in the feature set. A VIF of 5 lies below the conventional threshold of 10 for severe concern and is consistent with what the literature describes as moderate collinearity. The decision to retain <span class="in">`humidity3pm`</span> despite this inflation is deliberate: it is the single strongest individual predictor of rainfall in the dataset (Spearman $r = 0.44$, as established in the @sec-eda), and removing it in favour of its derived aggregates would sacrifice the direct same-day atmospheric moisture signal for the sake of a marginal improvement in collinearity. For tree-based models, this trade-off does not arise, since these methods are not sensitive to multicollinearity by design.</span>
 <span id="cb9-501"><a href="#cb9-501"></a></span>
 <span id="cb9-502"><a href="#cb9-502"></a>**Overall assessment.** The full engineered feature set is numerically stable for use in linear model families. No VIF exceeds the critical threshold of 10, and the majority of features show values below 3. The pipeline has successfully converted the raw meteorological signals into a representation that is both physically interpretable and statistically well-conditioned for the modelling stage.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

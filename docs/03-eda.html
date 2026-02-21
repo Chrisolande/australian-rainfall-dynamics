@@ -80,9 +80,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1f8a39822a5a1e3eccd3264549681dcc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c16d967f7cb0c9f8ebae126fb3a45419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-463e05341c278a50bd9d8b9e5c352418.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-1f8a39822a5a1e3eccd3264549681dcc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c16d967f7cb0c9f8ebae126fb3a45419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -1573,7 +1573,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb15-21"><a href="#cb15-21"></a>  <span class="fu">labs</span>(</span>
 <span id="cb15-22"><a href="#cb15-22"></a>    <span class="at">title =</span> <span class="st">"Markov Chain: Rain Persistence Effect"</span>,</span>
 <span id="cb15-23"><a href="#cb15-23"></a>    <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
-<span id="cb15-24"><a href="#cb15-24"></a>      <span class="st">"X^2 = %.2f, p &lt; 0.001, Cramer's V = %.3f (Moderate Association)</span><span class="sc">\n</span><span class="st">Yesterday's rain state strongly predicts today's rain state."</span>,</span>
+<span id="cb15-24"><a href="#cb15-24"></a>      <span class="st">"X^2 = %.2f, p &lt; 0.001, Cramer's V = %.3f (Moderate Association)</span><span class="sc">\n</span><span class="st">Yesterday's rain state is a significant, moderate predictor of today's rain state."</span>,</span>
 <span id="cb15-25"><a href="#cb15-25"></a>      chi_result<span class="sc">$</span>statistic,</span>
 <span id="cb15-26"><a href="#cb15-26"></a>      cramers_v</span>
 <span id="cb15-27"><a href="#cb15-27"></a>    ),</span>
@@ -1860,8 +1860,8 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <td style="text-align: left;">pressure3pm</td>
 <td style="text-align: left;">No</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">34.031</td>
-<td style="text-align: right;">47961.27</td>
+<td style="text-align: right;">34.844</td>
+<td style="text-align: right;">47909.59</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">****</td>
 </tr>
@@ -1869,8 +1869,8 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <td style="text-align: left;">pressure9am</td>
 <td style="text-align: left;">No</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">62.317</td>
-<td style="text-align: right;">47367.77</td>
+<td style="text-align: right;">58.520</td>
+<td style="text-align: right;">49181.95</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">****</td>
 </tr>
@@ -1878,8 +1878,8 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <td style="text-align: left;">pressure_change</td>
 <td style="text-align: left;">No</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">-56.480</td>
-<td style="text-align: right;">48697.62</td>
+<td style="text-align: right;">-54.085</td>
+<td style="text-align: right;">50668.58</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">****</td>
 </tr>
@@ -1924,17 +1924,17 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">pressure3pm</td>
-<td style="text-align: right;">0.222</td>
+<td style="text-align: right;">0.228</td>
 <td style="text-align: left;">Small</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">pressure9am</td>
-<td style="text-align: right;">0.409</td>
+<td style="text-align: right;">0.379</td>
 <td style="text-align: left;">Small</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">pressure_change</td>
-<td style="text-align: right;">-0.367</td>
+<td style="text-align: right;">-0.346</td>
 <td style="text-align: left;">Small</td>
 </tr>
 </tbody>
@@ -3458,7 +3458,7 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
 <span id="cb34-421"><a href="#cb34-421"></a>  <span class="fu">labs</span>(</span>
 <span id="cb34-422"><a href="#cb34-422"></a>    <span class="at">title =</span> <span class="st">"Markov Chain: Rain Persistence Effect"</span>,</span>
 <span id="cb34-423"><a href="#cb34-423"></a>    <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
-<span id="cb34-424"><a href="#cb34-424"></a>      <span class="st">"X^2 = %.2f, p &lt; 0.001, Cramer's V = %.3f (Moderate Association)</span><span class="sc">\n</span><span class="st">Yesterday's rain state strongly predicts today's rain state."</span>,</span>
+<span id="cb34-424"><a href="#cb34-424"></a>      <span class="st">"X^2 = %.2f, p &lt; 0.001, Cramer's V = %.3f (Moderate Association)</span><span class="sc">\n</span><span class="st">Yesterday's rain state is a significant, moderate predictor of today's rain state."</span>,</span>
 <span id="cb34-425"><a href="#cb34-425"></a>      chi_result<span class="sc">$</span>statistic,</span>
 <span id="cb34-426"><a href="#cb34-426"></a>      cramers_v</span>
 <span id="cb34-427"><a href="#cb34-427"></a>    ),</span>
