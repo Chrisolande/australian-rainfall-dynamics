@@ -10,3 +10,5 @@
 
 # Ignore Quarto temporary internal files
 .quarto/
+
+**/*.quarto_ipynb

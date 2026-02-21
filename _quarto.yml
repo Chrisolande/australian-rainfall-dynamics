@@ -45,7 +45,6 @@ execute:
   warning: false
   message: false
   echo: true
-  cache: true
   freeze: auto
   daemon: false
   
