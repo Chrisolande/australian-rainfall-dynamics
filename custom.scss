@@ -78,10 +78,10 @@ pre.sourceCode {
   margin: 0;
   border: none;
   border-radius: 4px;
-  overflow-x: visible;
   white-space: pre;
   word-wrap: normal;
   word-break: normal;
+  min-width: max-content;
 }
 
 // Line number table layout
@@ -189,7 +189,7 @@ td.gt_right {
   text-align: right;
 }
 
-// Callout blocks — hardcoded backgrounds, no lighten() Sass calls
+// Callout blocks 
 .callout {
   border-left: 4px solid;
   border-radius: 4px;
@@ -223,7 +223,7 @@ td.gt_right {
 }
 
 // Figure captions
-// No ::before pseudo-element — Quarto handles its own "Figure X.X:" prefix
+
 .figure {
   margin: 2rem 0;
 
@@ -319,7 +319,7 @@ hr {
   margin: 2rem 0;
 }
 
-// Sidebar TOC active state — margin compensates for border width
+// Sidebar TOC active state
 .sidebar nav[role="doc-toc"] {
   ul li a {
     &.active {

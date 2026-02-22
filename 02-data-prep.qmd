@@ -612,7 +612,7 @@ The two-stage pipeline produces a dataset whose properties are each traceable to
 ## Imputation Sensitivity Analysis {#sec-sensitivity}
 
 ::: {.callout-note}
-**Chapter Context.** The full `mids` object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Three analyses operate directly on `imp_mids` to assess convergence stability, distributional fidelity, and between-imputation uncertainty. Each finding is tied back to the design decisions documented in @sec-missingness-diagnostics.
+**Section Context.** The full `mids` object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Three analyses operate directly on `imp_mids` to assess convergence stability, distributional fidelity, and between-imputation uncertainty. Each finding is tied back to the design decisions documented in @sec-missingness-diagnostics.
 :::
 
 ### Setup {#sec-sensitivity-setup}
