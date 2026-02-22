@@ -289,8 +289,6 @@ if (all(c("rainfall", "sunshine") %in% names(df))) {
       .groups = "drop"
     )
 
-  print(weather_missing_stats)
-
   weather_missing_stats %>%
     kable(
       caption = "Sunshine Missingness Rate by Daily Rainfall Status",
@@ -351,13 +349,6 @@ Sunshine missingness is station-conditional rather than weather-conditional. The
 #| echo: true
 #| message: false
 #| warning: false
-
-cat("Missing pattern combinations:\n")
-
-df %>%
-  select(all_of(high_miss)) %>%
-  naniar::miss_case_table() %>%
-  print()
 
 df %>%
   select(all_of(high_miss)) %>%
@@ -1049,9 +1040,9 @@ tibble(
   outcome = c(
     "Met; all chains converge within five iterations",
     "Met for cloud cover;
-     small shift for sunshine and evaporation within tolerance",
+    small shift for sunshine and evaporation within tolerance",
     "Material variance present;
-     uncertainty concentrated in right tail for sunshine and evaporation",
+    uncertainty concentrated in right tail for sunshine and evaporation",
     "Not met; FMI ranges from 0.33 to 0.57 across all four variables"
   ),
   action = c(
