@@ -21,18 +21,18 @@ $code-color: #e83e8c;
 
 /*-- scss:rules --*/
 
-// Import professional fonts
+// Import fonts
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 // Body
 body {
   font-size: 1.05rem;
-  line-height: 1.7;
+  line-height: 1.6;
   color: #2c3e50;
 }
 
-// Headers with subtle bottom border
+// Headers
 h1,
 h2,
 h3 {
@@ -64,9 +64,11 @@ h4 {
 // Outer scrollable container
 div.sourceCode {
   overflow-x: auto;
+  overflow-y: visible;
   border-radius: 4px;
   border: 1px solid #e9ecef;
   margin: 1rem 0;
+  max-width: 100%;
 }
 
 // Code blocks
@@ -78,6 +80,8 @@ pre.sourceCode {
   border-radius: 4px;
   overflow-x: visible;
   white-space: pre;
+  word-wrap: normal;
+  word-break: normal;
 }
 
 // Line number table layout
@@ -109,7 +113,7 @@ pre.sourceCode td.source-line {
   width: 100%;
 }
 
-// inline code
+// Inline code
 code {
   background-color: #f1f3f5;
   padding: 0.2em 0.4em;
@@ -119,7 +123,7 @@ code {
   font-weight: 500;
 }
 
-// code in pre blocks should not have pink color
+// Code inside pre blocks inherits syntax highlighting, not pink
 pre.sourceCode code {
   background-color: transparent;
   padding: 0;
@@ -127,7 +131,7 @@ pre.sourceCode code {
   font-weight: 400;
 }
 
-// copy button styling
+// Copy button
 .code-copy-button {
   background-color: transparent;
   border: 1px solid #dee2e6;
@@ -143,7 +147,7 @@ pre.sourceCode code {
   }
 }
 
-// tables with improved spacing
+// Tables
 table {
   border-collapse: collapse;
   width: 100%;
@@ -167,12 +171,6 @@ table {
 
   tbody {
     tr {
-      transition: background-color 0.15s ease;
-
-      &:hover {
-        background-color: #f8f9fa;
-      }
-
       &:nth-child(even) {
         background-color: #fdfdfd;
       }
@@ -183,15 +181,15 @@ table {
       border-bottom: 1px solid #e9ecef;
     }
   }
-
-  // numeric columns right-aligned
-  td:has(> .gt_number),
-  th:has(> .gt_number) {
-    text-align: right;
-  }
 }
 
-// callout blocks
+// Right-align numeric cells in kableExtra output
+.gt_number,
+td.gt_right {
+  text-align: right;
+}
+
+// Callout blocks — hardcoded backgrounds, no lighten() Sass calls
 .callout {
   border-left: 4px solid;
   border-radius: 4px;
@@ -200,22 +198,22 @@ table {
 
   &.callout-note {
     border-color: $info;
-    background-color: lighten($info, 45%);
+    background-color: #e8f8fc;
   }
 
   &.callout-warning {
     border-color: $warning;
-    background-color: lighten($warning, 40%);
+    background-color: #fff8e1;
   }
 
   &.callout-important {
     border-color: $danger;
-    background-color: lighten($danger, 45%);
+    background-color: #fdecea;
   }
 
   &.callout-tip {
     border-color: $success;
-    background-color: lighten($success, 55%);
+    background-color: #eaf6ef;
   }
 
   .callout-title {
@@ -224,7 +222,8 @@ table {
   }
 }
 
-// figure captions
+// Figure captions
+// No ::before pseudo-element — Quarto handles its own "Figure X.X:" prefix
 .figure {
   margin: 2rem 0;
 
@@ -234,24 +233,17 @@ table {
     font-size: 0.95rem;
     margin-top: 0.75rem;
     text-align: center;
-
-    &::before {
-      content: "Figure: ";
-      font-weight: 600;
-      font-style: normal;
-    }
   }
 }
 
-// blockquotes
+// Blockquotes
 blockquote {
   border-left: 4px solid $primary;
-  padding-left: 1.5rem;
+  padding: 1rem 1.5rem;
   margin: 1.5rem 0;
   font-style: italic;
   color: #495057;
   background-color: #f8f9fa;
-  padding: 1rem 1.5rem;
   border-radius: 0 4px 4px 0;
 
   p:last-child {
@@ -259,19 +251,19 @@ blockquote {
   }
 }
 
-// Links with smooth transition
+// Links
 a {
   color: $primary;
   text-decoration: none;
   transition: color 0.15s ease;
 
   &:hover {
-    color: darken($primary, 15%);
+    color: #0a58ca;
     text-decoration: underline;
   }
 }
 
-// R output styling
+// R output
 .cell-output-stdout,
 .cell-output-stderr {
   background-color: #f8f9fa;
@@ -284,10 +276,9 @@ a {
   overflow-x: auto;
 }
 
-// Red error output
 .cell-output-stderr {
   border-left-color: $danger;
-  background-color: lighten($danger, 45%);
+  background-color: #fdecea;
 }
 
 // Footnotes
@@ -328,7 +319,7 @@ hr {
   margin: 2rem 0;
 }
 
-// Sidebar TOC active state
+// Sidebar TOC active state — margin compensates for border width
 .sidebar nav[role="doc-toc"] {
   ul li a {
     &.active {
@@ -336,15 +327,45 @@ hr {
       color: $primary;
       border-left: 3px solid $primary;
       padding-left: 0.75rem;
+      margin-left: -3px;
     }
   }
 }
 
-// Print optimization
+// Responsive
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  body {
+    font-size: 1rem;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  div.sourceCode {
+    font-size: 0.85rem;
+  }
+}
+
+// Print
 @media print {
   body {
     font-size: 11pt;
     line-height: 1.5;
+    color: #000;
   }
 
   pre.sourceCode {
@@ -360,5 +381,14 @@ hr {
   h2,
   h3 {
     page-break-after: avoid;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .sidebar {
+    display: none;
   }
 }

@@ -55,13 +55,27 @@ librarian::shelf(
   parallel
 )
 
+report_theme <- theme_classic(base_size = 11) +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 10),
+    axis.line = element_line(colour = "grey40"),
+    panel.grid.major = element_line(colour = "grey93", linewidth = 0.4),
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 9, colour = "grey40"),
+    plot.caption = element_text(size = 7, colour = "grey50", hjust = 0),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold", size = 9),
+    legend.text = element_text(size = 8)
+  )
+
 df <- read_csv("data/weatherAUS.csv") %>%
   janitor::clean_names()
 
 source(here::here("utils.R"))
 ```
 
-The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (`tidyverse`, `janitor`, `kableExtra`) handles routine data manipulation. The modelling stack (`glmmTMB`, `DHARMa`, `splines`, `mgcv`) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (`missRanger`, `mice`, `ranger`) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (`naniar`, `glue`) supports the structural analysis in Section 2.3 (@sec-missingness-diagnostics). Libraries are loaded via `librarian`, which installs missing packages automatically and ensures reproducibility across environments.
+The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (`tidyverse`, `janitor`, `kableExtra`) handles routine data manipulation. The modelling stack (`glmmTMB`, `DHARMa`, `splines`, `mgcv`) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (`mice`) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (`naniar`, `glue`) supports the structural analysis in @sec-missingness-diagnostics. Libraries are loaded via `librarian`, which installs missing packages automatically and ensures reproducibility across environments.
 
 ---
 
@@ -147,7 +161,8 @@ co_missing_stats %>%
 
 co_missing_stats %>%
   kable(
-    caption = "Conditional Co-missingness: when var1 is missing, what percentage of the time is var2 also missing?",
+    caption = "Conditional Co-missingness:
+              when var1 is missing, what percentage of the time is var2 also missing?",
     digits = 1,
     col.names = c("Variable 1 (Missing)", "Variable 2", "Co-missing (%)")
   ) %>%
@@ -181,18 +196,36 @@ temporal_trend <- df %>%
 
 ggplot(
   temporal_trend,
-  aes(x = month_floor, y = pct_missing, color = variable)
+  aes(x = month_floor, y = pct_missing)
 ) +
-  geom_line(linewidth = 1) +
-  facet_wrap(~variable, scales = "free_y", ncol = 1) +
-  labs(
-    title = "Timeline of Systematic Missingness",
-    subtitle = "Structural breaks appear as step changes rather than random fluctuations",
-    y = "Missingness (%)",
-    x = "Year"
+  geom_area(fill = "grey80", alpha = 0.5) +
+  geom_line(colour = "#2C7BB6", linewidth = 0.7) +
+  geom_hline(
+    yintercept = 50,
+    linetype = "dashed",
+    colour = "grey50",
+    linewidth = 0.4
   ) +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0, 100))
+  facet_wrap(~variable, ncol = 1, scales = "free_y") +
+  scale_x_date(
+    date_breaks = "2 years",
+    date_labels = "%Y",
+    expand = c(0.01, 0)
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    labels = scales::percent_format(scale = 1)
+  ) +
+  labs(
+    title = "Temporal Structure of Missingness by Variable",
+    subtitle = "Step changes indicate structural data collection breaks
+                rather than random sensor failures",
+    x = NULL,
+    y = "Missing (%)",
+    caption = "Dashed line at 50%. Monthly aggregation."
+  ) +
+  report_theme +
+  theme(panel.spacing = unit(0.8, "lines"))
 ```
 
 The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The `sunshine` and `evaporation` variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.
@@ -219,7 +252,8 @@ ghost_sensors <- location_summary %>%
 
 ghost_sensors %>%
   kable(
-    caption = "Ghost Sensor Instances: Location-Variable Pairs with >90% Missingness",
+    caption = "Ghost Sensor Instances: Location-Variable Pairs 
+               with >90% Missingness",
     digits = 1,
     col.names = c("Location", "Variable", "Missing (n)", "Missing (%)")
   ) %>%
@@ -278,17 +312,30 @@ if (all(c("rainfall", "sunshine") %in% names(df))) {
 df %>%
   naniar::bind_shadow() %>%
   filter(rainfall > 0 & rainfall < 50) %>%
-  ggplot(aes(x = rainfall, fill = sunshine_NA)) +
-  geom_density(alpha = 0.6) +
-  scale_fill_viridis_d(labels = c("!NA" = "Present", "NA" = "Missing")) +
-  labs(
-    title = "Does Sunshine go Missing on Rainy Days?",
-    subtitle = "Density of rainfall amounts for days with Missing vs. Present sunshine data",
-    x = "Rainfall (mm)",
-    y = "Density",
-    fill = "Sunshine Status"
+  ggplot(aes(x = rainfall, fill = sunshine_NA, colour = sunshine_NA)) +
+  geom_density(alpha = 0.35, linewidth = 0.6) +
+  scale_fill_manual(
+    values = c("!NA" = "#2C7BB6", "NA" = "#D7191C"),
+    labels = c("!NA" = "Present", "NA" = "Missing")
   ) +
-  theme_minimal()
+  scale_colour_manual(
+    values = c("!NA" = "#2C7BB6", "NA" = "#D7191C"),
+    labels = c("!NA" = "Present", "NA" = "Missing"),
+    guide = "none"
+  ) +
+  scale_x_continuous(breaks = seq(0, 50, 10), expand = c(0.01, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(
+    title = "Sunshine Missingness is Not Rainfall-Conditional",
+    subtitle = "Rainfall distributions are near-identical whether sunshine data
+                is present or absent,\nconfirming missingness is driven by station
+                instrumentation, not weather conditions",
+    x = "Daily Rainfall (mm)",
+    y = "Density",
+    fill = "Sunshine Data",
+    caption = "Restricted to rainfall > 0 and < 50 mm. Kernel density estimate."
+  ) +
+  report_theme
 ```
 
 A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.
@@ -332,7 +379,7 @@ The 27.9% with complete simultaneous missingness corresponds directly to the gho
 
 ---
 
-## Imputation Pipeline
+## Imputation Pipeline {#sec-imputation-pipeline}
 
 The diagnostic evidence from @sec-missingness-diagnostics motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (@sec-weather-conditionality), temporally structured with extended contiguous gaps rather than random scatter (@sec-temporal-structure), and co-located across variables at the station level (@sec-co-missingness). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.
 
@@ -340,22 +387,23 @@ The diagnostic evidence from @sec-missingness-diagnostics motivates each design 
 
 The eight variables with smooth day-to-day trajectories minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.
 
-### Stage 2: Multivariate Random Forest Imputation
+### Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest
 
-Remaining gaps in `sunshine`, `evaporation`, cloud cover, and wind direction are addressed using `mice` with a Random Forest method. Each variable is imputed from a scientifically motivated predictor set:
+Remaining gaps in `sunshine`, `evaporation`, `cloud9am`, `cloud3pm`, and the three wind direction variables are addressed using `mice` with method assignments differentiated by variable type.
 
-- **Cloud cover** (`cloud9am`, `cloud3pm`) from humidity and pressure.
-- **Sunshine** from cloud cover, temperature, humidity, location, and month.
-- **Evaporation** from wind gust speed, temperature, humidity, sunshine, location, and month.
-- **Wind direction** (`wind_gust_dir`, `wind_dir9am`, `wind_dir3pm`) from the corresponding wind speed, pressure, location, and month.
+The four continuous atmospheric variables (`sunshine`, `evaporation`, `cloud9am`, `cloud3pm`) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid Rubin's Rules variance decomposition downstream. Each variable is imputed from a physically motivated predictor set:
 
-Wind direction is treated as a categorical variable imputed with Random Forest, which handles the multi-class, non-ordinal nature of compass-point directions without imposing a false numeric ordering. Each wind direction variable uses its temporally matched pressure and speed readings as predictors gust direction from gust speed and 3pm pressure, 9am direction from 9am speed and pressure, and 3pm direction from 3pm speed and pressure  preserving the physical coupling between concurrent measurements.
+- **Cloud cover** (`cloud9am`, `cloud3pm`) from morning and afternoon humidity, morning pressure, location, and month.
+- **Sunshine** from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.
+- **Evaporation** from wind gust speed, maximum temperature, afternoon humidity, sunshine, location, and month.
 
-The use of targeted predictor sets is directly motivated by the co-missingness finding. Because the four atmosphere variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations.
+The three wind direction variables (`wind_gust_dir`, `wind_dir9am`, `wind_dir3pm`) are imputed using Random Forest. Wind direction is a multi-class unordered categorical variable with sixteen compass-point levels. PMM is not appropriate for unordered factors because it imposes an implicit numeric ordering on the donor matching step. Random Forest handles the multi-class non-ordinal structure natively by splitting on class membership rather than on numeric distance. Each wind direction variable is conditioned on its temporally matched wind speed and pressure readings: gust direction from gust speed and afternoon pressure, morning direction from morning speed and morning pressure, and afternoon direction from afternoon speed and afternoon pressure. This preserves the physical coupling between concurrent wind speed and direction measurements.
+
+The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in @sec-co-missingness. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.
 
 ### Ghost Sensor Flagging
 
-Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (`sunshine_imp_flagged`, `evap_imp_flagged`, `cloud3pm_imp_flagged`, `cloud9am_imp_flagged`). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor. Flag columns are also excluded from the predictor matrix alongside the raw date column to prevent data leakage. A Random Forest model has no empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.
+Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (`sunshine_imp_flagged`, `evap_imp_flagged`, `cloud3pm_imp_flagged`, `cloud9am_imp_flagged`). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.
 
 ```{r}
 #| label: imputation-strategy
@@ -365,7 +413,7 @@ Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor 
 clean_and_impute_weather <- function(df) {
   MAXGAP <- 5
   GHOST_THRESHOLD <- 0.90
-  M <- 5
+  M <- 10
 
   df <- df %>%
     clean_names() %>%
@@ -400,7 +448,7 @@ clean_and_impute_weather <- function(df) {
     arrange(date, .by_group = TRUE) %>%
     mutate(across(
       all_of(interp_vars),
-      ~ na.approx(., maxgap = MAXGAP, na.rm = FALSE, rule = 2)
+      ~ na.approx(., maxgap = MAXGAP, na.rm = FALSE, rule = 1)
     )) %>%
     ungroup()
 
@@ -418,7 +466,7 @@ clean_and_impute_weather <- function(df) {
     summarise(miss_rate = mean(is.na(value)) * 100, .groups = "drop") %>%
     filter(miss_rate > (GHOST_THRESHOLD * 100))
 
-  cat(sprintf("  Found %d ghost sensor instances\n", nrow(ghost_pairs)))
+  cat(sprintf("Found %d ghost sensor instances:", nrow(ghost_pairs)))
 
   df_flagged <- df_interp %>%
     mutate(
@@ -437,7 +485,7 @@ clean_and_impute_weather <- function(df) {
 
   pred[,] <- 0
 
-  meth[ghost_prone_vars] <- "rf"
+  meth[ghost_prone_vars] <- "pmm"
   meth[wind_vars] <- "rf"
 
   sun_predictors <- intersect(
@@ -553,26 +601,483 @@ df_final <- read_csv("data/df_final.csv")
 
 ## Post-Imputation Dataset Properties
 
-The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis.
+The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in @sec-missingness-diagnostics.
 
 **Retention without fabrication.** No observations are discarded on the basis of partial missingness. The 27.9% of observations with all four target variables simultaneously absent are retained with those variables still missing, consistent with the ghost sensor finding that no empirically supportable imputation is possible for them.
 
-**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis, prevents the interpolation from extending across genuine data voids.
+**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in @sec-temporal-structure, prevents the interpolation from extending across genuine data voids. The use of `rule = 1` in `na.approx` ensures that boundary gaps return `NA` rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.
 
-**Distributional fidelity.** The Random Forest method within MICE draws imputed values from the observed empirical distribution of each variable, preserving marginal distributions and preventing variance shrinkage.
+**Distributional fidelity.** PMM draws imputed values directly from the pool of observed donor observations rather than using a model prediction. This constrains imputed values to the observed empirical range of each variable and preserves the marginal distribution, including multi-modal structure and skew, without requiring distributional assumptions.
 
-**Outcome independence.** The weather-conditionality test confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels.
+**Physical bounds enforcement.** Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when `rule = 2` extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.
 
-**Wind direction coherence.** Wind direction variables are imputed as categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories.
+**Outcome independence.** The weather-conditionality test in @sec-weather-conditionality confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.
 
-**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level.
+**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.
+
+**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in @sec-sensitivity.
+
+
+## Imputation Sensitivity Analysis {#sec-sensitivity}
+
+::: {.callout-note}
+**Chapter Context.** The full `mids` object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Three analyses operate directly on `imp_mids` to assess convergence stability, distributional fidelity, and between-imputation uncertainty. Each finding is tied back to the design decisions documented in @sec-missingness-diagnostics.
+:::
+
+### Setup {#sec-sensitivity-setup}
+
+```{r}
+#| label: sensitivity-setup
+#| echo: true
+#| message: false
+#| warning: false
+
+continuous_ghost_vars <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
+
+flag_map <- c(
+  sunshine = "sunshine_imp_flagged",
+  evaporation = "evap_imp_flagged",
+  cloud9am = "cloud9am_imp_flagged",
+  cloud3pm = "cloud3pm_imp_flagged"
+)
+
+imp_mids <- readRDS("data/imp_mids.rds")
+M <- imp_mids$m
+ITER <- imp_mids$iteration
+```
+
+---
+
+### Algorithmic Convergence {#sec-convergence}
+
+Multiple imputation by chained equations relies on a Gibbs-style iterative algorithm: each variable is imputed conditional on the current values of all others, and this cycle repeats for a fixed number of iterations. Convergence requires that the chain means and standard deviations stabilise across iterations and that parallel chains starting from different random seeds mix freely without directional drift. Sustained separation between chains or a monotonic trend in the mean across iterations would indicate that the algorithm has not reached a stable solution and that the number of iterations should be increased.
+
+```{r}
+#| label: fig-convergence-trace
+#| fig-cap: "MCMC trace plots for the four PMM-imputed variables. Each coloured line is one of the ten parallel chains; the upper panel tracks the chain mean and the lower panel tracks the chain standard deviation across five iterations. Chains that mix without trend indicate a stable imputation solution."
+#| fig-width: 11
+#| fig-height: 9
+#| echo: true
+#| warning: false
+
+trace_vars <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
+
+cm <- imp_mids$chainMean
+cv <- imp_mids$chainVar
+n_iter <- dim(cm)[2]
+n_chain <- dim(cm)[3]
+
+trace_df <- map_dfr(trace_vars, function(var) {
+  map_dfr(seq_len(n_chain), function(i) {
+    mean_v <- as.numeric(cm[var, , i])
+    sd_v <- sqrt(pmax(as.numeric(cv[var, , i]), 0))
+    tibble(
+      variable = var,
+      chain = factor(i),
+      iteration = seq_len(n_iter),
+      mean_val = mean_v,
+      sd_val = sd_v
+    )
+  })
+}) %>%
+  filter(!is.nan(mean_val))
+
+p_mean <- ggplot(trace_df, aes(x = iteration, y = mean_val, colour = chain)) +
+  geom_line(linewidth = 0.6, alpha = 0.8) +
+  facet_wrap(~variable, scales = "free_y", ncol = 2) +
+  scale_colour_viridis_d(option = "turbo", guide = guide_legend(nrow = 2)) +
+  scale_x_continuous(breaks = seq_len(n_iter)) +
+  labs(y = "Chain mean", x = NULL, colour = "Chain") +
+  report_theme +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+p_sd <- ggplot(trace_df, aes(x = iteration, y = sd_val, colour = chain)) +
+  geom_line(linewidth = 0.6, alpha = 0.8) +
+  facet_wrap(~variable, scales = "free_y", ncol = 2) +
+  scale_colour_viridis_d(option = "turbo", guide = guide_legend(nrow = 2)) +
+  scale_x_continuous(breaks = seq_len(n_iter)) +
+  labs(y = "Chain SD", x = "Iteration", colour = "Chain") +
+  report_theme
+
+(p_mean / p_sd) +
+  plot_layout(guides = "collect") +
+  plot_annotation(
+    title = "MCMC Convergence Diagnostics",
+    subtitle = "Chain means (top) and standard deviations (bottom) across iterations",
+    theme = theme(
+      plot.title = element_text(face = "bold", size = 13),
+      plot.subtitle = element_text(size = 10, colour = "grey40")
+    )
+  ) &
+  theme(legend.position = "bottom")
+```
+
+All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The `sunshine` chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.
+
+---
+
+### Distributional Fidelity {#sec-dist-fidelity}
+
+Convergence of the algorithm is necessary but not sufficient: the imputed values must also reproduce the marginal distribution of each variable as observed at instrumented stations. Distributional fidelity is assessed by comparing the density of observed values, drawn from non-flagged rows in `df_final`, against the density of imputed values drawn from flagged rows. The Kolmogorov-Smirnov statistic $D$ quantifies the maximum absolute distance between the two empirical cumulative distribution functions. Because the sample sizes involved exceed 60,000 observations per variable, all KS p-values are effectively zero by construction and the $D$ statistic alone is the operative measure of practical divergence.
+
+```{r}
+#| label: fig-dist-fidelity
+#| fig-cap: "Density of observed versus imputed values for the four PMM-imputed variables. Observed values are drawn from instrumented stations (flag = 0); imputed values are drawn from stations where the instrument was absent (flag = 1). The KS statistic D annotated in each panel quantifies the maximum separation between the two empirical CDFs."
+#| fig-width: 11
+#| fig-height: 8
+#| echo: true
+#| warning: false
+
+fidelity_df <- map_dfr(continuous_ghost_vars, function(var) {
+  flag <- flag_map[[var]]
+  bind_rows(
+    df_final %>%
+      filter(.data[[flag]] == 0, !is.na(.data[[var]])) %>%
+      transmute(value = .data[[var]], source = "Observed", variable = var),
+    df_final %>%
+      filter(.data[[flag]] == 1, !is.na(.data[[var]])) %>%
+      transmute(value = .data[[var]], source = "Imputed", variable = var)
+  )
+})
+
+ks_results <- fidelity_df %>%
+  group_by(variable) %>%
+  summarise(
+    ks_stat = ks.test(
+      value[source == "Observed"],
+      value[source == "Imputed"]
+    )$statistic,
+    .groups = "drop"
+  ) %>%
+  mutate(label = sprintf("D = %.3f", ks_stat))
+
+ggplot(fidelity_df, aes(x = value, fill = source, colour = source)) +
+  geom_density(alpha = 0.35, linewidth = 0.6) +
+  geom_text(
+    data = ks_results,
+    aes(label = label, x = Inf, y = Inf),
+    inherit.aes = FALSE,
+    hjust = 1.1,
+    vjust = 1.4,
+    size = 3.2,
+    colour = "grey30"
+  ) +
+  facet_wrap(~variable, scales = "free", ncol = 2) +
+  scale_fill_manual(values = c("Observed" = "#2C7BB6", "Imputed" = "#D7191C")) +
+  scale_colour_manual(
+    values = c("Observed" = "#2C7BB6", "Imputed" = "#D7191C")
+  ) +
+  labs(
+    title = "Distributional Fidelity: Observed vs. Imputed Values",
+    subtitle = "KS statistic D annotated per panel. P-values are not reported as they are uninformative at this sample size.",
+    x = "Value",
+    y = "Density",
+    fill = "Source",
+    colour = "Source",
+    caption = "Observed = instrumented stations (flag = 0). Imputed = ghost sensor stations (flag = 1)."
+  ) +
+  report_theme +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+#| label: tbl-ks-results
+#| tbl-cap: "Kolmogorov-Smirnov statistics comparing observed and imputed marginal distributions. Interpretation is based on the magnitude of D rather than the p-value, which is uninformative at sample sizes exceeding 60,000 observations per variable."
+#| echo: true
+#| warning: false
+
+ks_results %>%
+  mutate(
+    interpretation = case_when(
+      ks_stat < 0.05 ~ "Negligible shift; distributions effectively identical",
+      ks_stat < 0.10 ~ "Small shift; acceptable fidelity",
+      ks_stat < 0.20 ~ "Moderate shift; review predictor set",
+      TRUE ~ "Large shift; imputation has drifted from observed"
+    )
+  ) %>%
+  select(variable, ks_stat, interpretation) %>%
+  kable(
+    digits = 3,
+    col.names = c("Variable", "KS Statistic (D)", "Interpretation"),
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    latex_options = c("hold_position")
+  )
+```
+
+The cloud cover variables achieve near-perfect fidelity. The statistic for `cloud3pm` ($D = 0.019$) is negligible, and `cloud9am` ($D = 0.051$) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. `evaporation` and `sunshine` show small shifts ($D = 0.065$ and $D = 0.074$ respectively). These are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching `na.approx` from `rule = 2` to `rule = 1` in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.
+
+---
+
+### Between-Imputation Variance {#sec-between-variance}
+
+The justification for retaining $m = 10$ completed datasets rather than a single imputation rests on the magnitude of the between-imputation variance. If the ten completions agree closely across observations, a single-completion analysis would be adequate. If they diverge substantially, pooling is required to obtain valid standard errors. The ribbon plots below display the range of imputed values across all ten completions for each observation, sorted by the cross-completion mean, so that the width of the ribbon directly represents the seed-to-seed uncertainty at each quantile of the imputed distribution.
+
+```{r}
+#| label: fig-between-imputation-variance
+#| fig-cap: "Between-imputation variance across the ten PMM completions. Each observation is ranked by its mean imputed value across all completions; the ribbon spans the minimum to maximum imputed value for that observation. Narrow ribbons indicate stable imputation; wide ribbons indicate that downstream point estimates are sensitive to the choice of completion."
+#| fig-width: 11
+#| fig-height: 8
+#| echo: true
+#| warning: false
+
+all_completions <- map_dfr(seq_len(M), function(m) {
+  complete(imp_mids, action = m) %>%
+    select(all_of(trace_vars)) %>%
+    mutate(imputation = factor(m), row_id = row_number())
+})
+
+ribbon_df <- all_completions %>%
+  pivot_longer(
+    cols = all_of(trace_vars),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  group_by(variable, row_id) %>%
+  summarise(
+    mean_val = mean(value, na.rm = TRUE),
+    min_val = min(value, na.rm = TRUE),
+    max_val = max(value, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(variable, mean_val) %>%
+  group_by(variable) %>%
+  mutate(rank = row_number()) %>%
+  ungroup()
+
+ggplot(ribbon_df, aes(x = rank)) +
+  geom_ribbon(
+    aes(ymin = min_val, ymax = max_val),
+    fill = "#2C7BB6",
+    alpha = 0.25
+  ) +
+  geom_line(aes(y = mean_val), colour = "#2C7BB6", linewidth = 0.5) +
+  facet_wrap(~variable, scales = "free", ncol = 2) +
+  labs(
+    title = "Between-Imputation Variance Across Ten Completions",
+    subtitle = "Ribbon spans the full range of imputed values;
+                line is the cross-completion mean.",
+    x = "Observation rank (ascending mean)",
+    y = "Imputed value",
+    caption = paste0(
+      "m = ",
+      M,
+      " completions. Observations sorted independently within each panel."
+    )
+  ) +
+  report_theme
+```
+
+```{r}
+#| label: tbl-between-variance
+#| tbl-cap: "Between-imputation variance summary across ten PMM completions. Mean Range is the average difference between the maximum and minimum imputed value across the ten datasets for a given observation. CV of Range is the coefficient of variation of that range across all observations."
+#| echo: true
+#| warning: false
+
+between_var_summary <- all_completions %>%
+  pivot_longer(
+    cols = all_of(trace_vars),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  group_by(variable, row_id) %>%
+  summarise(
+    range_val = max(value, na.rm = TRUE) - min(value, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  group_by(variable) %>%
+  summarise(
+    mean_range = mean(range_val, na.rm = TRUE),
+    median_range = median(range_val, na.rm = TRUE),
+    cv_range = sd(range_val, na.rm = TRUE) / mean(range_val, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+between_var_summary %>%
+  kable(
+    digits = 3,
+    col.names = c("Variable", "Mean Range", "Median Range", "CV of Range"),
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    latex_options = c("hold_position")
+  )
+```
+
+The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.
+
+The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.
+
+`sunshine` and `evaporation` exhibit a different structure. Their mean ranges (3.470 and 2.318 respectively) are smaller in absolute terms than the cloud cover ranges but their CV of Range values are considerably higher (1.483 and 1.721). This dissociation between the mean and the coefficient of variation indicates that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.
+
+Taken together, the non-zero mean ranges and the elevated CV values for `sunshine` and `evaporation` confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in the ribbon plots as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.
+
+---
+
+### Rubin's Rules Variance Decomposition {#sec-rubins-rules}
+
+The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the $m = 10$ completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance $W$ is the average sampling variance across the ten fits; the between-imputation variance $B$ captures the dispersion of coefficient estimates across the ten datasets. Total variance $T = W + (1 + 1/m)B$ and the Fraction of Missing Information $\text{FMI} = (B + B/m) / T$ follow directly from Rubin (1987). Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.
+
+```{r}
+#| label: tbl-rubins-rules
+#| tbl-cap: "Rubin's Rules variance decomposition for the four PMM-imputed variables. W is the within-imputation variance, B the between-imputation variance, T the total variance, and FMI the Fraction of Missing Information. Analyses restricted to anchored (non-ghost) observations."
+#| echo: true
+#| warning: false
+#| message: false
+
+flag_map_rubin <- c(
+  sunshine = "sunshine_imp_flagged",
+  evaporation = "evap_imp_flagged",
+  cloud9am = "cloud9am_imp_flagged",
+  cloud3pm = "cloud3pm_imp_flagged"
+)
+
+rubin_predictor_map <- list(
+  sunshine = c("cloud9am", "cloud3pm", "max_temp", "humidity3pm"),
+  evaporation = c("wind_gust_speed", "max_temp", "humidity3pm"),
+  cloud9am = c("humidity9am", "pressure9am", "humidity3pm"),
+  cloud3pm = c("humidity3pm", "pressure3pm", "humidity9am")
+)
+
+rubin_results <- map_dfr(continuous_ghost_vars, function(outcome) {
+  flag_col <- flag_map_rubin[[outcome]]
+  preds <- rubin_predictor_map[[outcome]]
+  available <- intersect(preds, names(imp_mids$data))
+
+  if (length(available) == 0) {
+    return(NULL)
+  }
+
+  fml <- as.formula(paste(outcome, "~", paste(available, collapse = " + ")))
+
+  tryCatch(
+    {
+      fits <- lapply(seq_len(imp_mids$m), function(m) {
+        df_m <- complete(imp_mids, action = m) %>%
+          filter(.data[[flag_col]] == 0L)
+        lm(fml, data = df_m)
+      })
+      pooled <- pool(as.mira(fits))
+      pr <- pooled$pooled %>% filter(term == "(Intercept)")
+
+      tibble(
+        variable = outcome,
+        W = pr$ubar,
+        B = pr$b,
+        T_total = pr$t,
+        FMI = pr$fmi
+      )
+    },
+    error = function(e) {
+      message(
+        "Rubin decomposition failed for ",
+        outcome,
+        ": ",
+        conditionMessage(e)
+      )
+      NULL
+    }
+  )
+})
+
+stopifnot(
+  "All Rubin decompositions failed; check imp_mids structure" = nrow(
+    rubin_results
+  ) >
+    0
+)
+
+rubin_results %>%
+  mutate(
+    pct_between = B / T_total * 100,
+    fmi_class = case_when(
+      FMI < 0.10 ~ "Low; single completion adequate",
+      FMI < 0.30 ~ "Moderate; pooling recommended",
+      TRUE ~ "High; pooling required"
+    )
+  ) %>%
+  kable(
+    digits = 4,
+    col.names = c(
+      "Variable",
+      "Within (W)",
+      "Between (B)",
+      "Total (T)",
+      "FMI",
+      "Between (%)",
+      "FMI Classification"
+    ),
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    latex_options = c("hold_position")
+  )
+```
+
+All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For `cloud9am` the between-imputation variance $B$ exceeds the within-imputation variance $W$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. `sunshine` and `evaporation` show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate `sunshine`, `evaporation`, `cloud9am`, or `cloud3pm` as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.
+
+---
+
+### Diagnostic Summary {#sec-sensitivity-summary}
+
+```{r}
+#| label: tbl-sensitivity-summary
+#| tbl-cap: "Summary of imputation sensitivity diagnostics. Each row corresponds to one diagnostic procedure; the action column specifies the corrective step that would be warranted if the criterion were not met."
+#| echo: true
+#| warning: false
+
+tibble(
+  diagnostic = c(
+    "MCMC convergence (trace plots)",
+    "Distributional fidelity (KS test)",
+    "Between-imputation variance (ribbon plots)",
+    "Rubin FMI decomposition"
+  ),
+  criterion = c(
+    "Chains mix without directional trend across iterations",
+    "KS statistic D below 0.10 for all variables",
+    "Ribbon width consistent with acceptable seed-to-seed variation",
+    "FMI below 0.30 for variables used in downstream inference"
+  ),
+  outcome = c(
+    "Met; all chains converge within five iterations",
+    "Met for cloud cover;
+     small shift for sunshine and evaporation within tolerance",
+    "Material variance present;
+     uncertainty concentrated in right tail for sunshine and evaporation",
+    "Not met; FMI ranges from 0.33 to 0.57 across all four variables"
+  ),
+  action = c(
+    "No action required",
+    "Monitor sunshine and evaporation coefficients for sensitivity",
+    "Use all m = 10 completions in downstream models",
+    "Pool all zero-inflated gamma model estimates using Rubin's combining rules"
+  )
+) %>%
+  kable(
+    col.names = c("Diagnostic", "Criterion", "Outcome", "Action"),
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    latex_options = c("hold_position")
+  ) %>%
+  column_spec(1, bold = TRUE) %>%
+  column_spec(4, italic = TRUE)
+```
+
 
 ```{r}
 #| label: save-clean-data
 #| include: false
 
-if (!dir.exists("data")) {
-  dir.create("data")
-}
 saveRDS(df_clean, "data/df_clean.rds")
 ```
