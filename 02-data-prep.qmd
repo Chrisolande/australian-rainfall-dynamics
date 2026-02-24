@@ -401,12 +401,14 @@ Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor 
 #| echo: true
 #| eval: false
 
-clean_and_impute_weather <- function(df) {
-  MAXGAP <- 5
-  GHOST_THRESHOLD <- 0.90
-  M <- 10
+MAXGAP <- 5
+GHOST_THRESHOLD <- 0.90
+M <- 10
 
-  df <- df %>%
+
+# cleaning
+clean_weather <- function(df) {
+  df %>%
     clean_names() %>%
     mutate(
       date = as.Date(date),
@@ -421,8 +423,11 @@ clean_and_impute_weather <- function(df) {
     ) %>%
     filter(!is.na(rainfall)) %>%
     select(-rain_tomorrow)
+}
 
-  # Interpolation
+
+# Linear interpolation for continuous met variables (within each location)
+interpolate_weather <- function(df) {
   interp_vars <- c(
     "min_temp",
     "max_temp",
@@ -434,7 +439,7 @@ clean_and_impute_weather <- function(df) {
     "humidity3pm"
   )
 
-  df_interp <- df %>%
+  df %>%
     group_by(location) %>%
     arrange(date, .by_group = TRUE) %>%
     mutate(across(
@@ -442,11 +447,14 @@ clean_and_impute_weather <- function(df) {
       ~ na.approx(., maxgap = MAXGAP, na.rm = FALSE, rule = 1)
     )) %>%
     ungroup()
+}
 
-  # Flag ghost vars
+
+# Flag ghost sensors and add imputation flag columns
+flag_ghost_sensors <- function(df) {
   ghost_prone_vars <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
 
-  ghost_pairs <- df_interp %>%
+  ghost_pairs <- df %>%
     select(location, all_of(ghost_prone_vars)) %>%
     pivot_longer(
       cols = all_of(ghost_prone_vars),
@@ -457,20 +465,24 @@ clean_and_impute_weather <- function(df) {
     summarise(miss_rate = mean(is.na(value)) * 100, .groups = "drop") %>%
     filter(miss_rate > (GHOST_THRESHOLD * 100))
 
-  cat(sprintf("Found %d ghost sensor instances:", nrow(ghost_pairs)))
+  cat(sprintf("Found %d ghost sensor instances:\n", nrow(ghost_pairs)))
 
-  df_flagged <- df_interp %>%
+  df %>%
     mutate(
       sunshine_imp_flagged = as.integer(is.na(sunshine)),
       evap_imp_flagged = as.integer(is.na(evaporation)),
       cloud3pm_imp_flagged = as.integer(is.na(cloud3pm)),
       cloud9am_imp_flagged = as.integer(is.na(cloud9am))
     )
+}
 
-  # MICE setup
+
+# Build the MICE predictor matrix and method vector
+build_mice_config <- function(df) {
+  ghost_prone_vars <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
   wind_vars <- c("wind_gust_dir", "wind_dir9am", "wind_dir3pm")
 
-  init <- mice(df_flagged, maxit = 0)
+  init <- mice(df, maxit = 0)
   pred <- init$predictorMatrix
   meth <- init$method
 
@@ -479,79 +491,74 @@ clean_and_impute_weather <- function(df) {
   meth[ghost_prone_vars] <- "pmm"
   meth[wind_vars] <- "rf"
 
-  sun_predictors <- intersect(
-    colnames(df_flagged),
-    c("cloud9am", "cloud3pm", "max_temp", "humidity3pm", "location", "month")
-  )
-  evap_predictors <- intersect(
-    colnames(df_flagged),
-    c(
+  # Predictor sets per target variable
+  predictor_map <- list(
+    sunshine = c(
+      "cloud9am",
+      "cloud3pm",
+      "max_temp",
+      "humidity3pm",
+      "location",
+      "month"
+    ),
+    evaporation = c(
       "wind_gust_speed",
       "max_temp",
       "humidity3pm",
       "sunshine",
       "location",
       "month"
-    )
-  )
-  cloud_predictors <- intersect(
-    colnames(df_flagged),
-    c("humidity9am", "humidity3pm", "pressure9am", "location", "month")
-  )
-  wind_gust_predictors <- intersect(
-    colnames(df_flagged),
-    c("wind_gust_speed", "pressure3pm", "location", "month")
-  )
-  wind_9am_predictors <- intersect(
-    colnames(df_flagged),
-    c("wind_speed9am", "pressure9am", "location", "month")
-  )
-  wind_3pm_predictors <- intersect(
-    colnames(df_flagged),
-    c("wind_speed3pm", "pressure3pm", "location", "month")
+    ),
+    cloud9am = c(
+      "humidity9am",
+      "humidity3pm",
+      "pressure9am",
+      "location",
+      "month"
+    ),
+    cloud3pm = c(
+      "humidity9am",
+      "humidity3pm",
+      "pressure9am",
+      "location",
+      "month"
+    ),
+    wind_gust_dir = c("wind_gust_speed", "pressure3pm", "location", "month"),
+    wind_dir9am = c("wind_speed9am", "pressure9am", "location", "month"),
+    wind_dir3pm = c("wind_speed3pm", "pressure3pm", "location", "month")
   )
 
-  if ("sunshine" %in% rownames(pred)) {
-    pred["sunshine", sun_predictors] <- 1
-  }
-  if ("evaporation" %in% rownames(pred)) {
-    pred["evaporation", evap_predictors] <- 1
-  }
-  if ("cloud9am" %in% rownames(pred)) {
-    pred["cloud9am", cloud_predictors] <- 1
-  }
-  if ("cloud3pm" %in% rownames(pred)) {
-    pred["cloud3pm", cloud_predictors] <- 1
-  }
-  if ("wind_gust_dir" %in% rownames(pred)) {
-    pred["wind_gust_dir", wind_gust_predictors] <- 1
-  }
-  if ("wind_dir9am" %in% rownames(pred)) {
-    pred["wind_dir9am", wind_9am_predictors] <- 1
-  }
-  if ("wind_dir3pm" %in% rownames(pred)) {
-    pred["wind_dir3pm", wind_3pm_predictors] <- 1
+  for (target in names(predictor_map)) {
+    if (target %in% rownames(pred)) {
+      predictors <- intersect(colnames(df), predictor_map[[target]])
+      pred[target, predictors] <- 1
+    }
   }
 
+  # Never use flag or date columns as predictors
   ignore_cols <- grep("_imp_flagged$|^date$", colnames(pred), value = TRUE)
   pred[, ignore_cols] <- 0
 
-  # Parallel imputation with exact m allocation across cores
-  n_cores <- max(1L, min(as.integer(parallel::detectCores()), as.integer(M)))
-  m_split <- rep(M %/% n_cores, n_cores)
-  if ((M %% n_cores) > 0L) {
-    m_split[seq_len(M %% n_cores)] <- m_split[seq_len(M %% n_cores)] + 1L
-  }
+  list(method = meth, predictorMatrix = pred)
+}
 
-  seeds <- 123 + seq_len(n_cores) - 1L
+
+# Run parallel MICE imputation and merge mids objects
+impute_parallel <- function(df, mice_config, m = M) {
+  n_cores <- max(1L, min(as.integer(parallel::detectCores()), as.integer(m)))
+  m_split <- rep(m %/% n_cores, n_cores)
+  if ((m %% n_cores) > 0L) {
+    m_split[seq_len(m %% n_cores)] <- m_split[seq_len(m %% n_cores)] + 1L
+  }
+  seeds <- 123L + seq_len(n_cores) - 1L
 
   imp_list <- parallel::mclapply(
     seq_len(n_cores),
     function(i) {
       mice(
-        df_flagged,
-        method = meth,
-        predictorMatrix = pred,
+        df,
+        method = mice_config$method,
+        predictorMatrix = mice_config$predictorMatrix,
         m = m_split[i],
         maxit = 5,
         seed = seeds[i],
@@ -561,9 +568,18 @@ clean_and_impute_weather <- function(df) {
     mc.cores = n_cores
   )
 
-  # Merge all mids objects into one for MI inference
-  imp_merged <- Reduce(ibind, imp_list)
-  return(imp_merged)
+  Reduce(ibind, imp_list)
+}
+
+
+clean_and_impute_weather <- function(df) {
+  df %>%
+    clean_weather() %>%
+    interpolate_weather() %>%
+    flag_ghost_sensors() -> df_flagged
+
+  mice_config <- build_mice_config(df_flagged)
+  impute_parallel(df_flagged, mice_config)
 }
 ```
 
