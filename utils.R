@@ -74,11 +74,20 @@ scale_data <- function(data) {
       .fns = ~ as.numeric(scale(.))
     ))
 }
+
 render_pooled_model_table <- function(model_result, model_name = "Model") {
   fs <- model_result$fit_stats
 
   fit_footnote <- sprintf(
-    "AIC: %.1f \u2003 BIC: %.1f \u2003 log-Lik: %.1f \u2003 (averaged across imputed datasets)",
+    paste0(
+      '<span style="font-size:10px; color:#666;">',
+      '\u2020 p<0.1 &ensp; * p<0.05 &ensp; ** p<0.01 &ensp; *** p<0.001',
+      ' &ensp;\u2502&ensp; ',
+      'AIC: %.1f &ensp; BIC: %.1f &ensp; log-Lik: %.1f',
+      ' &ensp;\u2502&ensp; ',
+      'Pooled via Rubin\u2019s rules across imputed datasets.',
+      '</span>'
+    ),
     fs$AIC,
     fs$BIC,
     fs$logLik
@@ -114,7 +123,7 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
     ifelse(p < 0.001, "<0.001", sprintf("%.3f", p))
   }
 
-  # build table data
+  # Build table data
   tbl <- model_result$pooled %>%
     select(
       component,
@@ -191,17 +200,13 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
     ) %>%
     row_spec(0, bold = TRUE, color = "#2c3e50") %>%
     footnote(
-      general = c(
-        "\u2020 p < 0.1 \u2003 * p < 0.05 \u2003 ** p < 0.01 \u2003 *** p < 0.001",
-        fit_footnote,
-        "Estimates pooled across multiply imputed datasets using Rubin\u2019s rules."
-      ),
+      general = fit_footnote,
       general_title = "",
       footnote_as_chunk = TRUE,
       escape = FALSE
     ) %>%
     column_spec(1, width = "14em") %>%
     column_spec(2, width = "7em") %>%
-    column_spec(4, width = "11em", extra_css = "white-space: nowrap;") %>%
+    column_spec(4, width = "10em") %>%
     column_spec(8, width = "5em")
 }
