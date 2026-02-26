@@ -75,23 +75,9 @@ scale_data <- function(data) {
     ))
 }
 
+
 render_pooled_model_table <- function(model_result, model_name = "Model") {
   fs <- model_result$fit_stats
-
-  fit_footnote <- sprintf(
-    paste0(
-      '<span style="font-size:10px; color:#666;">',
-      '\u2020 p<0.1 &ensp; * p<0.05 &ensp; ** p<0.01 &ensp; *** p<0.001',
-      ' &ensp;\u2502&ensp; ',
-      'AIC: %.1f &ensp; BIC: %.1f &ensp; log-Lik: %.1f',
-      ' &ensp;\u2502&ensp; ',
-      'Pooled via Rubin\u2019s rules across imputed datasets.',
-      '</span>'
-    ),
-    fs$AIC,
-    fs$BIC,
-    fs$logLik
-  )
 
   # significance stars
   sig_stars <- function(p) {
@@ -123,7 +109,7 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
     ifelse(p < 0.001, "<0.001", sprintf("%.3f", p))
   }
 
-  # Build table data
+  # build table data
   tbl <- model_result$pooled %>%
     select(
       component,
@@ -139,7 +125,7 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
     mutate(
       stars = sig_stars(p.value),
       exp_est = sprintf("%.3f", exp(estimate)),
-      ci = sprintf("[%.3f,\u00a0%.3f]", `2.5 %`, `97.5 %`),
+      ci = sprintf("[%.3f,\u00A0%.3f]", `2.5 %`, `97.5 %`), # non-breaking space
       estimate = sprintf("%.3f%s", estimate, stars),
       SE = sprintf("%.3f", std.error),
       t = sprintf("%.2f", statistic),
@@ -168,9 +154,9 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
         "exp(\u03B2)",
         "95% CI",
         "SE",
-        "\\(t\\)",
+        "t",
         "df",
-        "\\(p\\)"
+        "p"
       ),
       escape = FALSE
     ) %>%
@@ -200,13 +186,22 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
     ) %>%
     row_spec(0, bold = TRUE, color = "#2c3e50") %>%
     footnote(
-      general = fit_footnote,
-      general_title = "",
-      footnote_as_chunk = TRUE,
-      escape = FALSE
+      general = c(
+        sprintf("\u2020 p<0.1   * p<0.05   ** p<0.01   *** p<0.001"),
+        sprintf(
+          "AIC: %.1f   BIC: %.1f   log-Lik: %.1f   (averaged across imputed datasets)",
+          fs$AIC,
+          fs$BIC,
+          fs$logLik
+        ),
+        "Pooled via Rubin\u2019s rules."
+      ),
+      general_title = "Note: ",
+      footnote_as_chunk = FALSE,
+      escape = TRUE
     ) %>%
     column_spec(1, width = "14em") %>%
     column_spec(2, width = "7em") %>%
-    column_spec(4, width = "10em") %>%
+    column_spec(4, width = "14em", extra_css = "white-space: nowrap;") %>%
     column_spec(8, width = "5em")
 }
