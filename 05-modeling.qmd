@@ -41,21 +41,24 @@ librarian::shelf(
   here
 )
 
-df_scaled <- read_csv(here::here("data", "df_scaled.csv"))
-df_final <- read_csv(here::here("data", "df_engineered.csv"))
+
 all_datasets <- readRDS(here::here("data", "all_datasets.rds"))
 
 source(here::here("utils.R"))
 
-if (file.exists(here::here("models/all_models_bundle.RData"))) {
-  load(here::here("models/all_models_bundle.RData"))
-}
-m0_null <- readRDS(here::here("models", "m0_null_pooled.rds"))
-m1_moisture <- readRDS(here::here("models", "m1_moisture_pooled.rds"))
-m2_temporal <- readRDS(here::here("models", "m2_temporal_pooled.rds"))
-m3_history <- readRDS(here::here("models", "m3_history_pooled.rds"))
-m4_energy <- readRDS(here::here("models", "m4_energy_pooled.rds"))
-m5_wind <- readRDS(here::here("models", "m5_wind_pooled.rds"))
+
+models <- list(
+  m0_null     = "m0_null_pooled.rds",
+  m1_moisture = "m1_moisture_pooled.rds",
+  m2_temporal = "m2_temporal_pooled.rds",
+  m3_history  = "m3_history_pooled.rds",
+  m4_energy   = "m4_energy_pooled.rds",
+  m5_wind     = "m5_wind_pooled.rds",
+  m6_mixed    = "m6_mixed_pooled.rds"
+) %>%
+  lapply(function(f) readRDS(here::here("models", f)))
+
+list2env(models, envir = .GlobalEnv)
 
 ```
 
@@ -310,51 +313,26 @@ Coefficients for previously established predictors remain stable across this ext
 #| echo: true
 #| eval: false
 
-re_data <- select_model_features(df_final, keep_location = TRUE) %>%
-  scale_data()
-
-ctrl <- glmmTMBControl(
-  optimizer = optim,
-  optArgs = list(method = "BFGS"),
-  optCtrl = list(maxit = 1000)
-)
-
-m6_mixed <- glmmTMB(
-  rainfall ~
-    humidity3pm +
-    dewpoint_9am +
-    dewpoint_change +
-    pressure_change +
-    day_cos +
-    day_sin +
-    rainfall_ma7 +
-    days_since_rain +
-    humidity_ma7 +
-    rain_yesterday +
-    sunshine +
-    evaporation +
-    instability_index +
-    sun_humid_interaction +
-    cloud_development +
-    gust_U_EW +
-    gust_V_NS +
-    wind9am_V_NS +
-    wind9am_U_EW +
+m6_mixed <- fit_and_pool(
+  cond_formula = rainfall ~
+    humidity3pm + dewpoint_9am + dewpoint_change +
+    pressure_change + day_cos + day_sin +
+    rainfall_ma7 + days_since_rain + humidity_ma7 +
+    rain_yesterday + sunshine + evaporation +
+    instability_index + sun_humid_interaction +
+    cloud_development + gust_U_EW + gust_V_NS +
+    wind9am_V_NS + wind9am_U_EW +
     diag(1 + humidity3pm + rain_yesterday + dewpoint_change | location),
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change +
-    sunshine +
-    evaporation +
-    ns(days_since_rain, df = 4) +
-    humidity_ma7 +
-    day_cos +
-    day_sin,
-  data = re_data,
-  control = ctrl,
-  family = ziGamma(link = "log")
+  zi_formula = ~ humidity3pm + dewpoint_9am + rain_yesterday +
+    cloud_development + pressure_change + sunshine +
+    evaporation + ns(days_since_rain, df = 4) +
+    (1 | location) + humidity_ma7 + day_cos + day_sin,
+  datasets = all_datasets,
+  control  = glmmTMBControl(
+    optimizer = nlminb,
+    optCtrl   = list(iter.max = 500, eval.max = 1000)
+  ),
+  n_cores = 3L
 )
 ```
 
@@ -362,31 +340,7 @@ m6_mixed <- glmmTMB(
 #| label: m6-mixed-output
 #| echo: false
 
-m6_mixed %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      humidity3pm ~ "Humidity (3pm)",
-      sunshine ~ "Sunshine Duration",
-      sun_humid_interaction ~ "Interaction: Sunshine x Humidity",
-      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
-      days_since_rain ~ "Dry Spell Length (Linear)",
-      rain_yesterday ~ "Rain Yesterday (Indicator)",
-      gust_U_EW ~ "Gust Vector (East-West)",
-      gust_V_NS ~ "Gust Vector (North-South)",
-      instability_index ~ "Instability Index",
-      day_cos ~ "Seasonality (Cos)",
-      day_sin ~ "Seasonality (Sin)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC", "logLik", "nobs")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 6: Final Mixed-Effects Model (Random Slopes)**") %>%
-  as_gt() %>%
-  gt::tab_footnote(
-    footnote = "Random effects structure: Uncorrelated random slopes for Humidity, Persistence, and Dewpoint by Location."
-  )
+render_pooled_model_table(m6_mixed, "M6: Fixed Effects Model")
 ```
 
 All five preceding models treat the data as if every observation were drawn from the same underlying population, as if the relationship between humidity and rainfall were identical in coastal Sydney and arid Alice Springs, or as if a wet spell in tropical Darwin carried the same statistical weight as one in temperate Melbourne. This homogeneity assumption is implausible for a continent as climatologically diverse as Australia.
