@@ -74,3 +74,134 @@ scale_data <- function(data) {
       .fns = ~ as.numeric(scale(.))
     ))
 }
+render_pooled_model_table <- function(model_result, model_name = "Model") {
+  fs <- model_result$fit_stats
+
+  fit_footnote <- sprintf(
+    "AIC: %.1f \u2003 BIC: %.1f \u2003 log-Lik: %.1f \u2003 (averaged across imputed datasets)",
+    fs$AIC,
+    fs$BIC,
+    fs$logLik
+  )
+
+  # significance stars
+  sig_stars <- function(p) {
+    case_when(
+      p < 0.001 ~ "***",
+      p < 0.01 ~ "**",
+      p < 0.05 ~ "*",
+      p < 0.1 ~ "\u2020",
+      TRUE ~ ""
+    )
+  }
+
+  # clean up term names for readability
+  clean_term <- function(term) {
+    term %>%
+      gsub("_", " ", .) %>%
+      gsub(
+        "\\bns\\((.+),\\s*df\\s*=\\s*(\\d+)\\)",
+        "\\1 (spline, df=\\2)",
+        .
+      ) %>%
+      gsub("\\(Intercept\\)", "Intercept", .) %>%
+      gsub("rain yesterdayYes", "Rain yesterday (yes)", .) %>%
+      gsub("\\b([a-z])", "\\U\\1", ., perl = TRUE)
+  }
+
+  # format p-values
+  fmt_pval <- function(p) {
+    ifelse(p < 0.001, "<0.001", sprintf("%.3f", p))
+  }
+
+  # build table data
+  tbl <- model_result$pooled %>%
+    select(
+      component,
+      term,
+      estimate,
+      std.error,
+      statistic,
+      df,
+      p.value,
+      `2.5 %`,
+      `97.5 %`
+    ) %>%
+    mutate(
+      stars = sig_stars(p.value),
+      exp_est = sprintf("%.3f", exp(estimate)),
+      ci = sprintf("[%.3f,\u00a0%.3f]", `2.5 %`, `97.5 %`),
+      estimate = sprintf("%.3f%s", estimate, stars),
+      SE = sprintf("%.3f", std.error),
+      t = sprintf("%.2f", statistic),
+      df = sprintf("%.1f", df),
+      p = fmt_pval(p.value),
+      Term = clean_term(term),
+      Component = case_when(
+        component == "cond" ~ "Conditional (log link)",
+        component == "zi" ~ "Zero-inflation (logit link)",
+        TRUE ~ component
+      )
+    ) %>%
+    select(Component, Term, estimate, exp_est, ci, SE, t, df, p)
+
+  # Row grouping index
+  group_idx <- table(factor(tbl$Component, levels = unique(tbl$Component)))
+
+  tbl %>%
+    select(-Component) %>%
+    kable(
+      caption = model_name,
+      align = c("l", "r", "r", "c", "r", "r", "r", "r"),
+      col.names = c(
+        "Term",
+        "Estimate",
+        "exp(\u03B2)",
+        "95% CI",
+        "SE",
+        "\\(t\\)",
+        "df",
+        "\\(p\\)"
+      ),
+      escape = FALSE
+    ) %>%
+    kable_styling(
+      bootstrap_options = c("striped", "hover", "condensed"),
+      full_width = FALSE,
+      font_size = 12,
+      html_font = '"Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif'
+    ) %>%
+    add_header_above(
+      c(
+        " " = 1,
+        "Estimates" = 2,
+        "Confidence" = 1,
+        "Inference" = 4
+      ),
+      bold = TRUE,
+      line = TRUE,
+      font_size = 13
+    ) %>%
+    pack_rows(
+      index = group_idx,
+      bold = TRUE,
+      italic = TRUE,
+      hline_before = TRUE,
+      hline_after = TRUE
+    ) %>%
+    row_spec(0, bold = TRUE, color = "#2c3e50") %>%
+    footnote(
+      general = c(
+        "\u2020 p < 0.1 \u2003 * p < 0.05 \u2003 ** p < 0.01 \u2003 *** p < 0.001",
+        fit_footnote,
+        "Estimates pooled across multiply imputed datasets using Rubin\u2019s rules."
+      ),
+      general_title = "",
+      footnote_as_chunk = TRUE,
+      escape = FALSE
+    ) %>%
+    column_spec(1, width = "14em") %>%
+    column_spec(2, width = "7em") %>%
+    column_spec(4, width = "11em", extra_css = "white-space: nowrap;") %>%
+    column_spec(8, width = "5em")
+}

@@ -27,7 +27,8 @@ librarian::shelf(
   here
 )
 
-df_final <- read_csv("data/df_final.csv")
+df_final <- read_csv(here::here("data", "df_final.csv"))
+imp_mids <- readRDS(here::here("data", "imp_mids.rds"))
 source(here::here("utils.R"))
 
 feat_theme <- theme_classic(base_size = 11) +
@@ -363,62 +364,71 @@ compass_lookup <- c(
   "NNW" = 337.5
 )
 
-df_final <- df_final %>%
-  group_by(location) %>%
-  arrange(date) %>%
-  mutate(
-    # Lag the rolling window by one additional day to prevent same-day leakage
-    rainfall_ma7 = lag(
-      rollmean(rainfall, k = 7, fill = NA, align = "right"),
-      n = 1
-    ),
-    humidity_ma7 = lag(
-      rollmean(humidity3pm, k = 7, fill = NA, align = "right"),
-      n = 1
-    ),
+# Perform Feature Engineering on the entire datasets in preparation for Rubin's rules
+precompute_datasets <- function(mids_obj, compass_lookup) {
+  lapply(seq_len(mids_obj$m), function(i) {
+    mice::complete(mids_obj, action = i) %>%
+      group_by(location) %>%
+      arrange(date) %>%
+      mutate(
+        # Lag the rolling window by one additional day to prevent same-day leakage
+        rainfall_ma7 = lag(
+          rollmean(rainfall, k = 7, fill = NA, align = "right"),
+          n = 1
+        ),
+        humidity_ma7 = lag(
+          rollmean(humidity3pm, k = 7, fill = NA, align = "right"),
+          1
+        ),
 
-    # Dry spell counter
-    rain_event_id = cumsum(lag(rainfall, 1) > 0),
-    days_since_rain = row_number() - match(rain_event_id, rain_event_id),
+        # Dry spell counter
+        rain_event_id = cumsum(lag(rainfall, 1) > 0),
+        days_since_rain = row_number() - match(rain_event_id, rain_event_id),
 
-    # First-order Markov state
-    rain_yesterday = lag(rain_today, n = 1)
-  ) %>%
-  ungroup() %>%
-  filter(!is.na(rain_yesterday), !is.na(rainfall_ma7)) %>%
-  select(-rain_event_id) %>%
-  mutate(
-    # Cyclical annual encoding
-    day_of_year = yday(date),
-    day_sin = sin(2 * pi * day_of_year / 365),
-    day_cos = cos(2 * pi * day_of_year / 365),
+        # First-order Markov state
+        rain_yesterday = lag(rain_today, n = 1)
+      ) %>%
+      ungroup() %>%
+      filter(!is.na(rain_yesterday), !is.na(rainfall_ma7)) %>%
+      select(-rain_event_id) %>%
+      mutate(
+        # Cyclical annual encoding
+        day_of_year = yday(date),
+        day_sin = sin(2 * pi * day_of_year / 365),
+        day_cos = cos(2 * pi * day_of_year / 365),
 
-    # Mean-centred interaction term (the "Rain Corner")
-    sunshine = as.numeric(scale(sunshine, center = TRUE, scale = FALSE)),
-    humidity3pm = as.numeric(scale(humidity3pm, center = TRUE, scale = FALSE)),
-    sun_humid_interaction = as.numeric(sunshine * humidity3pm),
+        # Mean-centred interaction term (the "Rain Corner")
+        sunshine = scale(sunshine, center = TRUE, scale = FALSE),
+        humidity3pm = scale(humidity3pm, center = TRUE, scale = FALSE),
+        sun_humid_interaction = as.numeric(sunshine * humidity3pm),
 
-    # Meteorological derived indices
-    pressure_change = pressure3pm - pressure9am,
-    dewpoint_9am = temp9am - ((100 - humidity9am) / 5),
-    dewpoint_3pm = temp3pm - ((100 - humidity3pm) / 5),
-    dewpoint_change = dewpoint_3pm - dewpoint_9am,
-    moisture_index = humidity3pm * (1 - sunshine / 15),
-    instability_index = (1020 - pressure3pm) * humidity3pm / 100,
-    cloud_development = pmax(0, cloud3pm - cloud9am),
+        # Meteorological derived indices
+        pressure_change = pressure3pm - pressure9am,
+        dewpoint_9am = temp9am - ((100 - humidity9am) / 5),
+        dewpoint_3pm = temp3pm - ((100 - humidity3pm) / 5),
+        dewpoint_change = dewpoint_3pm - dewpoint_9am,
+        moisture_index = humidity3pm * (1 - sunshine / 15),
+        instability_index = (1020 - pressure3pm) * humidity3pm / 100,
+        cloud_development = pmax(0, cloud3pm - cloud9am),
 
-    # Circular wind vector decomposition
-    gust_rad = compass_lookup[wind_gust_dir] * pi / 180,
-    gust_V_NS = wind_gust_speed * cos(gust_rad),
-    gust_U_EW = wind_gust_speed * sin(gust_rad),
-    wind9am_rad = compass_lookup[wind_dir9am] * pi / 180,
-    wind9am_V_NS = wind_speed9am * cos(wind9am_rad),
-    wind9am_U_EW = wind_speed9am * sin(wind9am_rad)
-  ) %>%
-  relocate(rain_today, date, location) %>%
-  relocate(rain_yesterday, days_since_rain, .after = location) %>%
-  relocate(ends_with("_ma7"), .after = days_since_rain) %>%
-  relocate(day_sin, day_cos, .after = date)
+        # Circular wind vector decomposition
+        gust_rad = compass_lookup[wind_gust_dir] * pi / 180,
+        gust_V_NS = wind_gust_speed * cos(gust_rad),
+        gust_U_EW = wind_gust_speed * sin(gust_rad),
+        wind9am_rad = compass_lookup[wind_dir9am] * pi / 180,
+        wind9am_V_NS = wind_speed9am * cos(wind9am_rad),
+        wind9am_U_EW = wind_speed9am * sin(wind9am_rad),
+
+        # Convert ghost sensors to factors
+        sunshine_imp_flagged = as.factor(sunshine_imp_flagged),
+        evap_imp_flagged = as.factor(evap_imp_flagged),
+        cloud3pm_imp_flagged = as.factor(cloud3pm_imp_flagged),
+        cloud9am_imp_flagged = as.factor(cloud9am_imp_flagged)
+      ) %>%
+      select_model_features(keep_location = TRUE) %>%
+      scale_data()
+  })
+}
 ```
 
 The pipeline is organised into four conceptually distinct transformations, each addressing a specific structural property identified in the EDA.
@@ -469,8 +479,6 @@ where $v$ is wind speed (in km/h) and $\theta$ is the compass bearing in radians
 #| message: false
 #| warning: false
 
-write_csv(df_final, "data/df_engineered.csv")
-
 df_wo_location <- select_model_features(df_final, keep_location = FALSE)
 vif_results <- mc_check(df_wo_location)
 
@@ -491,9 +499,22 @@ vif_results %>%
 df_scaled <- df_wo_location %>%
   scale_data()
 
-write_csv(df_scaled, "data/df_scaled.csv")
+
 ```
 
+
+```{r}
+#| label: persist-datasets
+#| echo: true
+#| message: false
+#| warning: false
+
+all_datasets <- precompute_datasets(imp_mids, compass_lookup)
+
+write_csv(df_scaled, here::here("data", "df_scaled.csv"))
+write_csv(df_final, here::here("data", "df_engineered.csv"))
+saveRDS(all_datasets, here::here("data", "all_datasets.rds"))
+```
 Feature engineering that introduces interaction terms, composite indices, and temporal aggregates necessarily creates new correlational structure in the design matrix. After constructing the full feature set, it is essential to verify that no predictor has become so collinear with the others that its coefficient in a linear model would be effectively unidentifiable. We use the Variance Inflation Factor (VIF) for this diagnosis. The VIF for a given predictor quantifies how much its coefficient variance is inflated relative to what it would be in an orthogonal design: a VIF of $k$ indicates that the standard error of that coefficient is $\sqrt{k}$ times larger than it would be if the predictor were uncorrelated with all others. Values above 10 are conventionally treated as indicating severe collinearity requiring remediation.
 
 **Cyclical and wind components.** The `day_sin`, `day_cos`, `gust_V_NS`, and `gust_U_EW` features all show VIF values well below 3. This confirms that the decomposition strategies, sine/cosine for the annual cycle and U/V projection for wind direction, successfully converted circular variables into continuous representations without introducing redundancy. Each component carries information that is approximately orthogonal to its pair.

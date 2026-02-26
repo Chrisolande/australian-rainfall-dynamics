@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="A comprehensive statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
+<meta name="description" content="An in-depth statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
 
 <title>6&nbsp; Model Evaluation – Australian Rainfall Dynamics</title>
 <style>
@@ -70,18 +70,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./05-modeling.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5f9457399cb503d1c34ffd8fbac5e1f9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-e66b50aa4120364bfa72329fe8653b98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d3b9742b9ff5b22559c24e86974f6d61.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-76e320b9afc80ddeb17272433d3d09ca.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-463e05341c278a50bd9d8b9e5c352418.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-76e320b9afc80ddeb17272433d3d09ca.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -127,7 +128,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -487,7 +488,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>prob_no_rain <span class="ot">&lt;-</span> <span class="fu">predict</span>(m6_mixed, <span class="at">type =</span> <span class="st">"zprob"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>prob_no_rain <span class="ot">&lt;-</span> <span class="fu">predict</span>(m6_mixed, <span class="at">type =</span> <span class="st">"zprob"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>actual_no_rain <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(re_data<span class="sc">$</span>rainfall <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(actual_no_rain, prob_no_rain)</span>
@@ -499,7 +500,7 @@ window.Quarto = {
 <span id="cb1-10"><a href="#cb1-10"></a>  <span class="at">lwd =</span> <span class="dv">2</span>,</span>
 <span id="cb1-11"><a href="#cb1-11"></a>  <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb1-12"><a href="#cb1-12"></a>  <span class="at">print.auc.y =</span> <span class="fl">0.4</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -511,10 +512,10 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>coords_obj <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>coords_obj <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a>optimal_threshold <span class="ot">&lt;-</span> coords_obj<span class="sc">$</span>threshold</span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Optimal Probability Threshold: %.4f</span><span class="sc">\n</span><span class="st">"</span>, optimal_threshold))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Optimal Probability Threshold: %.4f</span><span class="sc">\n</span><span class="st">"</span>, optimal_threshold))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; 
@@ -522,14 +523,14 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>predicted_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prob_no_rain <span class="sc">&gt;</span> optimal_threshold, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>predicted_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prob_no_rain <span class="sc">&gt;</span> optimal_threshold, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a>actual_class <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(re_data<span class="sc">$</span>rainfall <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"No Rain"</span>, <span class="st">"Rain"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3"></a></span>
 <span id="cb4-4"><a href="#cb4-4"></a>conf_matrix <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Predicted =</span> predicted_class, <span class="at">Actual =</span> actual_class)</span>
 <span id="cb4-5"><a href="#cb4-5"></a></span>
 <span id="cb4-6"><a href="#cb4-6"></a>conf_matrix <span class="sc">%&gt;%</span></span>
 <span id="cb4-7"><a href="#cb4-7"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Confusion Matrix at the Youden-Optimal Threshold"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-8"><a href="#cb4-8"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">"striped"</span>, <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -577,8 +578,8 @@ Rain
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrix)) <span class="sc">/</span> <span class="fu">sum</span>(conf_matrix)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Overall Accuracy: %.2f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrix)) <span class="sc">/</span> <span class="fu">sum</span>(conf_matrix)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Overall Accuracy: %.2f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy <span class="sc">*</span> <span class="dv">100</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; 
@@ -596,7 +597,7 @@ Rain
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>ranef_data <span class="ot">&lt;-</span> <span class="fu">ranef</span>(m6_mixed)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>ranef_data <span class="ot">&lt;-</span> <span class="fu">ranef</span>(m6_mixed)</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
 <span id="cb7-3"><a href="#cb7-3"></a>loc_effects <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ranef_data<span class="sc">$</span>cond<span class="sc">$</span>location) <span class="sc">%&gt;%</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"Location"</span>) <span class="sc">%&gt;%</span></span>
@@ -715,7 +716,7 @@ Rain
 <span id="cb7-117"><a href="#cb7-117"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
 <span id="cb7-118"><a href="#cb7-118"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>),</span>
 <span id="cb7-119"><a href="#cb7-119"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">15</span>, <span class="dv">15</span>, <span class="dv">15</span>, <span class="dv">15</span>)</span>
-<span id="cb7-120"><a href="#cb7-120"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-120"><a href="#cb7-120"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-location-effects" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -741,8 +742,8 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>res <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(m6_mixed)</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">plot</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>res <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(m6_mixed)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">plot</span>(res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -754,7 +755,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">testDispersion</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">testDispersion</span>(res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -775,7 +776,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">testZeroInflation</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">testZeroInflation</span>(res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -806,7 +807,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>rows_used <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">rownames</span>(m6_mixed<span class="sc">$</span>frame))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>rows_used <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">rownames</span>(m6_mixed<span class="sc">$</span>frame))</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
 <span id="cb13-3"><a href="#cb13-3"></a>Canberra_data <span class="ot">&lt;-</span> df_final[rows_used, ] <span class="sc">%&gt;%</span></span>
 <span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">mutate</span>(<span class="at">dharma_resid =</span> <span class="fu">residuals</span>(res)) <span class="sc">%&gt;%</span></span>
@@ -816,7 +817,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 <span id="cb13-8"><a href="#cb13-8"></a>dw_result <span class="ot">&lt;-</span> <span class="fu">testTemporalAutocorrelation</span>(</span>
 <span id="cb13-9"><a href="#cb13-9"></a>  <span class="at">simulationOutput =</span> Canberra_data<span class="sc">$</span>dharma_resid,</span>
 <span id="cb13-10"><a href="#cb13-10"></a>  <span class="at">time =</span> Canberra_data<span class="sc">$</span>date</span>
-<span id="cb13-11"><a href="#cb13-11"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-11"><a href="#cb13-11"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -828,7 +829,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">print</span>(dw_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">print</span>(dw_result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; 
@@ -922,13 +923,14 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1340,7 +1342,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu"># Model Evaluation</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu"># Model Evaluation</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a><span class="fu">## Validating the Final Mixed-Effects Zero-Inflated Gamma Model</span></span>
 <span id="cb16-3"><a href="#cb16-3"></a></span>
 <span id="cb16-4"><a href="#cb16-4"></a>---</span>
@@ -1639,7 +1641,7 @@ Figure&nbsp;6.1: Location-specific baseline rainfall adjustments (random interce
 <span id="cb16-307"><a href="#cb16-307"></a>The occurrence submodel discriminates between dry and wet days with an AUC of 0.827, achieves 75.28% classification accuracy, and exhibits a conservative error profile appropriate for meteorological risk communication. The random effects structure captures geographically coherent spatial heterogeneity that a pooled model would suppress, with the tropical north and arid interior deviating from the national average by factors of approximately 1.8 and 0.5 respectively. The DHARMa diagnostics find no evidence of distributional misspecification, heteroscedasticity, over-dispersion, or miscalibrated zero-inflation. And the temporal autocorrelation test confirms that the model's persistence and dry spell features have successfully eliminated serial dependence from the residuals.</span>
 <span id="cb16-308"><a href="#cb16-308"></a></span>
 <span id="cb16-309"><a href="#cb16-309"></a>Taken together, these results support the conclusion that the final ZIG mixed-effects model is both statistically valid and physically well-grounded, a model whose structure reflects the actual mechanisms generating Australian rainfall rather than artefacts of the fitting procedure.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

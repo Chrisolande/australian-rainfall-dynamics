@@ -34,6 +34,8 @@ librarian::shelf(
   lmtest,
   performance,
   gt,
+  broom.mixed,
+  parallel,
   splines,
   pROC,
   here
@@ -41,11 +43,60 @@ librarian::shelf(
 
 df_scaled <- read_csv(here::here("data", "df_scaled.csv"))
 df_final <- read_csv(here::here("data", "df_engineered.csv"))
+all_datasets <- readRDS(here::here("data", "all_datasets.rds"))
 
 source(here::here("utils.R"))
 
 if (file.exists(here::here("models/all_models_bundle.RData"))) {
   load(here::here("models/all_models_bundle.RData"))
+}
+m0_null <- readRDS(here::here("models", "m0_null_pooled.rds"))
+m1_moisture <- readRDS(here::here("models", "m1_moisture_pooled.rds"))
+m2_temporal <- readRDS(here::here("models", "m2_temporal_pooled.rds"))
+m3_history <- readRDS(here::here("models", "m3_history_pooled.rds"))
+m4_energy <- readRDS(here::here("models", "m4_energy_pooled.rds"))
+m5_wind <- readRDS(here::here("models", "m5_wind_pooled.rds"))
+
+```
+
+```{r}
+#| label: def-fit-and-pool
+#| echo: true
+
+fit_and_pool <- function(cond_formula, zi_formula, datasets, 
+                         control = glmmTMBControl(), n_cores = 2L) {
+  
+  fits <- parallel::mclapply(seq_along(datasets), function(i) {
+    glmmTMB(
+      formula   = cond_formula,
+      ziformula = zi_formula,
+      family    = ziGamma(link = "log"),
+      control   = control,
+      data      = datasets[[i]]
+    )
+  }, mc.cores = n_cores)
+  
+  # Check for errors from mclapply
+  errors <- sapply(fits, inherits, "try-error")
+  if (any(errors)) {
+    warning(sprintf("%d model(s) failed to converge", sum(errors)))
+    fits <- fits[!errors]
+  }
+  
+  pooled <- fits %>%
+    mice::as.mira() %>%
+    mice::pool()
+  
+  fit_stats <- data.frame(
+    AIC    = mean(sapply(fits, AIC)),
+    BIC    = mean(sapply(fits, BIC)),
+    logLik = mean(sapply(fits, function(f) as.numeric(logLik(f))))
+  )
+  
+  list(
+    pooled    = summary(pooled, conf.int = TRUE),
+    fit_stats = fit_stats
+  )
 }
 ```
 
@@ -59,29 +110,17 @@ if (file.exists(here::here("models/all_models_bundle.RData"))) {
 #| message: false
 #| eval: false
 
-m0_null <- glmmTMB(
-  formula = rainfall ~ 1,
-  ziformula = ~1,
-  family = Gamma(link = "log"),
-  data = df_scaled
+m0_null <- fit_and_pool(
+  cond_formula = rainfall ~ 1,
+  zi_formula = ~1,
+  datasets = all_datasets
 )
 ```
 
 ```{r}
 #| label: null-model-output
 
-tab_model(
-  m0_null,
-  show.se = TRUE,
-  show.aic = TRUE,
-  transform = "exp",
-  collapse.se = TRUE,
-  p.style = "numeric_stars",
-  string.pred = "Parameter",
-  string.est = "Estimate (Exp)",
-  dv.labels = "Baseline Rainfall Model",
-  title = "Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"
-)
+render_pooled_model_table(m0_null, "M0: Null Baseline")
 ```
 
 Before introducing any covariates, we fit an intercept-only model whose sole purpose is to verify that the model structure correctly recovers the fundamental statistical properties of the dataset. A null model that fails this basic calibration check would call into question the validity of all subsequent extensions.
@@ -103,10 +142,9 @@ This model yields AIC = 461,669.7, serving as the reference against which all su
 #| echo: true
 #| eval: false
 
-m1_moisture <- update(
-  m0_null,
-  . ~ . + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change,
-  ziformula = ~ humidity3pm + dewpoint_9am
+m1_moisture <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change,
+  zi_formula   = ~ humidity3pm + dewpoint_9am
 )
 ```
 
@@ -114,20 +152,7 @@ m1_moisture <- update(
 #| label: m1-moisture-output
 #| echo: false
 
-m1_moisture %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      humidity3pm ~ "Humidity (3pm)",
-      dewpoint_9am ~ "Dewpoint (9am)",
-      dewpoint_change ~ "Dewpoint Change (Delta)",
-      pressure_change ~ "Pressure Change (Delta)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC", "logLik")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 1: Moisture and Pressure Dynamics**")
+render_pooled_model_table(m1_moisture, "Model 1: Moisture and Pressure Dynamics")
 ```
 
 The correlation analysis identified afternoon humidity and sunshine as the two strongest individual predictors of rainfall, and the pressure analysis established that both baseline level and diurnal change carry discriminating signal. Model 1 formalises these findings by introducing the four most physically direct atmospheric drivers into the conditional intensity submodel, and a subset of moisture indicators into the zero-inflation submodel.
@@ -147,14 +172,9 @@ The zero-inflation submodel reveals a meaningful asymmetry between the two moist
 #| echo: true
 #| eval: false
 
-m2_temporal <- update(
-  m1_moisture,
-  . ~ . + day_cos + day_sin,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m2_temporal <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change + day_cos + day_sin,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + cloud_development + pressure_change
 )
 ```
 
@@ -162,21 +182,7 @@ m2_temporal <- update(
 #| label: m2-temporal-output
 #| echo: false
 
-m2_temporal %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      day_cos ~ "Seasonality (Cos)",
-      day_sin ~ "Seasonality (Sin)",
-      rain_yesterday ~ "Rain Yesterday (Persistence)",
-      cloud_development ~ "Cloud Development",
-      pressure_change ~ "Pressure Change"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 2: Seasonality and Persistence Effects**")
+render_pooled_model_table(m2_temporal, "Model 2: Seasonality and Persistence Effects")
 ```
 
 Having established moisture and pressure as foundational drivers, Model 2 incorporates the temporal structure identified in the EDA (@sec-eda). The Markov Chain analysis (@sec-markov) demonstrated that yesterday's rain state carries a moderate but practically significant effect ($V \approx 0.31$), and the seasonal analysis confirmed that both frequency and intensity of rainfall follow a smooth annual cycle. Cyclical sine/cosine encoding enters the conditional model, while `rain_yesterday`, `cloud_development`, and `pressure_change` are added to the zero-inflation component.
@@ -196,14 +202,12 @@ The most striking result is the persistence coefficient. At $\hat{\beta}_{zi} = 
 #| echo: true
 #| eval: false
 
-m3_history <- update(
-  m2_temporal,
-  . ~ . + rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m3_history <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
+                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
+                 days_since_rain + humidity_ma7 + rain_yesterday,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
+                 cloud_development + pressure_change
 )
 ```
 
@@ -211,20 +215,7 @@ m3_history <- update(
 #| label: m3-history-output
 #| echo: false
 
-m3_history %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
-      humidity_ma7 ~ "Humidity Trend (7-Day MA)",
-      days_since_rain ~ "Dry Spell Length (Days)",
-      rain_yesterday ~ "Rain Yesterday (Indicator)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 3: Accumulated Weather History**")
+render_pooled_model_table(m3_history, "Model 3: Accumulated Weather History")
 ```
 
 While Model 2 captured the binary state of the previous day, it does not account for the *accumulated* atmospheric state over a longer preceding window. The dry spell analysis (@sec-dry-spell) demonstrated that rainfall probability decays as dry spells lengthen, and the moving average analysis showed that a 7-day smoothed signal substantially reduces the stochastic variance of the rainfall and humidity series. Model 3 introduces these medium-horizon history features into the conditional intensity submodel.
@@ -246,19 +237,14 @@ Finally, `days_since_rain` is not significant in the conditional intensity compo
 #| echo: true
 #| eval: false
 
-m4_energy <- update(
-  m3_history,
-  . ~ . +
-    sunshine +
-    evaporation +
-    instability_index +
-    sun_humid_interaction +
-    cloud_development,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m4_energy <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
+                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
+                 days_since_rain + humidity_ma7 + rain_yesterday +
+                 sunshine + evaporation + instability_index + 
+                 sun_humid_interaction + cloud_development,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
+                 cloud_development + pressure_change
 )
 ```
 
@@ -266,21 +252,7 @@ m4_energy <- update(
 #| label: m4-energy-output
 #| echo: false
 
-m4_energy %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      sunshine ~ "Sunshine Duration (Hours)",
-      evaporation ~ "Evaporation Rate",
-      instability_index ~ "Instability Index (Derived)",
-      sun_humid_interaction ~ "Interaction: Sunshine x Humidity",
-      cloud_development ~ "Cloud Development (Delta)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 4: Thermodynamic Energy and Interactions**")
+render_pooled_model_table(m4_energy, "Model 4: Thermodynamic Energy and Interactions")
 ```
 
 The bivariate density analysis (@sec-bivariate-density) identified a structural non-linearity in the joint distribution of humidity and sunshine: rain occurs almost exclusively when afternoon humidity is high and sunshine hours are simultaneously low. An additive model cannot represent this conditional structure. Model 4 introduces the multiplicative interaction term alongside the broader thermodynamic context from which it arises.
@@ -300,14 +272,15 @@ The entry of the interaction term also produces a marked reduction in the `humid
 #| echo: true
 #| eval: false
 
-m5_wind <- update(
-  m4_energy,
-  . ~ . + gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m5_wind <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
+                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
+                 days_since_rain + humidity_ma7 + rain_yesterday +
+                 sunshine + evaporation + instability_index + 
+                 sun_humid_interaction + cloud_development +
+                 gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
+                 cloud_development + pressure_change
 )
 ```
 
@@ -315,20 +288,7 @@ m5_wind <- update(
 #| label: m5-wind-output
 #| echo: false
 
-m5_wind %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      gust_U_EW ~ "Gust Vector (East-West)",
-      gust_V_NS ~ "Gust Vector (North-South)",
-      wind9am_U_EW ~ "Wind 9am Vector (East-West)",
-      wind9am_V_NS ~ "Wind 9am Vector (North-South)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 5: Wind Vector Dynamics**")
+render_pooled_model_table(m5_wind, "Model 5: Wind Vector Dynamics")
 ```
 
 Model 5 tests whether the directional origin of air masses provides additional predictive information about rainfall intensity beyond the instantaneous atmospheric state. Wind direction is encoded as orthogonal U and V vector components, as developed in the feature engineering chapter, to preserve the circular geometry of directional data.
