@@ -9,7 +9,7 @@
 
 ## Model Architecture
 
-A Zero-Inflated Gamma model is a two-component mixture. The first component, the zero-inflation submodel, is a logistic regression that estimates the probability of a structurally zero outcome, a dry day on which no precipitation occurs regardless of atmospheric conditions. The second component, the conditional intensity submodel, is a Gamma regression (with log link) that models the expected rainfall given that rain does fall. Together they answer the two questions identified in the @sec-eda: "Will it rain?" and "If so, how much?"
+A Zero-Inflated Gamma model is a two-component mixture. The first component, the zero-inflation submodel, is a logistic regression that estimates the probability of a structurally zero outcome (a dry day on which no precipitation occurs regardless of atmospheric conditions). The second component, the conditional intensity submodel, is a Gamma regression (with log link) that models the expected rainfall given that rain does fall. Together they answer the two questions identified in @sec-eda: "Will it rain?" and "If so, how much?"
 
 Formally, for observation $i$:
 
@@ -34,18 +34,72 @@ librarian::shelf(
   lmtest,
   performance,
   gt,
+  broom.mixed,
+  parallel,
   splines,
   pROC,
   here
 )
 
-df_scaled <- read_csv(here::here("data", "df_scaled.csv"))
-df_final <- read_csv(here::here("data", "df_engineered.csv"))
+
+all_datasets <- readRDS(here::here("data", "all_datasets.rds"))
 
 source(here::here("utils.R"))
 
-if (file.exists(here::here("models/all_models_bundle.RData"))) {
-  load(here::here("models/all_models_bundle.RData"))
+
+models <- list(
+  m0_null     = "m0_null_pooled.rds",
+  m1_moisture = "m1_moisture_pooled.rds",
+  m2_temporal = "m2_temporal_pooled.rds",
+  m3_history  = "m3_history_pooled.rds",
+  m4_energy   = "m4_energy_pooled.rds",
+  m5_wind     = "m5_wind_pooled.rds",
+  m6_mixed    = "m6_mixed_pooled.rds"
+) %>%
+  lapply(function(f) readRDS(here::here("models", f)))
+
+list2env(models, envir = .GlobalEnv)
+
+```
+
+```{r}
+#| label: def-fit-and-pool
+#| echo: true
+
+fit_and_pool <- function(cond_formula, zi_formula, datasets, 
+                         control = glmmTMBControl(), n_cores = 2L) {
+  
+  fits <- parallel::mclapply(seq_along(datasets), function(i) {
+    glmmTMB(
+      formula   = cond_formula,
+      ziformula = zi_formula,
+      family    = ziGamma(link = "log"),
+      control   = control,
+      data      = datasets[[i]]
+    )
+  }, mc.cores = n_cores)
+  
+  # Check for errors from mclapply
+  errors <- sapply(fits, inherits, "try-error")
+  if (any(errors)) {
+    warning(sprintf("%d model(s) failed to converge", sum(errors)))
+    fits <- fits[!errors]
+  }
+  
+  pooled <- fits %>%
+    mice::as.mira() %>%
+    mice::pool()
+  
+  fit_stats <- data.frame(
+    AIC    = mean(sapply(fits, AIC)),
+    BIC    = mean(sapply(fits, BIC)),
+    logLik = mean(sapply(fits, function(f) as.numeric(logLik(f))))
+  )
+  
+  list(
+    pooled    = summary(pooled, conf.int = TRUE),
+    fit_stats = fit_stats
+  )
 }
 ```
 
@@ -59,40 +113,28 @@ if (file.exists(here::here("models/all_models_bundle.RData"))) {
 #| message: false
 #| eval: false
 
-m0_null <- glmmTMB(
-  formula = rainfall ~ 1,
-  ziformula = ~1,
-  family = Gamma(link = "log"),
-  data = df_scaled
+m0_null <- fit_and_pool(
+  cond_formula = rainfall ~ 1,
+  zi_formula = ~1,
+  datasets = all_datasets
 )
 ```
 
 ```{r}
 #| label: null-model-output
 
-tab_model(
-  m0_null,
-  show.se = TRUE,
-  show.aic = TRUE,
-  transform = "exp",
-  collapse.se = TRUE,
-  p.style = "numeric_stars",
-  string.pred = "Parameter",
-  string.est = "Estimate (Exp)",
-  dv.labels = "Baseline Rainfall Model",
-  title = "Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"
-)
+render_pooled_model_table(m0_null, "M0: Null Baseline")
 ```
 
-Before introducing any covariates, we fit an intercept-only model whose sole purpose is to verify that the model structure correctly recovers the fundamental statistical properties of the dataset. A null model that fails this basic calibration check would call into question the validity of all subsequent extensions.
+Before introducing any covariates, we fit an intercept-only model whose sole purpose is to verify that the ZIG model structure correctly recovers the fundamental statistical properties of the dataset. A null model that fails this calibration check would undermine the validity of all subsequent extensions.
 
-The zero-inflation intercept $\hat{\beta}_{zi} = 0.5769$ back-transforms through the logistic function to an implied dry-day probability of:
+The zero-inflation intercept $\hat{\beta}_{zi} = 0.577$ (SE = 0.006, $p < 0.001$) back-transforms through the logistic function to an implied dry-day probability of:
 
-$$\hat{P}(\text{Dry}) = \frac{e^{0.5769}}{1 + e^{0.5769}} \approx 64.03\%$$
+$$\hat{P}(\text{Dry}) = \frac{e^{0.577}}{1 + e^{0.577}} \approx 64.03\%$$
 
-This matches the empirically observed zero-inflation rate of 64.05% to within a rounding error, confirming that the hurdle mechanism is correctly calibrated to the data-generating process. The conditional intensity intercept $\hat{\beta}_{cond} = 1.8825$ recovers a mean rainy-day intensity of $e^{1.8825} \approx 6.57$ mm, consistent with the non-zero mean established in the EDA.
+This matches the empirically observed zero-inflation rate of 64.05% to within a rounding error, confirming that the hurdle mechanism is correctly calibrated to the data-generating process. The conditional intensity intercept $\hat{\beta}_{cond} = 1.883$ (SE = 0.006, $p < 0.001$) recovers a mean rainy-day intensity of $e^{1.883} \approx 6.57$ mm, consistent with the non-zero conditional mean established in @sec-eda. Both intercepts are estimated with exceptional precision, reflecting the large sample size and the fact that an intercept-only model imposes no distributional misspecification beyond the assumed family.
 
-This model yields AIC = 461,669.7, serving as the reference against which all subsequent gains are measured.
+This model yields AIC = 461,669.7 and BIC = 461,699.3, serving as the reference against which all subsequent gains are measured.
 
 ---
 
@@ -103,10 +145,9 @@ This model yields AIC = 461,669.7, serving as the reference against which all su
 #| echo: true
 #| eval: false
 
-m1_moisture <- update(
-  m0_null,
-  . ~ . + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change,
-  ziformula = ~ humidity3pm + dewpoint_9am
+m1_moisture <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change,
+  zi_formula   = ~ humidity3pm + dewpoint_9am
 )
 ```
 
@@ -114,29 +155,18 @@ m1_moisture <- update(
 #| label: m1-moisture-output
 #| echo: false
 
-m1_moisture %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      humidity3pm ~ "Humidity (3pm)",
-      dewpoint_9am ~ "Dewpoint (9am)",
-      dewpoint_change ~ "Dewpoint Change (Delta)",
-      pressure_change ~ "Pressure Change (Delta)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC", "logLik")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 1: Moisture and Pressure Dynamics**")
+render_pooled_model_table(m1_moisture, "Model 1: Moisture and Pressure Dynamics")
 ```
 
-The correlation analysis identified afternoon humidity and sunshine as the two strongest individual predictors of rainfall, and the pressure analysis established that both baseline level and diurnal change carry discriminating signal. Model 1 formalises these findings by introducing the four most physically direct atmospheric drivers into the conditional intensity submodel, and a subset of moisture indicators into the zero-inflation submodel.
+The correlation analysis in @sec-eda identified afternoon relative humidity and morning dewpoint temperature as among the strongest individual predictors of rainfall occurrence. That analysis also established that both the absolute level and the diurnal rate of change of sea-level pressure carry discriminating signal. Model 1 formalises these findings by introducing the four most physically direct atmospheric moisture and pressure drivers into the conditional intensity submodel, and a subset of the moisture indicators into the zero-inflation submodel.
 
-The AIC falls from 461,669.7 to 422,630, a reduction of approximately 39069.7 points, the largest single improvement in the entire model sequence. This magnitude confirms that atmospheric moisture and pressure dynamics are not merely correlated with rainfall but are its fundamental predictive substrate.
+The AIC falls from 461,669.7 to 425,731.4, a reduction of 35,938.3 points. This is the largest single improvement across the entire model sequence, and its magnitude confirms that atmospheric moisture and pressure dynamics are not merely correlated with rainfall but constitute its fundamental predictive substrate. All four conditional predictors are highly significant ($p < 0.001$).
 
-All four predictors in the conditional model are highly significant ($p < 2 \times 10^{-16}$). The positive coefficients for `humidity3pm` ($\hat{\beta} = 0.38$) and `dewpoint_9am` ($\hat{\beta} = 0.38$) indicate that both relative saturation of the afternoon air and the absolute moisture content of the morning atmosphere independently increase rainfall intensity when rain does occur.
+The positive coefficients for `humidity3pm` ($\hat{\beta} = 0.403$, $e^{0.403} \approx 1.50$) and `dewpoint_9am` ($\hat{\beta} = 0.300$, $e^{0.300} \approx 1.35$) establish that both the relative saturation of the afternoon boundary layer and the absolute moisture content of the morning atmosphere independently amplify rainfall intensity on days when precipitation occurs. These two predictors operate at different timescales: afternoon humidity reflects the near-instantaneous condition of the lower troposphere as convective processes become active, while morning dewpoint captures the ambient moisture available before any daytime heating-driven changes have taken effect.
 
-The zero-inflation submodel reveals a meaningful asymmetry between the two moisture variables. `humidity3pm` carries a coefficient of $-1.07$: the negative sign reflects the logistic parameterisation, where larger values reduce the probability of a *dry* outcome, so higher humidity strongly increases the probability of rain. `dewpoint_9am`, by contrast, is not significant in the zero-inflation component ($p = 0.907$). This dissociation suggests that it is the relative saturation of the afternoon atmosphere that determines whether the threshold for precipitation is crossed, while the absolute morning moisture content shapes the intensity of rainfall once it occurs.
+The dewpoint change coefficient ($\hat{\beta} = -0.155$, $p < 0.001$) is negative, indicating that a diurnal drop in dewpoint from morning to afternoon (consistent with the dry air entrainment accompanying subsiding high-pressure systems) is associated with reduced rainfall intensity. Conversely, a rise in pressure over the observation window ($\hat{\beta} = 0.116$, $p = 0.007$) is positively associated with intensity, a somewhat counterintuitive result that likely reflects synoptic-scale convergence patterns preceding frontal rainfall.
+
+The zero-inflation submodel reveals a meaningful asymmetry between the two moisture variables. The `humidity3pm` coefficient of $-1.038$ ($p < 0.001$) is strongly negative in the logistic framework: since the outcome modelled is the dry-day indicator, this implies that higher afternoon humidity substantially reduces the probability of a dry day and thereby increases the probability of rainfall. `dewpoint_9am`, by contrast, is not significant in the zero-inflation component ($\hat{\beta} = 0.002$, $p = 0.840$). This dissociation suggests that it is the relative saturation of the afternoon atmosphere that determines whether the thermodynamic threshold for precipitation is crossed, while the absolute morning moisture content shapes the intensity of rainfall once that threshold has been exceeded.
 
 ---
 
@@ -147,14 +177,9 @@ The zero-inflation submodel reveals a meaningful asymmetry between the two moist
 #| echo: true
 #| eval: false
 
-m2_temporal <- update(
-  m1_moisture,
-  . ~ . + day_cos + day_sin,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m2_temporal <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change + day_cos + day_sin,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + cloud_development + pressure_change
 )
 ```
 
@@ -162,30 +187,18 @@ m2_temporal <- update(
 #| label: m2-temporal-output
 #| echo: false
 
-m2_temporal %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      day_cos ~ "Seasonality (Cos)",
-      day_sin ~ "Seasonality (Sin)",
-      rain_yesterday ~ "Rain Yesterday (Persistence)",
-      cloud_development ~ "Cloud Development",
-      pressure_change ~ "Pressure Change"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 2: Seasonality and Persistence Effects**")
+render_pooled_model_table(m2_temporal, "Model 2: Seasonality and Persistence Effects")
 ```
 
-Having established moisture and pressure as foundational drivers, Model 2 incorporates the temporal structure identified in the EDA (@sec-eda). The Markov Chain analysis (@sec-markov) demonstrated that yesterday's rain state carries a moderate but practically significant effect ($V \approx 0.31$), and the seasonal analysis confirmed that both frequency and intensity of rainfall follow a smooth annual cycle. Cyclical sine/cosine encoding enters the conditional model, while `rain_yesterday`, `cloud_development`, and `pressure_change` are added to the zero-inflation component.
+Having established moisture and pressure as foundational drivers, Model 2 incorporates the temporal structure identified in @sec-eda. The Markov Chain analysis in @sec-markov demonstrated that the previous day's rain state carries a moderate but practically significant effect (Cramér's $V \approx 0.31$), and the seasonal decomposition confirmed that both frequency and intensity of rainfall follow a smooth annual cycle. Circular sine and cosine encodings of the day-of-year enter the conditional intensity submodel, capturing this periodicity without imposing a discontinuity at the calendar year boundary. The binary indicator `rain_yesterday`, the `cloud_development` index, and `pressure_change` are added to the zero-inflation component to account for daily persistence and synoptic-scale dynamics in the occurrence process.
 
-AIC falls to 406,826 ($\Delta\text{AIC} \approx 15,804$ relative to Model 1), confirming that temporal context when in the year and what happened the day before contributes substantial predictive information beyond the instantaneous atmospheric state.
+The AIC falls to 412,448.4, a reduction of 13,282.6 points relative to Model 1 (BIC = 412,586.5). This improvement confirms that temporal context, specifically both where in the annual cycle a day falls and what occurred the preceding day, contributes substantial predictive information beyond the instantaneous atmospheric state.
 
-Both seasonal components are highly significant, providing statistical confirmation of the cyclical pattern documented in the EDA(@sec-eda). The continuous circular encoding correctly captures the smooth transition between the winter trough and the summer peak rather than imposing an arbitrary step at the calendar year boundary.
+Both seasonal harmonics are statistically significant. The cosine term ($\hat{\beta} = 0.086$, $p < 0.001$) captures the primary annual amplitude, while the sine term ($\hat{\beta} = -0.016$, $p = 0.027$) adjusts the timing of the seasonal peak. Together, they encode the well-documented shift toward wetter conditions during the austral summer across much of the continent, where enhanced monsoonal circulation and elevated sea-surface temperatures increase tropospheric moisture convergence.
 
-The most striking result is the persistence coefficient. At $\hat{\beta}_{zi} = -1.42$ in the zero-inflation component, it is the strongest predictor in the hurdle submodel across the entire model sequence. Exponentiating gives $e^{-1.42} \approx 0.24$: having rained yesterday reduces the odds of today being dry by approximately 76%. This quantifies the asymmetric persistence documented in the Markov transition matrix wet states are more likely to continue than to terminate.
+The most numerically dominant result is the persistence coefficient in the zero-inflation submodel. With $\hat{\beta}_{zi}(\text{rain\_yesterday}) = -1.449$ (SE = 0.016, $p < 0.001$), it is the strongest predictor in the hurdle component across the entire model sequence. Exponentiating gives $e^{-1.449} \approx 0.235$: having rained the previous day reduces the odds of today being classified as dry by approximately 76.5%. This directly quantifies the asymmetric persistence documented in the Markov transition matrix of @sec-markov, wherein wet states are substantially more self-sustaining than dry states. Physically, this reflects the tendency for synoptic weather systems (fronts, troughs, and tropical lows) to persist over multiple days rather than generating isolated single-day precipitation events.
+
+The `cloud_development` term in the zero-inflation submodel ($\hat{\beta} = 0.115$, $p < 0.001$) is positive, implying that greater cloud development is associated with a higher probability of a dry day. This initially counterintuitive result likely reflects the distinction between cloud cover associated with stable, non-precipitating high-pressure systems and the moisture-laden systems that drive actual precipitation. In the presence of the strong humidity predictors already in the model, incremental cloud growth may serve as a proxy for convective inhibition rather than precipitation potential.
 
 ---
 
@@ -196,14 +209,12 @@ The most striking result is the persistence coefficient. At $\hat{\beta}_{zi} = 
 #| echo: true
 #| eval: false
 
-m3_history <- update(
-  m2_temporal,
-  . ~ . + rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m3_history <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
+                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
+                 days_since_rain + humidity_ma7 + rain_yesterday,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
+                 cloud_development + pressure_change
 )
 ```
 
@@ -211,31 +222,20 @@ m3_history <- update(
 #| label: m3-history-output
 #| echo: false
 
-m3_history %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
-      humidity_ma7 ~ "Humidity Trend (7-Day MA)",
-      days_since_rain ~ "Dry Spell Length (Days)",
-      rain_yesterday ~ "Rain Yesterday (Indicator)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 3: Accumulated Weather History**")
+render_pooled_model_table(m3_history, "Model 3: Accumulated Weather History")
 ```
 
-While Model 2 captured the binary state of the previous day, it does not account for the *accumulated* atmospheric state over a longer preceding window. The dry spell analysis (@sec-dry-spell) demonstrated that rainfall probability decays as dry spells lengthen, and the moving average analysis showed that a 7-day smoothed signal substantially reduces the stochastic variance of the rainfall and humidity series. Model 3 introduces these medium-horizon history features into the conditional intensity submodel.
+While Model 2 captured the binary rain state of the previous day, it does not represent the *accumulated* atmospheric condition over a longer antecedent window. The dry spell analysis in @sec-dry-spell demonstrated that rainfall probability decays as dry spells lengthen, and the moving average analysis showed that 7-day smoothed signals substantially reduce the stochastic variance of both the rainfall and humidity series. Model 3 introduces these medium-horizon history features (`rainfall_ma7`, `humidity_ma7`, `days_since_rain`, and the binary `rain_yesterday`) into the conditional intensity submodel.
 
-The improvement is AIC = 405,125 ($\Delta\text{AIC} \approx 1,701$ versus Model 2). This is smaller than the earlier gains, reflecting the natural diminishing returns of adding temporally redundant information once the most immediate history has been captured. The signal is nonetheless genuine.
+The AIC falls to 411,060.3, a reduction of 1,388.1 points relative to Model 2 (BIC = 411,277.3). This gain is smaller than the earlier improvements, reflecting the natural diminishing returns of adding temporally redundant information once the most immediate prior state has already been captured. The reduction is nonetheless genuine and statistically consistent across imputed datasets.
 
-The results reveal an interpretable separation between the roles of immediate and accumulated history. `rain_yesterday` in the conditional model ($\hat{\beta} = 0.31$, $e^{0.31} \approx 1.36$) indicates that if it rained the previous day, today's rainfall is approximately 36% more intense on average consistent with a persisting frontal system delivering successive events of comparable severity. `rainfall_ma7` ($\hat{\beta} = 0.13$) extends this logic to the weekly horizon: a wetter preceding week is associated with heavier current rainfall, suggesting that prolonged wet spells are symptomatic of deeper atmospheric systems rather than sequences of independent events.
+The coefficients reveal an interpretable partition between immediate and accumulated antecedent conditions. The `rain_yesterday` coefficient in the conditional intensity component ($\hat{\beta} = 0.322$, $e^{0.322} \approx 1.38$, $p < 0.001$) indicates that rainfall on the preceding day is associated with approximately 38% greater intensity on rainy days, consistent with the physical scenario of a persisting frontal or trough system delivering consecutive rainfall events of comparable character. The `rainfall_ma7` coefficient ($\hat{\beta} = 0.127$, $p < 0.001$) extends this logic to the weekly horizon: a wetter preceding week is associated with heavier current rainfall, suggesting that prolonged wet spells reflect deeper or more extensive atmospheric systems rather than sequences of meteorologically independent events.
 
-The negative coefficient for `humidity_ma7` ($\hat{\beta} = -0.10$) warrants careful interpretation. Conditional on all other terms, a persistently humid preceding week is associated with slightly *lower* rainfall intensity. This likely reflects a distinction between two meteorological regimes: stratiform cloud systems, which sustain high background humidity without producing intense precipitation, versus convective systems, which generate intense episodic rainfall under conditions of rapid moisture change rather than steady elevated humidity.
+The negative coefficient for `humidity_ma7` ($\hat{\beta} = -0.078$, $p < 0.001$) warrants careful interpretation. Conditional on the full predictor set, a persistently humid preceding week is associated with slightly lower rainfall intensity. This likely reflects a distinction between two meteorological regimes: stratiform cloud systems, which sustain elevated background humidity across extended periods without generating intense precipitation, and convective systems, which produce intense episodic rainfall under conditions of rapid moisture change rather than sustained elevated humidity. Once the model incorporates both instantaneous humidity and its 7-day mean, the latter carries the residual signal of these differing system types.
 
-Finally, `days_since_rain` is not significant in the conditional intensity component ($p = 0.14$). The dry spell length predicts *whether* rain occurs, but once the model knows rain is occurring, the duration of the preceding drought provides no additional information about how much will fall. This reinforces the conceptual separation between the occurrence and intensity sub-processes.
+Finally, `days_since_rain` is not significant in the conditional intensity component ($\hat{\beta} = 0.003$, $p = 0.694$). The duration of an antecedent dry spell predicts whether rain will occur, but once the model conditions on rainfall occurring, the length of the preceding drought provides no additional information about the volume of that rainfall. This result reinforces the conceptual separation between the occurrence and intensity sub-processes that motivates the ZIG framework, and foreshadows the use of a flexible spline for this term in the zero-inflation component of Model 6 (@sec-model6).
+
+Imputation provenance flags for the four ghost-sensor variables (`sunshine`, `evaporation`, `cloud_3pm`, and `cloud_9am`) were tested in the zero-inflation component across all model specifications from Model 3 onward. None achieved statistical significance (all $p > 0.05$), confirming that the predictive mean matching imputation did not introduce systematic bias at stations lacking direct instrumentation for these variables. The flags were subsequently excluded from all further model specifications.
 
 ---
 
@@ -246,19 +246,14 @@ Finally, `days_since_rain` is not significant in the conditional intensity compo
 #| echo: true
 #| eval: false
 
-m4_energy <- update(
-  m3_history,
-  . ~ . +
-    sunshine +
-    evaporation +
-    instability_index +
-    sun_humid_interaction +
-    cloud_development,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m4_energy <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
+                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
+                 days_since_rain + humidity_ma7 + rain_yesterday +
+                 sunshine + evaporation + instability_index + 
+                 sun_humid_interaction + cloud_development,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
+                 cloud_development + pressure_change
 )
 ```
 
@@ -266,30 +261,18 @@ m4_energy <- update(
 #| label: m4-energy-output
 #| echo: false
 
-m4_energy %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      sunshine ~ "Sunshine Duration (Hours)",
-      evaporation ~ "Evaporation Rate",
-      instability_index ~ "Instability Index (Derived)",
-      sun_humid_interaction ~ "Interaction: Sunshine x Humidity",
-      cloud_development ~ "Cloud Development (Delta)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 4: Thermodynamic Energy and Interactions**")
+render_pooled_model_table(m4_energy, "Model 4: Thermodynamic Energy and Interactions")
 ```
 
-The bivariate density analysis (@sec-bivariate-density) identified a structural non-linearity in the joint distribution of humidity and sunshine: rain occurs almost exclusively when afternoon humidity is high and sunshine hours are simultaneously low. An additive model cannot represent this conditional structure. Model 4 introduces the multiplicative interaction term alongside the broader thermodynamic context from which it arises.
+The bivariate density analysis in @sec-bivariate-density identified a structural non-linearity in the joint distribution of afternoon humidity and sunshine hours: intense rainfall occurs almost exclusively in the region of the bivariate distribution where humidity is high and sunshine is simultaneously low. An additive model is structurally incapable of representing this conditional geometry. Model 4 introduces the multiplicative `sun_humid_interaction` term alongside a broader set of thermodynamic energy predictors (`sunshine`, `evaporation`, `instability_index`, and `cloud_development`) to formalise the physical hypothesis that convective rainfall arises from the conjunction of available moisture and atmospheric instability rather than from either factor in isolation.
 
-AIC falls to 403,742 ($\Delta\text{AIC} \approx 1,383$ versus Model 3).
+The AIC falls to 409,801.6, a reduction of 1,258.7 points relative to Model 3 (BIC = 410,028.4). This gain is modest in absolute terms but carries a disproportionate interpretive weight, because the new terms do not merely add marginal predictive power; they restructure the representation of the moisture signal already present in the model.
 
-The `sun_humid_interaction` coefficient of $\hat{\beta} = -0.07$ is highly significant and physically interpretable. The negative sign indicates that the combination of high humidity and low sunshine which, after mean-centring, produces a large negative product, is associated with heavier rainfall. This formalises the "Rain Corner" structure: neither variable alone is sufficient, but their adverse conjunction under saturated, overcast conditions is where the most intense events concentrate.
+The `sun_humid_interaction` coefficient of $\hat{\beta} = -0.076$ (SE = 0.016, $p < 0.001$) is highly significant and physically coherent. After mean-centring both component variables, the product term takes large negative values precisely when humidity is above average and sunshine hours are below average. The negative coefficient therefore assigns greater expected rainfall intensity to this region of the covariate space, directly encoding the Rain Corner identified in @sec-bivariate-density: an overcast, moisture-saturated atmosphere in which solar insolation is suppressed by deep cloud cover, creating the thermodynamic conditions most conducive to sustained or intense precipitation.
 
-The entry of the interaction term also produces a marked reduction in the `humidity3pm` coefficient, from 0.39 in Model 3 to 0.16 in Model 4. This is not a loss of importance. It reflects a correct partitioning of explained variance: the portion of humidity's effect that operates through its interaction with sunshine, and through the derived `instability_index`, is now carried by those terms. The model has moved from knowing that humidity matters to capturing the specific mechanism through which it matters.
+The `instability_index` ($\hat{\beta} = 0.145$, $p < 0.001$) operates on related physical grounds: higher atmospheric instability, typically associated with steep lapse rates and strong surface heating, promotes convective development and augments rainfall intensity given that rainfall is occurring. The `evaporation` coefficient ($\hat{\beta} = 0.154$, $p < 0.001$) is positive, suggesting that on rainy days higher potential evaporation (a proxy for energy availability) is associated with greater intensity, consistent with convectively driven systems drawing on sensible and latent heat fluxes.
+
+The entry of the interaction term and the thermodynamic covariates produces a marked reduction in the `humidity3pm` coefficient, from $0.422$ in Model 3 to $0.223$ in Model 4. This is not indicative of instability or suppression of the humidity signal. It reflects a correct partitioning of explained variance: the portion of humidity's predictive contribution that operates through its interaction with sunshine, and through the atmospheric instability it enables, is now attributed to those specific mechanistic pathways rather than being absorbed into the humidity main effect alone. The model has advanced from recognising that moisture matters to representing the specific conjunction of conditions under which it matters most.
 
 ---
 
@@ -300,14 +283,15 @@ The entry of the interaction term also produces a marked reduction in the `humid
 #| echo: true
 #| eval: false
 
-m5_wind <- update(
-  m4_energy,
-  . ~ . + gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW,
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change
+m5_wind <- fit_and_pool(
+  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
+                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
+                 days_since_rain + humidity_ma7 + rain_yesterday +
+                 sunshine + evaporation + instability_index + 
+                 sun_humid_interaction + cloud_development +
+                 gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW,
+  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
+                 cloud_development + pressure_change
 )
 ```
 
@@ -315,86 +299,48 @@ m5_wind <- update(
 #| label: m5-wind-output
 #| echo: false
 
-m5_wind %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      gust_U_EW ~ "Gust Vector (East-West)",
-      gust_V_NS ~ "Gust Vector (North-South)",
-      wind9am_U_EW ~ "Wind 9am Vector (East-West)",
-      wind9am_V_NS ~ "Wind 9am Vector (North-South)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 5: Wind Vector Dynamics**")
+render_pooled_model_table(m5_wind, "Model 5: Wind Vector Dynamics")
 ```
 
-Model 5 tests whether the directional origin of air masses provides additional predictive information about rainfall intensity beyond the instantaneous atmospheric state. Wind direction is encoded as orthogonal U and V vector components, as developed in the feature engineering chapter, to preserve the circular geometry of directional data.
+Model 5 tests whether the directional provenance of air masses provides additional information about rainfall intensity beyond the instantaneous thermodynamic state of the atmosphere. As developed in @sec-feature-eng, wind direction is encoded as orthogonal zonal (U, east-west) and meridional (V, north-south) vector components, preserving the circular geometry of directional data and avoiding the discontinuity that would arise from treating compass bearing as a linear predictor. Both peak gust components and the 9:00 AM surface wind vectors are included, allowing the model to distinguish between the background synoptic circulation at day onset and the turbulent dynamics associated with active rainfall systems.
 
-AIC falls to 403,141 ($\Delta\text{AIC} \approx 601$ versus Model 4). The improvement is the smallest in the sequence, but given the large sample size and the physical plausibility of the effects, the additional wind information is retained.
+The AIC falls to 409,149.2, a reduction of 652.4 points relative to Model 4 (BIC = 409,415.5). This is the smallest stepwise improvement in the sequence. The BIC penalty for the four additional parameters is relatively restrictive, indicating that the marginal gain should be interpreted in the context of the physical interpretability of the effects rather than purely through information criteria.
 
-The most informative coefficients are those for the 9:00 AM wind vectors. `wind9am_V_NS` ($\hat{\beta} = -0.094$) is negative, indicating that southerly airflow increases rainfall intensity. This is consistent with the "Southerly Buster" phenomenon, in which cool moisture-laden air from the Southern Ocean penetrates northward along the eastern seaboard. `wind9am_U_EW` ($\hat{\beta} = -0.073$) similarly indicates that westerly airflow increases intensity, consistent with the "Roaring Forties" the band of persistent westerly winds at southern latitudes that deliver moisture from the Indian Ocean.
+The most informative wind coefficients are those for the morning surface vectors. `wind9am_U_EW` ($\hat{\beta} = -0.116$, SE = 0.008, $p < 0.001$) is negative for the zonal component: since the U convention assigns positive values to eastward flow, a negative coefficient indicates that westerly airflow at 9:00 AM increases expected rainfall intensity. This is physically consistent with the Roaring Forties, the band of persistent westerly circulation in the mid-latitudes that advects maritime air masses from the Indian Ocean onto the southern and southwestern regions of the continent. `wind9am_V_NS` is not significant at conventional levels ($\hat{\beta} = -0.008$, $p = 0.145$) when the full covariate set is included, though the direction is consistent with southerly incursion enhancing rainfall on the eastern seaboard.
 
-The morning wind vectors have coefficients approximately three to four times larger than their peak gust counterparts. This confirms that the prevailing direction of the air mass at the start of the day reflecting the broader synoptic circulation pattern is more informative than turbulent gusts associated with active storm cells. The storm's provenance matters more than its local expression.
+For the peak gust vectors, `gust_U_EW` is significant ($\hat{\beta} = -0.056$, $p < 0.001$), while `gust_V_NS` is not ($\hat{\beta} = -0.008$, $p = 0.261$). The morning wind component has a coefficient approximately twice the magnitude of the corresponding gust component. This contrast supports the interpretation that the prevailing direction of the synoptic-scale air mass at day onset (reflecting the large-scale circulation pattern within which a rainfall event is embedded) is more informative about event intensity than the turbulent, locally generated gusts that accompany active storm activity. The provenance of an air mass carries more predictive information about the moisture it transports than does the mechanical turbulence it generates near the surface.
 
-Coefficients for previously established predictors remain stable across this extension, confirming that the wind vectors explain variance genuinely unaccounted for by earlier components rather than displacing existing effects through collinearity.
+Coefficients for the moisture, thermodynamic, and interaction terms established in prior models remain stable in direction and magnitude across this extension, confirming that the wind predictors explain variance not already accounted for by thermodynamic state, rather than displacing existing effects through collinearity with humidity or pressure.
 
 ---
 
-## Model 6: Spatial Heterogeneity via Mixed Effects
+## Model 6: Spatial Heterogeneity via Mixed Effects {#sec-model6}
 
 ```{r}
 #| label: m6-mixed-code
 #| echo: true
 #| eval: false
 
-re_data <- select_model_features(df_final, keep_location = TRUE) %>%
-  scale_data()
-
-ctrl <- glmmTMBControl(
-  optimizer = optim,
-  optArgs = list(method = "BFGS"),
-  optCtrl = list(maxit = 1000)
-)
-
-m6_mixed <- glmmTMB(
-  rainfall ~
-    humidity3pm +
-    dewpoint_9am +
-    dewpoint_change +
-    pressure_change +
-    day_cos +
-    day_sin +
-    rainfall_ma7 +
-    days_since_rain +
-    humidity_ma7 +
-    rain_yesterday +
-    sunshine +
-    evaporation +
-    instability_index +
-    sun_humid_interaction +
-    cloud_development +
-    gust_U_EW +
-    gust_V_NS +
-    wind9am_V_NS +
-    wind9am_U_EW +
+m6_mixed <- fit_and_pool(
+  cond_formula = rainfall ~
+    humidity3pm + dewpoint_9am + dewpoint_change +
+    pressure_change + day_cos + day_sin +
+    rainfall_ma7 + days_since_rain + humidity_ma7 +
+    rain_yesterday + sunshine + evaporation +
+    instability_index + sun_humid_interaction +
+    cloud_development + gust_U_EW + gust_V_NS +
+    wind9am_V_NS + wind9am_U_EW +
     diag(1 + humidity3pm + rain_yesterday + dewpoint_change | location),
-  ziformula = ~ humidity3pm +
-    dewpoint_9am +
-    rain_yesterday +
-    cloud_development +
-    pressure_change +
-    sunshine +
-    evaporation +
-    ns(days_since_rain, df = 4) +
-    humidity_ma7 +
-    day_cos +
-    day_sin,
-  data = re_data,
-  control = ctrl,
-  family = ziGamma(link = "log")
+  zi_formula = ~ humidity3pm + dewpoint_9am + rain_yesterday +
+    cloud_development + pressure_change + sunshine +
+    evaporation + ns(days_since_rain, df = 4) +
+    (1 | location) + humidity_ma7 + day_cos + day_sin,
+  datasets = all_datasets,
+  control  = glmmTMBControl(
+    optimizer = nlminb,
+    optCtrl   = list(iter.max = 500, eval.max = 1000)
+  ),
+  n_cores = 3L
 )
 ```
 
@@ -402,51 +348,27 @@ m6_mixed <- glmmTMB(
 #| label: m6-mixed-output
 #| echo: false
 
-m6_mixed %>%
-  tbl_regression(
-    exponentiate = TRUE,
-    label = list(
-      humidity3pm ~ "Humidity (3pm)",
-      sunshine ~ "Sunshine Duration",
-      sun_humid_interaction ~ "Interaction: Sunshine x Humidity",
-      rainfall_ma7 ~ "Rainfall Trend (7-Day MA)",
-      days_since_rain ~ "Dry Spell Length (Linear)",
-      rain_yesterday ~ "Rain Yesterday (Indicator)",
-      gust_U_EW ~ "Gust Vector (East-West)",
-      gust_V_NS ~ "Gust Vector (North-South)",
-      instability_index ~ "Instability Index",
-      day_cos ~ "Seasonality (Cos)",
-      day_sin ~ "Seasonality (Sin)"
-    )
-  ) %>%
-  bold_p() %>%
-  add_glance_table(include = c("AIC", "BIC", "logLik", "nobs")) %>%
-  modify_header(label = "**Predictor**") %>%
-  modify_caption("**Model 6: Final Mixed-Effects Model (Random Slopes)**") %>%
-  as_gt() %>%
-  gt::tab_footnote(
-    footnote = "Random effects structure: Uncorrelated random slopes for Humidity, Persistence, and Dewpoint by Location."
-  )
+render_pooled_model_table(m6_mixed, "M6: Fixed Effects Model")
 ```
 
-All five preceding models treat the data as if every observation were drawn from the same underlying population, as if the relationship between humidity and rainfall were identical in coastal Sydney and arid Alice Springs, or as if a wet spell in tropical Darwin carried the same statistical weight as one in temperate Melbourne. This homogeneity assumption is implausible for a continent as climatologically diverse as Australia.
+All five preceding models implicitly assume that the relationship between each atmospheric predictor and rainfall is spatially uniform, as though the sensitivity of rainfall intensity to afternoon humidity were identical in coastal Sydney, the tropical far north, and the arid interior. For a continent as climatologically heterogeneous as Australia, spanning tropical monsoon, subtropical semi-arid, temperate oceanic, and Mediterranean regimes, this homogeneity assumption is difficult to defend. The EDA in @sec-eda confirmed that both mean rainfall levels and seasonal patterns vary substantially across the station network.
 
-Model 6 relaxes it through a mixed-effects structure. Location-specific random effects allow the intercept and three scientifically motivated slopes; humidity, persistence, and dewpoint change to vary across weather stations. Uncorrelated random slopes (`diag()`) are used rather than a full unstructured covariance matrix, avoiding the overparameterisation that would accompany a freely estimated $4 \times 4$ random covariance structure across the number of locations in this dataset.
+Model 6 relaxes the spatial homogeneity assumption through a mixed-effects structure. Location-specific random effects allow the intercept and three scientifically motivated slopes (for `humidity3pm`, `rain_yesterday`, and `dewpoint_change`) to vary freely across weather stations. An uncorrelated (diagonal) random effects covariance structure is specified via `diag()` rather than an unstructured matrix, avoiding the overparameterisation that would accompany a freely estimated $4 \times 4$ random covariance across the number of stations in the dataset. Two further modifications accompany the move to mixed effects. The zero-inflation submodel is expanded with `sunshine`, `evaporation`, and the day-of-year harmonic terms, reflecting the hypothesis that occurrence probability is governed by the same broad range of atmospheric drivers as intensity. Additionally, `days_since_rain` in the zero-inflation submodel is replaced by a four-degree-of-freedom natural spline, directly implementing the non-linear, rapid-then-gradual decay in rainfall probability identified in @sec-dry-spell. The spline permits the marginal probability of precipitation to decline steeply within the first ten days of a dry spell and then stabilise, rather than imposing the constant log-odds decrement implied by a linear term.
 
-Two further additions accompany the move to mixed effects. The zero-inflation submodel is expanded with sunshine, evaporation, and the day-of-year cyclical components, reflecting the hypothesis that occurrence probability is also subject to the full range of atmospheric drivers. And `days_since_rain` in the zero-inflation submodel is replaced with a four-degree-of-freedom natural spline `ns(days_since_rain, df = 4)` directly implementing the "rapid-then-gradual" decay identified in the EDA (@sec-eda). The spline allows the probability of a dry spell ending to drop steeply in the first ten days and stabilise thereafter, rather than assuming a constant log-odds decrement per day.
+The AIC falls to 400,997.9, a reduction of 8,151.3 points relative to Model 5 (BIC = 401,402.2; log-likelihood = $-200,457.9$). This is the third-largest single improvement in the entire model sequence, exceeded only by the initial introduction of moisture and pressure in Model 1 and the addition of seasonality and persistence in Model 2. The magnitude of the gain establishes that spatial heterogeneity is not a minor correction to an otherwise well-specified model; it is a structurally important dimension of the rainfall generation process that fixed-effects models cannot represent by design.
 
-AIC falls to 396,638, an improvement of $\Delta\text{AIC} \approx 6,503$ relative to Model 5. This is the second-largest single gain after the initial moisture predictors, establishing that spatial heterogeneity is a dominant source of unexplained variance in all the fixed-effects models. The random effects estimates confirm meaningful variability: the random intercept variance ($\hat{\sigma}^2 = 0.12$) captures substantial baseline differences in rainfall between locations; the humidity random slope variance ($\hat{\sigma}^2 = 0.023$) shows that humidity's effect on intensity differs across the country; and the persistence random slope variance ($\hat{\sigma}^2 = 0.013$) indicates that the stickiness of wet weather is more pronounced in some climatic zones than others as one would expect contrasting the monsoonal north, where wet seasons persist for months, with the more variable climate of the southeast.
+The fixed-effect estimates for the global-mean relationships remain directionally and numerically consistent with those from Model 5, which provides reassurance that the random effects are absorbing genuine between-location variation rather than confounding the population-average coefficients. Several predictors warrant specific attention in the context of the expanded zero-inflation submodel. `dewpoint_9am` is now significant in the occurrence model ($\hat{\beta}_{zi} = -0.519$, $p < 0.001$), in contrast to its non-significance in all prior specifications. This reversal reflects the expanded zero-inflation predictor set: once sunshine, evaporation, and seasonal harmonics are included in the occurrence model, the morning dewpoint carries a distinct contribution to precipitation probability that was previously absorbed by correlated terms. The `humidity_ma7` coefficient in the zero-inflation submodel ($\hat{\beta}_{zi} = -0.254$, $p < 0.001$) is also negative and substantial, indicating that a persistently humid antecedent week substantially reduces the probability of a dry day, consistent with the view that extended moisture advection creates a background state favourable to continued precipitation.
 
-The fixed effects for global meteorological drivers; wind vectors, the instability index, and the sunshine-humidity interaction remain significant and directionally consistent with the preceding models. These are robust, continent-wide physical mechanisms whose effects persist even after allowing each location's parameters to deviate from the global mean.
+The natural spline terms for `days_since_rain` in the zero-inflation submodel are collectively non-significant at conventional thresholds, with the second basis function marginally approaching significance ($\hat{\beta} = 0.115$, $p = 0.075$). This suggests that the dry spell decay function, while visually non-linear in the analysis of @sec-dry-spell, does not depart substantially from linearity once the full complement of humidity, seasonal, and persistence predictors is included. The spline is retained for its robustness to potential non-linearity, but the practical difference from a linear specification appears limited given the current covariate set.
 
 ---
 
 ## Progressive Model Comparison
 
-The table below summarises the AIC trajectory across the model sequence and the cumulative share of the total achievable gain measured relative to the null captured at each step.
+The AIC trajectory across the model sequence (summarised in @tbl-model-comparison) reveals a pattern of steeply front-loaded improvement followed by diminishing but genuine increments, with a notable secondary gain at the step to mixed effects.
 
 ```{r}
-#| label: final-table
+#| label: tbl-model-comparison
 #| echo: false
 #| warning: false
 #| message: false
@@ -466,31 +388,29 @@ model_summary <- tibble(
     "Spatial mixed effects (final)"
   ),
   AIC = c(
-    461669.7, 
-    422630,
-    406826,
-    405125,
-    403742,
-    403141,
-    396638
+    461669.7,
+    425731.4,
+    412448.4,
+    411060.3,
+    409801.6,
+    409149.2,
+    400997.9
   )
 ) %>%
-  
   mutate(
     `Delta AIC` = max(AIC) - AIC,
     `% of Total Gain` = `Delta AIC` / max(`Delta AIC`),
-    
-    
     AIC = scales::comma(AIC, accuracy = 0.1),
     `Delta AIC` = ifelse(
-      Model == "M0", "-", 
+      Model == "M0", "-",
       scales::comma(`Delta AIC`, accuracy = 0.1)
     ),
     `% of Total Gain` = ifelse(
-      Model == "M0", "-", 
+      Model == "M0", "-",
       scales::percent(`% of Total Gain`, accuracy = 0.1)
     )
   )
+
 model_summary %>%
   kable(
     col.names = c("Model", "Description", "AIC", "Change in AIC vs Null", "% of Total Gain"),
@@ -498,15 +418,19 @@ model_summary %>%
     caption = "Progressive Model Comparison: AIC Trajectory"
   ) %>%
   kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed"), 
+    bootstrap_options = c("striped", "hover", "condensed"),
     full_width = FALSE,
     position = "center"
   ) %>%
   row_spec(7, bold = TRUE, background = "#e6f3ff", color = "#212529") %>%
   add_footnote(
-    c("AIC: Akaike Information Criterion (Lower is better)", 
-      "Total Gain is calculated relative to the maximum improvement achieved by Model 6."),
+    c(
+      "AIC: Akaike Information Criterion (Lower is better)",
+      "Total Gain is calculated relative to the maximum improvement achieved by Model 6."
+    ),
     notation = "none"
   )
 ```
-The gains are steeply front-loaded. Moisture and pressure alone account for 60% of the total improvement, and adding seasonality and persistence brings the cumulative share to 84.3%. The thermodynamic, interaction, and wind components each contribute genuinely but with diminishing magnitude. The step to mixed effects, however, recovers a disproportionate share of the remaining variance, underscoring that spatial stratification is not a minor correction but a structurally important dimension of the problem that fixed-effects models cannot address by design.
+Moisture and pressure dynamics alone account for 55.3% of the total AIC improvement, confirming that atmospheric water content is the primary physical driver of both rainfall occurrence and intensity in the Australian context. The addition of seasonal cycles and day-to-day persistence in Model 2 raises the cumulative share to 75.7%, establishing that temporal structure (the annual insolation cycle and the short-range memory of the atmosphere) constitutes the second-order source of predictive information. The thermodynamic and wind components (Models 4 and 5) each contribute positively but with diminishing returns, reflecting the fact that the mechanistic pathways they represent are partially encoded in earlier proxies.
+
+The step to mixed effects (Model 6) recovers 19.3 percentage points of additional gain, the largest single improvement after the initial moisture signal. This disproportionate improvement, despite the fact that the fixed-effect predictor set changes relatively little between Models 5 and 6, makes explicit a conclusion that is implicit in the geography of the station network: the parameters governing the moisture-intensity relationship, rainfall persistence, and dewpoint sensitivity are not continental constants but regional properties that vary systematically with climate zone. Treating them as such is not a statistical convenience but a physical necessity.

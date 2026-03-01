@@ -8,7 +8,7 @@ book:
   author: "Chris Olande"
   date: today
   description: >
-    A comprehensive statistical analysis of rainfall patterns across
+    An in-depth statistical analysis of rainfall patterns across
     49 Australian cities using Zero-Inflated Gamma GLMMs.
 
   repo-url: https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models
@@ -45,6 +45,7 @@ execute:
   warning: false
   message: false
   echo: true
+  cache: true
   freeze: auto
   daemon: false
   

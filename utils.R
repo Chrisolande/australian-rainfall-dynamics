@@ -1,3 +1,6 @@
+source(here::here("config.R"))
+
+# Function to display missing values
 missing_val <- function(df) {
   missing_tab <- df %>%
     summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
@@ -8,21 +11,18 @@ missing_val <- function(df) {
     ) %>%
     arrange(desc(pct_missing))
 
-  return(
-    missing_tab %>% kable(caption = "Percentage of Missing Values by Feature")
-  )
+  return(missing_tab %>% kable())
 }
 
-# multicollinearity via Variance Inflation Factor (VIF)
+# Function to check multicollinearity
 mc_check <- function(data) {
   vif_check <- lm(rainfall ~ ., data = data)
   test_collinearity <- check_collinearity(vif_check)
   return(test_collinearity)
 }
 
-# execute feature selection and dimensionality reduction
+# Function to select model features
 select_model_features <- function(data, keep_location = TRUE) {
-  # Define list of redundant or highly correlated features to exclude
   cols_to_drop = c(
     "month",
     "day",
@@ -49,14 +49,11 @@ select_model_features <- function(data, keep_location = TRUE) {
     "rain_today"
   )
 
-  # Conditionally drop location if analyzing aggregate data
   if (!keep_location) {
     cols_to_drop <- c(cols_to_drop, "location")
   }
 
-  # Remove imputation flags if present
-  imp_flags <- names(data)[grepl("_imp_flagged$", names(data))]
-  cols_to_drop <- c(cols_to_drop, imp_flags)
+  cols_to_drop <- c(cols_to_drop)
 
   data <- data %>%
     select(-any_of(cols_to_drop)) %>%
@@ -65,11 +62,13 @@ select_model_features <- function(data, keep_location = TRUE) {
   return(data)
 }
 
-# standardize numeric predictors (Z-score scaling)
+# Function to scale data
 scale_data <- function(data) {
-  data %>%
+  df_scaled <- data %>%
     mutate(across(
-      .cols = where(is.numeric) & !any_of("rainfall"),
-      .fns = \(x) as.numeric(scale(x))
+      .cols = where(is.numeric) & !c("rainfall"),
+      .fns = ~ as.numeric(scale(.x))
     ))
+
+  return(df_scaled)
 }
