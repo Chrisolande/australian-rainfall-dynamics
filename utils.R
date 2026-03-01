@@ -1,5 +1,6 @@
 librarian::shelf(tidyverse, kableExtra, performance)
 
+# Function to display missing values
 missing_val <- function(df) {
   missing_tab <- df %>%
     summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
@@ -10,27 +11,19 @@ missing_val <- function(df) {
     ) %>%
     arrange(desc(pct_missing))
 
-  missing_tab %>%
-    kable(
-      caption = "Percentage of Missing Values by Feature",
-      digits = 2,
-      col.names = c("Feature", "Missing (%)"),
-      booktabs = TRUE
-    ) %>%
-    kable_styling(
-      bootstrap_options = c("striped", "hover"),
-      full_width = FALSE,
-      latex_options = c("hold_position")
-    )
+  return(missing_tab %>% kable())
 }
 
+# Function to check multicollinearity
 mc_check <- function(data) {
-  vif_fit <- lm(rainfall ~ ., data = data)
-  check_collinearity(vif_fit)
+  vif_check <- lm(rainfall ~ ., data = data)
+  test_collinearity <- check_collinearity(vif_check)
+  return(test_collinearity)
 }
 
+# Function to select model features
 select_model_features <- function(data, keep_location = TRUE) {
-  cols_to_drop <- c(
+  cols_to_drop = c(
     "month",
     "day",
     "day_of_year",
@@ -60,19 +53,24 @@ select_model_features <- function(data, keep_location = TRUE) {
     cols_to_drop <- c(cols_to_drop, "location")
   }
 
-  result <- data %>%
-    ungroup() %>%
-    select(-any_of(cols_to_drop))
+  cols_to_drop <- c(cols_to_drop)
 
-  result
+  data <- data %>%
+    select(-any_of(cols_to_drop)) %>%
+    ungroup()
+
+  return(data)
 }
 
+# Function to scale data
 scale_data <- function(data) {
-  data %>%
+  df_scaled <- data %>%
     mutate(across(
-      .cols = where(is.numeric) & !any_of("rainfall"),
-      .fns = ~ as.numeric(scale(.))
+      .cols = where(is.numeric) & !c("rainfall"),
+      .fns = ~ as.numeric(scale(.x))
     ))
+
+  return(df_scaled)
 }
 
 

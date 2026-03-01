@@ -1,0 +1,41 @@
+options(warn = -1)
+librarian::shelf(
+  tidyverse,
+  tidymodels,
+  kableExtra,
+  patchwork,
+  skimr,
+  gridExtra,
+  janitor,
+  corrplot,
+  scales,
+  GGally,
+  car,
+  forcats,
+  performance,
+  glmmTMB,
+  splines,
+  mgcv,
+  DHARMa,
+  zoo,
+  ggpubr,
+  ggridges,
+  caret,
+  rstatix,
+  Metrics,
+  mice,
+  missRanger,
+  ranger,
+  cocor,
+  splines,
+  multcompView,
+  lmtest,
+  parallel,
+  gt,
+  broom.mixed,
+  RhpcBLASctl,
+  mitml
+)
+
+blas_set_num_threads(1)
+omp_set_num_threads(1)
