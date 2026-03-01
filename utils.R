@@ -73,13 +73,11 @@ scale_data <- function(data) {
   return(df_scaled)
 }
 
-
 render_pooled_model_table <- function(model_result, model_name = "Model") {
   fs <- model_result$fit_stats
 
-  # significance stars
   sig_stars <- function(p) {
-    case_when(
+    dplyr::case_when(
       p < 0.001 ~ "***",
       p < 0.01 ~ "**",
       p < 0.05 ~ "*",
@@ -88,7 +86,6 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
     )
   }
 
-  # clean up term names for readability
   clean_term <- function(term) {
     term %>%
       gsub("_", " ", .) %>%
@@ -102,14 +99,12 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
       gsub("\\b([a-z])", "\\U\\1", ., perl = TRUE)
   }
 
-  # format p-values
   fmt_pval <- function(p) {
     ifelse(p < 0.001, "<0.001", sprintf("%.3f", p))
   }
 
-  # build table data
   tbl <- model_result$pooled %>%
-    select(
+    dplyr::select(
       component,
       term,
       estimate,
@@ -117,33 +112,32 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
       statistic,
       df,
       p.value,
-      `2.5 %`,
-      `97.5 %`
+      conf.low,
+      conf.high
     ) %>%
-    mutate(
+    dplyr::mutate(
       stars = sig_stars(p.value),
       exp_est = sprintf("%.3f", exp(estimate)),
-      ci = sprintf("[%.3f,\u00A0%.3f]", `2.5 %`, `97.5 %`), # non-breaking space
+      ci = sprintf("[%.3f,\u00A0%.3f]", conf.low, conf.high),
       estimate = sprintf("%.3f%s", estimate, stars),
       SE = sprintf("%.3f", std.error),
       t = sprintf("%.2f", statistic),
       df = sprintf("%.1f", df),
       p = fmt_pval(p.value),
       Term = clean_term(term),
-      Component = case_when(
+      Component = dplyr::case_when(
         component == "cond" ~ "Conditional (log link)",
         component == "zi" ~ "Zero-inflation (logit link)",
         TRUE ~ component
       )
     ) %>%
-    select(Component, Term, estimate, exp_est, ci, SE, t, df, p)
+    dplyr::select(Component, Term, estimate, exp_est, ci, SE, t, df, p)
 
-  # Row grouping index
   group_idx <- table(factor(tbl$Component, levels = unique(tbl$Component)))
 
   tbl %>%
-    select(-Component) %>%
-    kable(
+    dplyr::select(-Component) %>%
+    knitr::kable(
       caption = model_name,
       align = c("l", "r", "r", "c", "r", "r", "r", "r"),
       col.names = c(
@@ -158,39 +152,34 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
       ),
       escape = FALSE
     ) %>%
-    kable_styling(
+    kableExtra::kable_styling(
       bootstrap_options = c("striped", "hover", "condensed"),
       full_width = FALSE,
       font_size = 12,
       html_font = '"Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif'
     ) %>%
-    add_header_above(
-      c(
-        " " = 1,
-        "Estimates" = 2,
-        "Confidence" = 1,
-        "Inference" = 4
-      ),
+    kableExtra::add_header_above(
+      c(" " = 1, "Estimates" = 2, "Confidence" = 1, "Inference" = 4),
       bold = TRUE,
       line = TRUE,
       font_size = 13
     ) %>%
-    pack_rows(
+    kableExtra::pack_rows(
       index = group_idx,
       bold = TRUE,
       italic = TRUE,
       hline_before = TRUE,
       hline_after = TRUE
     ) %>%
-    row_spec(0, bold = TRUE, color = "#2c3e50") %>%
-    footnote(
+    kableExtra::row_spec(0, bold = TRUE, color = "#2c3e50") %>%
+    kableExtra::footnote(
       general = c(
-        sprintf("\u2020 p<0.1   * p<0.05   ** p<0.01   *** p<0.001"),
+        "\u2020 p<0.1   * p<0.05   ** p<0.01   *** p<0.001",
         sprintf(
           "AIC: %.1f   BIC: %.1f   log-Lik: %.1f   (averaged across imputed datasets)",
-          fs$AIC,
-          fs$BIC,
-          fs$logLik
+          fs$heuristic_AIC,
+          fs$heuristic_BIC,
+          fs$mean_logLik
         ),
         "Pooled via Rubin\u2019s rules."
       ),
@@ -198,8 +187,12 @@ render_pooled_model_table <- function(model_result, model_name = "Model") {
       footnote_as_chunk = FALSE,
       escape = TRUE
     ) %>%
-    column_spec(1, width = "14em") %>%
-    column_spec(2, width = "7em") %>%
-    column_spec(4, width = "14em", extra_css = "white-space: nowrap;") %>%
-    column_spec(8, width = "5em")
+    kableExtra::column_spec(1, width = "14em") %>%
+    kableExtra::column_spec(2, width = "7em") %>%
+    kableExtra::column_spec(
+      4,
+      width = "14em",
+      extra_css = "white-space: nowrap;"
+    ) %>%
+    kableExtra::column_spec(8, width = "5em")
 }
