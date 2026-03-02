@@ -72,3 +72,19 @@ scale_data <- function(data) {
 
   return(df_scaled)
 }
+
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+stage_datasets <- function(datasets) {
+  run_dir <- tempfile(pattern = "mi_pool_")
+  dir.create(run_dir, recursive = TRUE)
+
+  paths <- purrr::imap_chr(datasets, \(dat, i) {
+    path <- file.path(run_dir, sprintf("imp_dataset_%02d.rds", as.integer(i)))
+    saveRDS(dat, path, compress = FALSE)
+    path
+  })
+
+  attr(paths, "run_dir") <- run_dir
+  paths
+}

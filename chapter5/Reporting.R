@@ -1,5 +1,3 @@
-source(here::here("config.R"))
-
 # Shared formatting helpers
 # %%
 sig_stars <- function(p) {

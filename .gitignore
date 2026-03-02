@@ -14,3 +14,4 @@
 **/*.quarto_ipynb
 test_files/
 iml/
+.codacy/

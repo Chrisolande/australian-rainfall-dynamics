@@ -1,5 +1,3 @@
-source(here::here("utils.R"))
-
 compass_lookup <- c(
   "N" = 0,
   "NNE" = 22.5,

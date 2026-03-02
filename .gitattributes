@@ -3,6 +3,5 @@ data/*.csv filter=lfs diff=lfs merge=lfs -text
 *.sql linguist-language=SQL
 *.ipynb linguist-language=R
 data/** filter=lfs diff=lfs merge=lfs -text
-models/ filter=lfs diff=lfs merge=lfs -text
-rubins_rules/** filter=lfs diff=lfs merge=lfs -text
+models/** filter=lfs diff=lfs merge=lfs -text
 *.rds filter=lfs diff=lfs merge=lfs -text

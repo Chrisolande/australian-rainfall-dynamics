@@ -1,5 +1,3 @@
-source(here::here("config.R"))
-
 # %%
 wrap_for_mitml <- function(fit) {
   fe <- fixef(fit)
@@ -71,21 +69,8 @@ compare_models <- function(m_large, m_small, names = c("larger", "smaller")) {
     } else {
       NA_character_
     }
-  }) %>%
+  }) |>
     purrr::discard(is.na)
-
-  cat(stringr::str_glue(
-    "Nested Model Comparison: {names[1]} vs {names[2]}\n",
-    "Additional terms: {toString(added_terms)}\n",
-    "D1 parameters: {toString(actual_diff)} (n = {length(actual_diff)})\n\n"
-  ))
-
-  if (length(actual_diff) == 0L) {
-    warning(
-      "No matching parameters found; D1 test will be degenerate.",
-      call. = FALSE
-    )
-  }
 
   mitml_result <- tryCatch(
     mitml::testConstraints(
@@ -104,11 +89,7 @@ compare_models <- function(m_large, m_small, names = c("larger", "smaller")) {
 
   fallback_result <- NULL
 
-  if (!is.null(mitml_result)) {
-    print(mitml_result)
-  } else {
-    cat("FALLBACK: per-parameter Rubin t-tests (not a joint test)\n\n")
-
+  if (is.null(mitml_result)) {
     rows <- dplyr::filter(m_large$pooled, term %in% added_terms)
     fallback_result <- dplyr::select(
       rows,
@@ -120,37 +101,32 @@ compare_models <- function(m_large, m_small, names = c("larger", "smaller")) {
       df,
       p.value
     )
-    print(fallback_result, row.names = FALSE)
 
     if (all(is.finite(rows$std.error)) && all(rows$std.error > 0)) {
-      chi2 <- sum((rows$estimate / rows$std.error)^2)
-      df_joint <- nrow(rows)
-      cat(stringr::str_glue(
-        "\nApprox joint Wald chi2 = {round(chi2, 3)}, df = {df_joint}, ",
-        "p = {signif(pchisq(chi2, df_joint, lower.tail = FALSE), 4)} ",
-        "(diagonal approx only)\n"
-      ))
-    } else {
-      cat("\nCannot compute approximate joint Wald (non-finite SEs).\n")
+      fallback_result <- dplyr::mutate(
+        fallback_result,
+        approx_joint_chi2 = sum((estimate / std.error)^2),
+        approx_joint_df = dplyr::n(),
+        approx_joint_p = pchisq(
+          approx_joint_chi2,
+          approx_joint_df,
+          lower.tail = FALSE
+        )
+      )
     }
   }
 
-  delta_AIC <- m_large$fit_stats$heuristic_AIC - m_small$fit_stats$heuristic_AIC
-  delta_BIC <- m_large$fit_stats$heuristic_BIC - m_small$fit_stats$heuristic_BIC
-
-  cat(stringr::str_glue(
-    "\ndelta AIC = {round(delta_AIC, 2)}, delta BIC = {round(delta_BIC, 2)} ",
-    "(negative favours {names[1]})\n"
-  ))
-
-  invisible(list(
+  list(
+    model_names = names,
     added_terms = added_terms,
     actual_diff = actual_diff,
     common_idx = common_idx,
     m_compared = length(common_idx),
     mitml_result = mitml_result,
     fallback_result = fallback_result,
-    delta_AIC = delta_AIC,
-    delta_BIC = delta_BIC
-  ))
+    delta_AIC = m_large$fit_stats$heuristic_AIC -
+      m_small$fit_stats$heuristic_AIC,
+    delta_BIC = m_large$fit_stats$heuristic_BIC -
+      m_small$fit_stats$heuristic_BIC
+  )
 }
