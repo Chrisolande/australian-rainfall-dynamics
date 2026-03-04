@@ -9,15 +9,14 @@ pool_zprob <- function(good, tmp_paths, good_idx) {
     list(
       zprob = zp,
       zi_link = qlogis(pmin(
-        # logit function log(p/(1-p))
-        pmax(zp, .Machine$double.eps), # ensure the probability is always slightly above zero
-        1 - .Machine$double.eps # Ensure probability is never exactly 1
+        pmax(zp, .Machine$double.eps),
+        1 - .Machine$double.eps
       ))
     )
   })
 
   pooled_link <- map(zprobs, "zi_link") %>%
-    reduce(cbind) %>% # A + B + C = (A + B) + C
+    reduce(cbind) %>%
     rowMeans()
 
   list(
@@ -104,7 +103,7 @@ pool_rubin_full <- function(good) {
     pool_rubin(fit_list, "cond")
   }
 
-  crit <- stats::qt(0.975, df = pooled$df)
+  crit <- qt(0.975, df = pooled$df)
 
   mutate(
     pooled,

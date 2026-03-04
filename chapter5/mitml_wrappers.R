@@ -69,7 +69,7 @@ compare_models <- function(m_large, m_small, names = c("larger", "smaller")) {
     } else {
       NA_character_
     }
-  }) |>
+  }) %>%
     purrr::discard(is.na)
 
   mitml_result <- tryCatch(

@@ -7,8 +7,19 @@ strip_glmmtmb <- function(fit) {
 }
 
 # %%
-fit_one_lean <- function(path, cond_formula, zi_formula, control) {
-  disable_multi_threading()
+# strip = TRUE  -> drop frame to save memory (all models except the first good one)
+# strip = FALSE -> keep full frame AND rebind 'dat' into the call environment
+#  so that predict() can resolve it after the worker exits.
+# required for simulateResiduals() and DHARMa to work.
+fit_one_lean <- function(
+  path,
+  cond_formula,
+  zi_formula,
+  control,
+  strip = TRUE
+) {
+  blas_set_num_threads(1)
+  omp_set_num_threads(1)
 
   dat <- readRDS(path)
   warns <- character()
@@ -35,10 +46,9 @@ fit_one_lean <- function(path, cond_formula, zi_formula, control) {
     }
   )
 
-  rm(dat)
-  gc()
-
   if (inherits(fit_or_err, "error")) {
+    rm(dat)
+    gc()
     return(list(
       ok = FALSE,
       file = basename(path),
@@ -61,6 +71,8 @@ fit_one_lean <- function(path, cond_formula, zi_formula, control) {
   hess_ok <- isTRUE(fit$sdr$pdHess)
 
   if (!conv_ok || !hess_ok) {
+    rm(dat)
+    gc()
     return(list(
       ok = FALSE,
       file = basename(path),
@@ -79,6 +91,18 @@ fit_one_lean <- function(path, cond_formula, zi_formula, control) {
 
   ll_obj <- logLik(fit)
 
+  if (strip) {
+    # Stripped model: free memory, drop frame
+    rm(dat)
+    gc()
+    fit <- strip_glmmtmb(fit)
+  } else {
+    # Diagnostic model: rebind 'dat' into the call environment so
+    # predict() can resolve it after the worker/function exits.
+    # dat is now intentionally NOT rm()'d - it lives in the call environment below.
+    environment(fit$call) <- list2env(list(dat = dat), parent = globalenv())
+  }
+
   list(
     ok = TRUE,
     file = basename(path),
@@ -91,7 +115,7 @@ fit_one_lean <- function(path, cond_formula, zi_formula, control) {
     n = nrow(model.frame(fit)),
     warnings = warns,
     messages = msgs,
-    fit = strip_glmmtmb(fit)
+    fit = fit
   )
 }
 

@@ -1,7 +1,10 @@
-# source(here::here("utils.R"))
 options(warn = -1)
+source(here::here("utils.R"))
+
+# Packages
 librarian::shelf(
   aod,
+  broom,
   broom.mixed,
   car,
   caret,
@@ -17,6 +20,7 @@ librarian::shelf(
   gridExtra,
   gt,
   gtsummary,
+  here,
   janitor,
   kableExtra,
   lmtest,
@@ -25,6 +29,7 @@ librarian::shelf(
   mice,
   missRanger,
   mitml,
+  moments,
   multcompView,
   naniar,
   parallel,
@@ -44,22 +49,9 @@ librarian::shelf(
   zoo
 )
 
-report_theme <- theme_classic(base_size = 11) +
-  theme(
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 10),
-    axis.line = element_line(colour = "grey40"),
-    panel.grid.major = element_line(colour = "grey93", linewidth = 0.4),
-    plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 9, colour = "grey40"),
-    plot.caption = element_text(size = 7, colour = "grey50", hjust = 0),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold", size = 9),
-    legend.text = element_text(size = 8)
-  )
-
-df <- read_csv(here::here("data", "weatherAUS.csv")) %>%
-  janitor::clean_names()
+M <- 10
+MAXGAP <- 5
+GHOST_THRESHOLD <- 0.90
 
 disable_multi_threading <- function() {
   Sys.setenv(
@@ -74,7 +66,38 @@ disable_multi_threading <- function() {
   }
 }
 
-GHOST_THRESHOLD <- 0.90
-MAXGAP <- 5
-GHOST_THRESHOLD <- 0.90
-M <- 10
+# Plotting Themes
+
+# Base Report Theme
+report_theme <- theme_classic(base_size = 11) +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 10),
+    axis.line = element_line(colour = "grey40"),
+    panel.grid.major = element_line(colour = "grey93", linewidth = 0.4),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 9, colour = "grey40"),
+    plot.caption = element_text(size = 7, colour = "grey50", hjust = 0),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold", size = 9),
+    legend.text = element_text(size = 8)
+  )
+
+# EDA & Feature Theme
+eda_theme <- report_theme +
+  theme(
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 9),
+    panel.grid.major = element_line(linewidth = 0.35)
+  )
+
+feat_theme <- eda_theme
+
+theme_set(report_theme)
+
+# Data Loading
+df <- read_csv(here::here("data", "weatherAUS.csv")) %>% janitor::clean_names()
+df_clean <- readRDS(here::here("data", "df_clean.rds"))
+df_final <- read_csv(here::here("data", "df_final.csv"))
+imp_mids <- readRDS(here::here("data", "imp_mids.rds"))

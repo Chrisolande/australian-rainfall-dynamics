@@ -1,5 +1,3 @@
-source(here::here("config.R"))
-
 # Function to display missing values
 missing_val <- function(df) {
   missing_tab <- df %>%
@@ -75,6 +73,7 @@ scale_data <- function(data) {
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
+# %%
 stage_datasets <- function(datasets) {
   run_dir <- tempfile(pattern = "mi_pool_")
   dir.create(run_dir, recursive = TRUE)
@@ -87,4 +86,45 @@ stage_datasets <- function(datasets) {
 
   attr(paths, "run_dir") <- run_dir
   paths
+}
+# %%
+# retrieve the one full-frame model kept for diagnostics.
+# Throw a clear error if unavailable (eg model 1 failed in parallel mode)
+# rather than letting DHARMa crash ".
+get_diagnostic_model <- function(mixed_result) {
+  full_fit <- mixed_result$good[[1]]$fit
+  if (is.null(full_fit$frame) || nrow(full_fit$frame) == 0L) {
+    stop(
+      "No full-frame model available for diagnostics.\n",
+      "This happens in parallel mode when the first imputation failed to converge.\n",
+      "Re-run with parallel = FALSE, or manually refit one imputation with strip = FALSE.",
+      call. = FALSE
+    )
+  }
+  full_fit
+}
+# %%
+
+# lazy model loading
+model_cache <- new.env(parent = emptyenv())
+
+get_model <- function(nm) {
+  if (!exists(nm, envir = model_cache, inherits = FALSE)) {
+    assign(
+      nm,
+      readRDS(here::here("models", paste0(nm, ".rds"))),
+      envir = model_cache
+    )
+  }
+  get(nm, envir = model_cache, inherits = FALSE)
+}
+
+evict_model <- function(...) {
+  nms <- c(...)
+  for (nm in nms) {
+    if (exists(nm, envir = model_cache, inherits = FALSE)) {
+      rm(list = nm, envir = model_cache)
+    }
+  }
+  gc()
 }

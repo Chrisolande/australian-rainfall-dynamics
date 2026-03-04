@@ -9,6 +9,7 @@ run_fits_sequential <- function(
   disable_multi_threading()
   total <- length(tmp_paths) + as.integer(offset)
 
+  first_ok_done <- FALSE # flips TRUE after the first successful fit
   map(seq_along(tmp_paths), \(i) {
     path <- tmp_paths[[i]]
     global_i <- i + as.integer(offset)
@@ -16,10 +17,19 @@ run_fits_sequential <- function(
       "Fitting imputation {global_i} of {total}: {basename(path)}..."
     ))
     t0 <- Sys.time()
-    res <- fit_one_lean(path, cond_formula, zi_formula, control)
+    # strip = FALSE only until the first model converges successfully;
+    # that model keeps its full frame + dat binding for DHARMa diagnostics
+    res <- fit_one_lean(
+      path,
+      cond_formula,
+      zi_formula,
+      control,
+      strip = first_ok_done
+    )
     dt <- round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 1)
 
     if (isTRUE(res$ok)) {
+      first_ok_done <<- TRUE
       cat(str_glue("Done! ({dt}s)\n\n"))
     } else {
       msg <- if (!is.na(res$error)) res$error else res$reason
@@ -36,10 +46,14 @@ run_fits_parallel <- function(
   cond_formula,
   zi_formula,
   control,
-  workers = 4L,
-  offset = 0L
+  workers = 4L
 ) {
-  total <- length(tmp_paths) + as.integer(offset)
+  if (workers == 1L) {
+    message("Running in sequential mode.")
+    return(run_fits_sequential(tmp_paths, cond_formula, zi_formula, control))
+  }
+
+  total <- length(tmp_paths)
   workers <- max(
     1L,
     min(as.integer(workers), length(tmp_paths), detectCores(logical = FALSE))
@@ -67,7 +81,9 @@ run_fits_parallel <- function(
           disable_multi_threading()
 
           p(sprintf("[%d/%d] %s", global_i, total, basename(path)))
-          fit_one_lean(path, cond_formula, zi_formula, control)
+          # i == 1: keep full frame + rebind dat for DHARMa diagnostics
+          # i  > 1: strip frame to save memory
+          fit_one_lean(path, cond_formula, zi_formula, control, strip = i != 1)
         },
         future.seed = TRUE
       )
@@ -177,7 +193,7 @@ fit_and_pool <- function(
     }
   }
 
-  # Full run (ONLY on the remaining datasets)
+  # Full run on the remaining datasets
   if (n_pre < M) {
     cat(str_glue(
       "Running remaining {M - n_pre} models ({mode_txt})...\n"
