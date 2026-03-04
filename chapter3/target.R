@@ -20,26 +20,27 @@ rainfall_stats <- df_clean %>%
     kurtosis = moments::kurtosis(rainfall)
   )
 
-render_descriptive_stats <- rainfall_stats %>%
-  pivot_longer(everything(), names_to = "Statistic", values_to = "Value") %>%
-  mutate(
-    Value = ifelse(
-      Value > 1000,
-      format(Value, scientific = TRUE, digits = 3),
-      round(Value, 3)
+render_descriptive_stats <- function() {
+  rainfall_stats %>%
+    pivot_longer(everything(), names_to = "Statistic", values_to = "Value") %>%
+    mutate(
+      Value = ifelse(
+        Value > 1000,
+        format(Value, scientific = TRUE, digits = 3),
+        round(Value, 3)
+      )
+    ) %>%
+    kable(
+      caption = "Descriptive Statistics: Daily Rainfall (mm)",
+      align = "lr",
+      booktabs = TRUE
+    ) %>%
+    kable_styling(
+      bootstrap_options = c("striped", "hover"),
+      full_width = FALSE,
+      latex_options = c("hold_position")
     )
-  ) %>%
-  kable(
-    caption = "Descriptive Statistics: Daily Rainfall (mm)",
-    align = "lr",
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
-
+}
 rain_check <- df_clean %>%
   summarise(
     total_days = n(),
@@ -48,19 +49,21 @@ rain_check <- df_clean %>%
     zero_inflation_pct = (dry_days / total_days) * 100
   )
 
-render_prevalence_table <- rain_check %>%
-  kable(
-    caption = "Prevalence of Zero-Inflation (Dry Days)",
-    col.names = c(
-      "Total Days",
-      "Dry Days (0 mm)",
-      "Rainy Days (>0 mm)",
-      "Zero Inflation (%)"
-    ),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "bordered"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_prevalence_table <- function() {
+  rain_check %>%
+    kable(
+      caption = "Prevalence of Zero-Inflation (Dry Days)",
+      col.names = c(
+        "Total Days",
+        "Dry Days (0 mm)",
+        "Rainy Days (>0 mm)",
+        "Zero Inflation (%)"
+      ),
+      booktabs = TRUE
+    ) %>%
+    kable_styling(
+      bootstrap_options = c("striped", "bordered"),
+      full_width = FALSE,
+      latex_options = c("hold_position")
+    )
+}

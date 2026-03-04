@@ -1,8 +1,8 @@
 # eda_temporal.R
 # Three temporal analyses:
-#   A. Frequency tables (weekly, monthly, cross-tab)
-#   B. Markov chain (contingency table, chi-sq, Cramer's V, heatmap)
-#   C. Dry spell dynamics (logistic model, spline LRT, decay plot)
+# A. Frequency tables (weekly, monthly, cross-tab)
+# B. Markov chain (contingency table, chi-sq, Cramer's V, heatmap)
+# C. Dry spell dynamics (logistic model, spline LRT, decay plot)
 
 # A. Frequency tables
 
@@ -76,7 +76,7 @@ build_cont_table <- function(markov_tbl) {
 }
 
 run_markov_stats <- function(cont_tbl) {
-  chi_result <- chisq_test(as.table(cont_tbl))
+  chi_result <- rstatix::chisq_test(as.table(cont_tbl))
   cramers_v <- cramer_v(cont_tbl)
 
   cat("\nEffect Size Interpretation\n")

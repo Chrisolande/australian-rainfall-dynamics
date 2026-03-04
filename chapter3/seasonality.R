@@ -1,14 +1,14 @@
 # eda_seasonality.R
 # Seasonal rainfall intensity analysis:
-#   build_seasonal_data() - shared data prep (called once, reused)
-#   plot_monthly_ridgeline() - log-rainfall ridgeline by month
-#   plot_seasonal_facet() - density ridges faceted by season
-#   plot_mean_rain_bar() - monthly mean intensity bar chart
-#   render_seasonal_desc_stats() - descriptive stats table by season
-#   run_seasonal_tests() - Kruskal-Wallis + Dunn's + letters
-#   render_kruskal_table() - KW summary kable
-#   render_dunns_table() - Dunn pairwise kable
-#   plot_seasonal_stat_groups() - bar chart with compact letter display
+# build_seasonal_data() - shared data prep (called once, reused)
+# plot_monthly_ridgeline() - log-rainfall ridgeline by month
+# plot_seasonal_facet() - density ridges faceted by season
+# plot_mean_rain_bar() - monthly mean intensity bar chart
+# render_seasonal_desc_stats() - descriptive stats table by season
+# run_seasonal_tests() - Kruskal-Wallis + Dunn's + letters
+# render_kruskal_table() - KW summary kable
+# render_dunns_table() - Dunn pairwise kable
+# plot_seasonal_stat_groups() - bar chart with compact letter display
 
 build_seasonal_data <- function(dat = df_final) {
   dat %>%

@@ -1,9 +1,8 @@
 # eda_correlation.R
 # Three outputs for the bivariate correlation section:
-#   1. render_correlation_table() - ranked Spearman table
-#   2. plot_correlation_matrix() - heatmap
-#   3. run_cocor_test() - Steiger Z-test comparing humidity vs sunshine
-# Expects: df_clean, eda_theme, kableExtra loaded.
+# 1. render_correlation_table() - ranked Spearman table
+# 2. plot_correlation_matrix() - heatmap
+# 3. run_cocor_test() - Steiger Z-test comparing humidity vs sunshine
 
 render_correlation_table <- function(dat = df_clean) {
   numeric_cols <- dat %>%

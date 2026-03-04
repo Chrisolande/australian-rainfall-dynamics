@@ -1,10 +1,10 @@
 # eda_pressure.R
 # Atmospheric pressure analysis:
-#   plot_pressure_qq() - normality check
-#   render_pressure_ttests() - Welch t-tests with Holm correction
-#   render_pressure_cohens_d() - effect size table
-#   plot_pressure_violin() - violin + boxplot by rainfall state
-#   plot_pressure_means() - mean bar chart with diurnal drop
+# plot_pressure_qq() - normality check
+# render_pressure_ttests() - Welch t-tests with Holm correction
+# render_pressure_cohens_d() - effect size table
+# plot_pressure_violin() - violin + boxplot by rainfall state
+# plot_pressure_means() - mean bar chart with diurnal drop
 
 build_pressure_data <- function(dat = df_final) {
   dat %>%
@@ -42,12 +42,27 @@ render_pressure_ttests <- function(pressure_dat) {
       values_to = "value"
     )
 
-  test_data %>%
-    group_by(metric) %>%
-    t_test(value ~ rain_today, var.equal = FALSE) %>%
-    adjust_pvalue(method = "holm") %>%
-    add_significance() %>%
-    select(metric, group1, group2, statistic, df, p.adj, p.adj.signif) %>%
+  results <- test_data %>%
+    drop_na(value, rain_today) %>%
+    nest_by(metric) %>%
+    mutate(
+      test = list(rstatix::t_test(data, value ~ rain_today, var.equal = FALSE))
+    ) %>%
+    unnest(test) %>%
+    ungroup() %>%
+    rstatix::adjust_pvalue(method = "holm") %>%
+    rstatix::add_significance("p.adj")
+
+  results %>%
+    select(
+      metric,
+      group1,
+      group2,
+      statistic,
+      df,
+      p.adj,
+      p.adj.signif
+    ) %>%
     kable(
       caption = "Welch Two-Sample t-test Results (Bonferroni-Holm Corrected)",
       digits = 3,
@@ -112,13 +127,13 @@ plot_pressure_violin <- function(pressure_dat) {
 
   stats_results <- test_data %>%
     group_by(metric) %>%
-    t_test(value ~ rain_today, var.equal = FALSE) %>%
-    adjust_pvalue(method = "holm") %>%
-    add_significance()
+    rstatix::t_test(value ~ rain_today, var.equal = FALSE) %>%
+    rstatix::adjust_pvalue(method = "holm") %>%
+    rstatix::add_significance()
 
   effect_sizes <- test_data %>%
     group_by(metric) %>%
-    cohens_d(value ~ rain_today, var.equal = FALSE) %>%
+    rstatix::cohens_d(value ~ rain_today, var.equal = FALSE) %>%
     mutate(
       magnitude = case_when(
         abs(effsize) < 0.2 ~ "Negligible",

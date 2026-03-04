@@ -1,7 +1,6 @@
 # sensitivity_analysis.R
 # Four sensitivity analysis functions operating on the mids object.
 # Each returns a ggplot or kable and is called directly from QMD chunks.
-# Expects: imp_mids, df_final, report_theme (all available at chunk runtime).
 
 CONTINUOUS_GHOST_VARS <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
 
