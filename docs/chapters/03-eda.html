@@ -1,0 +1,2763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="An in-depth statistical analysis of rainfall patterns across 49 Australian cities using Zero-Inflated Gamma GLMMs.">
+
+<title>3&nbsp; Exploratory Data Analysis – Australian Rainfall Dynamics</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/04-features.html" rel="next">
+<link href="../chapters/02-data-prep.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-e66b50aa4120364bfa72329fe8653b98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-0ab7de0d2ef93333524c07e51bfb23fb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-463e05341c278a50bd9d8b9e5c352418.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-0ab7de0d2ef93333524c07e51bfb23fb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="../chapters/03-eda.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Australian Rainfall Dynamics</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Predicting Australian Rainfall</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02-data-prep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Preparation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03-eda.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Feature Engineering</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Feature Engineering</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Modelling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#temporal-and-meteorological-drivers-of-australian-rainfall" id="toc-temporal-and-meteorological-drivers-of-australian-rainfall" class="nav-link active" data-scroll-target="#temporal-and-meteorological-drivers-of-australian-rainfall"><span class="header-section-number">3.1</span> Temporal and Meteorological Drivers of Australian Rainfall</a></li>
+  <li><a href="#sec-data-quality" id="toc-sec-data-quality" class="nav-link" data-scroll-target="#sec-data-quality"><span class="header-section-number">3.2</span> Data Quality Summary</a></li>
+  <li><a href="#distributional-properties-of-the-target-variable" id="toc-distributional-properties-of-the-target-variable" class="nav-link" data-scroll-target="#distributional-properties-of-the-target-variable"><span class="header-section-number">3.3</span> Distributional Properties of the Target Variable</a></li>
+  <li><a href="#sec-correlation" id="toc-sec-correlation" class="nav-link" data-scroll-target="#sec-correlation"><span class="header-section-number">3.4</span> Bivariate Correlation Structure</a></li>
+  <li><a href="#temporal-structure-of-rainfall" id="toc-temporal-structure-of-rainfall" class="nav-link" data-scroll-target="#temporal-structure-of-rainfall"><span class="header-section-number">3.5</span> Temporal Structure of Rainfall</a>
+  <ul class="collapse">
+  <li><a href="#sec-frequency" id="toc-sec-frequency" class="nav-link" data-scroll-target="#sec-frequency"><span class="header-section-number">3.5.1</span> Weekly and Seasonal Frequency</a></li>
+  <li><a href="#sec-markov" id="toc-sec-markov" class="nav-link" data-scroll-target="#sec-markov"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</a></li>
+  <li><a href="#sec-dry-spell" id="toc-sec-dry-spell" class="nav-link" data-scroll-target="#sec-dry-spell"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay</a></li>
+  </ul></li>
+  <li><a href="#atmospheric-pressure-dynamics" id="toc-atmospheric-pressure-dynamics" class="nav-link" data-scroll-target="#atmospheric-pressure-dynamics"><span class="header-section-number">3.6</span> Atmospheric Pressure Dynamics</a></li>
+  <li><a href="#seasonal-rainfall-intensity" id="toc-seasonal-rainfall-intensity" class="nav-link" data-scroll-target="#seasonal-rainfall-intensity"><span class="header-section-number">3.7</span> Seasonal Rainfall Intensity</a>
+  <ul class="collapse">
+  <li><a href="#cyclical-patterns" id="toc-cyclical-patterns" class="nav-link" data-scroll-target="#cyclical-patterns"><span class="header-section-number">3.7.1</span> Cyclical Patterns</a></li>
+  <li><a href="#statistical-validation" id="toc-statistical-validation" class="nav-link" data-scroll-target="#statistical-validation"><span class="header-section-number">3.7.2</span> Statistical Validation</a></li>
+  </ul></li>
+  <li><a href="#sec-bivariate-density" id="toc-sec-bivariate-density" class="nav-link" data-scroll-target="#sec-bivariate-density"><span class="header-section-number">3.8</span> Feature Interactions: The “Rain Corner”</a></li>
+  <li><a href="#summary-and-modelling-implications" id="toc-summary-and-modelling-implications" class="nav-link" data-scroll-target="#summary-and-modelling-implications"><span class="header-section-number">3.9</span> Summary and Modelling Implications</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/chapters/03-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/02-data-prep.html">Data</a></li><li class="breadcrumb-item"><a href="../chapters/03-eda.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-eda" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="temporal-and-meteorological-drivers-of-australian-rainfall" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="temporal-and-meteorological-drivers-of-australian-rainfall"><span class="header-section-number">3.1</span> Temporal and Meteorological Drivers of Australian Rainfall</h2>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Chapter Context.</strong> This chapter investigates the distributional and structural properties of the daily rainfall data, using findings from the data preparation chapter (<a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a>) as its starting point rather than repeating the missingness diagnostics performed there. The analyses proceed in a deliberate sequence: target variable distribution, bivariate predictor correlations, temporal dynamics, pressure analysis, seasonal patterns, and feature interactions. Each section produces a specific finding that motivates a corresponding decision in the feature engineering or model specification stages.</p>
+</blockquote>
+<hr>
+<hr>
+</section>
+<section id="sec-data-quality" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-data-quality"><span class="header-section-number">3.2</span> Data Quality Summary</h2>
+<p>A thorough investigation of missingness is documented in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a> and summarised briefly here for continuity. The full diagnostic pipeline, comprising co-missingness analysis, temporal structural break detection, ghost sensor identification, and a weather-conditionality test, established the following picture.</p>
+<p>The dataset contains 314,146 missing entries in total, distributed highly unevenly across features. The four most affected variables are <code>sunshine</code> (47.7% missing), <code>evaporation</code> (42.5%), <code>cloud9am</code> (approximately 40%), and <code>cloud3pm</code> (approximately 37%). Their missingness is not independent: co-missing rates between any pair of these four variables range from 67% to 93%, confirming that they fail together at the station level rather than through separate independent sensor faults. This is Missing Not At Random at the station level, driven by instrumentation deployment profiles.</p>
+<p>A weather-conditionality test confirmed that sunshine missingness does not covary with rainfall amounts: the missing rate is 47.8% on dry days and 47.2% on rainy days. Missingness is station-conditional rather than outcome-conditional, meaning imputed values do not introduce directional bias into the training labels.</p>
+<p>The core dynamic variables, pressure, wind speed, temperature, and humidity, exhibit missingness below 10% and are available across virtually all observations.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>total_na <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(df_clean))</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Total missing values:"</span>, total_na))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "Total missing values: 314146"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">missing_val</span>(df_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">column</th>
+<th style="text-align: right;">pct_missing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">sunshine</td>
+<td style="text-align: right;">47.6937250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">evaporation</td>
+<td style="text-align: right;">42.5375706</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cloud3pm</td>
+<td style="text-align: right;">39.9960619</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cloud9am</td>
+<td style="text-align: right;">37.5044832</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pressure3pm</td>
+<td style="text-align: right;">9.8404349</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pressure9am</td>
+<td style="text-align: right;">9.8031632</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wind_dir9am</td>
+<td style="text-align: right;">6.8840147</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wind_gust_dir</td>
+<td style="text-align: right;">6.8390073</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wind_gust_speed</td>
+<td style="text-align: right;">6.7968129</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wind_dir3pm</td>
+<td style="text-align: right;">2.6716081</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">humidity3pm</td>
+<td style="text-align: right;">2.5527606</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">temp3pm</td>
+<td style="text-align: right;">1.9310966</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wind_speed3pm</td>
+<td style="text-align: right;">1.8614758</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">humidity9am</td>
+<td style="text-align: right;">1.0928347</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rain_tomorrow</td>
+<td style="text-align: right;">0.9929746</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wind_speed9am</td>
+<td style="text-align: right;">0.7672347</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temp9am</td>
+<td style="text-align: right;">0.4817193</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">min_temp</td>
+<td style="text-align: right;">0.3424778</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">max_temp</td>
+<td style="text-align: right;">0.3305227</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">date</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">location</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rainfall</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rain_today</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">month</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">day</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Resolution.</strong> A two-stage hybrid imputation pipeline was applied in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a>. Stage 1 applied linear temporal interpolation, bounded by a five-day gap cap, to eight smoothly-evolving meteorological variables: minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity. Stage 2 addressed the remaining missingness using <code>mice</code> with method assignments differentiated by variable type. The four continuous atmospheric variables (<code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, <code>cloud3pm</code>) were imputed via predictive mean matching, which constrains imputed draws to the empirically observed range of each variable and preserves marginal distributional shape without imposing parametric assumptions. The three wind direction variables (<code>wind_gust_dir</code>, <code>wind_dir9am</code>, <code>wind_dir3pm</code>) were imputed using Random Forest, which handles their unordered sixteen-level factor structure natively without imposing a spurious numeric ordering on the donor matching step. Each variable’s predictor set was restricted to physically motivated covariates: cloud cover from humidity and pressure, sunshine from cloud cover and temperature, evaporation from wind speed, temperature, and humidity, and wind direction from the corresponding wind speed, pressure, location, and month. Ghost sensor station-variable pairs, those with more than 90% missingness across the full observation window, were identified before the Stage 2 run and carried forward with binary imputation flags (<code>sunshine_imp_flagged</code>, <code>evap_imp_flagged</code>, <code>cloud3pm_imp_flagged</code>, <code>cloud9am_imp_flagged</code>) rather than populated with extrapolations that have no empirical anchor. The imputed dataset <code>df_final</code> is used throughout the remainder of this chapter. The raw dataset <code>df_clean</code> is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.</p>
+<p><strong>Modelling implication.</strong> The concentration of missingness in <code>sunshine</code> and <code>evaporation</code>, both of which exhibit meaningful correlation with rainfall as shown in <a href="#sec-correlation" class="quarto-xref"><span>Section 3.4</span></a>, creates a direct trade-off: discarding these variables avoids imputation complexity but sacrifices predictive signal, while listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations. The predictive mean matching strategy in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a> resolves this trade-off by preserving both sample size and feature coverage, with distributional fidelity confirmed by Kolmogorov-Smirnov statistics below 0.10 for all four variables.</p>
+<hr>
+</section>
+<section id="distributional-properties-of-the-target-variable" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="distributional-properties-of-the-target-variable"><span class="header-section-number">3.3</span> Distributional Properties of the Target Variable</h2>
+<p>Understanding the marginal distribution of the response variable is a prerequisite for selecting an appropriate model family. A Gaussian assumption carries substantive claims about the data-generating process that can be directly tested.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"target.R"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">render_descriptive_stats</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Descriptive Statistics: Daily Rainfall (mm)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Statistic</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">n</td>
+<td style="text-align: right;">1.42e+05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mean</td>
+<td style="text-align: right;">2.361</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">median</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sd</td>
+<td style="text-align: right;">8.478</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">371</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">q25</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">q75</td>
+<td style="text-align: right;">0.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">iqr</td>
+<td style="text-align: right;">0.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n_zeros</td>
+<td style="text-align: right;">9.11e+04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pct_zeros</td>
+<td style="text-align: right;">64.051</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n_large</td>
+<td style="text-align: right;">151</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pct_large</td>
+<td style="text-align: right;">0.106</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">skewness</td>
+<td style="text-align: right;">9.836</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">kurtosis</td>
+<td style="text-align: right;">181.146</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">render_prevalence_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-bordered caption-top table-sm small">
+<caption>Prevalence of Zero-Inflation (Dry Days)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">Total Days</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Dry Days (0 mm)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Rainy Days (&gt;0 mm)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Zero Inflation (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">142199</td>
+<td style="text-align: right;">91080</td>
+<td style="text-align: right;">51119</td>
+<td style="text-align: right;">64.05108</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The descriptive statistics reveal a distribution fundamentally incompatible with Gaussian modelling assumptions.</p>
+<p><strong>Zero-inflation.</strong> 64.05% of the 142,199 recorded observations are dry days (rainfall = 0 mm). The median is zero. The data-generating mechanism produces two qualitatively different outcomes: no rain at all versus some positive amount. Any model treating the response as a single continuous variable will be forced to place probability mass on negative values and will systematically misestimate the probability of the zero outcome.</p>
+<p><strong>Heavy tails.</strong> Among non-zero observations, the distribution is severely right-skewed (skewness = 9.84). The standard deviation (8.48 mm) is nearly four times the mean (2.36 mm). Kurtosis of 181.15 relative to 3 for a normal distribution confirms that extreme events occur far more frequently than a Gaussian model would predict. The maximum recorded value is 371 mm, and 151 events exceed 100 mm.</p>
+<p><strong>Modelling implication.</strong> The conjunction of zero-inflation and extreme positive skew means a single-component model is insufficient. The data implicitly poses two separate questions: does rain occur, and given that it does, how much falls? This motivates the Zero-Inflated Gamma framework adopted in subsequent analysis.</p>
+<hr>
+</section>
+<section id="sec-correlation" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="sec-correlation"><span class="header-section-number">3.4</span> Bivariate Correlation Structure</h2>
+<p>Because rainfall is heavily skewed and the relationships are unlikely to be linear, Spearman rank correlation is used throughout, a non-parametric measure that captures monotonic association without requiring linearity or normality.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"correlation.R"</span>))</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">render_correlation_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Spearman Correlation with Rainfall (Ranked by Strength)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Predictor</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Correlation (r)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">P-Value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">humidity9am</td>
+<td style="text-align: right;">0.440</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">humidity3pm</td>
+<td style="text-align: right;">0.440</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sunshine</td>
+<td style="text-align: right;">-0.400</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cloud9am</td>
+<td style="text-align: right;">0.370</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cloud3pm</td>
+<td style="text-align: right;">0.320</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">evaporation</td>
+<td style="text-align: right;">-0.310</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temp3pm</td>
+<td style="text-align: right;">-0.310</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">max_temp</td>
+<td style="text-align: right;">-0.300</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Moderate</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pressure9am</td>
+<td style="text-align: right;">-0.150</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Small</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">temp9am</td>
+<td style="text-align: right;">-0.150</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Small</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wind_gust_speed</td>
+<td style="text-align: right;">0.130</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Small</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wind_speed9am</td>
+<td style="text-align: right;">0.083</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Negligible</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wind_speed3pm</td>
+<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Negligible</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pressure3pm</td>
+<td style="text-align: right;">-0.063</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Negligible</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">min_temp</td>
+<td style="text-align: right;">0.022</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Negligible</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">plot_correlation_matrix</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-correlation-matrix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-correlation-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-correlation-matrix-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-correlation-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Spearman correlation matrix of meteorological features. Red indicates negative correlation; blue indicates positive correlation. Coefficients are shown only for pairs where |r| &gt; 0.3 to reduce visual noise.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">run_cocor_test</span>()</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt; $pearson1898</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt; </span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt;  Pearson and Filon's z (1898)</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; </span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; </span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; </span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; </span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; $hotelling1940</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; </span></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt;  Hotelling's t (1940)</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; </span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co">#&gt; </span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="co">#&gt; </span></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="co">#&gt; </span></span>
+<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#&gt; $williams1959</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#&gt; </span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#&gt;  Williams' t (1959)</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a><span class="co">#&gt; </span></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="co">#&gt; </span></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-33"><a href="#cb8-33"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-35"><a href="#cb8-35"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-36"><a href="#cb8-36"></a><span class="co">#&gt; </span></span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="co">#&gt; </span></span>
+<span id="cb8-38"><a href="#cb8-38"></a><span class="co">#&gt; $hendrickson1970</span></span>
+<span id="cb8-39"><a href="#cb8-39"></a><span class="co">#&gt; </span></span>
+<span id="cb8-40"><a href="#cb8-40"></a><span class="co">#&gt;  Hendrickson, Stanley, and Hills' (1970) modification of Williams' t</span></span>
+<span id="cb8-41"><a href="#cb8-41"></a><span class="co">#&gt;  (1959)</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a><span class="co">#&gt; </span></span>
+<span id="cb8-43"><a href="#cb8-43"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-44"><a href="#cb8-44"></a><span class="co">#&gt; </span></span>
+<span id="cb8-45"><a href="#cb8-45"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-46"><a href="#cb8-46"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-47"><a href="#cb8-47"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-48"><a href="#cb8-48"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-49"><a href="#cb8-49"></a><span class="co">#&gt; </span></span>
+<span id="cb8-50"><a href="#cb8-50"></a><span class="co">#&gt; </span></span>
+<span id="cb8-51"><a href="#cb8-51"></a><span class="co">#&gt; $olkin1967</span></span>
+<span id="cb8-52"><a href="#cb8-52"></a><span class="co">#&gt; </span></span>
+<span id="cb8-53"><a href="#cb8-53"></a><span class="co">#&gt;  Olkin's z (1967)</span></span>
+<span id="cb8-54"><a href="#cb8-54"></a><span class="co">#&gt; </span></span>
+<span id="cb8-55"><a href="#cb8-55"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-56"><a href="#cb8-56"></a><span class="co">#&gt; </span></span>
+<span id="cb8-57"><a href="#cb8-57"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-58"><a href="#cb8-58"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-59"><a href="#cb8-59"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-60"><a href="#cb8-60"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-61"><a href="#cb8-61"></a><span class="co">#&gt; </span></span>
+<span id="cb8-62"><a href="#cb8-62"></a><span class="co">#&gt; </span></span>
+<span id="cb8-63"><a href="#cb8-63"></a><span class="co">#&gt; $dunn1969</span></span>
+<span id="cb8-64"><a href="#cb8-64"></a><span class="co">#&gt; </span></span>
+<span id="cb8-65"><a href="#cb8-65"></a><span class="co">#&gt;  Dunn and Clark's z (1969)</span></span>
+<span id="cb8-66"><a href="#cb8-66"></a><span class="co">#&gt; </span></span>
+<span id="cb8-67"><a href="#cb8-67"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-68"><a href="#cb8-68"></a><span class="co">#&gt; </span></span>
+<span id="cb8-69"><a href="#cb8-69"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-70"><a href="#cb8-70"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-71"><a href="#cb8-71"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-72"><a href="#cb8-72"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-73"><a href="#cb8-73"></a><span class="co">#&gt; </span></span>
+<span id="cb8-74"><a href="#cb8-74"></a><span class="co">#&gt; </span></span>
+<span id="cb8-75"><a href="#cb8-75"></a><span class="co">#&gt; $steiger1980</span></span>
+<span id="cb8-76"><a href="#cb8-76"></a><span class="co">#&gt; </span></span>
+<span id="cb8-77"><a href="#cb8-77"></a><span class="co">#&gt;  Steiger's (1980) modification of Dunn and Clark's z (1969) using</span></span>
+<span id="cb8-78"><a href="#cb8-78"></a><span class="co">#&gt;  average correlations</span></span>
+<span id="cb8-79"><a href="#cb8-79"></a><span class="co">#&gt; </span></span>
+<span id="cb8-80"><a href="#cb8-80"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-81"><a href="#cb8-81"></a><span class="co">#&gt; z = 188.91, p-value &lt; 2.2e-16</span></span>
+<span id="cb8-82"><a href="#cb8-82"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-83"><a href="#cb8-83"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-84"><a href="#cb8-84"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-85"><a href="#cb8-85"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-86"><a href="#cb8-86"></a><span class="co">#&gt; </span></span>
+<span id="cb8-87"><a href="#cb8-87"></a><span class="co">#&gt; </span></span>
+<span id="cb8-88"><a href="#cb8-88"></a><span class="co">#&gt; $meng1992</span></span>
+<span id="cb8-89"><a href="#cb8-89"></a><span class="co">#&gt; </span></span>
+<span id="cb8-90"><a href="#cb8-90"></a><span class="co">#&gt;  Meng, Rosenthal, and Rubin's z (1992)</span></span>
+<span id="cb8-91"><a href="#cb8-91"></a><span class="co">#&gt; </span></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-93"><a href="#cb8-93"></a><span class="co">#&gt; </span></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-97"><a href="#cb8-97"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="co">#&gt; </span></span>
+<span id="cb8-99"><a href="#cb8-99"></a><span class="co">#&gt; </span></span>
+<span id="cb8-100"><a href="#cb8-100"></a><span class="co">#&gt; $hittner2003</span></span>
+<span id="cb8-101"><a href="#cb8-101"></a><span class="co">#&gt; </span></span>
+<span id="cb8-102"><a href="#cb8-102"></a><span class="co">#&gt;  Hittner, May, and Silver's (2003) modification of Dunn and Clark's z</span></span>
+<span id="cb8-103"><a href="#cb8-103"></a><span class="co">#&gt;  (1969) using a backtransformed average Fisher's (1921) Z procedure</span></span>
+<span id="cb8-104"><a href="#cb8-104"></a><span class="co">#&gt; </span></span>
+<span id="cb8-105"><a href="#cb8-105"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-106"><a href="#cb8-106"></a><span class="co">#&gt; </span></span>
+<span id="cb8-107"><a href="#cb8-107"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-108"><a href="#cb8-108"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-109"><a href="#cb8-109"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-110"><a href="#cb8-110"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376 </span></span>
+<span id="cb8-111"><a href="#cb8-111"></a><span class="co">#&gt; </span></span>
+<span id="cb8-112"><a href="#cb8-112"></a><span class="co">#&gt; </span></span>
+<span id="cb8-113"><a href="#cb8-113"></a><span class="co">#&gt; $zou2007</span></span>
+<span id="cb8-114"><a href="#cb8-114"></a><span class="co">#&gt; </span></span>
+<span id="cb8-115"><a href="#cb8-115"></a><span class="co">#&gt;  Zou's (2007) confidence interval</span></span>
+<span id="cb8-116"><a href="#cb8-116"></a><span class="co">#&gt; </span></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="co">#&gt; data:  </span></span>
+<span id="cb8-118"><a href="#cb8-118"></a><span class="co">#&gt; </span></span>
+<span id="cb8-119"><a href="#cb8-119"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
+<span id="cb8-120"><a href="#cb8-120"></a><span class="co">#&gt; sample estimates:</span></span>
+<span id="cb8-121"><a href="#cb8-121"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
+<span id="cb8-122"><a href="#cb8-122"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>Moisture indicators (positive association).</strong> <code>Humidity3pm</code> (<span class="math inline">\(r = 0.44\)</span>) and cloud cover (<span class="math inline">\(r \approx 0.37\)</span>) show the strongest positive associations. High afternoon humidity indicates that moisture has accumulated in the lower atmosphere over the course of the day. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics that produce it.</p>
+<p><strong>Radiation and evaporation indicators (negative association).</strong> <code>Sunshine</code> (<span class="math inline">\(r = -0.40\)</span>) and <code>evaporation</code> (<span class="math inline">\(r = -0.31\)</span>) exhibit the strongest negative associations. Long sunshine hours proxy clear-sky, high-pressure conditions. High evaporation signals warm, dry, low-humidity surface conditions.</p>
+<p><strong>Multicollinearity.</strong> The correlation heatmap (<a href="#fig-correlation-matrix" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>) reveals substantial redundancy among predictors. <code>pressure9am</code> and <code>pressure3pm</code> share <span class="math inline">\(r = 0.96\)</span>, and the two temperature readings are similarly collinear. This directly motivates VIF-based feature selection in the feature engineering chapter.</p>
+<p><strong>Statistical validation.</strong> Steiger’s Z-test comparing the two strongest opposing predictors yields <span class="math inline">\(z \approx 188.9\)</span>, <span class="math inline">\(p &lt; 2.2 \times 10^{-16}\)</span>. With <span class="math inline">\(N &gt; 140{,}000\)</span>, the p-value alone is uninformative; the Z-statistic magnitude confirms that the differential predictive strength is not a sampling artefact. Humidity and sunshine represent genuinely distinct physical forces operating in opposing directions.</p>
+<hr>
+</section>
+<section id="temporal-structure-of-rainfall" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="temporal-structure-of-rainfall"><span class="header-section-number">3.5</span> Temporal Structure of Rainfall</h2>
+<section id="sec-frequency" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="sec-frequency"><span class="header-section-number">3.5.1</span> Weekly and Seasonal Frequency</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"temporal.R"</span>))</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">render_weekly_frequency_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Frequency of Rainfall Days by Day of the Week</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Day</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Count (n)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Tue</td>
+<td style="text-align: right;">7508</td>
+<td style="text-align: left;">14.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mon</td>
+<td style="text-align: right;">7480</td>
+<td style="text-align: left;">14.6%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fri</td>
+<td style="text-align: right;">7378</td>
+<td style="text-align: left;">14.4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wed</td>
+<td style="text-align: right;">7342</td>
+<td style="text-align: left;">14.4%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Thu</td>
+<td style="text-align: right;">7314</td>
+<td style="text-align: left;">14.3%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sat</td>
+<td style="text-align: right;">7057</td>
+<td style="text-align: left;">13.8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sun</td>
+<td style="text-align: right;">7040</td>
+<td style="text-align: left;">13.8%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">render_monthly_frequency_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Frequency of Rainfall Days by Month</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Month</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Count (n)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">5448</td>
+<td style="text-align: left;">10.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">5250</td>
+<td style="text-align: left;">10.3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">4937</td>
+<td style="text-align: left;">9.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">4704</td>
+<td style="text-align: left;">9.2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">4444</td>
+<td style="text-align: left;">8.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">4234</td>
+<td style="text-align: left;">8.3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">4001</td>
+<td style="text-align: left;">7.8%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">3770</td>
+<td style="text-align: left;">7.4%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">11</td>
+<td style="text-align: right;">3760</td>
+<td style="text-align: left;">7.4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">3702</td>
+<td style="text-align: left;">7.2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">12</td>
+<td style="text-align: right;">3562</td>
+<td style="text-align: left;">7.0%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3307</td>
+<td style="text-align: left;">6.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">render_month_day_crosstab</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Cross-tabulation of Rainfall Frequency: Month vs. Day</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">month</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Sun</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mon</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Tue</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Wed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Thu</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Fri</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Sat</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">536</td>
+<td style="text-align: right;">570</td>
+<td style="text-align: right;">514</td>
+<td style="text-align: right;">482</td>
+<td style="text-align: right;">493</td>
+<td style="text-align: right;">567</td>
+<td style="text-align: right;">540</td>
+<td style="text-align: right;">3702</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: right;">530</td>
+<td style="text-align: right;">469</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">443</td>
+<td style="text-align: right;">471</td>
+<td style="text-align: right;">448</td>
+<td style="text-align: right;">3307</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">636</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">639</td>
+<td style="text-align: right;">592</td>
+<td style="text-align: right;">662</td>
+<td style="text-align: right;">644</td>
+<td style="text-align: right;">626</td>
+<td style="text-align: right;">4444</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">578</td>
+<td style="text-align: right;">597</td>
+<td style="text-align: right;">566</td>
+<td style="text-align: right;">604</td>
+<td style="text-align: right;">579</td>
+<td style="text-align: right;">515</td>
+<td style="text-align: right;">562</td>
+<td style="text-align: right;">4001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">710</td>
+<td style="text-align: right;">722</td>
+<td style="text-align: right;">765</td>
+<td style="text-align: right;">714</td>
+<td style="text-align: right;">678</td>
+<td style="text-align: right;">681</td>
+<td style="text-align: right;">667</td>
+<td style="text-align: right;">4937</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">766</td>
+<td style="text-align: right;">801</td>
+<td style="text-align: right;">804</td>
+<td style="text-align: right;">797</td>
+<td style="text-align: right;">760</td>
+<td style="text-align: right;">753</td>
+<td style="text-align: right;">767</td>
+<td style="text-align: right;">5448</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">694</td>
+<td style="text-align: right;">717</td>
+<td style="text-align: right;">728</td>
+<td style="text-align: right;">796</td>
+<td style="text-align: right;">773</td>
+<td style="text-align: right;">818</td>
+<td style="text-align: right;">724</td>
+<td style="text-align: right;">5250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">702</td>
+<td style="text-align: right;">694</td>
+<td style="text-align: right;">679</td>
+<td style="text-align: right;">689</td>
+<td style="text-align: right;">687</td>
+<td style="text-align: right;">641</td>
+<td style="text-align: right;">4704</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: right;">516</td>
+<td style="text-align: right;">571</td>
+<td style="text-align: right;">616</td>
+<td style="text-align: right;">639</td>
+<td style="text-align: right;">648</td>
+<td style="text-align: right;">659</td>
+<td style="text-align: right;">585</td>
+<td style="text-align: right;">4234</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: right;">507</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">579</td>
+<td style="text-align: right;">550</td>
+<td style="text-align: right;">517</td>
+<td style="text-align: right;">456</td>
+<td style="text-align: right;">555</td>
+<td style="text-align: right;">3770</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">11</td>
+<td style="text-align: right;">556</td>
+<td style="text-align: right;">526</td>
+<td style="text-align: right;">554</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: right;">538</td>
+<td style="text-align: right;">575</td>
+<td style="text-align: right;">531</td>
+<td style="text-align: right;">3760</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">12</td>
+<td style="text-align: right;">449</td>
+<td style="text-align: right;">493</td>
+<td style="text-align: right;">580</td>
+<td style="text-align: right;">543</td>
+<td style="text-align: right;">534</td>
+<td style="text-align: right;">552</td>
+<td style="text-align: right;">411</td>
+<td style="text-align: right;">3562</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total</td>
+<td style="text-align: right;">7040</td>
+<td style="text-align: right;">7480</td>
+<td style="text-align: right;">7508</td>
+<td style="text-align: right;">7342</td>
+<td style="text-align: right;">7314</td>
+<td style="text-align: right;">7378</td>
+<td style="text-align: right;">7057</td>
+<td style="text-align: right;">51119</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Weekly cycle.</strong> The distribution of wet days across the days of the week is approximately uniform, ranging from 13.8% to 14.7%. This near-uniformity is physically expected: atmospheric processes operate independently of the social calendar. The slight variation is consistent with sampling noise, suggesting <code>Day</code> carries little predictive information.</p>
+<p><strong>Annual cycle.</strong> June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with Southern Hemisphere winter frontal systems originating from the Southern Ocean. February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation confirms this seasonal signal is not an artefact of any particular day of the week. <code>Month</code> is therefore a legitimate predictor warranting explicit model inclusion.</p>
+</section>
+<section id="sec-markov" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="sec-markov"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>markov_tbl <span class="ot">&lt;-</span> <span class="fu">build_markov_table</span>()</span>
+<span id="cb12-2"><a href="#cb12-2"></a>cont_table <span class="ot">&lt;-</span> <span class="fu">build_cont_table</span>(markov_tbl)</span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="fu">print</span>(cont_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;        No   Yes
+#&gt; No  93231 17043
+#&gt; Yes 17047 14829</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>markov_stats <span class="ot">&lt;-</span> <span class="fu">run_markov_stats</span>(cont_table)</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="co">#&gt; </span></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">#&gt; Effect Size Interpretation</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co">#&gt; V = 0.3107: Moderate Association</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">plot_markov_chain</span>(<span class="at">markov_stats =</span> markov_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-markov-chain-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.2: Markov chain transition matrix. The asymmetry between dry-to-dry (85%) and wet-to-wet (47%) probabilities is the central finding: dry states are self-reinforcing while wet states are more transient.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The Chi-squared test yields <span class="math inline">\(\chi^2 \approx 13{,}718\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>, rejecting daily independence by a wide margin. Cramer’s V (<span class="math inline">\(V \approx 0.31\)</span>) confirms a moderate practical effect size.</p>
+<p>The transition matrix (<a href="#fig-markov-chain" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>) reveals an important asymmetry. When the previous day was dry, there is an 85% probability of remaining dry: high-pressure systems are persistent and self-reinforcing. When the previous day was wet, there is only a 47% probability of continued rain, meaning wet events are considerably more transient. This asymmetry has a direct atmospheric interpretation: anticyclonic systems can persist for days to weeks, while frontal systems typically pass through more quickly.</p>
+<p><code>rain_today</code> (lagged one day) carries meaningful predictive signal, yet its modest effect size also demonstrates that autocorrelation alone is insufficient. The wet state is too transient for a persistence-only rule, and other meteorological covariates remain necessary.</p>
+</section>
+<section id="sec-dry-spell" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="sec-dry-spell"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>dry_spell_dat <span class="ot">&lt;-</span> <span class="fu">build_dry_spell_data</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>dry_spell_models <span class="ot">&lt;-</span> <span class="fu">run_dry_spell_models</span>(dry_spell_dat)</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co">#&gt; Wald test:</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="co">#&gt; ----------</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="co">#&gt; </span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co">#&gt; Chi-squared test:</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="co">#&gt; X2 = 8099.7, df = 1, P(&gt; X2) = 0.0</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="co">#&gt; </span></span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="co">#&gt; For each additional day without rain, odds of rainfall decrease by 16.5%</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="co">#&gt; 95% CI: [0.831, 0.838]</span></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="co">#&gt; Analysis of Deviance Table</span></span>
+<span id="cb17-11"><a href="#cb17-11"></a><span class="co">#&gt; </span></span>
+<span id="cb17-12"><a href="#cb17-12"></a><span class="co">#&gt; Model 1: rain_binary ~ days_since_rain</span></span>
+<span id="cb17-13"><a href="#cb17-13"></a><span class="co">#&gt; Model 2: rain_binary ~ splines::ns(days_since_rain, df = 4)</span></span>
+<span id="cb17-14"><a href="#cb17-14"></a><span class="co">#&gt;   Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    </span></span>
+<span id="cb17-15"><a href="#cb17-15"></a><span class="co">#&gt; 1    138444     169706                          </span></span>
+<span id="cb17-16"><a href="#cb17-16"></a><span class="co">#&gt; 2    138441     162027  3   7678.7 &lt; 2.2e-16 ***</span></span>
+<span id="cb17-17"><a href="#cb17-17"></a><span class="co">#&gt; ---</span></span>
+<span id="cb17-18"><a href="#cb17-18"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">plot_dry_spell</span>(dry_spell_dat, dry_spell_models)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-dry-spell" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dry-spell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-dry-spell-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dry-spell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.3: Probability of rainfall by days since last rain. Points are empirical probabilities (plus or minus 95% CI); the dashed line and shaded band show the linear logistic model fit and its uncertainty. The steep initial decline followed by a plateau motivates a spline parameterisation rather than a linear logistic term.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A logistic regression of daily rain occurrence on <code>days_since_rain</code> yields <span class="math inline">\(OR = 0.835\)</span> (Wald <span class="math inline">\(\chi^2 \approx 8{,}099\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>): each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the progressive establishment of stable high-pressure ridges documented in the Markov analysis above.</p>
+<p>The linear model is an approximation. A likelihood ratio test against a four-knot natural spline is highly significant (<span class="math inline">\(\chi^2 \approx 7{,}678\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>). The empirical pattern (<a href="#fig-dry-spell" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12 to 16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates the long-drought decline rate. This rapid-then-gradual decay motivates a spline parameterisation of <code>days_since_rain</code> rather than a simple linear term.</p>
+<hr>
+</section>
+</section>
+<section id="atmospheric-pressure-dynamics" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="atmospheric-pressure-dynamics"><span class="header-section-number">3.6</span> Atmospheric Pressure Dynamics</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"pressure.R"</span>))</span>
+<span id="cb19-2"><a href="#cb19-2"></a>pressure_dat <span class="ot">&lt;-</span> <span class="fu">build_pressure_data</span>()</span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">plot_pressure_qq</span>(pressure_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03-eda_files/figure-html/pressure-prep-normality-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">render_pressure_ttests</span>(pressure_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Welch Two-Sample t-test Results (Bonferroni-Holm Corrected)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Group 1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Group 2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">t-statistic</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">df</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Adj. P-Value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pressure3pm</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">34.656</td>
+<td style="text-align: right;">47862.40</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">****</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pressure9am</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">63.848</td>
+<td style="text-align: right;">47259.23</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">****</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pressure_change</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">-73.395</td>
+<td style="text-align: right;">46002.79</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">****</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">render_pressure_cohens_d</span>(pressure_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Cohen's d Effect Size Analysis</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Effect Size (d)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pressure3pm</td>
+<td style="text-align: right;">0.227</td>
+<td style="text-align: left;">Small</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pressure9am</td>
+<td style="text-align: right;">0.419</td>
+<td style="text-align: left;">Small</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pressure_change</td>
+<td style="text-align: right;">-0.487</td>
+<td style="text-align: left;">Small</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">plot_pressure_violin</span>(pressure_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-pressure-violin" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pressure-violin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-pressure-violin-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pressure-violin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.4: Violin plots of atmospheric pressure variables by rainfall state. The pressure_change panel shows the most pronounced separation between dry and rainy days.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">plot_pressure_means</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-pressure-means" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pressure-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-pressure-means-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pressure-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.5: Mean pressure levels and diurnal drop by rainfall state. The suppressed diurnal pressure drop on rainy days (1.7 vs.&nbsp;3.0 hPa) is a stronger discriminating signal than the absolute pressure baseline.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Normality and Test Validity.</strong> Q-Q plots reveal modest tail deviations across all three pressure metrics, but with <span class="math inline">\(N &gt; 140{,}000\)</span> the Central Limit Theorem ensures that sample means are asymptotically normal regardless of the underlying marginal distribution. Welch’s t-test is used throughout to avoid the equal-variance assumption, and Bonferroni-Holm correction is applied across the three comparisons.</p>
+<p><strong>Baseline Pressure.</strong> Rainy days show significantly lower mean atmospheric pressure than dry days at both observation times. At 9:00 AM the difference is 2.9 hPa (1015.4 vs.&nbsp;1018.3 hPa); at 3:00 PM it narrows to 1.6 hPa (1013.7 vs.&nbsp;1015.3 hPa). Cohen’s <span class="math inline">\(d\)</span> for these baseline measures ranges from 0.23 to 0.42, a small-to-medium effect. Lower absolute pressure is a necessary but not sufficient condition for rainfall: the overlap between the two distributions is substantial enough that pressure level alone cannot discriminate reliably between states.</p>
+<p><strong>Diurnal Pressure Change.</strong> The stronger discriminating signal lies not in the baseline but in how pressure evolves across the day. On dry days, the standard daytime thermal low produces a mean pressure drop of 3.0 hPa from morning to afternoon. On rainy days this drop is suppressed to 1.6 hPa, because cloud cover reduces solar insolation and limits surface heating. Cohen’s <span class="math inline">\(d = -0.49\)</span> for <code>pressure_change</code> exceeds the effect size of either absolute pressure reading, and the Welch t-statistic of <span class="math inline">\(-73.4\)</span> is the largest in magnitude among all three metrics. The rate of pressure change across the day is therefore a more robust indicator of rainfall state than the morning or afternoon level in isolation, and it is entered as a primary derived feature in the engineering pipeline.</p>
+<hr>
+</section>
+<section id="seasonal-rainfall-intensity" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="seasonal-rainfall-intensity"><span class="header-section-number">3.7</span> Seasonal Rainfall Intensity</h2>
+<section id="cyclical-patterns" class="level3" data-number="3.7.1">
+<h3 data-number="3.7.1" class="anchored" data-anchor-id="cyclical-patterns"><span class="header-section-number">3.7.1</span> Cyclical Patterns</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"seasonality.R"</span>))</span>
+<span id="cb24-2"><a href="#cb24-2"></a>seasonal_dat <span class="ot">&lt;-</span> <span class="fu">build_seasonal_data</span>()</span>
+<span id="cb24-3"><a href="#cb24-3"></a>monthly_stats <span class="ot">&lt;-</span> <span class="fu">build_monthly_stats</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">plot_monthly_ridgeline</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-monthly-dist" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-monthly-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-monthly-dist-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monthly-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.6: Ridgeline plot of monthly log-rainfall distributions. Shifting peaks illustrate how rainfall intensity varies cyclically relative to the global median (dashed line). Solid vertical lines within each ridge mark the monthly median.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">plot_seasonal_facet</span>(seasonal_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-seasonal-facet" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-seasonal-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-seasonal-facet-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seasonal-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.7: Seasonal rainfall patterns by meteorological season. Summer exhibits high variance and a pronounced right tail; winter shows narrower, more predictable distributions. Quartile lines mark the 25th, 50th, and 75th percentiles within each month.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">plot_mean_rain_bar</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-mean-rain-bar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mean-rain-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-mean-rain-bar-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mean-rain-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.8: Mean rainfall intensity on non-zero days by month. February records the highest mean intensity at 10.1 mm, nearly double July’s 4.9 mm, illustrating that frequency and intensity vary in opposite directions across the seasonal cycle.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The earlier frequency analysis (<a href="#sec-frequency" class="quarto-xref"><span>Section 3.5.1</span></a>) established when rain tends to occur. This section investigates how much falls when it does.</p>
+<p>January and February distributions are shifted systematically right of the global median: summer storms are considerably more intense when they arrive, even though they occur less frequently. June through August cluster left, representing lower but more consistent rainfall. February records the highest mean intensity per wet day at 10.1 mm, nearly double July’s 4.9 mm.</p>
+<p>Summer rainfall has a wide interquartile range and a pronounced right tail beyond 100 mm per day, reflecting episodic convective storms. Winter shows a narrower, more peaked distribution. Both the frequency variation (more rain in winter) and the intensity variation (heavier rain in summer) carry independent information, and a complete model must account for both dimensions.</p>
+<p><strong>Encoding implication.</strong> Because the seasonal cycle is continuous, the transition from December to January is climatologically smooth, and treating <code>Month</code> as an unordered factor discards that proximity information. Cyclical encoding via sine and cosine transformations of the month number preserves the circular geometry of the annual cycle.</p>
+</section>
+<section id="statistical-validation" class="level3" data-number="3.7.2">
+<h3 data-number="3.7.2" class="anchored" data-anchor-id="statistical-validation"><span class="header-section-number">3.7.2</span> Statistical Validation</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">render_seasonal_desc_stats</span>(seasonal_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Descriptive Statistics of Rainfall Intensity by Season</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Season</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">N (Events)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean (mm)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">SD (mm)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Summer</td>
+<td style="text-align: left;">rainfall</td>
+<td style="text-align: right;">10571</td>
+<td style="text-align: right;">9.070</td>
+<td style="text-align: right;">18.195</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Autumn</td>
+<td style="text-align: left;">rainfall</td>
+<td style="text-align: right;">13382</td>
+<td style="text-align: right;">6.667</td>
+<td style="text-align: right;">13.495</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Winter</td>
+<td style="text-align: left;">rainfall</td>
+<td style="text-align: right;">15402</td>
+<td style="text-align: right;">5.463</td>
+<td style="text-align: right;">9.809</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Spring</td>
+<td style="text-align: left;">rainfall</td>
+<td style="text-align: right;">11764</td>
+<td style="text-align: right;">5.651</td>
+<td style="text-align: right;">10.495</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>seasonal_tests <span class="ot">&lt;-</span> <span class="fu">run_seasonal_tests</span>(seasonal_dat)</span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="fu">render_kruskal_table</span>(seasonal_tests)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small">
+<caption>Statistical Significance of Seasonal Differences (Non-Parametric)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Test</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Chi-squared</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">df</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">P-value</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Effect Size</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Magnitude</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Kruskal-Wallis Rank Sum Test</td>
+<td style="text-align: center;">230.44</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">&lt;0.001</td>
+<td style="text-align: center;">0.0044</td>
+<td style="text-align: right;">small</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0; border: 0;"><sup>*</sup> Effect size: Epsilon-squared.</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0; border: 0;"><sup>†</sup> Alpha = 0.05</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">render_dunns_table</span>(seasonal_tests)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Dunn's Pairwise Comparison Test (Bonferroni Corrected)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Group 1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Group 2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Z-Statistic</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Adj. P-Value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Summer</td>
+<td style="text-align: left;">Autumn</td>
+<td style="text-align: right;">-11.468</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">****</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Summer</td>
+<td style="text-align: left;">Winter</td>
+<td style="text-align: right;">-14.483</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">****</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Summer</td>
+<td style="text-align: left;">Spring</td>
+<td style="text-align: right;">-11.049</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">****</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Autumn</td>
+<td style="text-align: left;">Winter</td>
+<td style="text-align: right;">-2.851</td>
+<td style="text-align: right;">0.026</td>
+<td style="text-align: left;">*</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Autumn</td>
+<td style="text-align: left;">Spring</td>
+<td style="text-align: right;">0.091</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: left;">ns</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Winter</td>
+<td style="text-align: left;">Spring</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">0.027</td>
+<td style="text-align: left;">*</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">plot_seasonal_stat_groups</span>(seasonal_dat, seasonal_tests)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-seasonal-stat-groups" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-seasonal-stat-groups-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-seasonal-stat-groups-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seasonal-stat-groups-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.9: Mean seasonal rainfall with statistical groupings. Shared letters above bars indicate seasons not significantly different from one another at the Bonferroni-corrected threshold (Dunn’s test, p &lt; 0.05).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The Kruskal-Wallis test yields <span class="math inline">\(\chi^2 = 230\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>, strongly rejecting the null of equal seasonal distributions. The epsilon-squared effect size (<span class="math inline">\(\eta^2 \approx 0.004\)</span>) is small: the seasonal signal is real but accounts for only a minor fraction of total variance in rainfall intensity, reinforcing the necessity of a multivariate approach.</p>
+<p>Post-hoc Dunn’s tests identify three distinct statistical groups (<a href="#fig-seasonal-stat-groups" class="quarto-xref">Figure&nbsp;<span>3.9</span></a>). Summer stands alone as the most intense season (<span class="math inline">\(\bar{x} = 9.1\)</span> mm, <span class="math inline">\(p &lt; 0.001\)</span> vs.&nbsp;all others). Autumn and Spring are statistically indistinguishable (<span class="math inline">\(p = 1.0\)</span>). Winter registers the lowest mean intensity (<span class="math inline">\(\bar{x} = 5.5\)</span> mm) and is statistically distinct from Spring (<span class="math inline">\(p_\text{adj} = 0.026\)</span>).</p>
+<hr>
+</section>
+</section>
+<section id="sec-bivariate-density" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="sec-bivariate-density"><span class="header-section-number">3.8</span> Feature Interactions: The “Rain Corner”</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"interactions.R"</span>))</span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="fu">plot_rain_corner</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-interaction-rain-corner" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-interaction-rain-corner-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-eda_files/figure-html/fig-interaction-rain-corner-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-interaction-rain-corner-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.10: Bivariate density of Humidity3pm versus Sunshine, faceted by rainfall occurrence. Rain events concentrate tightly in the upper-left corner (high humidity, low sunshine), while dry days are dispersed broadly across the feature space. This structural asymmetry justifies a multiplicative interaction term in the model specification.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>While individual correlation analysis in <a href="#sec-correlation" class="quarto-xref"><span>Section 3.4</span></a> identifies humidity and sunshine as primary predictors, a standard additive model assumes their effects on the log-odds of rainfall are independent. The bivariate density plots (<a href="#fig-interaction-rain-corner" class="quarto-xref">Figure&nbsp;<span>3.10</span></a>) test this assumption directly by visualising the joint distribution of these two features conditioned on the rainfall outcome.</p>
+<p><strong>Dry Day Structure.</strong> The feature space for dry days exhibits a concentrated region in the lower-right of the humidity-sunshine plane, where sunshine is moderate-to-high and afternoon humidity is low. This reflects the high-pressure suppression regimes documented in <a href="#sec-markov" class="quarto-xref"><span>Section 3.5.2</span></a>, where clear skies drive both elevated sunshine duration and suppressed humidity. Notably, this cluster occupies the structural opposite of the Rain Corner: while high humidity and low sunshine do occur individually on dry days, their joint occurrence is not where dry-day density concentrates. This confirms that neither variable in isolation is a reliable discriminator between outcomes; it is the specific combination that carries the predictive signal.</p>
+<p><strong>The Rain Corner.</strong> The rainy-day panel tells a structurally different story. Precipitation events concentrate tightly in the upper-left quadrant of the feature space, where afternoon humidity is high and sunshine hours are low simultaneously. This cluster, the “Rain Corner”, is not a feature of either variable’s marginal distribution: high humidity alone and low sunshine alone each occur on dry days with regularity. It is the joint occurrence that distinguishes the rainfall regime. The density mass that is dispersed broadly across the dry-day panel collapses into this single region when rain is present, a pattern that an additive model, which cannot represent conditional concentration of this kind, would be structurally unable to capture.</p>
+<p><strong>Modelling Implication.</strong> The asymmetry between the two panels confirms a genuine statistical interaction: the effect of humidity on rainfall probability is conditional on the level of sunshine, and vice versa. This justifies including a multiplicative interaction term (<span class="math inline">\(\text{Humidity3pm} \times \text{Sunshine}\)</span>) in the model specification, in addition to both main effects.</p>
+<hr>
+</section>
+<section id="summary-and-modelling-implications" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="summary-and-modelling-implications"><span class="header-section-number">3.9</span> Summary and Modelling Implications</h2>
+<p>The preceding analyses characterise the dataset along six interconnected dimensions, each producing a specific modelling requirement.</p>
+<p>The <strong>distributional structure</strong> of the target variable, 64% zeros, extreme positive skew, and kurtosis of 181, rules out any single-component Gaussian model. A two-part framework separating occurrence from intensity is the appropriate response.</p>
+<p>The <strong>missingness analysis</strong> (documented in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a>, summarised in Section 1 above) establishes that imputation is necessary to preserve both sample size and the predictive signal in <code>sunshine</code> and <code>evaporation</code>, and that the predictive mean matching procedure does not introduce outcome-related bias. Between-imputation Fraction of Missing Information values exceeding 0.30 for all four atmospheric variables mean that downstream models incorporating these predictors must be fitted across all ten completions and pooled via Rubin’s combining rules.</p>
+<p>The <strong>correlation structure</strong> identifies humidity, cloud cover, sunshine, and evaporation as the strongest individual predictors, and flags severe multicollinearity among morning-afternoon pairs. VIF-based feature selection is required.</p>
+<p>The <strong>temporal analyses</strong> establish that both the day-to-day Markov state and the cumulative dry spell duration carry predictive signal. Month should be cyclically encoded. The dry spell decay is non-linear and warrants a natural spline parameterisation of <code>days_since_rain</code>.</p>
+<p>The <strong>pressure analysis</strong> identifies the diurnal pressure change as the more discriminating pressure-derived feature, with Cohen’s <span class="math inline">\(d = -0.487\)</span> separating rainy from dry days more effectively than absolute pressure level.</p>
+<p>The <strong>interaction analysis</strong> provides empirical justification for a <span class="math inline">\(\text{Humidity} \times \text{Sunshine}\)</span> interaction term, reflecting the physical reality that precipitation concentrates where high moisture and low solar radiation coincide in the Rain Corner of the feature space.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/02-data-prep.html" class="pagination-link" aria-label="Data Preparation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data Preparation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/04-features.html" class="pagination-link" aria-label="Feature Engineering">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Feature Engineering</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu"># Exploratory Data Analysis {#sec-eda}</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">## Temporal and Meteorological Drivers of Australian Rainfall</span></span>
+<span id="cb33-3"><a href="#cb33-3"></a></span>
+<span id="cb33-4"><a href="#cb33-4"></a>---</span>
+<span id="cb33-5"><a href="#cb33-5"></a></span>
+<span id="cb33-6"><a href="#cb33-6"></a><span class="at">&gt; **Chapter Context.** This chapter investigates the distributional and structural properties of the daily rainfall data, using findings from the data preparation chapter (@sec-data) as its starting point rather than repeating the missingness diagnostics performed there. The analyses proceed in a deliberate sequence: target variable distribution, bivariate predictor correlations, temporal dynamics, pressure analysis, seasonal patterns, and feature interactions. Each section produces a specific finding that motivates a corresponding decision in the feature engineering or model specification stages.</span></span>
+<span id="cb33-7"><a href="#cb33-7"></a></span>
+<span id="cb33-8"><a href="#cb33-8"></a>---</span>
+<span id="cb33-9"><a href="#cb33-9"></a></span>
+<span id="cb33-12"><a href="#cb33-12"></a><span class="in">```{r}</span></span>
+<span id="cb33-13"><a href="#cb33-13"></a><span class="co">#| label: setup-eda</span></span>
+<span id="cb33-14"><a href="#cb33-14"></a><span class="co">#| include: false</span></span>
+<span id="cb33-15"><a href="#cb33-15"></a><span class="co">#| cache: false</span></span>
+<span id="cb33-16"><a href="#cb33-16"></a></span>
+<span id="cb33-17"><a href="#cb33-17"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
+<span id="cb33-18"><a href="#cb33-18"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb33-19"><a href="#cb33-19"></a></span>
+<span id="cb33-20"><a href="#cb33-20"></a><span class="in">```</span></span>
+<span id="cb33-21"><a href="#cb33-21"></a></span>
+<span id="cb33-22"><a href="#cb33-22"></a>---</span>
+<span id="cb33-23"><a href="#cb33-23"></a></span>
+<span id="cb33-24"><a href="#cb33-24"></a><span class="fu">## Data Quality Summary {#sec-data-quality}</span></span>
+<span id="cb33-25"><a href="#cb33-25"></a></span>
+<span id="cb33-26"><a href="#cb33-26"></a>A thorough investigation of missingness is documented in @sec-data and summarised briefly here for continuity. The full diagnostic pipeline, comprising co-missingness analysis, temporal structural break detection, ghost sensor identification, and a weather-conditionality test, established the following picture.</span>
+<span id="cb33-27"><a href="#cb33-27"></a></span>
+<span id="cb33-28"><a href="#cb33-28"></a>The dataset contains 314,146 missing entries in total, distributed highly unevenly across features. The four most affected variables are <span class="in">`sunshine`</span> (47.7% missing), <span class="in">`evaporation`</span> (42.5%), <span class="in">`cloud9am`</span> (approximately 40%), and <span class="in">`cloud3pm`</span> (approximately 37%). Their missingness is not independent: co-missing rates between any pair of these four variables range from 67% to 93%, confirming that they fail together at the station level rather than through separate independent sensor faults. This is Missing Not At Random at the station level, driven by instrumentation deployment profiles.</span>
+<span id="cb33-29"><a href="#cb33-29"></a></span>
+<span id="cb33-30"><a href="#cb33-30"></a>A weather-conditionality test confirmed that sunshine missingness does not covary with rainfall amounts: the missing rate is 47.8% on dry days and 47.2% on rainy days. Missingness is station-conditional rather than outcome-conditional, meaning imputed values do not introduce directional bias into the training labels.</span>
+<span id="cb33-31"><a href="#cb33-31"></a></span>
+<span id="cb33-32"><a href="#cb33-32"></a>The core dynamic variables, pressure, wind speed, temperature, and humidity, exhibit missingness below 10% and are available across virtually all observations.</span>
+<span id="cb33-33"><a href="#cb33-33"></a></span>
+<span id="cb33-36"><a href="#cb33-36"></a><span class="in">```{r}</span></span>
+<span id="cb33-37"><a href="#cb33-37"></a><span class="co">#| label: missing-values-summary</span></span>
+<span id="cb33-38"><a href="#cb33-38"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-39"><a href="#cb33-39"></a><span class="co">#| message: false</span></span>
+<span id="cb33-40"><a href="#cb33-40"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-41"><a href="#cb33-41"></a></span>
+<span id="cb33-42"><a href="#cb33-42"></a>total_na <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(df_clean))</span>
+<span id="cb33-43"><a href="#cb33-43"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Total missing values:"</span>, total_na))</span>
+<span id="cb33-44"><a href="#cb33-44"></a></span>
+<span id="cb33-45"><a href="#cb33-45"></a><span class="fu">missing_val</span>(df_clean)</span>
+<span id="cb33-46"><a href="#cb33-46"></a><span class="in">```</span></span>
+<span id="cb33-47"><a href="#cb33-47"></a></span>
+<span id="cb33-48"><a href="#cb33-48"></a>**Resolution.** A two-stage hybrid imputation pipeline was applied in @sec-data. Stage 1 applied linear temporal interpolation, bounded by a five-day gap cap, to eight smoothly-evolving meteorological variables: minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity. Stage 2 addressed the remaining missingness using <span class="in">`mice`</span> with method assignments differentiated by variable type. The four continuous atmospheric variables (<span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) were imputed via predictive mean matching, which constrains imputed draws to the empirically observed range of each variable and preserves marginal distributional shape without imposing parametric assumptions. The three wind direction variables (<span class="in">`wind_gust_dir`</span>, <span class="in">`wind_dir9am`</span>, <span class="in">`wind_dir3pm`</span>) were imputed using Random Forest, which handles their unordered sixteen-level factor structure natively without imposing a spurious numeric ordering on the donor matching step. Each variable's predictor set was restricted to physically motivated covariates: cloud cover from humidity and pressure, sunshine from cloud cover and temperature, evaporation from wind speed, temperature, and humidity, and wind direction from the corresponding wind speed, pressure, location, and month. Ghost sensor station-variable pairs, those with more than 90% missingness across the full observation window, were identified before the Stage 2 run and carried forward with binary imputation flags (<span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, <span class="in">`cloud9am_imp_flagged`</span>) rather than populated with extrapolations that have no empirical anchor. The imputed dataset <span class="in">`df_final`</span> is used throughout the remainder of this chapter. The raw dataset <span class="in">`df_clean`</span> is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.</span>
+<span id="cb33-49"><a href="#cb33-49"></a></span>
+<span id="cb33-50"><a href="#cb33-50"></a>**Modelling implication.** The concentration of missingness in <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span>, both of which exhibit meaningful correlation with rainfall as shown in @sec-correlation, creates a direct trade-off: discarding these variables avoids imputation complexity but sacrifices predictive signal, while listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations. The predictive mean matching strategy in @sec-data resolves this trade-off by preserving both sample size and feature coverage, with distributional fidelity confirmed by Kolmogorov-Smirnov statistics below 0.10 for all four variables.</span>
+<span id="cb33-51"><a href="#cb33-51"></a></span>
+<span id="cb33-52"><a href="#cb33-52"></a>---</span>
+<span id="cb33-53"><a href="#cb33-53"></a></span>
+<span id="cb33-54"><a href="#cb33-54"></a><span class="fu">## Distributional Properties of the Target Variable</span></span>
+<span id="cb33-55"><a href="#cb33-55"></a></span>
+<span id="cb33-56"><a href="#cb33-56"></a>Understanding the marginal distribution of the response variable is a prerequisite for selecting an appropriate model family. A Gaussian assumption carries substantive claims about the data-generating process that can be directly tested.</span>
+<span id="cb33-57"><a href="#cb33-57"></a></span>
+<span id="cb33-60"><a href="#cb33-60"></a><span class="in">```{r}</span></span>
+<span id="cb33-61"><a href="#cb33-61"></a><span class="co">#| label: target-stats</span></span>
+<span id="cb33-62"><a href="#cb33-62"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-63"><a href="#cb33-63"></a><span class="co">#| message: false</span></span>
+<span id="cb33-64"><a href="#cb33-64"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-65"><a href="#cb33-65"></a></span>
+<span id="cb33-66"><a href="#cb33-66"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"target.R"</span>))</span>
+<span id="cb33-67"><a href="#cb33-67"></a><span class="fu">render_descriptive_stats</span>()</span>
+<span id="cb33-68"><a href="#cb33-68"></a><span class="fu">render_prevalence_table</span>()</span>
+<span id="cb33-69"><a href="#cb33-69"></a><span class="in">```</span></span>
+<span id="cb33-70"><a href="#cb33-70"></a></span>
+<span id="cb33-71"><a href="#cb33-71"></a>The descriptive statistics reveal a distribution fundamentally incompatible with Gaussian modelling assumptions.</span>
+<span id="cb33-72"><a href="#cb33-72"></a></span>
+<span id="cb33-73"><a href="#cb33-73"></a>**Zero-inflation.** 64.05% of the 142,199 recorded observations are dry days (rainfall = 0 mm). The median is zero. The data-generating mechanism produces two qualitatively different outcomes: no rain at all versus some positive amount. Any model treating the response as a single continuous variable will be forced to place probability mass on negative values and will systematically misestimate the probability of the zero outcome.</span>
+<span id="cb33-74"><a href="#cb33-74"></a></span>
+<span id="cb33-75"><a href="#cb33-75"></a>**Heavy tails.** Among non-zero observations, the distribution is severely right-skewed (skewness = 9.84). The standard deviation (8.48 mm) is nearly four times the mean (2.36 mm). Kurtosis of 181.15 relative to 3 for a normal distribution confirms that extreme events occur far more frequently than a Gaussian model would predict. The maximum recorded value is 371 mm, and 151 events exceed 100 mm.</span>
+<span id="cb33-76"><a href="#cb33-76"></a></span>
+<span id="cb33-77"><a href="#cb33-77"></a>**Modelling implication.** The conjunction of zero-inflation and extreme positive skew means a single-component model is insufficient. The data implicitly poses two separate questions: does rain occur, and given that it does, how much falls? This motivates the Zero-Inflated Gamma framework adopted in subsequent analysis.</span>
+<span id="cb33-78"><a href="#cb33-78"></a></span>
+<span id="cb33-79"><a href="#cb33-79"></a>---</span>
+<span id="cb33-80"><a href="#cb33-80"></a></span>
+<span id="cb33-81"><a href="#cb33-81"></a><span class="fu">## Bivariate Correlation Structure {#sec-correlation}</span></span>
+<span id="cb33-82"><a href="#cb33-82"></a></span>
+<span id="cb33-83"><a href="#cb33-83"></a>Because rainfall is heavily skewed and the relationships are unlikely to be linear, Spearman rank correlation is used throughout, a non-parametric measure that captures monotonic association without requiring linearity or normality.</span>
+<span id="cb33-84"><a href="#cb33-84"></a></span>
+<span id="cb33-87"><a href="#cb33-87"></a><span class="in">```{r}</span></span>
+<span id="cb33-88"><a href="#cb33-88"></a><span class="co">#| label: correlation-table</span></span>
+<span id="cb33-89"><a href="#cb33-89"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-90"><a href="#cb33-90"></a><span class="co">#| message: false</span></span>
+<span id="cb33-91"><a href="#cb33-91"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-92"><a href="#cb33-92"></a></span>
+<span id="cb33-93"><a href="#cb33-93"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"correlation.R"</span>))</span>
+<span id="cb33-94"><a href="#cb33-94"></a><span class="fu">render_correlation_table</span>()</span>
+<span id="cb33-95"><a href="#cb33-95"></a><span class="in">```</span></span>
+<span id="cb33-96"><a href="#cb33-96"></a></span>
+<span id="cb33-99"><a href="#cb33-99"></a><span class="in">```{r}</span></span>
+<span id="cb33-100"><a href="#cb33-100"></a><span class="co">#| label: fig-correlation-matrix</span></span>
+<span id="cb33-101"><a href="#cb33-101"></a><span class="co">#| fig-cap: "Spearman correlation matrix of meteorological features. Red indicates negative correlation; blue indicates positive correlation. Coefficients are shown only for pairs where |r| &gt; 0.3 to reduce visual noise."</span></span>
+<span id="cb33-102"><a href="#cb33-102"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-103"><a href="#cb33-103"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb33-104"><a href="#cb33-104"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-105"><a href="#cb33-105"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-106"><a href="#cb33-106"></a></span>
+<span id="cb33-107"><a href="#cb33-107"></a><span class="fu">plot_correlation_matrix</span>()</span>
+<span id="cb33-108"><a href="#cb33-108"></a><span class="in">```</span></span>
+<span id="cb33-109"><a href="#cb33-109"></a></span>
+<span id="cb33-112"><a href="#cb33-112"></a><span class="in">```{r}</span></span>
+<span id="cb33-113"><a href="#cb33-113"></a><span class="co">#| label: correlation-significance-test</span></span>
+<span id="cb33-114"><a href="#cb33-114"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-115"><a href="#cb33-115"></a><span class="co">#| collapse: true</span></span>
+<span id="cb33-116"><a href="#cb33-116"></a></span>
+<span id="cb33-117"><a href="#cb33-117"></a><span class="fu">run_cocor_test</span>()</span>
+<span id="cb33-118"><a href="#cb33-118"></a><span class="in">```</span></span>
+<span id="cb33-119"><a href="#cb33-119"></a></span>
+<span id="cb33-120"><a href="#cb33-120"></a>**Moisture indicators (positive association).** <span class="in">`Humidity3pm`</span> ($r = 0.44$) and cloud cover ($r \approx 0.37$) show the strongest positive associations. High afternoon humidity indicates that moisture has accumulated in the lower atmosphere over the course of the day. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics that produce it.</span>
+<span id="cb33-121"><a href="#cb33-121"></a></span>
+<span id="cb33-122"><a href="#cb33-122"></a>**Radiation and evaporation indicators (negative association).** <span class="in">`Sunshine`</span> ($r = -0.40$) and <span class="in">`evaporation`</span> ($r = -0.31$) exhibit the strongest negative associations. Long sunshine hours proxy clear-sky, high-pressure conditions. High evaporation signals warm, dry, low-humidity surface conditions.</span>
+<span id="cb33-123"><a href="#cb33-123"></a></span>
+<span id="cb33-124"><a href="#cb33-124"></a>**Multicollinearity.** The correlation heatmap (@fig-correlation-matrix) reveals substantial redundancy among predictors. <span class="in">`pressure9am`</span> and <span class="in">`pressure3pm`</span> share $r = 0.96$, and the two temperature readings are similarly collinear. This directly motivates VIF-based feature selection in the feature engineering chapter.</span>
+<span id="cb33-125"><a href="#cb33-125"></a></span>
+<span id="cb33-126"><a href="#cb33-126"></a>**Statistical validation.** Steiger's Z-test comparing the two strongest opposing predictors yields $z \approx 188.9$, $p &lt; 2.2 \times 10^{-16}$. With $N &gt; 140{,}000$, the p-value alone is uninformative; the Z-statistic magnitude confirms that the differential predictive strength is not a sampling artefact. Humidity and sunshine represent genuinely distinct physical forces operating in opposing directions.</span>
+<span id="cb33-127"><a href="#cb33-127"></a></span>
+<span id="cb33-128"><a href="#cb33-128"></a>---</span>
+<span id="cb33-129"><a href="#cb33-129"></a></span>
+<span id="cb33-130"><a href="#cb33-130"></a><span class="fu">## Temporal Structure of Rainfall</span></span>
+<span id="cb33-131"><a href="#cb33-131"></a></span>
+<span id="cb33-132"><a href="#cb33-132"></a><span class="fu">### Weekly and Seasonal Frequency {#sec-frequency}</span></span>
+<span id="cb33-133"><a href="#cb33-133"></a></span>
+<span id="cb33-136"><a href="#cb33-136"></a><span class="in">```{r}</span></span>
+<span id="cb33-137"><a href="#cb33-137"></a><span class="co">#| label: temporal-dist</span></span>
+<span id="cb33-138"><a href="#cb33-138"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-139"><a href="#cb33-139"></a><span class="co">#| message: false</span></span>
+<span id="cb33-140"><a href="#cb33-140"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-141"><a href="#cb33-141"></a></span>
+<span id="cb33-142"><a href="#cb33-142"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"temporal.R"</span>))</span>
+<span id="cb33-143"><a href="#cb33-143"></a><span class="fu">render_weekly_frequency_table</span>()</span>
+<span id="cb33-144"><a href="#cb33-144"></a><span class="fu">render_monthly_frequency_table</span>()</span>
+<span id="cb33-145"><a href="#cb33-145"></a><span class="fu">render_month_day_crosstab</span>()</span>
+<span id="cb33-146"><a href="#cb33-146"></a><span class="in">```</span></span>
+<span id="cb33-147"><a href="#cb33-147"></a></span>
+<span id="cb33-148"><a href="#cb33-148"></a>**Weekly cycle.** The distribution of wet days across the days of the week is approximately uniform, ranging from 13.8% to 14.7%. This near-uniformity is physically expected: atmospheric processes operate independently of the social calendar. The slight variation is consistent with sampling noise, suggesting <span class="in">`Day`</span> carries little predictive information.</span>
+<span id="cb33-149"><a href="#cb33-149"></a></span>
+<span id="cb33-150"><a href="#cb33-150"></a>**Annual cycle.** June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with Southern Hemisphere winter frontal systems originating from the Southern Ocean. February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation confirms this seasonal signal is not an artefact of any particular day of the week. <span class="in">`Month`</span> is therefore a legitimate predictor warranting explicit model inclusion.</span>
+<span id="cb33-151"><a href="#cb33-151"></a></span>
+<span id="cb33-152"><a href="#cb33-152"></a><span class="fu">### Day-to-Day Persistence: A Markov Chain Analysis {#sec-markov}</span></span>
+<span id="cb33-153"><a href="#cb33-153"></a></span>
+<span id="cb33-156"><a href="#cb33-156"></a><span class="in">```{r}</span></span>
+<span id="cb33-157"><a href="#cb33-157"></a><span class="co">#| label: markov-prep</span></span>
+<span id="cb33-158"><a href="#cb33-158"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-159"><a href="#cb33-159"></a><span class="co">#| message: false</span></span>
+<span id="cb33-160"><a href="#cb33-160"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-161"><a href="#cb33-161"></a></span>
+<span id="cb33-162"><a href="#cb33-162"></a>markov_tbl <span class="ot">&lt;-</span> <span class="fu">build_markov_table</span>()</span>
+<span id="cb33-163"><a href="#cb33-163"></a>cont_table <span class="ot">&lt;-</span> <span class="fu">build_cont_table</span>(markov_tbl)</span>
+<span id="cb33-164"><a href="#cb33-164"></a><span class="fu">print</span>(cont_table)</span>
+<span id="cb33-165"><a href="#cb33-165"></a><span class="in">```</span></span>
+<span id="cb33-166"><a href="#cb33-166"></a></span>
+<span id="cb33-169"><a href="#cb33-169"></a><span class="in">```{r}</span></span>
+<span id="cb33-170"><a href="#cb33-170"></a><span class="co">#| label: markov-stats</span></span>
+<span id="cb33-171"><a href="#cb33-171"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-172"><a href="#cb33-172"></a><span class="co">#| collapse: true</span></span>
+<span id="cb33-173"><a href="#cb33-173"></a></span>
+<span id="cb33-174"><a href="#cb33-174"></a>markov_stats <span class="ot">&lt;-</span> <span class="fu">run_markov_stats</span>(cont_table)</span>
+<span id="cb33-175"><a href="#cb33-175"></a><span class="in">```</span></span>
+<span id="cb33-176"><a href="#cb33-176"></a></span>
+<span id="cb33-179"><a href="#cb33-179"></a><span class="in">```{r}</span></span>
+<span id="cb33-180"><a href="#cb33-180"></a><span class="co">#| label: fig-markov-chain</span></span>
+<span id="cb33-181"><a href="#cb33-181"></a><span class="co">#| fig-cap: "Markov chain transition matrix. The asymmetry between dry-to-dry (85%) and wet-to-wet (47%) probabilities is the central finding: dry states are self-reinforcing while wet states are more transient."</span></span>
+<span id="cb33-182"><a href="#cb33-182"></a><span class="co">#| fig-width: 7</span></span>
+<span id="cb33-183"><a href="#cb33-183"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb33-184"><a href="#cb33-184"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-185"><a href="#cb33-185"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-186"><a href="#cb33-186"></a></span>
+<span id="cb33-187"><a href="#cb33-187"></a><span class="fu">plot_markov_chain</span>(<span class="at">markov_stats =</span> markov_stats)</span>
+<span id="cb33-188"><a href="#cb33-188"></a><span class="in">```</span></span>
+<span id="cb33-189"><a href="#cb33-189"></a></span>
+<span id="cb33-190"><a href="#cb33-190"></a>The Chi-squared test yields $\chi^2 \approx 13{,}718$, $p &lt; 0.001$, rejecting daily independence by a wide margin. Cramer's V ($V \approx 0.31$) confirms a moderate practical effect size.</span>
+<span id="cb33-191"><a href="#cb33-191"></a></span>
+<span id="cb33-192"><a href="#cb33-192"></a>The transition matrix (@fig-markov-chain) reveals an important asymmetry. When the previous day was dry, there is an 85% probability of remaining dry: high-pressure systems are persistent and self-reinforcing. When the previous day was wet, there is only a 47% probability of continued rain, meaning wet events are considerably more transient. This asymmetry has a direct atmospheric interpretation: anticyclonic systems can persist for days to weeks, while frontal systems typically pass through more quickly.</span>
+<span id="cb33-193"><a href="#cb33-193"></a></span>
+<span id="cb33-194"><a href="#cb33-194"></a><span class="in">`rain_today`</span> (lagged one day) carries meaningful predictive signal, yet its modest effect size also demonstrates that autocorrelation alone is insufficient. The wet state is too transient for a persistence-only rule, and other meteorological covariates remain necessary.</span>
+<span id="cb33-195"><a href="#cb33-195"></a></span>
+<span id="cb33-196"><a href="#cb33-196"></a><span class="fu">### Dry Spell Dynamics and Temporal Decay {#sec-dry-spell}</span></span>
+<span id="cb33-197"><a href="#cb33-197"></a></span>
+<span id="cb33-200"><a href="#cb33-200"></a><span class="in">```{r}</span></span>
+<span id="cb33-201"><a href="#cb33-201"></a><span class="co">#| label: dry-spell-prep</span></span>
+<span id="cb33-202"><a href="#cb33-202"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-203"><a href="#cb33-203"></a><span class="co">#| message: false</span></span>
+<span id="cb33-204"><a href="#cb33-204"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-205"><a href="#cb33-205"></a></span>
+<span id="cb33-206"><a href="#cb33-206"></a>dry_spell_dat <span class="ot">&lt;-</span> <span class="fu">build_dry_spell_data</span>()</span>
+<span id="cb33-207"><a href="#cb33-207"></a><span class="in">```</span></span>
+<span id="cb33-208"><a href="#cb33-208"></a></span>
+<span id="cb33-211"><a href="#cb33-211"></a><span class="in">```{r}</span></span>
+<span id="cb33-212"><a href="#cb33-212"></a><span class="co">#| label: dry-spell-model</span></span>
+<span id="cb33-213"><a href="#cb33-213"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-214"><a href="#cb33-214"></a><span class="co">#| collapse: true</span></span>
+<span id="cb33-215"><a href="#cb33-215"></a></span>
+<span id="cb33-216"><a href="#cb33-216"></a>dry_spell_models <span class="ot">&lt;-</span> <span class="fu">run_dry_spell_models</span>(dry_spell_dat)</span>
+<span id="cb33-217"><a href="#cb33-217"></a><span class="in">```</span></span>
+<span id="cb33-218"><a href="#cb33-218"></a></span>
+<span id="cb33-221"><a href="#cb33-221"></a><span class="in">```{r}</span></span>
+<span id="cb33-222"><a href="#cb33-222"></a><span class="co">#| label: fig-dry-spell</span></span>
+<span id="cb33-223"><a href="#cb33-223"></a><span class="co">#| fig-cap: "Probability of rainfall by days since last rain. Points are empirical probabilities (plus or minus 95% CI); the dashed line and shaded band show the linear logistic model fit and its uncertainty. The steep initial decline followed by a plateau motivates a spline parameterisation rather than a linear logistic term."</span></span>
+<span id="cb33-224"><a href="#cb33-224"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb33-225"><a href="#cb33-225"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb33-226"><a href="#cb33-226"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-227"><a href="#cb33-227"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-228"><a href="#cb33-228"></a></span>
+<span id="cb33-229"><a href="#cb33-229"></a><span class="fu">plot_dry_spell</span>(dry_spell_dat, dry_spell_models)</span>
+<span id="cb33-230"><a href="#cb33-230"></a><span class="in">```</span></span>
+<span id="cb33-231"><a href="#cb33-231"></a></span>
+<span id="cb33-232"><a href="#cb33-232"></a>A logistic regression of daily rain occurrence on <span class="in">`days_since_rain`</span> yields $OR = 0.835$ (Wald $\chi^2 \approx 8{,}099$, $p &lt; 0.001$): each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the progressive establishment of stable high-pressure ridges documented in the Markov analysis above.</span>
+<span id="cb33-233"><a href="#cb33-233"></a></span>
+<span id="cb33-234"><a href="#cb33-234"></a>The linear model is an approximation. A likelihood ratio test against a four-knot natural spline is highly significant ($\chi^2 \approx 7{,}678$, $p &lt; 0.001$). The empirical pattern (@fig-dry-spell) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12 to 16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates the long-drought decline rate. This rapid-then-gradual decay motivates a spline parameterisation of <span class="in">`days_since_rain`</span> rather than a simple linear term.</span>
+<span id="cb33-235"><a href="#cb33-235"></a></span>
+<span id="cb33-236"><a href="#cb33-236"></a>---</span>
+<span id="cb33-237"><a href="#cb33-237"></a></span>
+<span id="cb33-238"><a href="#cb33-238"></a><span class="fu">## Atmospheric Pressure Dynamics</span></span>
+<span id="cb33-239"><a href="#cb33-239"></a></span>
+<span id="cb33-242"><a href="#cb33-242"></a><span class="in">```{r}</span></span>
+<span id="cb33-243"><a href="#cb33-243"></a><span class="co">#| label: pressure-prep-normality</span></span>
+<span id="cb33-244"><a href="#cb33-244"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-245"><a href="#cb33-245"></a><span class="co">#| message: false</span></span>
+<span id="cb33-246"><a href="#cb33-246"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-247"><a href="#cb33-247"></a></span>
+<span id="cb33-248"><a href="#cb33-248"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"pressure.R"</span>))</span>
+<span id="cb33-249"><a href="#cb33-249"></a>pressure_dat <span class="ot">&lt;-</span> <span class="fu">build_pressure_data</span>()</span>
+<span id="cb33-250"><a href="#cb33-250"></a><span class="fu">plot_pressure_qq</span>(pressure_dat)</span>
+<span id="cb33-251"><a href="#cb33-251"></a><span class="in">```</span></span>
+<span id="cb33-252"><a href="#cb33-252"></a></span>
+<span id="cb33-255"><a href="#cb33-255"></a><span class="in">```{r}</span></span>
+<span id="cb33-256"><a href="#cb33-256"></a><span class="co">#| label: pressure-stats</span></span>
+<span id="cb33-257"><a href="#cb33-257"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-258"><a href="#cb33-258"></a><span class="co">#| message: false</span></span>
+<span id="cb33-259"><a href="#cb33-259"></a></span>
+<span id="cb33-260"><a href="#cb33-260"></a><span class="fu">render_pressure_ttests</span>(pressure_dat)</span>
+<span id="cb33-261"><a href="#cb33-261"></a><span class="in">```</span></span>
+<span id="cb33-262"><a href="#cb33-262"></a></span>
+<span id="cb33-265"><a href="#cb33-265"></a><span class="in">```{r}</span></span>
+<span id="cb33-266"><a href="#cb33-266"></a><span class="co">#| label: pressure-effect-size</span></span>
+<span id="cb33-267"><a href="#cb33-267"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-268"><a href="#cb33-268"></a><span class="co">#| message: false</span></span>
+<span id="cb33-269"><a href="#cb33-269"></a></span>
+<span id="cb33-270"><a href="#cb33-270"></a><span class="fu">render_pressure_cohens_d</span>(pressure_dat)</span>
+<span id="cb33-271"><a href="#cb33-271"></a><span class="in">```</span></span>
+<span id="cb33-272"><a href="#cb33-272"></a></span>
+<span id="cb33-275"><a href="#cb33-275"></a><span class="in">```{r}</span></span>
+<span id="cb33-276"><a href="#cb33-276"></a><span class="co">#| label: fig-pressure-violin</span></span>
+<span id="cb33-277"><a href="#cb33-277"></a><span class="co">#| fig-cap: "Violin plots of atmospheric pressure variables by rainfall state. The pressure_change panel shows the most pronounced separation between dry and rainy days."</span></span>
+<span id="cb33-278"><a href="#cb33-278"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-279"><a href="#cb33-279"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb33-280"><a href="#cb33-280"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-281"><a href="#cb33-281"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-282"><a href="#cb33-282"></a></span>
+<span id="cb33-283"><a href="#cb33-283"></a><span class="fu">plot_pressure_violin</span>(pressure_dat)</span>
+<span id="cb33-284"><a href="#cb33-284"></a><span class="in">```</span></span>
+<span id="cb33-285"><a href="#cb33-285"></a></span>
+<span id="cb33-288"><a href="#cb33-288"></a><span class="in">```{r}</span></span>
+<span id="cb33-289"><a href="#cb33-289"></a><span class="co">#| label: fig-pressure-means</span></span>
+<span id="cb33-290"><a href="#cb33-290"></a><span class="co">#| fig-cap: "Mean pressure levels and diurnal drop by rainfall state. The suppressed diurnal pressure drop on rainy days (1.7 vs. 3.0 hPa) is a stronger discriminating signal than the absolute pressure baseline."</span></span>
+<span id="cb33-291"><a href="#cb33-291"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-292"><a href="#cb33-292"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb33-293"><a href="#cb33-293"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-294"><a href="#cb33-294"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-295"><a href="#cb33-295"></a></span>
+<span id="cb33-296"><a href="#cb33-296"></a><span class="fu">plot_pressure_means</span>()</span>
+<span id="cb33-297"><a href="#cb33-297"></a><span class="in">```</span></span>
+<span id="cb33-298"><a href="#cb33-298"></a></span>
+<span id="cb33-299"><a href="#cb33-299"></a>**Normality and Test Validity.** Q-Q plots reveal modest tail deviations across all three pressure metrics, but with $N &gt; 140{,}000$ the Central Limit Theorem ensures that sample means are asymptotically normal regardless of the underlying marginal distribution. Welch's t-test is used throughout to avoid the equal-variance assumption, and Bonferroni-Holm correction is applied across the three comparisons.</span>
+<span id="cb33-300"><a href="#cb33-300"></a></span>
+<span id="cb33-301"><a href="#cb33-301"></a>**Baseline Pressure.** Rainy days show significantly lower mean atmospheric pressure than dry days at both observation times. At 9:00 AM the difference is 2.9 hPa (1015.4 vs. 1018.3 hPa); at 3:00 PM it narrows to 1.6 hPa (1013.7 vs. 1015.3 hPa). Cohen's $d$ for these baseline measures ranges from 0.23 to 0.42, a small-to-medium effect. Lower absolute pressure is a necessary but not sufficient condition for rainfall: the overlap between the two distributions is substantial enough that pressure level alone cannot discriminate reliably between states.</span>
+<span id="cb33-302"><a href="#cb33-302"></a></span>
+<span id="cb33-303"><a href="#cb33-303"></a>**Diurnal Pressure Change.** The stronger discriminating signal lies not in the baseline but in how pressure evolves across the day. On dry days, the standard daytime thermal low produces a mean pressure drop of 3.0 hPa from morning to afternoon. On rainy days this drop is suppressed to 1.6 hPa, because cloud cover reduces solar insolation and limits surface heating. Cohen's $d = -0.49$ for <span class="in">`pressure_change`</span> exceeds the effect size of either absolute pressure reading, and the Welch t-statistic of $-73.4$ is the largest in magnitude among all three metrics. The rate of pressure change across the day is therefore a more robust indicator of rainfall state than the morning or afternoon level in isolation, and it is entered as a primary derived feature in the engineering pipeline.</span>
+<span id="cb33-304"><a href="#cb33-304"></a></span>
+<span id="cb33-305"><a href="#cb33-305"></a>---</span>
+<span id="cb33-306"><a href="#cb33-306"></a></span>
+<span id="cb33-307"><a href="#cb33-307"></a><span class="fu">## Seasonal Rainfall Intensity</span></span>
+<span id="cb33-308"><a href="#cb33-308"></a></span>
+<span id="cb33-309"><a href="#cb33-309"></a><span class="fu">### Cyclical Patterns</span></span>
+<span id="cb33-310"><a href="#cb33-310"></a></span>
+<span id="cb33-313"><a href="#cb33-313"></a><span class="in">```{r}</span></span>
+<span id="cb33-314"><a href="#cb33-314"></a><span class="co">#| label: seasonality-prep</span></span>
+<span id="cb33-315"><a href="#cb33-315"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-316"><a href="#cb33-316"></a><span class="co">#| message: false</span></span>
+<span id="cb33-317"><a href="#cb33-317"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-318"><a href="#cb33-318"></a></span>
+<span id="cb33-319"><a href="#cb33-319"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"seasonality.R"</span>))</span>
+<span id="cb33-320"><a href="#cb33-320"></a>seasonal_dat <span class="ot">&lt;-</span> <span class="fu">build_seasonal_data</span>()</span>
+<span id="cb33-321"><a href="#cb33-321"></a>monthly_stats <span class="ot">&lt;-</span> <span class="fu">build_monthly_stats</span>()</span>
+<span id="cb33-322"><a href="#cb33-322"></a><span class="in">```</span></span>
+<span id="cb33-323"><a href="#cb33-323"></a></span>
+<span id="cb33-326"><a href="#cb33-326"></a><span class="in">```{r}</span></span>
+<span id="cb33-327"><a href="#cb33-327"></a><span class="co">#| label: fig-monthly-dist</span></span>
+<span id="cb33-328"><a href="#cb33-328"></a><span class="co">#| fig-cap: "Ridgeline plot of monthly log-rainfall distributions. Shifting peaks illustrate how rainfall intensity varies cyclically relative to the global median (dashed line). Solid vertical lines within each ridge mark the monthly median."</span></span>
+<span id="cb33-329"><a href="#cb33-329"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-330"><a href="#cb33-330"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb33-331"><a href="#cb33-331"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-332"><a href="#cb33-332"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-333"><a href="#cb33-333"></a></span>
+<span id="cb33-334"><a href="#cb33-334"></a><span class="fu">plot_monthly_ridgeline</span>()</span>
+<span id="cb33-335"><a href="#cb33-335"></a><span class="in">```</span></span>
+<span id="cb33-336"><a href="#cb33-336"></a></span>
+<span id="cb33-339"><a href="#cb33-339"></a><span class="in">```{r}</span></span>
+<span id="cb33-340"><a href="#cb33-340"></a><span class="co">#| label: fig-seasonal-facet</span></span>
+<span id="cb33-341"><a href="#cb33-341"></a><span class="co">#| fig-cap: "Seasonal rainfall patterns by meteorological season. Summer exhibits high variance and a pronounced right tail; winter shows narrower, more predictable distributions. Quartile lines mark the 25th, 50th, and 75th percentiles within each month."</span></span>
+<span id="cb33-342"><a href="#cb33-342"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-343"><a href="#cb33-343"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb33-344"><a href="#cb33-344"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-345"><a href="#cb33-345"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-346"><a href="#cb33-346"></a></span>
+<span id="cb33-347"><a href="#cb33-347"></a><span class="fu">plot_seasonal_facet</span>(seasonal_dat)</span>
+<span id="cb33-348"><a href="#cb33-348"></a><span class="in">```</span></span>
+<span id="cb33-349"><a href="#cb33-349"></a></span>
+<span id="cb33-352"><a href="#cb33-352"></a><span class="in">```{r}</span></span>
+<span id="cb33-353"><a href="#cb33-353"></a><span class="co">#| label: fig-mean-rain-bar</span></span>
+<span id="cb33-354"><a href="#cb33-354"></a><span class="co">#| fig-cap: "Mean rainfall intensity on non-zero days by month. February records the highest mean intensity at 10.1 mm, nearly double July's 4.9 mm, illustrating that frequency and intensity vary in opposite directions across the seasonal cycle."</span></span>
+<span id="cb33-355"><a href="#cb33-355"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-356"><a href="#cb33-356"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb33-357"><a href="#cb33-357"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-358"><a href="#cb33-358"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-359"><a href="#cb33-359"></a></span>
+<span id="cb33-360"><a href="#cb33-360"></a><span class="fu">plot_mean_rain_bar</span>()</span>
+<span id="cb33-361"><a href="#cb33-361"></a><span class="in">```</span></span>
+<span id="cb33-362"><a href="#cb33-362"></a></span>
+<span id="cb33-363"><a href="#cb33-363"></a>The earlier frequency analysis (@sec-frequency) established when rain tends to occur. This section investigates how much falls when it does.</span>
+<span id="cb33-364"><a href="#cb33-364"></a></span>
+<span id="cb33-365"><a href="#cb33-365"></a>January and February distributions are shifted systematically right of the global median: summer storms are considerably more intense when they arrive, even though they occur less frequently. June through August cluster left, representing lower but more consistent rainfall. February records the highest mean intensity per wet day at 10.1 mm, nearly double July's 4.9 mm.</span>
+<span id="cb33-366"><a href="#cb33-366"></a></span>
+<span id="cb33-367"><a href="#cb33-367"></a>Summer rainfall has a wide interquartile range and a pronounced right tail beyond 100 mm per day, reflecting episodic convective storms. Winter shows a narrower, more peaked distribution. Both the frequency variation (more rain in winter) and the intensity variation (heavier rain in summer) carry independent information, and a complete model must account for both dimensions.</span>
+<span id="cb33-368"><a href="#cb33-368"></a></span>
+<span id="cb33-369"><a href="#cb33-369"></a>**Encoding implication.** Because the seasonal cycle is continuous, the transition from December to January is climatologically smooth, and treating <span class="in">`Month`</span> as an unordered factor discards that proximity information. Cyclical encoding via sine and cosine transformations of the month number preserves the circular geometry of the annual cycle.</span>
+<span id="cb33-370"><a href="#cb33-370"></a></span>
+<span id="cb33-371"><a href="#cb33-371"></a><span class="fu">### Statistical Validation</span></span>
+<span id="cb33-372"><a href="#cb33-372"></a></span>
+<span id="cb33-375"><a href="#cb33-375"></a><span class="in">```{r}</span></span>
+<span id="cb33-376"><a href="#cb33-376"></a><span class="co">#| label: seasonal-descriptive-stats</span></span>
+<span id="cb33-377"><a href="#cb33-377"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-378"><a href="#cb33-378"></a><span class="co">#| message: false</span></span>
+<span id="cb33-379"><a href="#cb33-379"></a></span>
+<span id="cb33-380"><a href="#cb33-380"></a><span class="fu">render_seasonal_desc_stats</span>(seasonal_dat)</span>
+<span id="cb33-381"><a href="#cb33-381"></a><span class="in">```</span></span>
+<span id="cb33-382"><a href="#cb33-382"></a></span>
+<span id="cb33-385"><a href="#cb33-385"></a><span class="in">```{r}</span></span>
+<span id="cb33-386"><a href="#cb33-386"></a><span class="co">#| label: kruskal-wallis-test</span></span>
+<span id="cb33-387"><a href="#cb33-387"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-388"><a href="#cb33-388"></a><span class="co">#| message: false</span></span>
+<span id="cb33-389"><a href="#cb33-389"></a></span>
+<span id="cb33-390"><a href="#cb33-390"></a>seasonal_tests <span class="ot">&lt;-</span> <span class="fu">run_seasonal_tests</span>(seasonal_dat)</span>
+<span id="cb33-391"><a href="#cb33-391"></a><span class="fu">render_kruskal_table</span>(seasonal_tests)</span>
+<span id="cb33-392"><a href="#cb33-392"></a><span class="fu">render_dunns_table</span>(seasonal_tests)</span>
+<span id="cb33-393"><a href="#cb33-393"></a><span class="in">```</span></span>
+<span id="cb33-394"><a href="#cb33-394"></a></span>
+<span id="cb33-397"><a href="#cb33-397"></a><span class="in">```{r}</span></span>
+<span id="cb33-398"><a href="#cb33-398"></a><span class="co">#| label: fig-seasonal-stat-groups</span></span>
+<span id="cb33-399"><a href="#cb33-399"></a><span class="co">#| fig-cap: "Mean seasonal rainfall with statistical groupings. Shared letters above bars indicate seasons not significantly different from one another at the Bonferroni-corrected threshold (Dunn's test, p &lt; 0.05)."</span></span>
+<span id="cb33-400"><a href="#cb33-400"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb33-401"><a href="#cb33-401"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb33-402"><a href="#cb33-402"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-403"><a href="#cb33-403"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-404"><a href="#cb33-404"></a></span>
+<span id="cb33-405"><a href="#cb33-405"></a><span class="fu">plot_seasonal_stat_groups</span>(seasonal_dat, seasonal_tests)</span>
+<span id="cb33-406"><a href="#cb33-406"></a><span class="in">```</span></span>
+<span id="cb33-407"><a href="#cb33-407"></a></span>
+<span id="cb33-408"><a href="#cb33-408"></a>The Kruskal-Wallis test yields $\chi^2 = 230$, $p &lt; 0.001$, strongly rejecting the null of equal seasonal distributions. The epsilon-squared effect size ($\eta^2 \approx 0.004$) is small: the seasonal signal is real but accounts for only a minor fraction of total variance in rainfall intensity, reinforcing the necessity of a multivariate approach.</span>
+<span id="cb33-409"><a href="#cb33-409"></a></span>
+<span id="cb33-410"><a href="#cb33-410"></a>Post-hoc Dunn's tests identify three distinct statistical groups (@fig-seasonal-stat-groups). Summer stands alone as the most intense season ($\bar{x} = 9.1$ mm, $p &lt; 0.001$ vs. all others). Autumn and Spring are statistically indistinguishable ($p = 1.0$). Winter registers the lowest mean intensity ($\bar{x} = 5.5$ mm) and is statistically distinct from Spring ($p_\text{adj} = 0.026$).</span>
+<span id="cb33-411"><a href="#cb33-411"></a></span>
+<span id="cb33-412"><a href="#cb33-412"></a>---</span>
+<span id="cb33-413"><a href="#cb33-413"></a></span>
+<span id="cb33-414"><a href="#cb33-414"></a><span class="fu">## Feature Interactions: The "Rain Corner" {#sec-bivariate-density}</span></span>
+<span id="cb33-415"><a href="#cb33-415"></a></span>
+<span id="cb33-418"><a href="#cb33-418"></a><span class="in">```{r}</span></span>
+<span id="cb33-419"><a href="#cb33-419"></a><span class="co">#| label: fig-interaction-rain-corner</span></span>
+<span id="cb33-420"><a href="#cb33-420"></a><span class="co">#| fig-cap: "Bivariate density of Humidity3pm versus Sunshine, faceted by rainfall occurrence. Rain events concentrate tightly in the upper-left corner (high humidity, low sunshine), while dry days are dispersed broadly across the feature space. This structural asymmetry justifies a multiplicative interaction term in the model specification."</span></span>
+<span id="cb33-421"><a href="#cb33-421"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb33-422"><a href="#cb33-422"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb33-423"><a href="#cb33-423"></a><span class="co">#| echo: true</span></span>
+<span id="cb33-424"><a href="#cb33-424"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-425"><a href="#cb33-425"></a></span>
+<span id="cb33-426"><a href="#cb33-426"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter3"</span>, <span class="st">"interactions.R"</span>))</span>
+<span id="cb33-427"><a href="#cb33-427"></a><span class="fu">plot_rain_corner</span>()</span>
+<span id="cb33-428"><a href="#cb33-428"></a><span class="in">```</span></span>
+<span id="cb33-429"><a href="#cb33-429"></a></span>
+<span id="cb33-430"><a href="#cb33-430"></a>While individual correlation analysis in @sec-correlation identifies humidity and sunshine as primary predictors, a standard additive model assumes their effects on the log-odds of rainfall are independent. The bivariate density plots (@fig-interaction-rain-corner) test this assumption directly by visualising the joint distribution of these two features conditioned on the rainfall outcome.</span>
+<span id="cb33-431"><a href="#cb33-431"></a></span>
+<span id="cb33-432"><a href="#cb33-432"></a>**Dry Day Structure.** The feature space for dry days exhibits a concentrated region in the lower-right of the humidity-sunshine plane, where sunshine is moderate-to-high and afternoon humidity is low. This reflects the high-pressure suppression regimes documented in @sec-markov, where clear skies drive both elevated sunshine duration and suppressed humidity. Notably, this cluster occupies the structural opposite of the Rain Corner: while high humidity and low sunshine do occur individually on dry days, their joint occurrence is not where dry-day density concentrates. This confirms that neither variable in isolation is a reliable discriminator between outcomes; it is the specific combination that carries the predictive signal.</span>
+<span id="cb33-433"><a href="#cb33-433"></a></span>
+<span id="cb33-434"><a href="#cb33-434"></a>**The Rain Corner.** The rainy-day panel tells a structurally different story. Precipitation events concentrate tightly in the upper-left quadrant of the feature space, where afternoon humidity is high and sunshine hours are low simultaneously. This cluster, the "Rain Corner", is not a feature of either variable's marginal distribution: high humidity alone and low sunshine alone each occur on dry days with regularity. It is the joint occurrence that distinguishes the rainfall regime. The density mass that is dispersed broadly across the dry-day panel collapses into this single region when rain is present, a pattern that an additive model, which cannot represent conditional concentration of this kind, would be structurally unable to capture.</span>
+<span id="cb33-435"><a href="#cb33-435"></a></span>
+<span id="cb33-436"><a href="#cb33-436"></a>**Modelling Implication.** The asymmetry between the two panels confirms a genuine statistical interaction: the effect of humidity on rainfall probability is conditional on the level of sunshine, and vice versa. This justifies including a multiplicative interaction term ($\text{Humidity3pm} \times \text{Sunshine}$) in the model specification, in addition to both main effects.</span>
+<span id="cb33-437"><a href="#cb33-437"></a></span>
+<span id="cb33-438"><a href="#cb33-438"></a>---</span>
+<span id="cb33-439"><a href="#cb33-439"></a></span>
+<span id="cb33-440"><a href="#cb33-440"></a><span class="fu">## Summary and Modelling Implications</span></span>
+<span id="cb33-441"><a href="#cb33-441"></a></span>
+<span id="cb33-442"><a href="#cb33-442"></a>The preceding analyses characterise the dataset along six interconnected dimensions, each producing a specific modelling requirement.</span>
+<span id="cb33-443"><a href="#cb33-443"></a></span>
+<span id="cb33-444"><a href="#cb33-444"></a>The **distributional structure** of the target variable, 64% zeros, extreme positive skew, and kurtosis of 181, rules out any single-component Gaussian model. A two-part framework separating occurrence from intensity is the appropriate response.</span>
+<span id="cb33-445"><a href="#cb33-445"></a></span>
+<span id="cb33-446"><a href="#cb33-446"></a>The **missingness analysis** (documented in @sec-data, summarised in Section 1 above) establishes that imputation is necessary to preserve both sample size and the predictive signal in <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span>, and that the predictive mean matching procedure does not introduce outcome-related bias. Between-imputation Fraction of Missing Information values exceeding 0.30 for all four atmospheric variables mean that downstream models incorporating these predictors must be fitted across all ten completions and pooled via Rubin's combining rules.</span>
+<span id="cb33-447"><a href="#cb33-447"></a></span>
+<span id="cb33-448"><a href="#cb33-448"></a>The **correlation structure** identifies humidity, cloud cover, sunshine, and evaporation as the strongest individual predictors, and flags severe multicollinearity among morning-afternoon pairs. VIF-based feature selection is required.</span>
+<span id="cb33-449"><a href="#cb33-449"></a></span>
+<span id="cb33-450"><a href="#cb33-450"></a>The **temporal analyses** establish that both the day-to-day Markov state and the cumulative dry spell duration carry predictive signal. Month should be cyclically encoded. The dry spell decay is non-linear and warrants a natural spline parameterisation of <span class="in">`days_since_rain`</span>.</span>
+<span id="cb33-451"><a href="#cb33-451"></a></span>
+<span id="cb33-452"><a href="#cb33-452"></a>The **pressure analysis** identifies the diurnal pressure change as the more discriminating pressure-derived feature, with Cohen's $d = -0.487$ separating rainy from dry days more effectively than absolute pressure level.</span>
+<span id="cb33-453"><a href="#cb33-453"></a></span>
+<span id="cb33-454"><a href="#cb33-454"></a>The **interaction analysis** provides empirical justification for a $\text{Humidity} \times \text{Sunshine}$ interaction term, reflecting the physical reality that precipitation concentrates where high moisture and low solar radiation coincide in the Rain Corner of the feature space.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/chapters/03-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
