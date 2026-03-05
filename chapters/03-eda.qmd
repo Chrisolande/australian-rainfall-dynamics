@@ -10,44 +10,11 @@
 ```{r}
 #| label: setup-eda
 #| include: false
+#| cache: false
 
-librarian::shelf(
-  tidyverse,
-  janitor,
-  kableExtra,
-  ggridges,
-  here,
-  rstatix,
-  moments,
-  cocor,
-  broom,
-  aod,
-  multcompView,
-  scales,
-  patchwork
-)
-
-df_clean <- readRDS(here::here("data", "df_clean.rds"))
-df_final <- read_csv(here::here("data", "df_final.csv"))
-
+source(here::here("config.R"))
 source(here::here("utils.R"))
 
-eda_theme <- theme_classic(base_size = 11) +
-  theme(
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 10),
-    axis.line = element_line(colour = "grey40"),
-    panel.grid.major = element_line(colour = "grey93", linewidth = 0.35),
-    panel.grid.minor = element_blank(),
-    plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 9, colour = "grey40"),
-    plot.caption = element_text(size = 7, colour = "grey50", hjust = 0),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold", size = 9),
-    legend.text = element_text(size = 8),
-    axis.title = element_text(size = 10),
-    axis.text = element_text(size = 9)
-  )
 ```
 
 ---
@@ -90,69 +57,9 @@ Understanding the marginal distribution of the response variable is a prerequisi
 #| message: false
 #| warning: false
 
-rainfall_stats <- df_clean %>%
-  summarise(
-    n = n(),
-    mean = mean(rainfall),
-    median = median(rainfall),
-    sd = sd(rainfall),
-    min = min(rainfall),
-    max = max(rainfall),
-    q25 = quantile(rainfall, 0.25),
-    q75 = quantile(rainfall, 0.75),
-    iqr = IQR(rainfall),
-    n_zeros = sum(rainfall == 0),
-    pct_zeros = mean(rainfall == 0) * 100,
-    n_large = sum(rainfall > 100),
-    pct_large = mean(rainfall > 100) * 100,
-    skewness = moments::skewness(rainfall),
-    kurtosis = moments::kurtosis(rainfall)
-  )
-
-rainfall_stats %>%
-  pivot_longer(everything(), names_to = "Statistic", values_to = "Value") %>%
-  mutate(
-    Value = ifelse(
-      Value > 1000,
-      format(Value, scientific = TRUE, digits = 3),
-      round(Value, 3)
-    )
-  ) %>%
-  kable(
-    caption = "Descriptive Statistics: Daily Rainfall (mm)",
-    align = "lr",
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
-
-rain_check <- df_clean %>%
-  summarise(
-    total_days = n(),
-    dry_days = sum(rainfall == 0),
-    rainy_days = sum(rainfall > 0),
-    zero_inflation_pct = (dry_days / total_days) * 100
-  )
-
-rain_check %>%
-  kable(
-    caption = "Prevalence of Zero-Inflation (Dry Days)",
-    col.names = c(
-      "Total Days",
-      "Dry Days (0 mm)",
-      "Rainy Days (>0 mm)",
-      "Zero Inflation (%)"
-    ),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "bordered"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+source(here::here("chapter3", "target.R"))
+render_descriptive_stats()
+render_prevalence_table()
 ```
 
 The descriptive statistics reveal a distribution fundamentally incompatible with Gaussian modelling assumptions.
@@ -175,41 +82,8 @@ Because rainfall is heavily skewed and the relationships are unlikely to be line
 #| message: false
 #| warning: false
 
-numeric_cols <- df_clean %>%
-  select(where(is.numeric)) %>%
-  names()
-numeric_cols <- numeric_cols[numeric_cols != "rainfall"]
-
-cors <- df_clean %>%
-  rstatix::cor_test(
-    vars = "rainfall",
-    vars2 = numeric_cols,
-    method = "spearman"
-  ) %>%
-  filter(!is.na(cor)) %>%
-  arrange(desc(abs(cor))) %>%
-  dplyr::select(var2, cor, p) %>%
-  mutate(
-    interpretation = case_when(
-      abs(cor) < 0.1 ~ "Negligible",
-      abs(cor) < 0.3 ~ "Small",
-      abs(cor) < 0.5 ~ "Moderate",
-      TRUE ~ "Large"
-    )
-  )
-
-cors %>%
-  kable(
-    caption = "Spearman Correlation with Rainfall (Ranked by Strength)",
-    col.names = c("Predictor", "Correlation (r)", "P-Value", "Strength"),
-    booktabs = TRUE,
-    digits = 3
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+source(here::here("chapter3", "correlation.R"))
+render_correlation_table()
 ```
 
 ```{r}
@@ -220,49 +94,7 @@ cors %>%
 #| echo: true
 #| warning: false
 
-cor_matrix <- df_clean %>%
-  select(where(is.numeric)) %>%
-  cor(use = "pairwise.complete.obs", method = "spearman")
-
-cor_melt <- cor_matrix %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "Var1") %>%
-  pivot_longer(cols = -Var1, names_to = "Var2", values_to = "Correlation")
-
-ggplot(cor_melt, aes(x = Var1, y = Var2, fill = Correlation)) +
-  geom_tile(colour = "white", linewidth = 0.3) +
-  scale_fill_gradient2(
-    low = "#B2182B",
-    mid = "white",
-    high = "#2166AC",
-    midpoint = 0,
-    limit = c(-1, 1),
-    name = "Spearman\nr"
-  ) +
-  geom_text(
-    data = filter(cor_melt, abs(Correlation) > 0.3),
-    aes(label = sprintf("%.2f", Correlation)),
-    colour = "grey15",
-    size = 2.8,
-    fontface = "plain"
-  ) +
-  scale_x_discrete(expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0)) +
-  labs(
-    title = "Feature Correlation Matrix",
-    subtitle = "Strongest predictors: Humidity3pm (positive) and Sunshine (negative)",
-    x = NULL,
-    y = NULL
-  ) +
-  eda_theme +
-  theme(
-    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 9),
-    axis.text.y = element_text(size = 9),
-    panel.grid.major = element_blank(),
-    legend.position = "right",
-    legend.key.height = unit(1.2, "cm"),
-    legend.key.width = unit(0.4, "cm")
-  )
+plot_correlation_matrix()
 ```
 
 ```{r}
@@ -270,33 +102,7 @@ ggplot(cor_melt, aes(x = Var1, y = Var2, fill = Correlation)) +
 #| echo: true
 #| collapse: true
 
-cor_humidity <- cor.test(
-  df_clean$rainfall,
-  df_clean$humidity3pm,
-  method = "spearman"
-)
-cor_sunshine <- cor.test(
-  df_clean$rainfall,
-  df_clean$sunshine,
-  method = "spearman"
-)
-
-cocor_result <- cocor.dep.groups.overlap(
-  r.jk = cor_humidity$estimate,
-  r.jh = cor_sunshine$estimate,
-  r.kh = cor(
-    df_clean$humidity3pm,
-    df_clean$sunshine,
-    use = "complete.obs",
-    method = "spearman"
-  ),
-  n = nrow(df_clean),
-  alternative = "two.sided",
-  test = "steiger1980",
-  return.htest = TRUE
-)
-
-print(cocor_result)
+run_cocor_test()
 ```
 
 **Moisture indicators (positive association).** `Humidity3pm` ($r = 0.44$) and cloud cover ($r \approx 0.37$) show the strongest positive associations. High afternoon humidity indicates that moisture has accumulated in the lower atmosphere over the course of the day. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics that produce it.
@@ -319,48 +125,10 @@ print(cocor_result)
 #| message: false
 #| warning: false
 
-df_clean %>%
-  filter(rainfall > 0) %>%
-  tabyl(day) %>%
-  adorn_pct_formatting() %>%
-  arrange(desc(n)) %>%
-  kable(
-    caption = "Frequency of Rainfall Days by Day of the Week",
-    col.names = c("Day", "Count (n)", "Percentage"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
-
-df_clean %>%
-  filter(rainfall > 0) %>%
-  tabyl(month) %>%
-  adorn_pct_formatting() %>%
-  arrange(desc(n)) %>%
-  kable(
-    caption = "Frequency of Rainfall Days by Month",
-    col.names = c("Month", "Count (n)", "Percentage"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
-
-df_clean %>%
-  filter(rainfall > 0) %>%
-  tabyl(month, day) %>%
-  adorn_totals(c("row", "col")) %>%
-  kable(caption = "Cross-tabulation of Rainfall Frequency: Month vs. Day") %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    font_size = 11
-  ) %>%
-  scroll_box(width = "100%")
+source(here::here("chapter3", "temporal.R"))
+render_weekly_frequency_table()
+render_monthly_frequency_table()
+render_month_day_crosstab()
 ```
 
 **Weekly cycle.** The distribution of wet days across the days of the week is approximately uniform, ranging from 13.8% to 14.7%. This near-uniformity is physically expected: atmospheric processes operate independently of the social calendar. The slight variation is consistent with sampling noise, suggesting `Day` carries little predictive information.
@@ -375,19 +143,8 @@ df_clean %>%
 #| message: false
 #| warning: false
 
-markov_table <- df_final %>%
-  group_by(location) %>%
-  arrange(date) %>%
-  mutate(yesterday_rain = lag(rain_today)) %>%
-  ungroup() %>%
-  filter(!is.na(rain_today), !is.na(yesterday_rain)) %>%
-  count(yesterday_rain, rain_today)
-
-cont_table <- markov_table %>%
-  pivot_wider(names_from = rain_today, values_from = n, values_fill = 0) %>%
-  column_to_rownames("yesterday_rain") %>%
-  as.matrix()
-
+markov_tbl <- build_markov_table()
+cont_table <- build_cont_table(markov_tbl)
 print(cont_table)
 ```
 
@@ -396,21 +153,7 @@ print(cont_table)
 #| echo: true
 #| collapse: true
 
-chi_result <- chisq_test(as.table(cont_table))
-cramers_v <- cramer_v(cont_table)
-
-cat("\nEffect Size Interpretation\n")
-cat(sprintf("V = %.4f: ", cramers_v))
-
-if (cramers_v < 0.1) {
-  cat("Negligible Association\n")
-} else if (cramers_v < 0.3) {
-  cat("Weak Association\n")
-} else if (cramers_v < 0.5) {
-  cat("Moderate Association\n")
-} else {
-  cat("Strong Association\n")
-}
+markov_stats <- run_markov_stats(cont_table)
 ```
 
 ```{r}
@@ -421,53 +164,7 @@ if (cramers_v < 0.1) {
 #| echo: true
 #| warning: false
 
-markov_data <- df_final %>%
-  group_by(location) %>%
-  arrange(date) %>%
-  mutate(yesterday_rain = lag(rain_today)) %>%
-  ungroup() %>%
-  filter(!is.na(rain_today), !is.na(yesterday_rain))
-
-markov_plot_df <- markov_data %>%
-  count(yesterday_rain, rain_today) %>%
-  group_by(yesterday_rain) %>%
-  mutate(prob = n / sum(n)) %>%
-  ungroup() %>%
-  mutate(
-    yesterday_label = paste0("Yesterday: ", yesterday_rain),
-    today_label = paste0("Today: ", rain_today)
-  )
-
-ggplot(markov_plot_df, aes(x = yesterday_rain, y = rain_today, fill = prob)) +
-  geom_tile(colour = "white", linewidth = 1) +
-  geom_text(
-    aes(label = scales::percent(prob)),
-    colour = "white",
-    size = 7,
-    fontface = "bold"
-  ) +
-  scale_fill_gradientn(
-    colours = c("#D4E6F1", "#2471A3", "#154360"),
-    values = c(0, 0.5, 1),
-    limits = c(0, 1),
-    labels = percent_format(accuracy = 1),
-    name = "Transition\nprobability"
-  ) +
-  labs(
-    title = "Markov Chain: Daily Rain Persistence",
-    subtitle = sprintf(
-      "X\u00b2 = %.0f, p < 0.001, Cramer's V = %.3f (moderate association)",
-      chi_result$statistic,
-      cramers_v
-    ),
-    x = "Did it rain yesterday?",
-    y = "Did it rain today?"
-  ) +
-  eda_theme +
-  theme(
-    panel.grid.major = element_blank(),
-    legend.position = "right"
-  )
+plot_markov_chain(markov_stats = markov_stats)
 ```
 
 The Chi-squared test yields $\chi^2 \approx 13{,}718$, $p < 0.001$, rejecting daily independence by a wide margin. Cramer's V ($V \approx 0.31$) confirms a moderate practical effect size.
@@ -484,18 +181,7 @@ The transition matrix (@fig-markov-chain) reveals an important asymmetry. When t
 #| message: false
 #| warning: false
 
-dry_spell_data <- df_final %>%
-  group_by(location) %>%
-  arrange(date) %>%
-  mutate(
-    did_rain_yesterday = lag(rainfall > 0, default = FALSE),
-    dry_spell_id = cumsum(did_rain_yesterday)
-  ) %>%
-  group_by(location, dry_spell_id) %>%
-  mutate(days_since_rain = row_number()) %>%
-  ungroup() %>%
-  filter(days_since_rain <= 30) %>%
-  mutate(rain_binary = as.numeric(rainfall > 0))
+dry_spell_dat <- build_dry_spell_data()
 ```
 
 ```{r}
@@ -503,46 +189,7 @@ dry_spell_data <- df_final %>%
 #| echo: true
 #| collapse: true
 
-logit_model <- glm(
-  rain_binary ~ days_since_rain,
-  data = dry_spell_data,
-  family = binomial(link = "logit")
-)
-
-wald_test <- aod::wald.test(
-  b = coef(logit_model),
-  Sigma = vcov(logit_model),
-  Terms = 2
-)
-or_results <- tidy(logit_model, conf.int = TRUE, exponentiate = TRUE) %>%
-  filter(term == "days_since_rain")
-
-print(wald_test)
-cat(sprintf(
-  "\nFor each additional day without rain,
-    odds of rainfall decrease by %.1f%%\n",
-  (1 - or_results$estimate) * 100
-))
-cat(sprintf(
-  "95%% CI: [%.3f, %.3f]\n",
-  or_results$conf.low,
-  or_results$conf.high
-))
-```
-
-```{r}
-#| label: dry-spell-spline
-#| echo: true
-#| collapse: true
-
-logit_spline <- glm(
-  rain_binary ~ splines::ns(days_since_rain, df = 4),
-  data = dry_spell_data,
-  family = binomial
-)
-
-lrt_result <- anova(logit_model, logit_spline, test = "LRT")
-print(lrt_result)
+dry_spell_models <- run_dry_spell_models(dry_spell_dat)
 ```
 
 ```{r}
@@ -553,83 +200,7 @@ print(lrt_result)
 #| echo: true
 #| warning: false
 
-pred_data <- tibble(days_since_rain = 1:30)
-
-pred_out <- predict(
-  logit_model,
-  newdata = pred_data,
-  type = "response",
-  se.fit = TRUE
-)
-pred_data <- pred_data %>%
-  mutate(
-    pred_prob = pred_out$fit,
-    pred_se = pred_out$se.fit
-  )
-
-empirical_probs <- dry_spell_data %>%
-  group_by(days_since_rain) %>%
-  summarise(
-    prob_rain = mean(rain_binary, na.rm = TRUE),
-    n = n(),
-    se = sqrt(prob_rain * (1 - prob_rain) / n),
-    .groups = "drop"
-  )
-
-ggplot() +
-  geom_ribbon(
-    data = pred_data,
-    aes(
-      x = days_since_rain,
-      ymin = pred_prob - 1.96 * pred_se,
-      ymax = pred_prob + 1.96 * pred_se
-    ),
-    alpha = 0.18,
-    fill = "#C0392B"
-  ) +
-  geom_line(
-    data = pred_data,
-    aes(x = days_since_rain, y = pred_prob),
-    colour = "#C0392B",
-    linewidth = 1,
-    linetype = "dashed"
-  ) +
-  geom_pointrange(
-    data = empirical_probs,
-    aes(
-      x = days_since_rain,
-      y = prob_rain,
-      ymin = prob_rain - 1.96 * se,
-      ymax = prob_rain + 1.96 * se
-    ),
-    size = 0.35,
-    colour = "grey20",
-    linewidth = 0.5
-  ) +
-  scale_y_continuous(
-    labels = percent_format(accuracy = 1),
-    breaks = pretty_breaks(n = 6),
-    expand = expansion(mult = c(0.02, 0.04))
-  ) +
-  scale_x_continuous(
-    breaks = scales::pretty_breaks(),
-    expand = expansion(mult = c(0.02, 0.02))
-  ) +
-  labs(
-    x = "Days since last rain",
-    y = "Probability of rainfall",
-    title = "Dry Spell Effect on Rain Probability",
-    subtitle = sprintf(
-      "Logistic regression: B = %.4f, Wald chi\u00b2 = %.0f, p < 0.001 |
-       Each additional dry day reduces odds of rain by %.1f%%",
-      coef(logit_model)[2],
-      wald_test$result$chi2[1],
-      (1 - or_results$estimate) * 100
-    ),
-    caption = "Points: empirical probabilities +/- 95% CI |
-               Line: linear logistic model fit"
-  ) +
-  eda_theme
+plot_dry_spell(dry_spell_dat, dry_spell_models)
 ```
 
 A logistic regression of daily rain occurrence on `days_since_rain` yields $OR = 0.835$ (Wald $\chi^2 \approx 8{,}099$, $p < 0.001$): each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the progressive establishment of stable high-pressure ridges documented in the Markov analysis above.
@@ -646,30 +217,9 @@ The linear model is an approximation. A likelihood ratio test against a four-kno
 #| message: false
 #| warning: false
 
-pressure_data <- df_final %>%
-  mutate(pressure_change = pressure3pm - pressure9am) %>%
-  select(rain_today, pressure9am, pressure3pm, pressure_change) %>%
-  filter(!is.na(pressure9am), !is.na(rain_today))
-
-pressure_data %>%
-  sample_n(5000) %>%
-  pivot_longer(
-    cols = c(pressure9am, pressure3pm, pressure_change),
-    names_to = "metric",
-    values_to = "value"
-  ) %>%
-  ggplot(aes(sample = value)) +
-  stat_qq(alpha = 0.4, size = 0.6, colour = "grey30") +
-  stat_qq_line(colour = "#C0392B", linewidth = 0.8) +
-  facet_wrap(~metric, scales = "free") +
-  labs(
-    title = "Q-Q Plots: Normality Check for Pressure Variables",
-    subtitle = "Modest tail deviations acceptable
-                at N > 140,000 (CLT applies).",
-    x = "Theoretical quantiles",
-    y = "Sample quantiles"
-  ) +
-  eda_theme
+source(here::here("chapter3", "pressure.R"))
+pressure_dat <- build_pressure_data()
+plot_pressure_qq(pressure_dat)
 ```
 
 ```{r}
@@ -677,40 +227,7 @@ pressure_data %>%
 #| echo: true
 #| message: false
 
-test_data <- pressure_data %>%
-  pivot_longer(
-    cols = c(pressure9am, pressure3pm, pressure_change),
-    names_to = "metric",
-    values_to = "value"
-  )
-
-stats_results <- test_data %>%
-  group_by(metric) %>%
-  t_test(value ~ rain_today, var.equal = FALSE) %>%
-  adjust_pvalue(method = "holm") %>%
-  add_significance()
-
-stats_results %>%
-  select(metric, group1, group2, statistic, df, p.adj, p.adj.signif) %>%
-  kable(
-    caption = "Welch Two-Sample t-test Results (Bonferroni-Holm Corrected)",
-    digits = 3,
-    col.names = c(
-      "Metric",
-      "Group 1",
-      "Group 2",
-      "t-statistic",
-      "df",
-      "Adj. P-Value",
-      "Significance"
-    ),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_pressure_ttests(pressure_dat)
 ```
 
 ```{r}
@@ -718,31 +235,7 @@ stats_results %>%
 #| echo: true
 #| message: false
 
-effect_sizes <- test_data %>%
-  group_by(metric) %>%
-  cohens_d(value ~ rain_today, var.equal = FALSE) %>%
-  mutate(
-    magnitude = case_when(
-      abs(effsize) < 0.2 ~ "Negligible",
-      abs(effsize) < 0.5 ~ "Small",
-      abs(effsize) < 0.8 ~ "Medium",
-      TRUE ~ "Large"
-    )
-  )
-
-effect_sizes %>%
-  select(metric, effsize, magnitude) %>%
-  kable(
-    caption = "Cohen's d Effect Size Analysis",
-    digits = 3,
-    col.names = c("Metric", "Effect Size (d)", "Interpretation"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_pressure_cohens_d(pressure_dat)
 ```
 
 ```{r}
@@ -753,63 +246,7 @@ effect_sizes %>%
 #| echo: true
 #| warning: false
 
-metric_labels <- c(
-  pressure9am = "Pressure 9 AM (hPa)",
-  pressure3pm = "Pressure 3 PM (hPa)",
-  pressure_change = "Pressure Change (hPa)"
-)
-
-plot_annotations <- stats_results %>%
-  left_join(effect_sizes, by = "metric") %>%
-  mutate(
-    label_text = sprintf(
-      "p %s\nd = %.2f (%s)",
-      p.adj.signif,
-      effsize,
-      magnitude
-    ),
-    y_pos = case_when(
-      metric == "pressure9am" ~ 1046,
-      metric == "pressure3pm" ~ 1041,
-      metric == "pressure_change" ~ 15
-    )
-  )
-
-test_data_labelled <- test_data %>%
-  mutate(metric = recode(metric, !!!metric_labels))
-
-plot_annotations_labelled <- plot_annotations %>%
-  mutate(metric = recode(metric, !!!metric_labels))
-
-ggplot(test_data_labelled, aes(rain_today, value, fill = rain_today)) +
-  geom_violin(alpha = 0.55, trim = TRUE, colour = NA) +
-  geom_boxplot(
-    width = 0.18,
-    outlier.shape = NA,
-    alpha = 0.85,
-    colour = "grey20",
-    linewidth = 0.4
-  ) +
-  facet_wrap(~metric, scales = "free_y") +
-  geom_text(
-    data = plot_annotations_labelled,
-    aes(x = 1.5, y = y_pos, label = label_text),
-    inherit.aes = FALSE,
-    vjust = 0,
-    fontface = "italic",
-    size = 3.2,
-    colour = "grey25"
-  ) +
-  scale_fill_manual(values = c("No" = "#AEB6BF", "Yes" = "#2471A3")) +
-  scale_x_discrete(labels = c("No" = "Dry", "Yes" = "Rainy")) +
-  labs(
-    title = "Atmospheric Pressure vs. Rainfall State",
-    subtitle = "Welch's t-test with Cohen's d effect sizes; Bonferroni-Holm correction applied",
-    y = NULL,
-    x = NULL
-  ) +
-  eda_theme +
-  theme(legend.position = "none")
+plot_pressure_violin(pressure_dat)
 ```
 
 ```{r}
@@ -820,44 +257,7 @@ ggplot(test_data_labelled, aes(rain_today, value, fill = rain_today)) +
 #| echo: true
 #| warning: false
 
-data_wide <- df_final %>%
-  group_by(rain_today) %>%
-  summarise(
-    `9:00 AM` = mean(pressure9am, na.rm = TRUE),
-    `3:00 PM` = mean(pressure3pm, na.rm = TRUE),
-    `Pressure drop` = mean(pressure9am, na.rm = TRUE) -
-      mean(pressure3pm, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  pivot_longer(cols = -rain_today, names_to = "metric", values_to = "value") %>%
-  mutate(
-    metric = factor(metric, levels = c("9:00 AM", "3:00 PM", "Pressure drop")),
-    label_txt = round(value, 1)
-  )
-
-ggplot(data_wide, aes(x = rain_today, y = value, fill = rain_today)) +
-  geom_col(width = 0.6, alpha = 0.88) +
-  geom_text(
-    aes(label = label_txt),
-    vjust = -0.5,
-    fontface = "bold",
-    size = 3.8
-  ) +
-  facet_wrap(~metric, scales = "free_y", nrow = 1) +
-  scale_fill_manual(values = c("No" = "#AEB6BF", "Yes" = "#2471A3")) +
-  scale_x_discrete(labels = c("No" = "Dry", "Yes" = "Rainy")) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
-  labs(
-    title = "Rainy Days Show Lower Baseline Pressure and Suppressed Diurnal Variation",
-    subtitle = "The diurnal pressure drop is the stronger discriminating signal",
-    y = "Pressure (hPa)",
-    x = NULL
-  ) +
-  eda_theme +
-  theme(
-    legend.position = "none",
-    panel.grid.major.x = element_blank()
-  )
+plot_pressure_means()
 ```
 
 **Normality and Test Validity.** Q-Q plots reveal modest tail deviations across all three pressure metrics, but with $N > 140{,}000$ the Central Limit Theorem ensures that sample means are asymptotically normal regardless of the underlying marginal distribution. Welch's t-test is used throughout to avoid the equal-variance assumption, and Bonferroni-Holm correction is applied across the three comparisons.
@@ -878,24 +278,9 @@ ggplot(data_wide, aes(x = rain_today, y = value, fill = rain_today)) +
 #| message: false
 #| warning: false
 
-monthly_stats <- df_final %>%
-  filter(rainfall > 0) %>%
-  group_by(month) %>%
-  summarise(
-    median_rain = median(rainfall),
-    mean_rain = mean(rainfall),
-    rain_days = n(),
-    .groups = "drop"
-  ) %>%
-  mutate(month_label = factor(month.abb[month], levels = rev(month.abb)))
-
-plot_data <- df_final %>%
-  filter(rainfall > 0) %>%
-  mutate(
-    month_label = factor(month.abb[month], levels = rev(month.abb)),
-    log_rain = log(rainfall)
-  ) %>%
-  left_join(monthly_stats, by = c("month", "month_label"))
+source(here::here("chapter3", "seasonality.R"))
+seasonal_dat <- build_seasonal_data()
+monthly_stats <- build_monthly_stats()
 ```
 
 ```{r}
@@ -906,47 +291,7 @@ plot_data <- df_final %>%
 #| echo: true
 #| warning: false
 
-global_med <- median(log(df_final$rainfall[df_final$rainfall > 0]))
-
-ggplot(plot_data, aes(log_rain, month_label, fill = after_stat(x))) +
-  geom_density_ridges_gradient(
-    scale = 2.5,
-    rel_min_height = 0.01,
-    quantile_lines = TRUE,
-    quantiles = 2,
-    colour = "grey30",
-    linewidth = 0.3
-  ) +
-  geom_vline(
-    xintercept = global_med,
-    linetype = "dashed",
-    colour = "grey40",
-    linewidth = 0.5
-  ) +
-  scale_fill_viridis_c(
-    option = "mako",
-    name = "Log\nrainfall",
-    direction = -1,
-    begin = 0.1,
-    end = 0.9
-  ) +
-  scale_x_continuous(
-    breaks = pretty_breaks(),
-    expand = expansion(mult = c(0.02, 0.02))
-  ) +
-  labs(
-    title = "Monthly Rainfall Distribution Patterns",
-    subtitle = "Solid lines mark monthly medians;
-                dashed line is the global median.",
-    x = "Rainfall amount (mm, log scale)",
-    y = NULL
-  ) +
-  eda_theme +
-  theme(
-    legend.position = "right",
-    legend.key.height = unit(1.2, "cm"),
-    legend.key.width = unit(0.4, "cm")
-  )
+plot_monthly_ridgeline()
 ```
 
 ```{r}
@@ -957,51 +302,7 @@ ggplot(plot_data, aes(log_rain, month_label, fill = after_stat(x))) +
 #| echo: true
 #| warning: false
 
-seasonal_data <- df_final %>%
-  filter(rainfall > 0) %>%
-  mutate(
-    season = case_when(
-      month %in% c(12, 1, 2) ~ "Summer",
-      month %in% c(3, 4, 5) ~ "Autumn",
-      month %in% c(6, 7, 8) ~ "Winter",
-      month %in% c(9, 10, 11) ~ "Spring"
-    ),
-    season = factor(season, levels = c("Summer", "Autumn", "Winter", "Spring"))
-  )
-
-seasonal_data %>%
-  mutate(month_label = factor(month.abb[month], levels = month.abb)) %>%
-  ggplot(aes(rainfall, month_label, fill = season)) +
-  geom_density_ridges(
-    scale = 1.5,
-    alpha = 0.72,
-    quantile_lines = TRUE,
-    quantiles = c(0.25, 0.5, 0.75),
-    colour = "grey30",
-    linewidth = 0.3
-  ) +
-  scale_x_log10(
-    breaks = c(1, 10, 50, 100, 300),
-    labels = label_number(accuracy = 1),
-    expand = expansion(mult = c(0.02, 0.04))
-  ) +
-  scale_fill_manual(
-    values = c(
-      "Summer" = "#E69F00",
-      "Autumn" = "#D55E00",
-      "Winter" = "#2471A3",
-      "Spring" = "#27AE60"
-    )
-  ) +
-  facet_wrap(~season, scales = "free_y", ncol = 2) +
-  labs(
-    title = "Seasonal Rainfall Patterns",
-    subtitle = "Quartile lines show 25th, 50th, and 75th percentiles within each month.",
-    x = "Rainfall amount (mm, log scale)",
-    y = NULL
-  ) +
-  eda_theme +
-  theme(legend.position = "none")
+plot_seasonal_facet(seasonal_dat)
 ```
 
 ```{r}
@@ -1012,36 +313,7 @@ seasonal_data %>%
 #| echo: true
 #| warning: false
 
-monthly_stats %>%
-  mutate(month_label = factor(month.abb[month], levels = month.abb)) %>%
-  ggplot(aes(month_label, mean_rain)) +
-  geom_col(aes(fill = mean_rain), width = 0.72, alpha = 0.88) +
-  geom_text(
-    aes(label = round(mean_rain, 1)),
-    vjust = -0.45,
-    size = 3.2,
-    fontface = "bold",
-    colour = "grey15"
-  ) +
-  scale_fill_viridis_c(
-    option = "mako",
-    direction = -1,
-    begin = 0.15,
-    end = 0.85
-  ) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
-  labs(
-    title = "Mean Rainfall by Month (Non-Zero Days)",
-    subtitle = "Seasonal variation in intensity is distinct from seasonal variation in frequency.",
-    y = "Mean rainfall (mm)",
-    x = NULL
-  ) +
-  eda_theme +
-  theme(
-    legend.position = "none",
-    panel.grid.major.x = element_blank(),
-    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold")
-  )
+plot_mean_rain_bar()
 ```
 
 The earlier frequency analysis (@sec-frequency) established when rain tends to occur. This section investigates how much falls when it does.
@@ -1059,20 +331,7 @@ Summer rainfall has a wide interquartile range and a pronounced right tail beyon
 #| echo: true
 #| message: false
 
-seasonal_data %>%
-  select(season, rainfall) %>%
-  group_by(season) %>%
-  get_summary_stats(rainfall, type = "mean_sd") %>%
-  kable(
-    caption = "Descriptive Statistics of Rainfall Intensity by Season",
-    col.names = c("Season", "Variable", "N (Events)", "Mean (mm)", "SD (mm)"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_seasonal_desc_stats(seasonal_dat)
 ```
 
 ```{r}
@@ -1080,64 +339,9 @@ seasonal_data %>%
 #| echo: true
 #| message: false
 
-kw_result <- kruskal_test(rainfall ~ season, data = seasonal_data)
-epsilon_sq <- kruskal_effsize(rainfall ~ season, data = seasonal_data)
-
-tibble(
-  Test = "Kruskal-Wallis Rank Sum Test",
-  `Chi-squared` = round(kw_result$statistic, 2),
-  df = kw_result$df,
-  `P-value` = scales::pvalue(kw_result$p, accuracy = 0.001),
-  `Effect Size` = round(epsilon_sq$effsize, 4),
-  Magnitude = as.character(epsilon_sq$magnitude)
-) %>%
-  kable(
-    caption = "Statistical Significance of Seasonal Differences (Non-Parametric)",
-    align = "lccccr",
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed"),
-    full_width = FALSE,
-    position = "left",
-    latex_options = c("hold_position")
-  ) %>%
-  add_footnote(
-    c("Effect size: Epsilon-squared.", "Alpha = 0.05"),
-    notation = "symbol"
-  )
-```
-
-```{r}
-#| label: dunns-test
-#| echo: true
-#| message: false
-
-dunn_result <- dunn_test(
-  rainfall ~ season,
-  data = seasonal_data,
-  p.adjust.method = "bonferroni"
-)
-
-dunn_result %>%
-  select(group1, group2, statistic, p.adj, p.adj.signif) %>%
-  kable(
-    caption = "Dunn's Pairwise Comparison Test (Bonferroni Corrected)",
-    col.names = c(
-      "Group 1",
-      "Group 2",
-      "Z-Statistic",
-      "Adj. P-Value",
-      "Significance"
-    ),
-    booktabs = TRUE,
-    digits = 3
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+seasonal_tests <- run_seasonal_tests(seasonal_dat)
+render_kruskal_table(seasonal_tests)
+render_dunns_table(seasonal_tests)
 ```
 
 ```{r}
@@ -1148,59 +352,7 @@ dunn_result %>%
 #| echo: true
 #| warning: false
 
-p_vals <- dunn_result$p.adj
-names(p_vals) <- paste(dunn_result$group1, dunn_result$group2, sep = "-")
-letters_vec <- multcompLetters(p_vals)$Letters
-letters_df <- data.frame(season = names(letters_vec), Letter = letters_vec)
-
-seasonal_summary <- seasonal_data %>%
-  group_by(season) %>%
-  summarise(
-    mean_rain = mean(rainfall, na.rm = TRUE),
-    n = n(),
-    .groups = "drop"
-  ) %>%
-  left_join(letters_df, by = "season")
-
-ggplot(seasonal_summary, aes(x = season, y = mean_rain, fill = season)) +
-  geom_col(alpha = 0.85, width = 0.68) +
-  geom_text(
-    aes(label = Letter),
-    vjust = -0.5,
-    size = 7,
-    fontface = "bold",
-    colour = "grey20"
-  ) +
-  geom_text(
-    aes(label = round(mean_rain, 1)),
-    vjust = 1.6,
-    colour = "white",
-    fontface = "bold",
-    size = 4.5
-  ) +
-  scale_fill_manual(
-    values = c(
-      "Summer" = "#E69F00",
-      "Autumn" = "#D55E00",
-      "Winter" = "#2471A3",
-      "Spring" = "#27AE60"
-    )
-  ) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
-  labs(
-    title = "Seasonal Rainfall with Statistical Groupings",
-    subtitle = sprintf(
-      "Kruskal-Wallis: p < 0.001, effect size: %s | Seasons sharing a letter are not significantly different.",
-      as.character(epsilon_sq$magnitude)
-    ),
-    y = "Mean rainfall (mm)",
-    x = NULL
-  ) +
-  eda_theme +
-  theme(
-    legend.position = "none",
-    panel.grid.major.x = element_blank()
-  )
+plot_seasonal_stat_groups(seasonal_dat, seasonal_tests)
 ```
 
 The Kruskal-Wallis test yields $\chi^2 = 230$, $p < 0.001$, strongly rejecting the null of equal seasonal distributions. The epsilon-squared effect size ($\eta^2 \approx 0.004$) is small: the seasonal signal is real but accounts for only a minor fraction of total variance in rainfall intensity, reinforcing the necessity of a multivariate approach.
@@ -1219,45 +371,8 @@ Post-hoc Dunn's tests identify three distinct statistical groups (@fig-seasonal-
 #| echo: true
 #| warning: false
 
-df_final %>%
-  group_by(location) %>%
-  arrange(date) %>%
-  mutate(
-    rain_index_ref = ifelse(rainfall > 0, row_number(), NA_integer_)
-  ) %>%
-  fill(rain_index_ref, .direction = "down") %>%
-  mutate(days_since_rain = row_number() - lag(rain_index_ref)) %>%
-  select(-rain_index_ref) %>%
-  mutate(
-    rain_label = factor(
-      rain_today,
-      levels = c("No", "Yes"),
-      labels = c("Dry day (rain_today = No)", "Rainy day (rain_today = Yes)")
-    )
-  ) %>%
-  ggplot(aes(sunshine, humidity3pm)) +
-  geom_density2d_filled(contour_var = "ndensity", bins = 8) +
-  facet_wrap(~rain_label) +
-  scale_fill_brewer(palette = "Blues", direction = 1) +
-  scale_x_continuous(
-    expand = expansion(mult = c(0.02, 0.02)),
-    breaks = pretty_breaks(n = 6)
-  ) +
-  scale_y_continuous(
-    expand = expansion(mult = c(0.02, 0.02)),
-    breaks = pretty_breaks(n = 6)
-  ) +
-  labs(
-    title = "Justifying an Interaction Term: The 'Rain Corner'",
-    subtitle = "Rain concentrates where high humidity and low sunshine coincide simultaneously.\nDry days are dispersed broadly, confirming that neither condition alone is sufficient.",
-    x = "Sunshine (hours)",
-    y = "Humidity 3 PM (%)"
-  ) +
-  eda_theme +
-  theme(
-    legend.position = "none",
-    strip.text = element_text(size = 10, face = "bold")
-  )
+source(here::here("chapter3", "interactions.R"))
+plot_rain_corner()
 ```
 
 While individual correlation analysis in @sec-correlation identifies humidity and sunshine as primary predictors, a standard additive model assumes their effects on the log-odds of rainfall are independent. The bivariate density plots (@fig-interaction-rain-corner) test this assumption directly by visualising the joint distribution of these two features conditioned on the rainfall outcome.

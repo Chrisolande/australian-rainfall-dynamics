@@ -15,64 +15,9 @@
 #| warning: false
 #| results: 'hide'
 
-librarian::shelf(
-  tidyverse,
-  tidymodels,
-  kableExtra,
-  patchwork,
-  skimr,
-  gridExtra,
-  gtsummary,
-  janitor,
-  corrplot,
-  sjPlot,
-  scales,
-  GGally,
-  car,
-  forcats,
-  performance,
-  glmmTMB,
-  splines,
-  mgcv,
-  DHARMa,
-  zoo,
-  ggpubr,
-  ggridges,
-  caret,
-  rstatix,
-  Metrics,
-  mice,
-  missRanger,
-  ranger,
-  cocor,
-  multcompView,
-  lmtest,
-  aod,
-  pROC,
-  naniar,
-  glue,
-  viridis,
-  parallel
-)
-
-report_theme <- theme_classic(base_size = 11) +
-  theme(
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 10),
-    axis.line = element_line(colour = "grey40"),
-    panel.grid.major = element_line(colour = "grey93", linewidth = 0.4),
-    plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 9, colour = "grey40"),
-    plot.caption = element_text(size = 7, colour = "grey50", hjust = 0),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold", size = 9),
-    legend.text = element_text(size = 8)
-  )
-
-df <- read_csv("data/weatherAUS.csv") %>%
-  janitor::clean_names()
-
+source(here::here("config.R"))
 source(here::here("utils.R"))
+
 ```
 
 The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (`tidyverse`, `janitor`, `kableExtra`) handles routine data manipulation. The modelling stack (`glmmTMB`, `DHARMa`, `splines`, `mgcv`) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (`mice`) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (`naniar`, `glue`) supports the structural analysis in @sec-missingness-diagnostics. Libraries are loaded via `librarian`, which installs missing packages automatically and ensures reproducibility across environments.
@@ -89,23 +34,7 @@ The raw dataset undergoes three transformations before any missingness analysis 
 #| message: false
 #| warning: false
 
-df_clean <- df %>%
-  mutate(
-    date = as.Date(date),
-    month = as.factor(month(date)),
-    day = as.factor(wday(date, label = TRUE))
-  ) %>%
-  filter(!is.na(rainfall))
-
-df_clean %>%
-  head() %>%
-  kable(caption = "Head of Cleaned Dataset") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
-
-df_clean %>%
-  tail() %>%
-  kable(caption = "Tail of Cleaned Dataset") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+source(here::here("chapter2", "cleaning.R"))
 ```
 
 **Column standardisation.** All variable names are converted to `snake_case` via `janitor::clean_names()`, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.
@@ -129,44 +58,8 @@ Before designing an imputation strategy, it is necessary to understand the mecha
 #| message: false
 #| warning: false
 
-high_miss_cols <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
-high_miss <- high_miss_cols[high_miss_cols %in% names(df)]
-
-cat("High missingness variables:", paste(high_miss, collapse = ", "), "\n\n")
-
-miss_mat <- df %>%
-  select(all_of(high_miss)) %>%
-  mutate(across(everything(), is.na)) %>%
-  as.matrix() %>%
-  apply(2, as.integer)
-
-intersection_matrix <- crossprod(miss_mat)
-total_miss_counts <- diag(intersection_matrix)
-
-pct_matrix <- intersection_matrix / total_miss_counts * 100
-
-co_missing_stats <- as.data.frame(as.table(pct_matrix)) %>%
-  rename(var1 = Var1, var2 = Var2, pct_co_miss = Freq) %>%
-  filter(var1 != var2) %>%
-  arrange(desc(pct_co_miss))
-
-co_missing_stats %>%
-  mutate(
-    msg = glue(
-      "  {var1} -> {var2}: {round(pct_co_miss, 1)}%  (when {var1} is missing, {var2} is missing)"
-    )
-  ) %>%
-  pull(msg) %>%
-  walk(cat, "\n")
-
-co_missing_stats %>%
-  kable(
-    caption = "Conditional Co-missingness:
-              when var1 is missing, what percentage of the time is var2 also missing?",
-    digits = 1,
-    col.names = c("Variable 1 (Missing)", "Variable 2", "Co-missing (%)")
-  ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+source(here::here("chapter2", "data_missingness.R"))
+render_comissingness_table()
 ```
 
 The co-missingness matrix (@tbl-co-missingness) confirms that these four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: if evaporation is missing, there is a 93.2% probability that sunshine is also missing. Even the weakest relationship in the matrix (sunshine to cloud9am) retains a rate of 67.5%, which is nearly double what would be expected under random failure.
@@ -183,49 +76,7 @@ Under MCAR, the co-missing rates would be close to the marginal missingness rate
 #| echo: true
 #| warning: false
 
-temporal_trend <- df %>%
-  mutate(month_floor = floor_date(date, "month")) %>%
-  select(month_floor, any_of(high_miss)) %>%
-  pivot_longer(
-    cols = -month_floor,
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  group_by(month_floor, variable) %>%
-  summarise(pct_missing = mean(is.na(value)) * 100, .groups = "drop")
-
-ggplot(
-  temporal_trend,
-  aes(x = month_floor, y = pct_missing)
-) +
-  geom_area(fill = "grey80", alpha = 0.5) +
-  geom_line(colour = "#2C7BB6", linewidth = 0.7) +
-  geom_hline(
-    yintercept = 50,
-    linetype = "dashed",
-    colour = "grey50",
-    linewidth = 0.4
-  ) +
-  facet_wrap(~variable, ncol = 1, scales = "free_y") +
-  scale_x_date(
-    date_breaks = "2 years",
-    date_labels = "%Y",
-    expand = c(0.01, 0)
-  ) +
-  scale_y_continuous(
-    limits = c(0, 100),
-    labels = scales::percent_format(scale = 1)
-  ) +
-  labs(
-    title = "Temporal Structure of Missingness by Variable",
-    subtitle = "Step changes indicate structural data collection breaks
-                rather than random sensor failures",
-    x = NULL,
-    y = "Missing (%)",
-    caption = "Dashed line at 50%. Monthly aggregation."
-  ) +
-  report_theme +
-  theme(panel.spacing = unit(0.8, "lines"))
+plot_temporal_missingness()
 ```
 
 The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The `sunshine` and `evaporation` variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.
@@ -240,30 +91,7 @@ This temporal structure has a direct implication for the interpolation stage of 
 #| message: false
 #| warning: false
 
-GHOST_THRESHOLD <- 0.90
-
-location_summary <- df %>%
-  group_by(location) %>%
-  naniar::miss_var_summary()
-
-ghost_sensors <- location_summary %>%
-  filter(variable %in% high_miss, pct_miss > GHOST_THRESHOLD * 100) %>%
-  arrange(desc(pct_miss))
-
-ghost_sensors %>%
-  kable(
-    caption = "Ghost Sensor Instances: Location-Variable Pairs 
-               with >90% Missingness",
-    digits = 1,
-    col.names = c("Location", "Variable", "Missing (n)", "Missing (%)")
-  ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-
-cat(sprintf(
-  "\nTotal ghost sensor instances identified: %d across %d locations\n",
-  nrow(ghost_sensors),
-  n_distinct(ghost_sensors$location)
-))
+render_ghost_sensor_table()
 ```
 
 The location-level analysis identifies the specific station-variable pairs responsible for the bulk of the aggregate missingness. The top ten instances from the script output, all at exactly 100% missing, are as follows: Albury (`evaporation`, 3,040 observations; `sunshine`, 3,040), BadgerysCreek (`evaporation`, 3,009; `sunshine`, 3,009; `cloud9am`, 3,009; `cloud3pm`, 3,009), Newcastle (`evaporation`, 3,039; `sunshine`, 3,039), and NorahHead (`evaporation`, 3,004; `sunshine`, 3,004). At these stations, the instrument in question recorded a value on zero days across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.
@@ -278,25 +106,7 @@ The distinction between ghost sensors and ordinary missingness is consequential 
 #| message: false
 #| warning: false
 
-if (all(c("rainfall", "sunshine") %in% names(df))) {
-  weather_missing_stats <- df %>%
-    filter(!is.na(rainfall)) %>%
-    mutate(is_rainy = if_else(rainfall > 1, "Rainy (>1mm)", "Dry (<=1mm)")) %>%
-    group_by(is_rainy) %>%
-    summarise(
-      n_obs = n(),
-      pct_sunshine_missing = mean(is.na(sunshine)) * 100,
-      .groups = "drop"
-    )
-
-  weather_missing_stats %>%
-    kable(
-      caption = "Sunshine Missingness Rate by Daily Rainfall Status",
-      digits = 1,
-      col.names = c("Day Type", "Observations (n)", "Sunshine Missing (%)")
-    ) %>%
-    kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-}
+render_sunshine_mcar_table()
 ```
 
 ```{r}
@@ -307,33 +117,7 @@ if (all(c("rainfall", "sunshine") %in% names(df))) {
 #| echo: true
 #| warning: false
 
-df %>%
-  naniar::bind_shadow() %>%
-  filter(rainfall > 0 & rainfall < 50) %>%
-  ggplot(aes(x = rainfall, fill = sunshine_NA, colour = sunshine_NA)) +
-  geom_density(alpha = 0.35, linewidth = 0.6) +
-  scale_fill_manual(
-    values = c("!NA" = "#2C7BB6", "NA" = "#D7191C"),
-    labels = c("!NA" = "Present", "NA" = "Missing")
-  ) +
-  scale_colour_manual(
-    values = c("!NA" = "#2C7BB6", "NA" = "#D7191C"),
-    labels = c("!NA" = "Present", "NA" = "Missing"),
-    guide = "none"
-  ) +
-  scale_x_continuous(breaks = seq(0, 50, 10), expand = c(0.01, 0)) +
-  scale_y_continuous(expand = c(0, 0)) +
-  labs(
-    title = "Sunshine Missingness is Not Rainfall-Conditional",
-    subtitle = "Rainfall distributions are near-identical whether sunshine data
-                is present or absent,\nconfirming missingness is driven by station
-                instrumentation, not weather conditions",
-    x = "Daily Rainfall (mm)",
-    y = "Density",
-    fill = "Sunshine Data",
-    caption = "Restricted to rainfall > 0 and < 50 mm. Kernel density estimate."
-  ) +
-  report_theme
+plot_sunshine_rainfall_density()
 ```
 
 A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.
@@ -350,18 +134,7 @@ Sunshine missingness is station-conditional rather than weather-conditional. The
 #| message: false
 #| warning: false
 
-df %>%
-  select(all_of(high_miss)) %>%
-  naniar::miss_case_table() %>%
-  kable(
-    caption = "Distribution of Missing Variable Count per Observation",
-    col.names = c(
-      "Variables Missing (of 4)",
-      "Observations (n)",
-      "Percentage (%)"
-    )
-  ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+render_miss_pattern_table()
 ```
 
 The case-level output from the script reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.
@@ -401,186 +174,7 @@ Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor 
 #| echo: true
 #| eval: false
 
-MAXGAP <- 5
-GHOST_THRESHOLD <- 0.90
-M <- 10
-
-
-# cleaning
-clean_weather <- function(df) {
-  df %>%
-    clean_names() %>%
-    mutate(
-      date = as.Date(date),
-      month = as.factor(month(date)),
-      day = as.factor(wday(date, label = TRUE)),
-      day_of_year = yday(date),
-      wind_gust_dir = as.factor(wind_gust_dir),
-      wind_dir9am = as.factor(wind_dir9am),
-      wind_dir3pm = as.factor(wind_dir3pm),
-      rain_today = as.factor(rain_today),
-      location = as.factor(location)
-    ) %>%
-    filter(!is.na(rainfall)) %>%
-    select(-rain_tomorrow)
-}
-
-
-# Linear interpolation for continuous met variables (within each location)
-interpolate_weather <- function(df) {
-  interp_vars <- c(
-    "min_temp",
-    "max_temp",
-    "temp9am",
-    "temp3pm",
-    "pressure9am",
-    "pressure3pm",
-    "humidity9am",
-    "humidity3pm"
-  )
-
-  df %>%
-    group_by(location) %>%
-    arrange(date, .by_group = TRUE) %>%
-    mutate(across(
-      all_of(interp_vars),
-      ~ na.approx(., maxgap = MAXGAP, na.rm = FALSE, rule = 1)
-    )) %>%
-    ungroup()
-}
-
-
-# Flag ghost sensors and add imputation flag columns
-flag_ghost_sensors <- function(df) {
-  ghost_prone_vars <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
-
-  ghost_pairs <- df %>%
-    select(location, all_of(ghost_prone_vars)) %>%
-    pivot_longer(
-      cols = all_of(ghost_prone_vars),
-      names_to = "variable",
-      values_to = "value"
-    ) %>%
-    group_by(location, variable) %>%
-    summarise(miss_rate = mean(is.na(value)) * 100, .groups = "drop") %>%
-    filter(miss_rate > (GHOST_THRESHOLD * 100))
-
-  cat(sprintf("Found %d ghost sensor instances:\n", nrow(ghost_pairs)))
-
-  df %>%
-    mutate(
-      sunshine_imp_flagged = as.integer(is.na(sunshine)),
-      evap_imp_flagged = as.integer(is.na(evaporation)),
-      cloud3pm_imp_flagged = as.integer(is.na(cloud3pm)),
-      cloud9am_imp_flagged = as.integer(is.na(cloud9am))
-    )
-}
-
-
-# Build the MICE predictor matrix and method vector
-build_mice_config <- function(df) {
-  ghost_prone_vars <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
-  wind_vars <- c("wind_gust_dir", "wind_dir9am", "wind_dir3pm")
-
-  init <- mice(df, maxit = 0)
-  pred <- init$predictorMatrix
-  meth <- init$method
-
-  pred[,] <- 0
-
-  meth[ghost_prone_vars] <- "pmm"
-  meth[wind_vars] <- "rf"
-
-  # Predictor sets per target variable
-  predictor_map <- list(
-    sunshine = c(
-      "cloud9am",
-      "cloud3pm",
-      "max_temp",
-      "humidity3pm",
-      "location",
-      "month"
-    ),
-    evaporation = c(
-      "wind_gust_speed",
-      "max_temp",
-      "humidity3pm",
-      "sunshine",
-      "location",
-      "month"
-    ),
-    cloud9am = c(
-      "humidity9am",
-      "humidity3pm",
-      "pressure9am",
-      "location",
-      "month"
-    ),
-    cloud3pm = c(
-      "humidity9am",
-      "humidity3pm",
-      "pressure9am",
-      "location",
-      "month"
-    ),
-    wind_gust_dir = c("wind_gust_speed", "pressure3pm", "location", "month"),
-    wind_dir9am = c("wind_speed9am", "pressure9am", "location", "month"),
-    wind_dir3pm = c("wind_speed3pm", "pressure3pm", "location", "month")
-  )
-
-  for (target in names(predictor_map)) {
-    if (target %in% rownames(pred)) {
-      predictors <- intersect(colnames(df), predictor_map[[target]])
-      pred[target, predictors] <- 1
-    }
-  }
-
-  # Never use flag or date columns as predictors
-  ignore_cols <- grep("_imp_flagged$|^date$", colnames(pred), value = TRUE)
-  pred[, ignore_cols] <- 0
-
-  list(method = meth, predictorMatrix = pred)
-}
-
-
-# Run parallel MICE imputation and merge mids objects
-impute_parallel <- function(df, mice_config, m = M) {
-  n_cores <- max(1L, min(as.integer(parallel::detectCores()), as.integer(m)))
-  m_split <- rep(m %/% n_cores, n_cores)
-  if ((m %% n_cores) > 0L) {
-    m_split[seq_len(m %% n_cores)] <- m_split[seq_len(m %% n_cores)] + 1L
-  }
-  seeds <- 123L + seq_len(n_cores) - 1L
-
-  imp_list <- parallel::mclapply(
-    seq_len(n_cores),
-    function(i) {
-      mice(
-        df,
-        method = mice_config$method,
-        predictorMatrix = mice_config$predictorMatrix,
-        m = m_split[i],
-        maxit = 5,
-        seed = seeds[i],
-        printFlag = FALSE
-      )
-    },
-    mc.cores = n_cores
-  )
-
-  Reduce(ibind, imp_list)
-}
-
-
-clean_and_impute_weather <- function(df) {
-  df %>%
-    clean_weather() %>%
-    interpolate_weather() %>%
-    flag_ghost_sensors() -> df_flagged
-
-  mice_config <- build_mice_config(df_flagged)
-  impute_parallel(df_flagged, mice_config)
-}
+source(here::here("chapter2", "imputation.R"))
 ```
 
 ```{r}
@@ -591,7 +185,7 @@ clean_and_impute_weather <- function(df) {
 
 imp_mids <- clean_and_impute_weather(df)
 df_final <- complete(imp_mids, action = 1)
-write_csv(df_final, "data/df_final.csv")
+write_csv(df_final, here::here("data", "df_final.csv"))
 
 ```
 
@@ -601,7 +195,7 @@ write_csv(df_final, "data/df_final.csv")
 #| message: false
 #| warning: false
 
-df_final <- read_csv("data/df_final.csv")
+df_final <- read_csv(here::here("data", "df_final.csv"))
 ```
 
 ---
@@ -639,16 +233,16 @@ The two-stage pipeline produces a dataset whose properties are each traceable to
 #| message: false
 #| warning: false
 
-continuous_ghost_vars <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
+CONTINUOUS_GHOST_VARS <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
 
-flag_map <- c(
+FLAG_MAP <- c(
   sunshine = "sunshine_imp_flagged",
   evaporation = "evap_imp_flagged",
   cloud9am = "cloud9am_imp_flagged",
   cloud3pm = "cloud3pm_imp_flagged"
 )
 
-imp_mids <- readRDS("data/imp_mids.rds")
+imp_mids <- readRDS(here::here("data", "imp_mids.rds"))
 M <- imp_mids$m
 ITER <- imp_mids$iteration
 ```
@@ -667,56 +261,8 @@ Multiple imputation by chained equations relies on a Gibbs-style iterative algor
 #| echo: true
 #| warning: false
 
-trace_vars <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
-
-cm <- imp_mids$chainMean
-cv <- imp_mids$chainVar
-n_iter <- dim(cm)[2]
-n_chain <- dim(cm)[3]
-
-trace_df <- map_dfr(trace_vars, function(var) {
-  map_dfr(seq_len(n_chain), function(i) {
-    mean_v <- as.numeric(cm[var, , i])
-    sd_v <- sqrt(pmax(as.numeric(cv[var, , i]), 0))
-    tibble(
-      variable = var,
-      chain = factor(i),
-      iteration = seq_len(n_iter),
-      mean_val = mean_v,
-      sd_val = sd_v
-    )
-  })
-}) %>%
-  filter(!is.nan(mean_val))
-
-p_mean <- ggplot(trace_df, aes(x = iteration, y = mean_val, colour = chain)) +
-  geom_line(linewidth = 0.6, alpha = 0.8) +
-  facet_wrap(~variable, scales = "free_y", ncol = 2) +
-  scale_colour_viridis_d(option = "turbo", guide = guide_legend(nrow = 2)) +
-  scale_x_continuous(breaks = seq_len(n_iter)) +
-  labs(y = "Chain mean", x = NULL, colour = "Chain") +
-  report_theme +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
-
-p_sd <- ggplot(trace_df, aes(x = iteration, y = sd_val, colour = chain)) +
-  geom_line(linewidth = 0.6, alpha = 0.8) +
-  facet_wrap(~variable, scales = "free_y", ncol = 2) +
-  scale_colour_viridis_d(option = "turbo", guide = guide_legend(nrow = 2)) +
-  scale_x_continuous(breaks = seq_len(n_iter)) +
-  labs(y = "Chain SD", x = "Iteration", colour = "Chain") +
-  report_theme
-
-(p_mean / p_sd) +
-  plot_layout(guides = "collect") +
-  plot_annotation(
-    title = "MCMC Convergence Diagnostics",
-    subtitle = "Chain means (top) and standard deviations (bottom) across iterations",
-    theme = theme(
-      plot.title = element_text(face = "bold", size = 13),
-      plot.subtitle = element_text(size = 10, colour = "grey40")
-    )
-  ) &
-  theme(legend.position = "bottom")
+source(here::here("chapter2", "sensitivity_analysis.R"))
+plot_convergence_trace()
 ```
 
 All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The `sunshine` chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.
@@ -735,56 +281,7 @@ Convergence of the algorithm is necessary but not sufficient: the imputed values
 #| echo: true
 #| warning: false
 
-fidelity_df <- map_dfr(continuous_ghost_vars, function(var) {
-  flag <- flag_map[[var]]
-  bind_rows(
-    df_final %>%
-      filter(.data[[flag]] == 0, !is.na(.data[[var]])) %>%
-      transmute(value = .data[[var]], source = "Observed", variable = var),
-    df_final %>%
-      filter(.data[[flag]] == 1, !is.na(.data[[var]])) %>%
-      transmute(value = .data[[var]], source = "Imputed", variable = var)
-  )
-})
-
-ks_results <- fidelity_df %>%
-  group_by(variable) %>%
-  summarise(
-    ks_stat = ks.test(
-      value[source == "Observed"],
-      value[source == "Imputed"]
-    )$statistic,
-    .groups = "drop"
-  ) %>%
-  mutate(label = sprintf("D = %.3f", ks_stat))
-
-ggplot(fidelity_df, aes(x = value, fill = source, colour = source)) +
-  geom_density(alpha = 0.35, linewidth = 0.6) +
-  geom_text(
-    data = ks_results,
-    aes(label = label, x = Inf, y = Inf),
-    inherit.aes = FALSE,
-    hjust = 1.1,
-    vjust = 1.4,
-    size = 3.2,
-    colour = "grey30"
-  ) +
-  facet_wrap(~variable, scales = "free", ncol = 2) +
-  scale_fill_manual(values = c("Observed" = "#2C7BB6", "Imputed" = "#D7191C")) +
-  scale_colour_manual(
-    values = c("Observed" = "#2C7BB6", "Imputed" = "#D7191C")
-  ) +
-  labs(
-    title = "Distributional Fidelity: Observed vs. Imputed Values",
-    subtitle = "KS statistic D annotated per panel. P-values are not reported as they are uninformative at this sample size.",
-    x = "Value",
-    y = "Density",
-    fill = "Source",
-    colour = "Source",
-    caption = "Observed = instrumented stations (flag = 0). Imputed = ghost sensor stations (flag = 1)."
-  ) +
-  report_theme +
-  theme(legend.position = "bottom")
+plot_dist_fidelity()
 ```
 
 ```{r}
@@ -793,26 +290,7 @@ ggplot(fidelity_df, aes(x = value, fill = source, colour = source)) +
 #| echo: true
 #| warning: false
 
-ks_results %>%
-  mutate(
-    interpretation = case_when(
-      ks_stat < 0.05 ~ "Negligible shift; distributions effectively identical",
-      ks_stat < 0.10 ~ "Small shift; acceptable fidelity",
-      ks_stat < 0.20 ~ "Moderate shift; review predictor set",
-      TRUE ~ "Large shift; imputation has drifted from observed"
-    )
-  ) %>%
-  select(variable, ks_stat, interpretation) %>%
-  kable(
-    digits = 3,
-    col.names = c("Variable", "KS Statistic (D)", "Interpretation"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_ks_table()
 ```
 
 The cloud cover variables achieve near-perfect fidelity. The statistic for `cloud3pm` ($D = 0.019$) is negligible, and `cloud9am` ($D = 0.051$) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. `evaporation` and `sunshine` show small shifts ($D = 0.065$ and $D = 0.074$ respectively). These are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching `na.approx` from `rule = 2` to `rule = 1` in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.
@@ -831,51 +309,7 @@ The justification for retaining $m = 10$ completed datasets rather than a single
 #| echo: true
 #| warning: false
 
-all_completions <- map_dfr(seq_len(M), function(m) {
-  complete(imp_mids, action = m) %>%
-    select(all_of(trace_vars)) %>%
-    mutate(imputation = factor(m), row_id = row_number())
-})
-
-ribbon_df <- all_completions %>%
-  pivot_longer(
-    cols = all_of(trace_vars),
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  group_by(variable, row_id) %>%
-  summarise(
-    mean_val = mean(value, na.rm = TRUE),
-    min_val = min(value, na.rm = TRUE),
-    max_val = max(value, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(variable, mean_val) %>%
-  group_by(variable) %>%
-  mutate(rank = row_number()) %>%
-  ungroup()
-
-ggplot(ribbon_df, aes(x = rank)) +
-  geom_ribbon(
-    aes(ymin = min_val, ymax = max_val),
-    fill = "#2C7BB6",
-    alpha = 0.25
-  ) +
-  geom_line(aes(y = mean_val), colour = "#2C7BB6", linewidth = 0.5) +
-  facet_wrap(~variable, scales = "free", ncol = 2) +
-  labs(
-    title = "Between-Imputation Variance Across Ten Completions",
-    subtitle = "Ribbon spans the full range of imputed values;
-                line is the cross-completion mean.",
-    x = "Observation rank (ascending mean)",
-    y = "Imputed value",
-    caption = paste0(
-      "m = ",
-      M,
-      " completions. Observations sorted independently within each panel."
-    )
-  ) +
-  report_theme
+plot_between_imputation_variance()
 ```
 
 ```{r}
@@ -884,36 +318,7 @@ ggplot(ribbon_df, aes(x = rank)) +
 #| echo: true
 #| warning: false
 
-between_var_summary <- all_completions %>%
-  pivot_longer(
-    cols = all_of(trace_vars),
-    names_to = "variable",
-    values_to = "value"
-  ) %>%
-  group_by(variable, row_id) %>%
-  summarise(
-    range_val = max(value, na.rm = TRUE) - min(value, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  group_by(variable) %>%
-  summarise(
-    mean_range = mean(range_val, na.rm = TRUE),
-    median_range = median(range_val, na.rm = TRUE),
-    cv_range = sd(range_val, na.rm = TRUE) / mean(range_val, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-between_var_summary %>%
-  kable(
-    digits = 3,
-    col.names = c("Variable", "Mean Range", "Median Range", "CV of Range"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_between_variance_table()
 ```
 
 The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.
@@ -937,95 +342,7 @@ The Rubin variance decomposition provides a formal quantification of how much of
 #| warning: false
 #| message: false
 
-flag_map_rubin <- c(
-  sunshine = "sunshine_imp_flagged",
-  evaporation = "evap_imp_flagged",
-  cloud9am = "cloud9am_imp_flagged",
-  cloud3pm = "cloud3pm_imp_flagged"
-)
-
-rubin_predictor_map <- list(
-  sunshine = c("cloud9am", "cloud3pm", "max_temp", "humidity3pm"),
-  evaporation = c("wind_gust_speed", "max_temp", "humidity3pm"),
-  cloud9am = c("humidity9am", "pressure9am", "humidity3pm"),
-  cloud3pm = c("humidity3pm", "pressure3pm", "humidity9am")
-)
-
-rubin_results <- map_dfr(continuous_ghost_vars, function(outcome) {
-  flag_col <- flag_map_rubin[[outcome]]
-  preds <- rubin_predictor_map[[outcome]]
-  available <- intersect(preds, names(imp_mids$data))
-
-  if (length(available) == 0) {
-    return(NULL)
-  }
-
-  fml <- as.formula(paste(outcome, "~", paste(available, collapse = " + ")))
-
-  tryCatch(
-    {
-      fits <- lapply(seq_len(imp_mids$m), function(m) {
-        df_m <- complete(imp_mids, action = m) %>%
-          filter(.data[[flag_col]] == 0L)
-        lm(fml, data = df_m)
-      })
-      pooled <- pool(as.mira(fits))
-      pr <- pooled$pooled %>% filter(term == "(Intercept)")
-
-      tibble(
-        variable = outcome,
-        W = pr$ubar,
-        B = pr$b,
-        T_total = pr$t,
-        FMI = pr$fmi
-      )
-    },
-    error = function(e) {
-      message(
-        "Rubin decomposition failed for ",
-        outcome,
-        ": ",
-        conditionMessage(e)
-      )
-      NULL
-    }
-  )
-})
-
-stopifnot(
-  "All Rubin decompositions failed; check imp_mids structure" = nrow(
-    rubin_results
-  ) >
-    0
-)
-
-rubin_results %>%
-  mutate(
-    pct_between = B / T_total * 100,
-    fmi_class = case_when(
-      FMI < 0.10 ~ "Low; single completion adequate",
-      FMI < 0.30 ~ "Moderate; pooling recommended",
-      TRUE ~ "High; pooling required"
-    )
-  ) %>%
-  kable(
-    digits = 4,
-    col.names = c(
-      "Variable",
-      "Within (W)",
-      "Between (B)",
-      "Total (T)",
-      "FMI",
-      "Between (%)",
-      "FMI Classification"
-    ),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
+render_rubins_rules_table()
 ```
 
 All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For `cloud9am` the between-imputation variance $B$ exceeds the within-imputation variance $W$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. `sunshine` and `evaporation` show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate `sunshine`, `evaporation`, `cloud9am`, or `cloud3pm` as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.
@@ -1040,45 +357,7 @@ All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommen
 #| echo: true
 #| warning: false
 
-tibble(
-  diagnostic = c(
-    "MCMC convergence (trace plots)",
-    "Distributional fidelity (KS test)",
-    "Between-imputation variance (ribbon plots)",
-    "Rubin FMI decomposition"
-  ),
-  criterion = c(
-    "Chains mix without directional trend across iterations",
-    "KS statistic D below 0.10 for all variables",
-    "Ribbon width consistent with acceptable seed-to-seed variation",
-    "FMI below 0.30 for variables used in downstream inference"
-  ),
-  outcome = c(
-    "Met; all chains converge within five iterations",
-    "Met for cloud cover;
-    small shift for sunshine and evaporation within tolerance",
-    "Material variance present;
-    uncertainty concentrated in right tail for sunshine and evaporation",
-    "Not met; FMI ranges from 0.33 to 0.57 across all four variables"
-  ),
-  action = c(
-    "No action required",
-    "Monitor sunshine and evaporation coefficients for sensitivity",
-    "Use all m = 10 completions in downstream models",
-    "Pool all zero-inflated gamma model estimates using Rubin's combining rules"
-  )
-) %>%
-  kable(
-    col.names = c("Diagnostic", "Criterion", "Outcome", "Action"),
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  ) %>%
-  column_spec(1, bold = TRUE) %>%
-  column_spec(4, italic = TRUE)
+render_sensitivity_summary_table()
 ```
 
 
@@ -1086,5 +365,5 @@ tibble(
 #| label: save-clean-data
 #| include: false
 
-saveRDS(df_clean, "data/df_clean.rds")
+saveRDS(df_clean, here::here("data", "df_clean.rds"))
 ```
