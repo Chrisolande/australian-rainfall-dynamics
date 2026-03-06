@@ -632,9 +632,9 @@ Figure&nbsp;4.4: Spearman correlations between raw rainfall and humidity variabl
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>engineered_list <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">map</span>(\(dat) <span class="fu">engineer_features</span>(dat, <span class="at">for_modeling =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">map</span>(engineer_features)</span>
 <span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="fu">render_vif_table</span>(engineered_list[[<span class="dv">1</span>]], <span class="at">already_engineered =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="fu">render_vif_table</span>(engineered_list[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped table-hover caption-top table-sm small">
@@ -654,243 +654,203 @@ Figure&nbsp;4.4: Spearman correlations between raw rainfall and humidity variabl
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">humidity3pm</td>
-<td style="text-align: right;">4.790</td>
-<td style="text-align: right;">4.746</td>
-<td style="text-align: right;">4.835</td>
-<td style="text-align: right;">2.189</td>
+<td style="text-align: right;">4.776</td>
+<td style="text-align: right;">4.732</td>
+<td style="text-align: right;">4.821</td>
+<td style="text-align: right;">2.185</td>
 <td style="text-align: right;">0.209</td>
 <td style="text-align: right;">0.207</td>
 <td style="text-align: right;">0.211</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">cloud9am_imp_flagged</td>
-<td style="text-align: right;">3.654</td>
-<td style="text-align: right;">3.622</td>
-<td style="text-align: right;">3.688</td>
-<td style="text-align: right;">1.912</td>
-<td style="text-align: right;">0.274</td>
-<td style="text-align: right;">0.271</td>
-<td style="text-align: right;">0.276</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">cloud3pm_imp_flagged</td>
-<td style="text-align: right;">3.524</td>
-<td style="text-align: right;">3.493</td>
-<td style="text-align: right;">3.556</td>
-<td style="text-align: right;">1.877</td>
-<td style="text-align: right;">0.284</td>
-<td style="text-align: right;">0.281</td>
-<td style="text-align: right;">0.286</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">evap_imp_flagged</td>
-<td style="text-align: right;">3.019</td>
-<td style="text-align: right;">2.993</td>
-<td style="text-align: right;">3.046</td>
-<td style="text-align: right;">1.738</td>
-<td style="text-align: right;">0.331</td>
-<td style="text-align: right;">0.328</td>
-<td style="text-align: right;">0.334</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">sunshine_imp_flagged</td>
-<td style="text-align: right;">2.917</td>
-<td style="text-align: right;">2.892</td>
-<td style="text-align: right;">2.942</td>
-<td style="text-align: right;">1.708</td>
-<td style="text-align: right;">0.343</td>
-<td style="text-align: right;">0.340</td>
-<td style="text-align: right;">0.346</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">humidity9am</td>
-<td style="text-align: right;">2.520</td>
-<td style="text-align: right;">2.500</td>
-<td style="text-align: right;">2.542</td>
-<td style="text-align: right;">1.588</td>
-<td style="text-align: right;">0.397</td>
-<td style="text-align: right;">0.393</td>
-<td style="text-align: right;">0.400</td>
+<td style="text-align: right;">2.486</td>
+<td style="text-align: right;">2.466</td>
+<td style="text-align: right;">2.507</td>
+<td style="text-align: right;">1.577</td>
+<td style="text-align: right;">0.402</td>
+<td style="text-align: right;">0.399</td>
+<td style="text-align: right;">0.406</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">humidity_ma7</td>
-<td style="text-align: right;">2.351</td>
-<td style="text-align: right;">2.332</td>
-<td style="text-align: right;">2.370</td>
-<td style="text-align: right;">1.533</td>
-<td style="text-align: right;">0.425</td>
-<td style="text-align: right;">0.422</td>
-<td style="text-align: right;">0.429</td>
+<td style="text-align: right;">2.318</td>
+<td style="text-align: right;">2.300</td>
+<td style="text-align: right;">2.337</td>
+<td style="text-align: right;">1.523</td>
+<td style="text-align: right;">0.431</td>
+<td style="text-align: right;">0.428</td>
+<td style="text-align: right;">0.435</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">dewpoint_9am</td>
-<td style="text-align: right;">2.088</td>
-<td style="text-align: right;">2.071</td>
-<td style="text-align: right;">2.104</td>
-<td style="text-align: right;">1.445</td>
-<td style="text-align: right;">0.479</td>
-<td style="text-align: right;">0.475</td>
-<td style="text-align: right;">0.483</td>
+<td style="text-align: left;">instability_index</td>
+<td style="text-align: right;">2.039</td>
+<td style="text-align: right;">2.023</td>
+<td style="text-align: right;">2.055</td>
+<td style="text-align: right;">1.428</td>
+<td style="text-align: right;">0.490</td>
+<td style="text-align: right;">0.487</td>
+<td style="text-align: right;">0.494</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">instability_index</td>
-<td style="text-align: right;">2.041</td>
-<td style="text-align: right;">2.025</td>
-<td style="text-align: right;">2.057</td>
-<td style="text-align: right;">1.429</td>
-<td style="text-align: right;">0.490</td>
-<td style="text-align: right;">0.486</td>
-<td style="text-align: right;">0.494</td>
+<td style="text-align: left;">dewpoint_9am</td>
+<td style="text-align: right;">2.036</td>
+<td style="text-align: right;">2.020</td>
+<td style="text-align: right;">2.052</td>
+<td style="text-align: right;">1.427</td>
+<td style="text-align: right;">0.491</td>
+<td style="text-align: right;">0.487</td>
+<td style="text-align: right;">0.495</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">2.033</td>
-<td style="text-align: right;">2.017</td>
-<td style="text-align: right;">2.049</td>
-<td style="text-align: right;">1.426</td>
-<td style="text-align: right;">0.492</td>
-<td style="text-align: right;">0.488</td>
-<td style="text-align: right;">0.496</td>
+<td style="text-align: right;">1.993</td>
+<td style="text-align: right;">1.978</td>
+<td style="text-align: right;">2.009</td>
+<td style="text-align: right;">1.412</td>
+<td style="text-align: right;">0.502</td>
+<td style="text-align: right;">0.498</td>
+<td style="text-align: right;">0.506</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">day_cos</td>
-<td style="text-align: right;">1.905</td>
-<td style="text-align: right;">1.891</td>
-<td style="text-align: right;">1.920</td>
-<td style="text-align: right;">1.380</td>
-<td style="text-align: right;">0.525</td>
-<td style="text-align: right;">0.521</td>
-<td style="text-align: right;">0.529</td>
+<td style="text-align: right;">1.864</td>
+<td style="text-align: right;">1.850</td>
+<td style="text-align: right;">1.878</td>
+<td style="text-align: right;">1.365</td>
+<td style="text-align: right;">0.536</td>
+<td style="text-align: right;">0.532</td>
+<td style="text-align: right;">0.541</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">1.825</td>
-<td style="text-align: right;">1.811</td>
-<td style="text-align: right;">1.839</td>
-<td style="text-align: right;">1.351</td>
-<td style="text-align: right;">0.548</td>
-<td style="text-align: right;">0.544</td>
-<td style="text-align: right;">0.552</td>
+<td style="text-align: right;">1.808</td>
+<td style="text-align: right;">1.795</td>
+<td style="text-align: right;">1.822</td>
+<td style="text-align: right;">1.345</td>
+<td style="text-align: right;">0.553</td>
+<td style="text-align: right;">0.549</td>
+<td style="text-align: right;">0.557</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">dewpoint_change</td>
-<td style="text-align: right;">1.591</td>
-<td style="text-align: right;">1.580</td>
-<td style="text-align: right;">1.602</td>
-<td style="text-align: right;">1.261</td>
-<td style="text-align: right;">0.629</td>
-<td style="text-align: right;">0.624</td>
-<td style="text-align: right;">0.633</td>
+<td style="text-align: right;">1.560</td>
+<td style="text-align: right;">1.549</td>
+<td style="text-align: right;">1.571</td>
+<td style="text-align: right;">1.249</td>
+<td style="text-align: right;">0.641</td>
+<td style="text-align: right;">0.636</td>
+<td style="text-align: right;">0.645</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">rainfall_ma7</td>
-<td style="text-align: right;">1.327</td>
-<td style="text-align: right;">1.318</td>
-<td style="text-align: right;">1.336</td>
-<td style="text-align: right;">1.152</td>
-<td style="text-align: right;">0.754</td>
-<td style="text-align: right;">0.749</td>
-<td style="text-align: right;">0.759</td>
+<td style="text-align: right;">1.325</td>
+<td style="text-align: right;">1.316</td>
+<td style="text-align: right;">1.333</td>
+<td style="text-align: right;">1.151</td>
+<td style="text-align: right;">0.755</td>
+<td style="text-align: right;">0.750</td>
+<td style="text-align: right;">0.760</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">gust_U_EW</td>
 <td style="text-align: right;">1.315</td>
-<td style="text-align: right;">1.307</td>
-<td style="text-align: right;">1.324</td>
+<td style="text-align: right;">1.306</td>
+<td style="text-align: right;">1.323</td>
 <td style="text-align: right;">1.147</td>
-<td style="text-align: right;">0.760</td>
-<td style="text-align: right;">0.755</td>
+<td style="text-align: right;">0.761</td>
+<td style="text-align: right;">0.756</td>
 <td style="text-align: right;">0.765</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">wind9am_U_EW</td>
-<td style="text-align: right;">1.300</td>
-<td style="text-align: right;">1.292</td>
-<td style="text-align: right;">1.308</td>
-<td style="text-align: right;">1.140</td>
-<td style="text-align: right;">0.769</td>
-<td style="text-align: right;">0.764</td>
-<td style="text-align: right;">0.774</td>
+<td style="text-align: right;">1.296</td>
+<td style="text-align: right;">1.288</td>
+<td style="text-align: right;">1.304</td>
+<td style="text-align: right;">1.138</td>
+<td style="text-align: right;">0.772</td>
+<td style="text-align: right;">0.767</td>
+<td style="text-align: right;">0.776</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">pressure_change</td>
-<td style="text-align: right;">1.206</td>
-<td style="text-align: right;">1.199</td>
-<td style="text-align: right;">1.213</td>
-<td style="text-align: right;">1.098</td>
-<td style="text-align: right;">0.829</td>
-<td style="text-align: right;">0.824</td>
-<td style="text-align: right;">0.834</td>
+<td style="text-align: left;">rain_yesterday</td>
+<td style="text-align: right;">1.185</td>
+<td style="text-align: right;">1.178</td>
+<td style="text-align: right;">1.192</td>
+<td style="text-align: right;">1.088</td>
+<td style="text-align: right;">0.844</td>
+<td style="text-align: right;">0.839</td>
+<td style="text-align: right;">0.849</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">rain_yesterday</td>
-<td style="text-align: right;">1.186</td>
-<td style="text-align: right;">1.179</td>
-<td style="text-align: right;">1.193</td>
-<td style="text-align: right;">1.089</td>
-<td style="text-align: right;">0.843</td>
-<td style="text-align: right;">0.838</td>
-<td style="text-align: right;">0.848</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">sun_humid_interaction</td>
-<td style="text-align: right;">1.177</td>
-<td style="text-align: right;">1.170</td>
-<td style="text-align: right;">1.184</td>
-<td style="text-align: right;">1.085</td>
+<td style="text-align: left;">pressure_change</td>
+<td style="text-align: right;">1.176</td>
+<td style="text-align: right;">1.169</td>
+<td style="text-align: right;">1.183</td>
+<td style="text-align: right;">1.084</td>
 <td style="text-align: right;">0.850</td>
 <td style="text-align: right;">0.845</td>
 <td style="text-align: right;">0.855</td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;">sun_humid_interaction</td>
+<td style="text-align: right;">1.174</td>
+<td style="text-align: right;">1.167</td>
+<td style="text-align: right;">1.181</td>
+<td style="text-align: right;">1.084</td>
+<td style="text-align: right;">0.852</td>
+<td style="text-align: right;">0.846</td>
+<td style="text-align: right;">0.857</td>
+</tr>
 <tr class="even">
 <td style="text-align: left;">day_sin</td>
-<td style="text-align: right;">1.144</td>
-<td style="text-align: right;">1.138</td>
-<td style="text-align: right;">1.151</td>
-<td style="text-align: right;">1.070</td>
-<td style="text-align: right;">0.874</td>
-<td style="text-align: right;">0.869</td>
-<td style="text-align: right;">0.879</td>
+<td style="text-align: right;">1.143</td>
+<td style="text-align: right;">1.136</td>
+<td style="text-align: right;">1.149</td>
+<td style="text-align: right;">1.069</td>
+<td style="text-align: right;">0.875</td>
+<td style="text-align: right;">0.870</td>
+<td style="text-align: right;">0.880</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">gust_V_NS</td>
-<td style="text-align: right;">1.137</td>
-<td style="text-align: right;">1.131</td>
-<td style="text-align: right;">1.144</td>
-<td style="text-align: right;">1.066</td>
-<td style="text-align: right;">0.879</td>
-<td style="text-align: right;">0.874</td>
-<td style="text-align: right;">0.884</td>
+<td style="text-align: right;">1.135</td>
+<td style="text-align: right;">1.128</td>
+<td style="text-align: right;">1.142</td>
+<td style="text-align: right;">1.065</td>
+<td style="text-align: right;">0.881</td>
+<td style="text-align: right;">0.876</td>
+<td style="text-align: right;">0.886</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">wind9am_V_NS</td>
-<td style="text-align: right;">1.136</td>
-<td style="text-align: right;">1.129</td>
-<td style="text-align: right;">1.142</td>
-<td style="text-align: right;">1.066</td>
-<td style="text-align: right;">0.881</td>
-<td style="text-align: right;">0.875</td>
-<td style="text-align: right;">0.886</td>
+<td style="text-align: right;">1.131</td>
+<td style="text-align: right;">1.125</td>
+<td style="text-align: right;">1.138</td>
+<td style="text-align: right;">1.064</td>
+<td style="text-align: right;">0.884</td>
+<td style="text-align: right;">0.879</td>
+<td style="text-align: right;">0.889</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">cloud_development</td>
-<td style="text-align: right;">1.044</td>
-<td style="text-align: right;">1.039</td>
-<td style="text-align: right;">1.050</td>
-<td style="text-align: right;">1.022</td>
-<td style="text-align: right;">0.958</td>
-<td style="text-align: right;">0.952</td>
-<td style="text-align: right;">0.963</td>
+<td style="text-align: right;">1.031</td>
+<td style="text-align: right;">1.026</td>
+<td style="text-align: right;">1.037</td>
+<td style="text-align: right;">1.015</td>
+<td style="text-align: right;">0.970</td>
+<td style="text-align: right;">0.964</td>
+<td style="text-align: right;">0.975</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">days_since_rain</td>
-<td style="text-align: right;">1.032</td>
-<td style="text-align: right;">1.027</td>
-<td style="text-align: right;">1.038</td>
-<td style="text-align: right;">1.016</td>
-<td style="text-align: right;">0.969</td>
-<td style="text-align: right;">0.963</td>
-<td style="text-align: right;">0.974</td>
+<td style="text-align: right;">1.004</td>
+<td style="text-align: right;">1.001</td>
+<td style="text-align: right;">1.015</td>
+<td style="text-align: right;">1.002</td>
+<td style="text-align: right;">0.996</td>
+<td style="text-align: right;">0.985</td>
+<td style="text-align: right;">0.999</td>
 </tr>
 </tbody>
 </table>
@@ -1548,9 +1508,9 @@ Figure&nbsp;4.4: Spearman correlations between raw rainfall and humidity variabl
 <span id="cb8-171"><a href="#cb8-171"></a><span class="co">#| warning: false</span></span>
 <span id="cb8-172"><a href="#cb8-172"></a></span>
 <span id="cb8-173"><a href="#cb8-173"></a>engineered_list <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-174"><a href="#cb8-174"></a>  <span class="fu">map</span>(\(dat) <span class="fu">engineer_features</span>(dat, <span class="at">for_modeling =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb8-174"><a href="#cb8-174"></a>  <span class="fu">map</span>(engineer_features)</span>
 <span id="cb8-175"><a href="#cb8-175"></a></span>
-<span id="cb8-176"><a href="#cb8-176"></a><span class="fu">render_vif_table</span>(engineered_list[[<span class="dv">1</span>]], <span class="at">already_engineered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-176"><a href="#cb8-176"></a><span class="fu">render_vif_table</span>(engineered_list[[<span class="dv">1</span>]])</span>
 <span id="cb8-177"><a href="#cb8-177"></a><span class="in">```</span></span>
 <span id="cb8-178"><a href="#cb8-178"></a></span>
 <span id="cb8-179"><a href="#cb8-179"></a></span>
