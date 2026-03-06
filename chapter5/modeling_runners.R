@@ -4,6 +4,7 @@ run_fits_sequential <- function(
   cond_formula,
   zi_formula,
   control,
+  dispformula,
   offset = 0L
 ) {
   disable_multi_threading()
@@ -23,6 +24,7 @@ run_fits_sequential <- function(
       path,
       cond_formula,
       zi_formula,
+      dispformula,
       control,
       strip = first_ok_done
     )
@@ -45,12 +47,19 @@ run_fits_parallel <- function(
   tmp_paths,
   cond_formula,
   zi_formula,
+  dispformula,
   control,
   workers = 4L
 ) {
   if (workers == 1L) {
     message("Running in sequential mode.")
-    return(run_fits_sequential(tmp_paths, cond_formula, zi_formula, control))
+    return(run_fits_sequential(
+      tmp_paths,
+      cond_formula,
+      zi_formula,
+      dispformula,
+      control
+    ))
   }
 
   total <- length(tmp_paths)
@@ -83,7 +92,14 @@ run_fits_parallel <- function(
           p(sprintf("[%d/%d] %s", global_i, total, basename(path)))
           # i == 1: keep full frame + rebind dat for DHARMa diagnostics
           # i  > 1: strip frame to save memory
-          fit_one_lean(path, cond_formula, zi_formula, control, strip = i != 1)
+          fit_one_lean(
+            path,
+            cond_formula,
+            zi_formula,
+            dispformula,
+            control,
+            strip = i != 1
+          )
         },
         future.seed = TRUE
       )
@@ -116,6 +132,7 @@ run_fits <- function(
   tmp_paths,
   cond_formula,
   zi_formula,
+  dispformula,
   control,
   parallel = FALSE,
   workers = 4L,
@@ -127,6 +144,7 @@ run_fits <- function(
       tmp_paths,
       cond_formula,
       zi_formula,
+      dispformula,
       control,
       offset = offset
     ))
@@ -136,6 +154,7 @@ run_fits <- function(
     tmp_paths = tmp_paths,
     cond_formula = cond_formula,
     zi_formula = zi_formula,
+    dispformula = dispformula,
     control = control,
     workers = workers,
     offset = offset
@@ -147,6 +166,7 @@ fit_and_pool <- function(
   cond_formula,
   zi_formula,
   datasets,
+  dispformula,
   control = glmmTMBControl(),
   preflight_n = 2L,
   fail_fast = TRUE,
@@ -172,6 +192,7 @@ fit_and_pool <- function(
       tmp_paths[seq_len(n_pre)],
       cond_formula,
       zi_formula,
+      dispformula,
       control,
       offset = 0L
     )
@@ -202,6 +223,7 @@ fit_and_pool <- function(
       tmp_paths = tmp_paths[(n_pre + 1):M],
       cond_formula = cond_formula,
       zi_formula = zi_formula,
+      dispformula = dispformula,
       control = control,
       parallel = parallel,
       workers = workers,

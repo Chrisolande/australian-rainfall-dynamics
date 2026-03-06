@@ -41,11 +41,14 @@ librarian::shelf(
   rstatix,
   scales,
   sjPlot,
+  DT,
   skimr,
   splines,
   tidymodels,
   tidyverse,
   viridis,
+  yardstick,
+  furrr,
   zoo
 )
 

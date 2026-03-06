@@ -44,7 +44,11 @@ select_model_features <- function(data, keep_location = TRUE) {
     "wind9am_rad",
     "gust_rad",
     "moisture_index",
-    "rain_today"
+    "rain_today",
+    "sunshine_imp_flagged",
+    "evap_imp_flagged",
+    "cloud3pm_imp_flagged",
+    "cloud9am_imp_flagged"
   )
 
   if (!keep_location) {

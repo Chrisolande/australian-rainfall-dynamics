@@ -15,6 +15,7 @@ fit_one_lean <- function(
   path,
   cond_formula,
   zi_formula,
+  dispformula,
   control,
   strip = TRUE
 ) {
@@ -30,6 +31,7 @@ fit_one_lean <- function(
       glmmTMB(
         formula = cond_formula,
         ziformula = zi_formula,
+        dispformula = dispformula,
         family = ziGamma(link = "log"),
         control = control,
         data = dat
