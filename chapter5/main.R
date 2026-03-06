@@ -19,99 +19,40 @@ engineered_list <- complete(imp_mids, action = "all") %>% map(engineer_features)
 
 
 # %%
-m0_null <- fit_and_pool(
-  cond_formula = rainfall ~ 1,
-  zi_formula = ~1,
-  datasets = engineered_list,
-  workers = 1L
+model_configs <- list(
+  list(name = "m1", cond = m1_cond, zi = zi_m1),
+  list(name = "m2", cond = m2_cond, zi = zi_m2),
+  list(name = "m3", cond = m3_cond, zi = zi_m3_to_m5),
+  list(name = "m4", cond = m4_cond, zi = zi_m3_to_m5),
+  list(name = "m5", cond = m5_cond, zi = zi_m3_to_m5)
 )
 
-
-saveRDS(m0_null, here::here("models", "m0_null.rds"))
-
-
-# %%
-m1_moisture <- fit_and_pool(
-  cond_formula = m1_moisture,
-  zi_formula = zi_m1,
-  datasets = engineered_list,
-  control = glmmTMB::glmmTMBControl(
-    optimizer = nlminb,
-    optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
-  ),
-  preflight_n = 0,
-  fail_fast = TRUE,
-  parallel = TRUE,
-  workers = 4
-)
-saveRDS(m1_moisture, here::here("models", "m1_moisture.rds"))
-
-# %%
-m2_temporal <- fit_and_pool(
-  cond_formula = m2_cond,
-  zi_formula = zi_m2,
-  datasets = engineered_list,
-  control = glmmTMB::glmmTMBControl(
-    optimizer = nlminb,
-    optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
-  ),
-  preflight_n = 0,
-  fail_fast = TRUE,
-  parallel = TRUE,
-  workers = 4
+control <- glmmTMB::glmmTMBControl(
+  optimizer = nlminb,
+  optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
 )
 
-saveRDS(m2_temporal, here::here("models", "m2_temporal.rds"))
+for (cfg in model_configs) {
+  cat(sprintf("Fitting %s...\n", cfg$name))
 
-# %%
-m2_history <- fit_and_pool(
-  cond_formula = m3_cond,
-  zi_formula = zi_m3_to_m5,
-  datasets = engineered_list,
-  control = glmmTMB::glmmTMBControl(
-    optimizer = nlminb,
-    optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
-  ),
-  preflight_n = 0,
-  fail_fast = TRUE,
-  parallel = TRUE,
-  workers = 4
-)
-saveRDS(m3_history, here::here("models", "m3_history.rds"))
+  fit <- fit_and_pool(
+    cond_formula = cfg$cond,
+    zi_formula = cfg$zi,
+    dispformula = ~1,
+    datasets = engineered_list,
+    control = control,
+    preflight_n = 0,
+    fail_fast = TRUE,
+    parallel = TRUE,
+    workers = 4
+  )
 
-# %%
-m4_energy <- fit_and_pool(
-  cond_formula = m4_cond,
-  zi_formula = zi_m3_to_m5,
-  datasets = engineered_list,
-  control = glmmTMB::glmmTMBControl(
-    optimizer = nlminb,
-    optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
-  ),
-  preflight_n = 0,
-  fail_fast = TRUE,
-  parallel = TRUE,
-  workers = 4
-)
+  saveRDS(fit, here::here("models", sprintf("%s.rds", cfg$name)))
+  cat(sprintf("Saved %s.rds\n", cfg$name))
 
-saveRDS(m4_energy, here::here("models", "m4_energy.rds"))
-
-# %%
-m5_wind <- fit_and_pool(
-  cond_formula = m5_cond,
-  zi_formula = zi_m3_to_m5,
-  datasets = engineered_list,
-  control = glmmTMB::glmmTMBControl(
-    optimizer = nlminb,
-    optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
-  ),
-  preflight_n = 0,
-  fail_fast = TRUE,
-  parallel = TRUE,
-  workers = 4
-)
-
-saveRDS(m5_wind, here::here("models", "m5_wind.rds"))
+  rm(fit)
+  gc()
+}
 
 
 # %%
