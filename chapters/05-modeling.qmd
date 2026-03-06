@@ -21,109 +21,107 @@ where $\pi_i = \text{logit}^{-1}(\mathbf{z}_i^\top \boldsymbol{\gamma})$ is the 
 Progressive model construction serves two purposes. It provides a transparent audit trail connecting each modelling decision to its empirical motivation. It also enables incremental comparison: each model can be evaluated against its predecessor to isolate the contribution of the newly added component.
 
 ```{r}
-#| label: setup-modeling
+#| label: setup
 #| include: false
 
-librarian::shelf(
-  tidyverse,
-  glmmTMB,
-  sjPlot,
-  DHARMa,
-  kableExtra,
-  gtsummary,
-  lmtest,
-  performance,
-  gt,
-  broom.mixed,
-  parallel,
-  splines,
-  pROC,
-  here
-)
-
-
-all_datasets <- readRDS(here::here("data", "all_datasets.rds"))
-
+# dependencies
+source(here::here("config.R"))
 source(here::here("utils.R"))
+source(here::here("chapter4", "feature_engineering.R"))
+source(here::here("chapter5", "modeling_core.R"))
+source(here::here("chapter5", "modeling_pool.R"))
+source(here::here("chapter5", "modeling_runners.R"))
+source(here::here("chapter5", "mitml_wrappers.R"))
+source(here::here("chapter5", "Reporting.R"))
 
+# data
 
-models <- list(
-  m0_null     = "m0_null_pooled.rds",
-  m1_moisture = "m1_moisture_pooled.rds",
-  m2_temporal = "m2_temporal_pooled.rds",
-  m3_history  = "m3_history_pooled.rds",
-  m4_energy   = "m4_energy_pooled.rds",
-  m5_wind     = "m5_wind_pooled.rds",
-  m6_mixed    = "m6_mixed_pooled.rds"
-) %>%
-  lapply(function(f) readRDS(here::here("models", f)))
+engineered_list <- complete(imp_mids, action = "all") %>% map(engineer_features)
 
-list2env(models, envir = .GlobalEnv)
+# zi formulas
+zi_m1 <- ~ humidity3pm + dewpoint_9am
+
+zi_m2 <- ~ humidity3pm + dewpoint_9am + rain_yesterday +
+  cloud_development + pressure_change
+
+zi_m3_to_m5 <- ~ humidity3pm + dewpoint_9am + rain_yesterday +
+  cloud_development + pressure_change + sunshine + evaporation
+
+zi_m6 <- ~ humidity3pm + dewpoint_9arun_fitsm + rain_yesterday +
+  cloud_development + 
+  pressure_change + 
+  sunshine + evaporation + 
+  diag(1 | location) + 
+  humidity_ma7 + day_cos + day_sin
+
+# conditional formulas
+m1_cond <- rainfall ~ 1 + humidity3pm + dewpoint_9am +
+  dewpoint_change + pressure_change
+
+m2_cond <- rainfall ~ 1 + humidity3pm + dewpoint_9am +
+  dewpoint_change + pressure_change +
+  day_cos + day_sin
+
+m3_cond <- rainfall ~ 1 + humidity3pm + dewpoint_9am +
+  dewpoint_change + pressure_change +
+  day_cos + day_sin +
+  rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday
+
+m4_cond <- rainfall ~ 1 + humidity3pm + dewpoint_9am +
+  dewpoint_change + pressure_change +
+  day_cos + day_sin +
+  rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday +
+  sunshine + evaporation + instability_index +
+  sun_humid_interaction + cloud_development
+
+m5_cond <- rainfall ~ 1 + humidity3pm + dewpoint_9am +
+  dewpoint_change + pressure_change +
+  day_cos + day_sin +
+  rainfall_ma7 + days_since_rain + humidity_ma7 + rain_yesterday +
+  sunshine + evaporation + instability_index +
+  sun_humid_interaction + cloud_development +
+  gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW
+
+m6_cond <- rainfall ~
+  humidity3pm + dewpoint_9am + day_sin +
+  rainfall_ma7 + humidity_ma7 +
+  ns(dewpoint_change) +
+  ns(pressure_change) +
+  rain_yesterday + sunshine + ns(evaporation) +
+  ns(instability_index, df = 3) +
+  sun_humid_interaction +
+  ns(gust_U_EW, df = 2) +
+  ns(wind9am_U_EW, df = 2) +
+  cloud_development +
+  diag(1 + humidity3pm + rain_yesterday + dewpoint_change | location)
+
+disp_formula = ~ humidity3pm + rainfall_ma7 + day_sin + day_cos +
+                pressure_change + dewpoint_change +
+                ns(evaporation) + ns(gust_U_EW, df = 2)
 
 ```
-
-```{r}
-#| label: def-fit-and-pool
-#| echo: true
-
-fit_and_pool <- function(cond_formula, zi_formula, datasets, 
-                         control = glmmTMBControl(), n_cores = 2L) {
-  
-  fits <- parallel::mclapply(seq_along(datasets), function(i) {
-    glmmTMB(
-      formula   = cond_formula,
-      ziformula = zi_formula,
-      family    = ziGamma(link = "log"),
-      control   = control,
-      data      = datasets[[i]]
-    )
-  }, mc.cores = n_cores)
-  
-  # Check for errors from mclapply
-  errors <- sapply(fits, inherits, "try-error")
-  if (any(errors)) {
-    warning(sprintf("%d model(s) failed to converge", sum(errors)))
-    fits <- fits[!errors]
-  }
-  
-  pooled <- fits %>%
-    mice::as.mira() %>%
-    mice::pool()
-  
-  fit_stats <- data.frame(
-    AIC    = mean(sapply(fits, AIC)),
-    BIC    = mean(sapply(fits, BIC)),
-    logLik = mean(sapply(fits, function(f) as.numeric(logLik(f))))
-  )
-  
-  list(
-    pooled    = summary(pooled, conf.int = TRUE),
-    fit_stats = fit_stats
-  )
-}
-```
-
 ---
 
 ## Model 0: Null Baseline
 
 ```{r}
-#| label: null-model-fit
+#| label: m0-fit
 #| echo: true
-#| message: false
 #| eval: false
 
 m0_null <- fit_and_pool(
   cond_formula = rainfall ~ 1,
   zi_formula = ~1,
-  datasets = all_datasets
+  datasets = engineered_list
 )
+saveRDS(m0_null, here::here("models", "m0_null.rds"))
 ```
 
 ```{r}
-#| label: null-model-output
+#| label: m0-output
+#| echo: false
 
-render_pooled_model_table(m0_null, "M0: Null Baseline")
+render_pooled_model_table(get_model("m0_null"), "M0: Null Baseline")
 ```
 
 Before introducing any covariates, we fit an intercept-only model whose sole purpose is to verify that the ZIG model structure correctly recovers the fundamental statistical properties of the dataset. A null model that fails this calibration check would undermine the validity of all subsequent extensions.
@@ -141,22 +139,43 @@ This model yields AIC = 461,669.7 and BIC = 461,699.3, serving as the reference 
 ## Model 1: Moisture and Pressure Dynamics
 
 ```{r}
-#| label: m1-moisture-code
+#| label: m1-fit
 #| echo: true
 #| eval: false
 
 m1_moisture <- fit_and_pool(
-  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change,
-  zi_formula   = ~ humidity3pm + dewpoint_9am
+  cond_formula = m1_cond,
+  zi_formula   = zi_m1,
+  datasets = engineered_list
 )
+
+saveRDS(m1_moisture, here::here("models", "m1_moisture.rds"))
 ```
 
 ```{r}
-#| label: m1-moisture-output
+#| label: m1-output
 #| echo: false
 
-render_pooled_model_table(m1_moisture, "Model 1: Moisture and Pressure Dynamics")
+render_pooled_model_table(get_model("m1_moisture"), "Model 1: Moisture and Pressure Dynamics")
 ```
+
+```{r}
+#| label: m1-vs-m0
+#| echo: false
+
+compare_models(
+  m_large = get_model("m1_moisture"),
+  m_small = get_model("m0_null")
+) %>% 
+  render_comparison_table(names = c("+ Moisture & Pressure", "Null Baseline"))
+```
+
+```{r}
+#| label: clean-up-1
+#| include: false
+evict_model("m0_null", "m1_moisture")
+```
+
 
 The correlation analysis in @sec-eda identified afternoon relative humidity and morning dewpoint temperature as among the strongest individual predictors of rainfall occurrence. That analysis also established that both the absolute level and the diurnal rate of change of sea-level pressure carry discriminating signal. Model 1 formalises these findings by introducing the four most physically direct atmospheric moisture and pressure drivers into the conditional intensity submodel, and a subset of the moisture indicators into the zero-inflation submodel.
 
@@ -178,17 +197,39 @@ The zero-inflation submodel reveals a meaningful asymmetry between the two moist
 #| eval: false
 
 m2_temporal <- fit_and_pool(
-  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change + pressure_change + day_cos + day_sin,
-  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + cloud_development + pressure_change
+  cond_formula = m2_cond,
+  zi_formula   = zi_m2,
+  datasets = engineered_list
 )
+
+saveRDS(m2_temporal, here::here("models", "m2_temporal.rds"))
 ```
 
 ```{r}
 #| label: m2-temporal-output
 #| echo: false
 
-render_pooled_model_table(m2_temporal, "Model 2: Seasonality and Persistence Effects")
+render_pooled_model_table(get_model("m2_temporal"), "Model 2: Seasonality and Persistence Effects")
 ```
+
+```{r}
+#| label: m2-vs-m1
+#| echo: false
+
+compare_models(
+  m_large = get_model("m2_temporal"),
+  m_small = get_model("m1_moisture")
+) %>% 
+  render_comparison_table(names = c("+ Seasonality & Persistence", "Moisture Only"))
+
+evict_model("m1_moisture", "m2_temporal")
+```
+```{r}
+#| label: clean-up-2
+#| include: false
+evict_model("m1_moisture", "m2_temporal")
+```
+
 
 Having established moisture and pressure as foundational drivers, Model 2 incorporates the temporal structure identified in @sec-eda. The Markov Chain analysis in @sec-markov demonstrated that the previous day's rain state carries a moderate but practically significant effect (Cramér's $V \approx 0.31$), and the seasonal decomposition confirmed that both frequency and intensity of rainfall follow a smooth annual cycle. Circular sine and cosine encodings of the day-of-year enter the conditional intensity submodel, capturing this periodicity without imposing a discontinuity at the calendar year boundary. The binary indicator `rain_yesterday`, the `cloud_development` index, and `pressure_change` are added to the zero-inflation component to account for daily persistence and synoptic-scale dynamics in the occurrence process.
 
@@ -205,24 +246,41 @@ The `cloud_development` term in the zero-inflation submodel ($\hat{\beta} = 0.11
 ## Model 3: Accumulated Weather History
 
 ```{r}
-#| label: m3-history-code
+#| label: m3-history
 #| echo: true
 #| eval: false
 
 m3_history <- fit_and_pool(
-  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
-                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
-                 days_since_rain + humidity_ma7 + rain_yesterday,
-  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
-                 cloud_development + pressure_change
+  cond_formula = m3_cond,
+  zi_formula   = stable_zi,
+  datasets = engineered_list
 )
+
+saveRDS(m3_history, here::here("models", "m3_history.rds"))
 ```
 
 ```{r}
 #| label: m3-history-output
 #| echo: false
 
-render_pooled_model_table(m3_history, "Model 3: Accumulated Weather History")
+render_pooled_model_table(get_model("m3_history"), "Model 3: Accumulated Weather History")
+```
+
+```{r}
+#| label: m3-vs-m2
+#| echo: false
+
+compare_models(
+  m_large = get_model("m3_history"),
+  m_small = get_model("m2_temporal")
+) %>% 
+  render_comparison_table(names = c("+ Accumulated History", "Seasonality & Persistence"))
+```
+
+```{r}
+#| label: clean-up-3
+#| include: false
+evict_model("m2_temporal", "m3_history")
 ```
 
 While Model 2 captured the binary rain state of the previous day, it does not represent the *accumulated* atmospheric condition over a longer antecedent window. The dry spell analysis in @sec-dry-spell demonstrated that rainfall probability decays as dry spells lengthen, and the moving average analysis showed that 7-day smoothed signals substantially reduce the stochastic variance of both the rainfall and humidity series. Model 3 introduces these medium-horizon history features (`rainfall_ma7`, `humidity_ma7`, `days_since_rain`, and the binary `rain_yesterday`) into the conditional intensity submodel.
@@ -242,27 +300,45 @@ Imputation provenance flags for the four ghost-sensor variables (`sunshine`, `ev
 ## Model 4: Thermodynamic Energy and the Rain Corner Interaction
 
 ```{r}
-#| label: m4-energy-code
+#| label: m4-energy
 #| echo: true
 #| eval: false
 
 m4_energy <- fit_and_pool(
-  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
-                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
-                 days_since_rain + humidity_ma7 + rain_yesterday +
-                 sunshine + evaporation + instability_index + 
-                 sun_humid_interaction + cloud_development,
-  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
-                 cloud_development + pressure_change
+  cond_formula = m4_cond,
+  zi_formula   = zi_m3_to_m5,
+  datasets = engineered_list
 )
+
+saveRDS(m4_energy, here::here("models", "m4_energy.rds"))
 ```
 
 ```{r}
 #| label: m4-energy-output
 #| echo: false
 
-render_pooled_model_table(m4_energy, "Model 4: Thermodynamic Energy and Interactions")
+render_pooled_model_table(get_model("m4_energy"), "Model 4: Thermodynamic Energy and Interactions")
 ```
+
+```{r}
+#| label: m4-vs-m3
+#| echo: false
+
+compare_models(
+  m_large = get_model("m4_energy"),
+  m_small = get_model("m3_history")
+) %>% 
+  render_comparison_table(names = c("+ Thermodynamics & Interaction", "Accumulated History"))
+
+
+
+```
+```{r}
+#| label: clean-up-4
+#| include: false
+evict_model("m3_history", "m4_energy")
+```
+
 
 The bivariate density analysis in @sec-bivariate-density identified a structural non-linearity in the joint distribution of afternoon humidity and sunshine hours: intense rainfall occurs almost exclusively in the region of the bivariate distribution where humidity is high and sunshine is simultaneously low. An additive model is structurally incapable of representing this conditional geometry. Model 4 introduces the multiplicative `sun_humid_interaction` term alongside a broader set of thermodynamic energy predictors (`sunshine`, `evaporation`, `instability_index`, and `cloud_development`) to formalise the physical hypothesis that convective rainfall arises from the conjunction of available moisture and atmospheric instability rather than from either factor in isolation.
 
@@ -284,24 +360,40 @@ The entry of the interaction term and the thermodynamic covariates produces a ma
 #| eval: false
 
 m5_wind <- fit_and_pool(
-  cond_formula = rainfall ~ 1 + humidity3pm + dewpoint_9am + dewpoint_change +
-                 pressure_change + day_cos + day_sin + rainfall_ma7 + 
-                 days_since_rain + humidity_ma7 + rain_yesterday +
-                 sunshine + evaporation + instability_index + 
-                 sun_humid_interaction + cloud_development +
-                 gust_U_EW + gust_V_NS + wind9am_V_NS + wind9am_U_EW,
-  zi_formula   = ~ humidity3pm + dewpoint_9am + rain_yesterday + 
-                 cloud_development + pressure_change
+  cond_formula = m5_cond,
+  zi_formula   = zi_m3_to_m5,
+  datasets = engineered_list
 )
+
+saveRDS(m5_wind, here::here("models", "m5_wind.rds"))
 ```
 
 ```{r}
 #| label: m5-wind-output
 #| echo: false
 
-render_pooled_model_table(m5_wind, "Model 5: Wind Vector Dynamics")
+render_pooled_model_table(get_model("m5_wind"), "Model 5: Wind Vector Dynamics")
 ```
 
+```{r}
+#| label: m5-vs-m4
+#| echo: false
+
+compare_models(
+  m_large = get_model("m5_wind"),
+  m_small = get_model("m4_energy")
+) %>% 
+  render_comparison_table(names = c("+ Wind Vectors", "Thermodynamics & Interaction"))
+
+
+```
+
+```{r}
+#| label: clean-up-5
+#| include: false
+
+evict_model("m4_energy", "m5_wind")
+```
 Model 5 tests whether the directional provenance of air masses provides additional information about rainfall intensity beyond the instantaneous thermodynamic state of the atmosphere. As developed in @sec-feature-eng, wind direction is encoded as orthogonal zonal (U, east-west) and meridional (V, north-south) vector components, preserving the circular geometry of directional data and avoiding the discontinuity that would arise from treating compass bearing as a linear predictor. Both peak gust components and the 9:00 AM surface wind vectors are included, allowing the model to distinguish between the background synoptic circulation at day onset and the turbulent dynamics associated with active rainfall systems.
 
 The AIC falls to 409,149.2, a reduction of 652.4 points relative to Model 4 (BIC = 409,415.5). This is the smallest stepwise improvement in the sequence. The BIC penalty for the four additional parameters is relatively restrictive, indicating that the marginal gain should be interpreted in the context of the physical interpretability of the effects rather than purely through information criteria.
@@ -322,33 +414,48 @@ Coefficients for the moisture, thermodynamic, and interaction terms established 
 #| eval: false
 
 m6_mixed <- fit_and_pool(
-  cond_formula = rainfall ~
-    humidity3pm + dewpoint_9am + dewpoint_change +
-    pressure_change + day_cos + day_sin +
-    rainfall_ma7 + days_since_rain + humidity_ma7 +
-    rain_yesterday + sunshine + evaporation +
-    instability_index + sun_humid_interaction +
-    cloud_development + gust_U_EW + gust_V_NS +
-    wind9am_V_NS + wind9am_U_EW +
-    diag(1 + humidity3pm + rain_yesterday + dewpoint_change | location),
-  zi_formula = ~ humidity3pm + dewpoint_9am + rain_yesterday +
-    cloud_development + pressure_change + sunshine +
-    evaporation + ns(days_since_rain, df = 4) +
-    (1 | location) + humidity_ma7 + day_cos + day_sin,
-  datasets = all_datasets,
-  control  = glmmTMBControl(
+  cond_formula = m6_cond,
+  zi_formula   = zi_m6,
+  dispformula = disp_formula,
+  datasets     = engineered_list,
+  control      = glmmTMBControl(
     optimizer = nlminb,
-    optCtrl   = list(iter.max = 500, eval.max = 1000)
+    optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
   ),
-  n_cores = 3L
-)
+  preflight_n = 0,
+  fail_fast   = TRUE,
+  parallel    = TRUE,
+  workers     = 4L
+) 
+
+saveRDS(m6_mixed, here::here("models", "m6_mixed.rds"))
 ```
 
 ```{r}
 #| label: m6-mixed-output
 #| echo: false
 
-render_pooled_model_table(m6_mixed, "M6: Fixed Effects Model")
+render_pooled_model_table(get_model("m6_mixed"), "M6: Fixed Effects Model")
+```
+
+```{r}
+#| label: m6-vs-m5
+#| echo: false
+
+compare_models(
+  m_large = get_model("m6_mixed"),
+  m_small = get_model("m5_wind")
+) %>% 
+  render_comparison_table(names = c("+ Random Effects", "Wind Vectors"))
+
+
+```
+
+```{r}
+#| label: clean-up-6
+#| include: false
+
+evict_model("m5_wind", "m6_mixed")
 ```
 
 All five preceding models implicitly assume that the relationship between each atmospheric predictor and rainfall is spatially uniform, as though the sensitivity of rainfall intensity to afternoon humidity were identical in coastal Sydney, the tropical far north, and the arid interior. For a continent as climatologically heterogeneous as Australia, spanning tropical monsoon, subtropical semi-arid, temperate oceanic, and Mediterranean regimes, this homogeneity assumption is difficult to defend. The EDA in @sec-eda confirmed that both mean rainfall levels and seasonal patterns vary substantially across the station network.

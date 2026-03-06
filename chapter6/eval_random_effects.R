@@ -135,3 +135,4 @@ plot_location_effects <- function(model = m6_mixed) {
       plot.margin = margin(15, 15, 15, 15)
     )
 }
+

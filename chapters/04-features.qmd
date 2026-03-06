@@ -17,36 +17,8 @@ Rolling means over 3-day and 7-day trailing windows are computed for both rainfa
 #| label: setup-features
 #| include: false
 
-librarian::shelf(
-  tidyverse,
-  zoo,
-  ggridges,
-  scales,
-  kableExtra,
-  performance,
-  here
-)
-
-df_final <- read_csv(here::here("data", "df_final.csv"))
-imp_mids <- readRDS(here::here("data", "imp_mids.rds"))
+source(here::here("config.R"))
 source(here::here("utils.R"))
-
-feat_theme <- theme_classic(base_size = 11) +
-  theme(
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 10),
-    axis.line = element_line(colour = "grey40"),
-    panel.grid.major = element_line(colour = "grey93", linewidth = 0.35),
-    panel.grid.minor = element_blank(),
-    plot.title = element_text(face = "bold", size = 12),
-    plot.subtitle = element_text(size = 9, colour = "grey40"),
-    plot.caption = element_text(size = 7, colour = "grey50", hjust = 0),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold", size = 9),
-    legend.text = element_text(size = 8),
-    axis.title = element_text(size = 10),
-    axis.text = element_text(size = 9)
-  )
 ```
 
 
@@ -55,16 +27,9 @@ feat_theme <- theme_classic(base_size = 11) +
 #| echo: true
 #| message: false
 
-ma_data <- df_final %>%
-  group_by(location) %>%
-  arrange(date) %>%
-  mutate(
-    rainfall_ma3 = rollmean(rainfall, k = 3, fill = NA, align = "right"),
-    rainfall_ma7 = rollmean(rainfall, k = 7, fill = NA, align = "right"),
-    humidity_ma3 = rollmean(humidity3pm, k = 3, fill = NA, align = "right"),
-    humidity_ma7 = rollmean(humidity3pm, k = 7, fill = NA, align = "right")
-  ) %>%
-  ungroup()
+source(here::here("chapter4", "moving_averages.R"))
+ma_dat <- build_ma_data()
+
 ```
 
 ### Noise Reduction
@@ -77,58 +42,7 @@ ma_data <- df_final %>%
 #| echo: true
 #| warning: false
 
-p1_data <- ma_data %>%
-  filter(rainfall > 0) %>%
-  select(rainfall, rainfall_ma3, rainfall_ma7) %>%
-  pivot_longer(everything(), names_to = "metric", values_to = "value") %>%
-  filter(!is.na(value)) %>%
-  mutate(
-    metric = factor(
-      metric,
-      levels = c("rainfall", "rainfall_ma3", "rainfall_ma7"),
-      labels = c("Raw daily", "3-day MA", "7-day MA")
-    )
-  )
-
-ggplot(p1_data, aes(x = value, fill = metric, colour = metric)) +
-  geom_density(alpha = 0.38, linewidth = 0.8) +
-  annotation_logticks(sides = "b", colour = "grey55", linewidth = 0.3) +
-  scale_x_log10(
-    breaks = c(0.1, 0.5, 1, 5, 10, 50, 100),
-    labels = label_number(suffix = " mm"),
-    expand = expansion(mult = c(0.02, 0.02))
-  ) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-  scale_fill_manual(
-    values = c(
-      "Raw daily" = "#C0392B",
-      "3-day MA" = "#E67E22",
-      "7-day MA" = "#1A7A4A"
-    )
-  ) +
-  scale_colour_manual(
-    values = c(
-      "Raw daily" = "#C0392B",
-      "3-day MA" = "#E67E22",
-      "7-day MA" = "#1A7A4A"
-    )
-  ) +
-  labs(
-    title = "Moving Averages Filter High-Frequency Noise",
-    subtitle = "Raw rainfall (red) is severely right-skewed. 
-    The 7-day average (green) concentrates 
-    probability mass near the regime centre.",
-    x = "Rainfall intensity (log scale)",
-    y = "Density",
-    caption = "Restricted to non-zero observations. Log scale on x-axis.",
-    fill = NULL,
-    colour = NULL
-  ) +
-  feat_theme +
-  theme(
-    legend.position = "top",
-    legend.key.width = unit(0.8, "cm")
-  )
+plot_signal_extraction(ma_dat)
 ```
 
 ```{r}
@@ -139,50 +53,7 @@ ggplot(p1_data, aes(x = value, fill = metric, colour = metric)) +
 #| echo: true
 #| warning: false
 
-variance_data <- ma_data %>%
-  filter(rainfall > 0) %>%
-  summarise(
-    Raw = sd(rainfall, na.rm = TRUE),
-    `3-day MA` = sd(rainfall_ma3, na.rm = TRUE),
-    `7-day MA` = sd(rainfall_ma7, na.rm = TRUE)
-  ) %>%
-  pivot_longer(everything(), names_to = "metric", values_to = "sd") %>%
-  mutate(
-    metric = factor(metric, levels = c("Raw", "3-day MA", "7-day MA")),
-    variance_reduction = (sd[metric == "Raw"] - sd) / sd[metric == "Raw"] * 100
-  )
-
-ggplot(variance_data, aes(metric, sd, fill = metric)) +
-  geom_col(alpha = 0.85, width = 0.58) +
-  geom_text(
-    aes(label = sprintf("%.1f mm\n(%.0f%% reduction)", sd, variance_reduction)),
-    vjust = -0.35,
-    fontface = "bold",
-    size = 3.6,
-    colour = "grey15"
-  ) +
-  scale_fill_manual(
-    values = c(
-      "Raw" = "#C0392B",
-      "3-day MA" = "#E67E22",
-      "7-day MA" = "#1A7A4A"
-    )
-  ) +
-  scale_y_continuous(
-    expand = expansion(mult = c(0, 0.18)),
-    breaks = pretty_breaks(n = 5)
-  ) +
-  labs(
-    title = "Variance Reduction by Moving Average Window",
-    subtitle = "Standard deviation falls as the averaging window widens.",
-    y = "Standard deviation (mm)",
-    x = NULL
-  ) +
-  feat_theme +
-  theme(
-    legend.position = "none",
-    panel.grid.major.x = element_blank()
-  )
+plot_variance_reduction(ma_dat)
 ```
 
 ```{r}
@@ -193,52 +64,7 @@ ggplot(variance_data, aes(metric, sd, fill = metric)) +
 #| echo: true
 #| warning: false
 
-ridge_data <- ma_data %>%
-  filter(rainfall > 0) %>%
-  select(rainfall, rainfall_ma3, rainfall_ma7) %>%
-  pivot_longer(everything(), names_to = "metric", values_to = "value") %>%
-  filter(!is.na(value)) %>%
-  mutate(
-    metric = factor(
-      metric,
-      levels = c("rainfall_ma7", "rainfall_ma3", "rainfall"),
-      labels = c("7-day MA", "3-day MA", "Raw daily")
-    )
-  )
-
-ggplot(ridge_data, aes(value, metric, fill = metric)) +
-  geom_density_ridges(
-    alpha = 0.72,
-    scale = 1.5,
-    quantile_lines = TRUE,
-    quantiles = 2,
-    colour = "grey30",
-    linewidth = 0.3
-  ) +
-  scale_x_log10(
-    breaks = c(1, 5, 10, 25, 50, 100),
-    labels = c("1", "5", "10", "25", "50", "100"),
-    expand = expansion(mult = c(0.02, 0.04))
-  ) +
-  scale_fill_manual(
-    values = c(
-      "Raw daily" = "#C0392B",
-      "3-day MA" = "#E67E22",
-      "7-day MA" = "#1A7A4A"
-    )
-  ) +
-  labs(
-    title = "Distribution Tightening with Moving Averages",
-    subtitle = "Peaks become sharper and tails compress
-    as window size increases. Median lines are stable.",
-    x = "Rainfall (mm, log scale)",
-    y = NULL
-  ) +
-  feat_theme +
-  theme(
-    legend.position = "none",
-    panel.grid.major.y = element_blank()
-  )
+plot_ma_ridgeline(ma_dat)
 ```
 
 The density plots in @fig-signal-extraction make the smoothing effect immediately apparent. The raw daily distribution is severely right-skewed with a long tail reaching into the hundreds of millimetres, a consequence of the extreme kurtosis documented in @sec-eda. The 3-day moving average begins to suppress this variance, and the 7-day average produces a substantially more concentrated distribution whose peak is considerably higher and whose tails are dramatically shorter.
@@ -255,76 +81,8 @@ Quantitatively (@fig-variance-reduction), the standard deviation of rainfall int
 #| echo: true
 #| warning: false
 
-cor_data <- ma_data %>%
-  select(
-    rainfall,
-    rainfall_ma3,
-    rainfall_ma7,
-    humidity3pm,
-    humidity_ma3,
-    humidity_ma7
-  ) %>%
-  cor(use = "complete.obs", method = "spearman") %>%
-  as.data.frame() %>%
-  rownames_to_column("var1") %>%
-  pivot_longer(-var1, names_to = "var2", values_to = "correlation") %>%
-  mutate(
-    var1 = factor(
-      var1,
-      levels = c(
-        "rainfall",
-        "rainfall_ma3",
-        "rainfall_ma7",
-        "humidity3pm",
-        "humidity_ma3",
-        "humidity_ma7"
-      )
-    ),
-    var2 = factor(
-      var2,
-      levels = c(
-        "rainfall",
-        "rainfall_ma3",
-        "rainfall_ma7",
-        "humidity3pm",
-        "humidity_ma3",
-        "humidity_ma7"
-      )
-    )
-  )
-
-ggplot(cor_data, aes(var2, var1, fill = correlation)) +
-  geom_tile(colour = "white", linewidth = 0.8) +
-  geom_text(
-    aes(label = sprintf("%.2f", correlation)),
-    size = 3.2,
-    colour = "grey15",
-    fontface = "plain"
-  ) +
-  scale_fill_gradient2(
-    low = "#2166AC",
-    mid = "white",
-    high = "#B2182B",
-    midpoint = 0,
-    limits = c(-1, 1),
-    name = "Spearman\nr"
-  ) +
-  scale_x_discrete(expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0)) +
-  labs(
-    title = "Correlations: Raw Variables vs. Moving Averages",
-    subtitle = "High within-variable correlations warn of multicollinearity for linear model families.",
-    x = NULL,
-    y = NULL
-  ) +
-  feat_theme +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid.major = element_blank(),
-    legend.position = "right",
-    legend.key.height = unit(1.1, "cm"),
-    legend.key.width = unit(0.4, "cm")
-  )
+source(here::here("chapter4", "ma_correlation.R"))
+plot_ma_correlation(ma_dat)
 ```
 
 The noise-reduction benefit of moving averages comes at a cost. As shown in @fig-ma-correlation, the 3-day and 7-day humidity moving averages share a Spearman correlation of 0.89, and the equivalent rainfall moving averages are similarly collinear with each other and with the raw series. Including multiple moving average windows alongside their source variables in the same linear model would produce a near-singular design matrix, inflating coefficient standard errors and making the model numerically unstable.
@@ -345,90 +103,7 @@ The following pipeline implements the complete set of features motivated by the 
 #| message: false
 #| warning: false
 
-compass_lookup <- c(
-  "N" = 0,
-  "NNE" = 22.5,
-  "NE" = 45,
-  "ENE" = 67.5,
-  "E" = 90,
-  "ESE" = 112.5,
-  "SE" = 135,
-  "SSE" = 157.5,
-  "S" = 180,
-  "SSW" = 202.5,
-  "SW" = 225,
-  "WSW" = 247.5,
-  "W" = 270,
-  "WNW" = 292.5,
-  "NW" = 315,
-  "NNW" = 337.5
-)
-
-# Perform Feature Engineering on the entire datasets in preparation for Rubin's rules
-precompute_datasets <- function(mids_obj, compass_lookup) {
-  lapply(seq_len(mids_obj$m), function(i) {
-    mice::complete(mids_obj, action = i) %>%
-      group_by(location) %>%
-      arrange(date) %>%
-      mutate(
-        # Lag the rolling window by one additional day to prevent same-day leakage
-        rainfall_ma7 = lag(
-          rollmean(rainfall, k = 7, fill = NA, align = "right"),
-          n = 1
-        ),
-        humidity_ma7 = lag(
-          rollmean(humidity3pm, k = 7, fill = NA, align = "right"),
-          1
-        ),
-
-        # Dry spell counter
-        rain_event_id = cumsum(lag(rainfall, 1) > 0),
-        days_since_rain = row_number() - match(rain_event_id, rain_event_id),
-
-        # First-order Markov state
-        rain_yesterday = lag(rain_today, n = 1)
-      ) %>%
-      ungroup() %>%
-      filter(!is.na(rain_yesterday), !is.na(rainfall_ma7)) %>%
-      select(-rain_event_id) %>%
-      mutate(
-        # Cyclical annual encoding
-        day_of_year = yday(date),
-        day_sin = sin(2 * pi * day_of_year / 365),
-        day_cos = cos(2 * pi * day_of_year / 365),
-
-        # Mean-centred interaction term (the "Rain Corner")
-        sunshine = scale(sunshine, center = TRUE, scale = FALSE),
-        humidity3pm = scale(humidity3pm, center = TRUE, scale = FALSE),
-        sun_humid_interaction = as.numeric(sunshine * humidity3pm),
-
-        # Meteorological derived indices
-        pressure_change = pressure3pm - pressure9am,
-        dewpoint_9am = temp9am - ((100 - humidity9am) / 5),
-        dewpoint_3pm = temp3pm - ((100 - humidity3pm) / 5),
-        dewpoint_change = dewpoint_3pm - dewpoint_9am,
-        moisture_index = humidity3pm * (1 - sunshine / 15),
-        instability_index = (1020 - pressure3pm) * humidity3pm / 100,
-        cloud_development = pmax(0, cloud3pm - cloud9am),
-
-        # Circular wind vector decomposition
-        gust_rad = compass_lookup[wind_gust_dir] * pi / 180,
-        gust_V_NS = wind_gust_speed * cos(gust_rad),
-        gust_U_EW = wind_gust_speed * sin(gust_rad),
-        wind9am_rad = compass_lookup[wind_dir9am] * pi / 180,
-        wind9am_V_NS = wind_speed9am * cos(wind9am_rad),
-        wind9am_U_EW = wind_speed9am * sin(wind9am_rad),
-
-        # Convert ghost sensors to factors
-        sunshine_imp_flagged = as.factor(sunshine_imp_flagged),
-        evap_imp_flagged = as.factor(evap_imp_flagged),
-        cloud3pm_imp_flagged = as.factor(cloud3pm_imp_flagged),
-        cloud9am_imp_flagged = as.factor(cloud9am_imp_flagged)
-      ) %>%
-      select_model_features(keep_location = TRUE) %>%
-      scale_data()
-  })
-}
+source(here::here("chapter4", "feature_engineering.R"))
 ```
 
 The pipeline is organised into four conceptually distinct transformations, each addressing a specific structural property identified in the EDA.
@@ -479,42 +154,13 @@ where $v$ is wind speed (in km/h) and $\theta$ is the compass bearing in radians
 #| message: false
 #| warning: false
 
-df_wo_location <- select_model_features(df_final, keep_location = FALSE)
-vif_results <- mc_check(df_wo_location)
+engineered_list <- complete(imp_mids, action = "all") %>%
+  map(engineer_features)
 
-vif_results %>%
-  as_tibble() %>%
-  arrange(desc(VIF)) %>%
-  kable(
-    caption = "Variance Inflation Factor (VIF) for Selected Predictors",
-    digits = 3,
-    booktabs = TRUE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    latex_options = c("hold_position")
-  )
-
-df_scaled <- df_wo_location %>%
-  scale_data()
-
-
+render_vif_table(engineered_list[[1]])
 ```
 
 
-```{r}
-#| label: persist-datasets
-#| echo: true
-#| message: false
-#| warning: false
-
-all_datasets <- precompute_datasets(imp_mids, compass_lookup)
-
-write_csv(df_scaled, here::here("data", "df_scaled.csv"))
-write_csv(df_final, here::here("data", "df_engineered.csv"))
-saveRDS(all_datasets, here::here("data", "all_datasets.rds"))
-```
 Feature engineering that introduces interaction terms, composite indices, and temporal aggregates necessarily creates new correlational structure in the design matrix. After constructing the full feature set, it is essential to verify that no predictor has become so collinear with the others that its coefficient in a linear model would be effectively unidentifiable. We use the Variance Inflation Factor (VIF) for this diagnosis. The VIF for a given predictor quantifies how much its coefficient variance is inflated relative to what it would be in an orthogonal design: a VIF of $k$ indicates that the standard error of that coefficient is $\sqrt{k}$ times larger than it would be if the predictor were uncorrelated with all others. Values above 10 are conventionally treated as indicating severe collinearity requiring remediation.
 
 **Cyclical and wind components.** The `day_sin`, `day_cos`, `gust_V_NS`, and `gust_U_EW` features all show VIF values well below 3. This confirms that the decomposition strategies, sine/cosine for the annual cycle and U/V projection for wind direction, successfully converted circular variables into continuous representations without introducing redundancy. Each component carries information that is approximately orthogonal to its pair.
