@@ -66,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/03-eda.html" rel="next">
+<link href="../chapters/03-sensitivity.html" rel="next">
 <link href="../chapters/01-intro.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -114,35 +114,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -375,8 +346,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/03-eda.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
+  <a href="../chapters/03-sensitivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Imputation Sensitivity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04-eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span></a>
   </div>
 </li>
       </ul>
@@ -392,8 +369,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/04-features.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Feature Engineering</span></span></a>
+  <a href="../chapters/05-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Feature Engineering</span></span></a>
   </div>
 </li>
       </ul>
@@ -409,28 +386,28 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/05-modeling.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
+  <a href="../chapters/06-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Modelling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/06-evaluation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
+  <a href="../chapters/07-evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Evaluation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/07-model-selection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
+  <a href="../chapters/08-model-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Selection</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/08-conclusion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  <a href="../chapters/09-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
     </ul>
@@ -460,15 +437,6 @@ window.Quarto = {
   <li><a href="#ghost-sensor-flagging" id="toc-ghost-sensor-flagging" class="nav-link" data-scroll-target="#ghost-sensor-flagging"><span class="header-section-number">2.4.3</span> Ghost Sensor Flagging</a></li>
   </ul></li>
   <li><a href="#post-imputation-dataset-properties" id="toc-post-imputation-dataset-properties" class="nav-link" data-scroll-target="#post-imputation-dataset-properties"><span class="header-section-number">2.5</span> Post-Imputation Dataset Properties</a></li>
-  <li><a href="#sec-sensitivity" id="toc-sec-sensitivity" class="nav-link" data-scroll-target="#sec-sensitivity"><span class="header-section-number">2.6</span> Imputation Sensitivity Analysis</a>
-  <ul class="collapse">
-  <li><a href="#sec-sensitivity-setup" id="toc-sec-sensitivity-setup" class="nav-link" data-scroll-target="#sec-sensitivity-setup"><span class="header-section-number">2.6.1</span> Setup</a></li>
-  <li><a href="#sec-convergence" id="toc-sec-convergence" class="nav-link" data-scroll-target="#sec-convergence"><span class="header-section-number">2.6.2</span> Algorithmic Convergence</a></li>
-  <li><a href="#sec-dist-fidelity" id="toc-sec-dist-fidelity" class="nav-link" data-scroll-target="#sec-dist-fidelity"><span class="header-section-number">2.6.3</span> Distributional Fidelity</a></li>
-  <li><a href="#sec-between-variance" id="toc-sec-between-variance" class="nav-link" data-scroll-target="#sec-between-variance"><span class="header-section-number">2.6.4</span> Between-Imputation Variance</a></li>
-  <li><a href="#sec-rubins-rules" id="toc-sec-rubins-rules" class="nav-link" data-scroll-target="#sec-rubins-rules"><span class="header-section-number">2.6.5</span> Rubin’s Rules Variance Decomposition</a></li>
-  <li><a href="#sec-sensitivity-summary" id="toc-sec-sensitivity-summary" class="nav-link" data-scroll-target="#sec-sensitivity-summary"><span class="header-section-number">2.6.6</span> Diagnostic Summary</a></li>
-  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/chapters/02-data-prep.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -1215,355 +1183,11 @@ Figure&nbsp;2.2: Density of rainfall amounts on days where sunshine data is pres
 <p><strong>Physical bounds enforcement.</strong> Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when <code>rule = 2</code> extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.</p>
 <p><strong>Outcome independence.</strong> The weather-conditionality test in <a href="#sec-weather-conditionality" class="quarto-xref"><span>Section 2.3.4</span></a> confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</p>
 <p><strong>Wind direction coherence.</strong> Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.</p>
-<p><strong>Provenance transparency.</strong> Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in <a href="#sec-sensitivity" class="quarto-xref"><span>Section 2.6</span></a>.</p>
-</section>
-<section id="sec-sensitivity" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="sec-sensitivity"><span class="header-section-number">2.6</span> Imputation Sensitivity Analysis</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Section Context.</strong> The full <code>mids</code> object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Three analyses operate directly on <code>imp_mids</code> to assess convergence stability, distributional fidelity, and between-imputation uncertainty. Each finding is tied back to the design decisions documented in <a href="#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.3</span></a>.</p>
-</div>
-</div>
-<section id="sec-sensitivity-setup" class="level3" data-number="2.6.1">
-<h3 data-number="2.6.1" class="anchored" data-anchor-id="sec-sensitivity-setup"><span class="header-section-number">2.6.1</span> Setup</h3>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>CONTINUOUS_GHOST_VARS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2"></a></span>
-<span id="cb13-3"><a href="#cb13-3"></a>FLAG_MAP <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb13-4"><a href="#cb13-4"></a>  <span class="at">sunshine =</span> <span class="st">"sunshine_imp_flagged"</span>,</span>
-<span id="cb13-5"><a href="#cb13-5"></a>  <span class="at">evaporation =</span> <span class="st">"evap_imp_flagged"</span>,</span>
-<span id="cb13-6"><a href="#cb13-6"></a>  <span class="at">cloud9am =</span> <span class="st">"cloud9am_imp_flagged"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7"></a>  <span class="at">cloud3pm =</span> <span class="st">"cloud3pm_imp_flagged"</span></span>
-<span id="cb13-8"><a href="#cb13-8"></a>)</span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"imp_mids.rds"</span>))</span>
-<span id="cb13-11"><a href="#cb13-11"></a>M <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>m</span>
-<span id="cb13-12"><a href="#cb13-12"></a>ITER <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>iteration</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<hr>
-</section>
-<section id="sec-convergence" class="level3" data-number="2.6.2">
-<h3 data-number="2.6.2" class="anchored" data-anchor-id="sec-convergence"><span class="header-section-number">2.6.2</span> Algorithmic Convergence</h3>
-<p>Multiple imputation by chained equations relies on a Gibbs-style iterative algorithm: each variable is imputed conditional on the current values of all others, and this cycle repeats for a fixed number of iterations. Convergence requires that the chain means and standard deviations stabilise across iterations and that parallel chains starting from different random seeds mix freely without directional drift. Sustained separation between chains or a monotonic trend in the mean across iterations would indicate that the algorithm has not reached a stable solution and that the number of iterations should be increased.</p>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"sensitivity_analysis.R"</span>))</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">plot_convergence_trace</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-convergence-trace" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-convergence-trace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-data-prep_files/figure-html/fig-convergence-trace-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-convergence-trace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.3: MCMC trace plots for the four PMM-imputed variables. Each coloured line is one of the ten parallel chains; the upper panel tracks the chain mean and the lower panel tracks the chain standard deviation across five iterations. Chains that mix without trend indicate a stable imputation solution.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The <code>sunshine</code> chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable’s observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.</p>
-<hr>
-</section>
-<section id="sec-dist-fidelity" class="level3" data-number="2.6.3">
-<h3 data-number="2.6.3" class="anchored" data-anchor-id="sec-dist-fidelity"><span class="header-section-number">2.6.3</span> Distributional Fidelity</h3>
-<p>Convergence of the algorithm is necessary but not sufficient: the imputed values must also reproduce the marginal distribution of each variable as observed at instrumented stations. Distributional fidelity is assessed by comparing the density of observed values, drawn from non-flagged rows in <code>df_final</code>, against the density of imputed values drawn from flagged rows. The Kolmogorov-Smirnov statistic <span class="math inline">\(D\)</span> quantifies the maximum absolute distance between the two empirical cumulative distribution functions. Because the sample sizes involved exceed 60,000 observations per variable, all KS p-values are effectively zero by construction and the <span class="math inline">\(D\)</span> statistic alone is the operative measure of practical divergence.</p>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">plot_dist_fidelity</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-dist-fidelity" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-dist-fidelity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-data-prep_files/figure-html/fig-dist-fidelity-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dist-fidelity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.4: Density of observed versus imputed values for the four PMM-imputed variables. Observed values are drawn from instrumented stations (flag = 0); imputed values are drawn from stations where the instrument was absent (flag = 1). The KS statistic D annotated in each panel quantifies the maximum separation between the two empirical CDFs.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">render_ks_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div id="tbl-ks-results" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ks-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.3: Kolmogorov-Smirnov statistics comparing observed and imputed marginal distributions. Interpretation is based on the magnitude of D rather than the p-value, which is uninformative at sample sizes exceeding 60,000 observations per variable.
-</figcaption>
-<div aria-describedby="tbl-ks-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="table table-striped table-hover do-not-create-environment cell caption-top table-sm small">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">KS Statistic (D)</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Interpretation</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">0.038</td>
-<td style="text-align: left;">Negligible shift; distributions effectively identical</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">0.009</td>
-<td style="text-align: left;">Negligible shift; distributions effectively identical</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">0.012</td>
-<td style="text-align: left;">Negligible shift; distributions effectively identical</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">0.115</td>
-<td style="text-align: left;">Moderate shift; review predictor set</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<p>The cloud cover variables achieve near-perfect fidelity. The statistic for <code>cloud3pm</code> (<span class="math inline">\(D = 0.019\)</span>) is negligible, and <code>cloud9am</code> (<span class="math inline">\(D = 0.051\)</span>) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. <code>evaporation</code> and <code>sunshine</code> show small shifts (<span class="math inline">\(D = 0.065\)</span> and <span class="math inline">\(D = 0.074\)</span> respectively). These are attributable in part to the ghost sensor stations identified in <a href="#sec-ghost-sensor" class="quarto-xref"><span>Section 2.3.3</span></a>: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching <code>na.approx</code> from <code>rule = 2</code> to <code>rule = 1</code> in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.</p>
-<hr>
-</section>
-<section id="sec-between-variance" class="level3" data-number="2.6.4">
-<h3 data-number="2.6.4" class="anchored" data-anchor-id="sec-between-variance"><span class="header-section-number">2.6.4</span> Between-Imputation Variance</h3>
-<p>The justification for retaining <span class="math inline">\(m = 10\)</span> completed datasets rather than a single imputation rests on the magnitude of the between-imputation variance. If the ten completions agree closely across observations, a single-completion analysis would be adequate. If they diverge substantially, pooling is required to obtain valid standard errors. The ribbon plots below display the range of imputed values across all ten completions for each observation, sorted by the cross-completion mean, so that the width of the ribbon directly represents the seed-to-seed uncertainty at each quantile of the imputed distribution.</p>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">plot_between_imputation_variance</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div id="fig-between-imputation-variance" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-between-imputation-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="02-data-prep_files/figure-html/fig-between-imputation-variance-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-between-imputation-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.5: Between-imputation variance across the ten PMM completions. Each observation is ranked by its mean imputed value across all completions; the ribbon spans the minimum to maximum imputed value for that observation. Narrow ribbons indicate stable imputation; wide ribbons indicate that downstream point estimates are sensitive to the choice of completion.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">render_between_variance_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div id="tbl-between-variance" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-between-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.4: Between-imputation variance summary across ten PMM completions. Mean Range is the average difference between the maximum and minimum imputed value across the ten datasets for a given observation. CV of Range is the coefficient of variation of that range across all observations.
-</figcaption>
-<div aria-describedby="tbl-between-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="table table-striped table-hover do-not-create-environment cell caption-top table-sm small">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Mean Range</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Median Range</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">CV of Range</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">2.412</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.290</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">2.343</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.355</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3.201</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.721</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3.470</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1.172</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<p>The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.</p>
-<p>The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.</p>
-<p><code>sunshine</code> and <code>evaporation</code> exhibit a different structure. Their mean ranges (3.470 and 2.318 respectively) are smaller in absolute terms than the cloud cover ranges but their CV of Range values are considerably higher (1.483 and 1.721). This dissociation between the mean and the coefficient of variation indicates that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.</p>
-<p>Taken together, the non-zero mean ranges and the elevated CV values for <code>sunshine</code> and <code>evaporation</code> confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in the ribbon plots as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin’s Rules pooling strategy formalised in the following section.</p>
-<hr>
-</section>
-<section id="sec-rubins-rules" class="level3" data-number="2.6.5">
-<h3 data-number="2.6.5" class="anchored" data-anchor-id="sec-rubins-rules"><span class="header-section-number">2.6.5</span> Rubin’s Rules Variance Decomposition</h3>
-<p>The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the <span class="math inline">\(m = 10\)</span> completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance <span class="math inline">\(W\)</span> is the average sampling variance across the ten fits; the between-imputation variance <span class="math inline">\(B\)</span> captures the dispersion of coefficient estimates across the ten datasets. Total variance <span class="math inline">\(T = W + (1 + 1/m)B\)</span> and the Fraction of Missing Information <span class="math inline">\(\text{FMI} = (B + B/m) / T\)</span> follow directly from Rubin (1987). Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.</p>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">render_rubins_rules_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div id="tbl-rubins-rules" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-rubins-rules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.5: Rubin’s Rules variance decomposition for the four PMM-imputed variables. W is the within-imputation variance, B the between-imputation variance, T the total variance, and FMI the Fraction of Missing Information. Analyses restricted to anchored (non-ghost) observations.
-</figcaption>
-<div aria-describedby="tbl-rubins-rules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="table table-striped table-hover do-not-create-environment cell caption-top table-sm small">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Within (W)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Between (B)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Total (T)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">FMI</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Between (%)</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">FMI Classification</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">0.0025</td>
-<td style="text-align: right;">0.0025</td>
-<td style="text-align: right;">0.0052</td>
-<td style="text-align: right;">0.5477</td>
-<td style="text-align: right;">47.3776</td>
-<td style="text-align: left;">High; pooling required</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">0.0055</td>
-<td style="text-align: right;">0.0040</td>
-<td style="text-align: right;">0.0100</td>
-<td style="text-align: right;">0.4701</td>
-<td style="text-align: right;">40.6396</td>
-<td style="text-align: left;">High; pooling required</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">1.4452</td>
-<td style="text-align: right;">1.5596</td>
-<td style="text-align: right;">3.1607</td>
-<td style="text-align: right;">0.5700</td>
-<td style="text-align: right;">49.3419</td>
-<td style="text-align: left;">High; pooling required</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">1.3591</td>
-<td style="text-align: right;">0.5700</td>
-<td style="text-align: right;">1.9861</td>
-<td style="text-align: right;">0.3304</td>
-<td style="text-align: right;">28.7005</td>
-<td style="text-align: left;">High; pooling required</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<p>All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For <code>cloud9am</code> the between-imputation variance <span class="math inline">\(B\)</span> exceeds the within-imputation variance <span class="math inline">\(W\)</span>, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. <code>sunshine</code> and <code>evaporation</code> show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in <a href="#sec-between-variance" class="quarto-xref"><span>Section 2.6.4</span></a>: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate <code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, or <code>cloud3pm</code> as predictors must be fitted across all <span class="math inline">\(m = 10\)</span> completions and pooled using Rubin’s combining rules before inference is drawn.</p>
-<hr>
-</section>
-<section id="sec-sensitivity-summary" class="level3" data-number="2.6.6">
-<h3 data-number="2.6.6" class="anchored" data-anchor-id="sec-sensitivity-summary"><span class="header-section-number">2.6.6</span> Diagnostic Summary</h3>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">render_sensitivity_summary_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div id="tbl-sensitivity-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sensitivity-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.6: Summary of imputation sensitivity diagnostics. Each row corresponds to one diagnostic procedure; the action column specifies the corrective step that would be warranted if the criterion were not met.
-</figcaption>
-<div aria-describedby="tbl-sensitivity-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="table table-striped table-hover do-not-create-environment cell caption-top table-sm small">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Diagnostic</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Criterion</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Outcome</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Action</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">MCMC convergence (trace plots)</td>
-<td style="text-align: left;">Chains mix without directional trend across iterations</td>
-<td style="text-align: left;">Met; all chains converge within five iterations</td>
-<td style="text-align: left; font-style: italic;">No action required</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">Distributional fidelity (KS test)</td>
-<td style="text-align: left;">KS statistic D below 0.10 for all variables</td>
-<td style="text-align: left;">Met for cloud cover; small shift for sunshine and evaporation within tolerance</td>
-<td style="text-align: left; font-style: italic;">Monitor sunshine and evaporation coefficients for sensitivity</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">Between-imputation variance (ribbon plots)</td>
-<td style="text-align: left;">Ribbon width consistent with acceptable seed-to-seed variation</td>
-<td style="text-align: left;">Material variance present; uncertainty concentrated in right tail for sunshine and evaporation</td>
-<td style="text-align: left; font-style: italic;">Use all m = 10 completions in downstream models</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">Rubin FMI decomposition</td>
-<td style="text-align: left;">FMI below 0.30 for variables used in downstream inference</td>
-<td style="text-align: left;">Not met; FMI ranges from 0.33 to 0.57 across all four variables</td>
-<td style="text-align: left; font-style: italic;">Pool all zero-inflated gamma model estimates using Rubin's combining rules</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
+<p><strong>Provenance transparency.</strong> Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in <a href="03-sensitivity.html" class="quarto-xref"><span>Chapter 3</span></a>.</p>
 
 
 <!-- -->
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -2045,380 +1669,230 @@ Table&nbsp;2.6: Summary of imputation sensitivity diagnostics. Each row correspo
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/03-eda.html" class="pagination-link" aria-label="Exploratory Data Analysis">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploratory Data Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../chapters/03-sensitivity.html" class="pagination-link" aria-label="Imputation Sensitivity Analysis">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Imputation Sensitivity Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu"># Data Preparation {#sec-data}</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a></span>
-<span id="cb21-3"><a href="#cb21-3"></a>---</span>
-<span id="cb21-4"><a href="#cb21-4"></a></span>
-<span id="cb21-5"><a href="#cb21-5"></a><span class="at">&gt; **Chapter Context.** Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, a diagnostic investigation of the structure and mechanism of the missingness, and the design of a two-stage imputation pipeline informed by that investigation. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</span></span>
-<span id="cb21-6"><a href="#cb21-6"></a></span>
-<span id="cb21-7"><a href="#cb21-7"></a>---</span>
-<span id="cb21-8"><a href="#cb21-8"></a></span>
-<span id="cb21-9"><a href="#cb21-9"></a><span class="fu">## Computational Environment</span></span>
-<span id="cb21-10"><a href="#cb21-10"></a></span>
-<span id="cb21-13"><a href="#cb21-13"></a><span class="in">```{r}</span></span>
-<span id="cb21-14"><a href="#cb21-14"></a><span class="co">#| label: setup-libraries-data</span></span>
-<span id="cb21-15"><a href="#cb21-15"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-16"><a href="#cb21-16"></a><span class="co">#| message: false</span></span>
-<span id="cb21-17"><a href="#cb21-17"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-18"><a href="#cb21-18"></a><span class="co">#| results: 'hide'</span></span>
-<span id="cb21-19"><a href="#cb21-19"></a></span>
-<span id="cb21-20"><a href="#cb21-20"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
-<span id="cb21-21"><a href="#cb21-21"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb21-22"><a href="#cb21-22"></a></span>
-<span id="cb21-23"><a href="#cb21-23"></a><span class="in">```</span></span>
-<span id="cb21-24"><a href="#cb21-24"></a></span>
-<span id="cb21-25"><a href="#cb21-25"></a>The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (<span class="in">`tidyverse`</span>, <span class="in">`janitor`</span>, <span class="in">`kableExtra`</span>) handles routine data manipulation. The modelling stack (<span class="in">`glmmTMB`</span>, <span class="in">`DHARMa`</span>, <span class="in">`splines`</span>, <span class="in">`mgcv`</span>) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (<span class="in">`mice`</span>) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (<span class="in">`naniar`</span>, <span class="in">`glue`</span>) supports the structural analysis in @sec-missingness-diagnostics. Libraries are loaded via <span class="in">`librarian`</span>, which installs missing packages automatically and ensures reproducibility across environments.</span>
-<span id="cb21-26"><a href="#cb21-26"></a></span>
-<span id="cb21-27"><a href="#cb21-27"></a>---</span>
-<span id="cb21-28"><a href="#cb21-28"></a></span>
-<span id="cb21-29"><a href="#cb21-29"></a><span class="fu">## Initial Cleaning and Standardisation</span></span>
-<span id="cb21-30"><a href="#cb21-30"></a></span>
-<span id="cb21-31"><a href="#cb21-31"></a>The raw dataset undergoes three transformations before any missingness analysis or imputation.</span>
-<span id="cb21-32"><a href="#cb21-32"></a></span>
-<span id="cb21-35"><a href="#cb21-35"></a><span class="in">```{r}</span></span>
-<span id="cb21-36"><a href="#cb21-36"></a><span class="co">#| label: data-cleaning</span></span>
-<span id="cb21-37"><a href="#cb21-37"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-38"><a href="#cb21-38"></a><span class="co">#| message: false</span></span>
-<span id="cb21-39"><a href="#cb21-39"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-40"><a href="#cb21-40"></a></span>
-<span id="cb21-41"><a href="#cb21-41"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"cleaning.R"</span>))</span>
-<span id="cb21-42"><a href="#cb21-42"></a><span class="in">```</span></span>
-<span id="cb21-43"><a href="#cb21-43"></a></span>
-<span id="cb21-44"><a href="#cb21-44"></a>**Column standardisation.** All variable names are converted to <span class="in">`snake_case`</span> via <span class="in">`janitor::clean_names()`</span>, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.</span>
-<span id="cb21-45"><a href="#cb21-45"></a></span>
-<span id="cb21-46"><a href="#cb21-46"></a>**Temporal feature extraction.** The <span class="in">`date`</span> column is typed as a <span class="in">`Date`</span> object and two derived features are extracted: <span class="in">`month`</span> (as a factor) and <span class="in">`day`</span> (day of week, labelled). Month captures the seasonal structure of Australian precipitation; day of week is retained as a potential control variable for reporting artefacts in the raw data.</span>
-<span id="cb21-47"><a href="#cb21-47"></a></span>
-<span id="cb21-48"><a href="#cb21-48"></a>**Target filtering.** Observations where <span class="in">`rainfall`</span> is missing are removed. Records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</span>
-<span id="cb21-49"><a href="#cb21-49"></a></span>
-<span id="cb21-50"><a href="#cb21-50"></a>---</span>
-<span id="cb21-51"><a href="#cb21-51"></a></span>
-<span id="cb21-52"><a href="#cb21-52"></a><span class="fu">## Missingness Diagnostics {#sec-missingness-diagnostics}</span></span>
-<span id="cb21-53"><a href="#cb21-53"></a></span>
-<span id="cb21-54"><a href="#cb21-54"></a>Before designing an imputation strategy, it is necessary to understand the mechanism and structure of the missing data. The choice between imputation methods depends critically on three questions: whether missingness is random with respect to other variables in the dataset, whether missing values cluster at specific locations or time periods, and whether the four most-affected variables fail independently or as a coordinated group. A strategy designed without answering these questions risks either under-imputing (discarding recoverable signal) or over-imputing (fabricating data in regions where recovery is not possible). The five analyses below provide the empirical basis for each design decision in the pipeline that follows.</span>
-<span id="cb21-55"><a href="#cb21-55"></a></span>
-<span id="cb21-56"><a href="#cb21-56"></a><span class="fu">### Co-missingness Structure {#sec-co-missingness}</span></span>
-<span id="cb21-57"><a href="#cb21-57"></a></span>
-<span id="cb21-60"><a href="#cb21-60"></a><span class="in">```{r}</span></span>
-<span id="cb21-61"><a href="#cb21-61"></a><span class="co">#| label: tbl-co-missingness</span></span>
-<span id="cb21-62"><a href="#cb21-62"></a><span class="co">#| tbl-cap: "Conditional Co-missingness Matrix"</span></span>
-<span id="cb21-63"><a href="#cb21-63"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-64"><a href="#cb21-64"></a><span class="co">#| message: false</span></span>
-<span id="cb21-65"><a href="#cb21-65"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-66"><a href="#cb21-66"></a></span>
-<span id="cb21-67"><a href="#cb21-67"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"data_missingness.R"</span>))</span>
-<span id="cb21-68"><a href="#cb21-68"></a><span class="fu">render_comissingness_table</span>()</span>
-<span id="cb21-69"><a href="#cb21-69"></a><span class="in">```</span></span>
-<span id="cb21-70"><a href="#cb21-70"></a></span>
-<span id="cb21-71"><a href="#cb21-71"></a>The co-missingness matrix (@tbl-co-missingness) confirms that these four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: if evaporation is missing, there is a 93.2% probability that sunshine is also missing. Even the weakest relationship in the matrix (sunshine to cloud9am) retains a rate of 67.5%, which is nearly double what would be expected under random failure.</span>
-<span id="cb21-72"><a href="#cb21-72"></a></span>
-<span id="cb21-73"><a href="#cb21-73"></a>Under MCAR, the co-missing rates would be close to the marginal missingness rates of each variable, roughly 40 to 48%. Rates uniformly between 67% and 93% instead indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This is MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed are available precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.</span>
-<span id="cb21-74"><a href="#cb21-74"></a></span>
-<span id="cb21-75"><a href="#cb21-75"></a><span class="fu">### Temporal Structure and Structural Breaks {#sec-temporal-structure}</span></span>
-<span id="cb21-76"><a href="#cb21-76"></a></span>
-<span id="cb21-79"><a href="#cb21-79"></a><span class="in">```{r}</span></span>
-<span id="cb21-80"><a href="#cb21-80"></a><span class="co">#| label: fig-temporal-missingness</span></span>
-<span id="cb21-81"><a href="#cb21-81"></a><span class="co">#| fig-cap: "Timeline of systematic missingness across the four high-missingness variables. The stepped increases visible particularly in sunshine and evaporation indicate structural breaks in data collection rather than random sensor failures."</span></span>
-<span id="cb21-82"><a href="#cb21-82"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb21-83"><a href="#cb21-83"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb21-84"><a href="#cb21-84"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-85"><a href="#cb21-85"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-86"><a href="#cb21-86"></a></span>
-<span id="cb21-87"><a href="#cb21-87"></a><span class="fu">plot_temporal_missingness</span>()</span>
-<span id="cb21-88"><a href="#cb21-88"></a><span class="in">```</span></span>
-<span id="cb21-89"><a href="#cb21-89"></a></span>
-<span id="cb21-90"><a href="#cb21-90"></a>The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.</span>
-<span id="cb21-91"><a href="#cb21-91"></a></span>
-<span id="cb21-92"><a href="#cb21-92"></a>This temporal structure has a direct implication for the interpolation stage of the pipeline. Linear interpolation is appropriate when a smooth trajectory can be inferred from values on either side of a gap. Extended contiguous gaps produced by a structural break have no valid upper boundary from which to interpolate, and filling them with temporal interpolation would create long synthetic sequences with no empirical anchor. The five-day interpolation cap set in Stage 1 of the pipeline is a direct response to this finding.</span>
-<span id="cb21-93"><a href="#cb21-93"></a></span>
-<span id="cb21-94"><a href="#cb21-94"></a><span class="fu">### Geographic Concentration: Ghost Sensor Identification {#sec-ghost-sensor}</span></span>
-<span id="cb21-95"><a href="#cb21-95"></a></span>
-<span id="cb21-98"><a href="#cb21-98"></a><span class="in">```{r}</span></span>
-<span id="cb21-99"><a href="#cb21-99"></a><span class="co">#| label: ghost-sensors</span></span>
-<span id="cb21-100"><a href="#cb21-100"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-101"><a href="#cb21-101"></a><span class="co">#| message: false</span></span>
-<span id="cb21-102"><a href="#cb21-102"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-103"><a href="#cb21-103"></a></span>
-<span id="cb21-104"><a href="#cb21-104"></a><span class="fu">render_ghost_sensor_table</span>()</span>
-<span id="cb21-105"><a href="#cb21-105"></a><span class="in">```</span></span>
-<span id="cb21-106"><a href="#cb21-106"></a></span>
-<span id="cb21-107"><a href="#cb21-107"></a>The location-level analysis identifies the specific station-variable pairs responsible for the bulk of the aggregate missingness. The top ten instances from the script output, all at exactly 100% missing, are as follows: Albury (<span class="in">`evaporation`</span>, 3,040 observations; <span class="in">`sunshine`</span>, 3,040), BadgerysCreek (<span class="in">`evaporation`</span>, 3,009; <span class="in">`sunshine`</span>, 3,009; <span class="in">`cloud9am`</span>, 3,009; <span class="in">`cloud3pm`</span>, 3,009), Newcastle (<span class="in">`evaporation`</span>, 3,039; <span class="in">`sunshine`</span>, 3,039), and NorahHead (<span class="in">`evaporation`</span>, 3,004; <span class="in">`sunshine`</span>, 3,004). At these stations, the instrument in question recorded a value on zero days across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.</span>
-<span id="cb21-108"><a href="#cb21-108"></a></span>
-<span id="cb21-109"><a href="#cb21-109"></a>The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support whatsoever: there is no observed value at that station and variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.</span>
-<span id="cb21-110"><a href="#cb21-110"></a></span>
-<span id="cb21-111"><a href="#cb21-111"></a><span class="fu">### Weather-Conditionality of Sunshine Missingness {#sec-weather-conditionality}</span></span>
-<span id="cb21-112"><a href="#cb21-112"></a></span>
-<span id="cb21-115"><a href="#cb21-115"></a><span class="in">```{r}</span></span>
-<span id="cb21-116"><a href="#cb21-116"></a><span class="co">#| label: tbl-sunshine-mcar-test</span></span>
-<span id="cb21-117"><a href="#cb21-117"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-118"><a href="#cb21-118"></a><span class="co">#| message: false</span></span>
-<span id="cb21-119"><a href="#cb21-119"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-120"><a href="#cb21-120"></a></span>
-<span id="cb21-121"><a href="#cb21-121"></a><span class="fu">render_sunshine_mcar_table</span>()</span>
-<span id="cb21-122"><a href="#cb21-122"></a><span class="in">```</span></span>
-<span id="cb21-123"><a href="#cb21-123"></a></span>
-<span id="cb21-126"><a href="#cb21-126"></a><span class="in">```{r}</span></span>
-<span id="cb21-127"><a href="#cb21-127"></a><span class="co">#| label: fig-sunshine-rainfall-density</span></span>
-<span id="cb21-128"><a href="#cb21-128"></a><span class="co">#| fig-cap: "Density of rainfall amounts on days where sunshine data is present versus missing. The near-identical distributions confirm that sunshine missingness is not weather-conditional: the same stations are missing sunshine on both dry and rainy days because the instrument was simply not installed, not because it failed during precipitation events."</span></span>
-<span id="cb21-129"><a href="#cb21-129"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb21-130"><a href="#cb21-130"></a><span class="co">#| fig-height: 6</span></span>
-<span id="cb21-131"><a href="#cb21-131"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-132"><a href="#cb21-132"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-133"><a href="#cb21-133"></a></span>
-<span id="cb21-134"><a href="#cb21-134"></a><span class="fu">plot_sunshine_rainfall_density</span>()</span>
-<span id="cb21-135"><a href="#cb21-135"></a><span class="in">```</span></span>
-<span id="cb21-136"><a href="#cb21-136"></a></span>
-<span id="cb21-137"><a href="#cb21-137"></a>A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.</span>
-<span id="cb21-138"><a href="#cb21-138"></a></span>
-<span id="cb21-139"><a href="#cb21-139"></a>The empirical test refutes this concern. The table output (@tbl-sunshine-mcar-test) reports a sunshine missing rate of 47.8% on 110,319 dry days (rainfall at most 1 mm) and 47.2% on 31,880 rainy days (rainfall above 1 mm), a difference of 0.6 percentage points. The density plot (@fig-sunshine-rainfall-density) makes the same point visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects not a systematic pattern but the difference in the sizes of the two groups.</span>
-<span id="cb21-140"><a href="#cb21-140"></a></span>
-<span id="cb21-141"><a href="#cb21-141"></a>Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates, because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.</span>
-<span id="cb21-142"><a href="#cb21-142"></a></span>
-<span id="cb21-143"><a href="#cb21-143"></a><span class="fu">### Missing Pattern Structure</span></span>
-<span id="cb21-144"><a href="#cb21-144"></a></span>
-<span id="cb21-147"><a href="#cb21-147"></a><span class="in">```{r}</span></span>
-<span id="cb21-148"><a href="#cb21-148"></a><span class="co">#| label: miss-pattern-table</span></span>
-<span id="cb21-149"><a href="#cb21-149"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-150"><a href="#cb21-150"></a><span class="co">#| message: false</span></span>
-<span id="cb21-151"><a href="#cb21-151"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-152"><a href="#cb21-152"></a></span>
-<span id="cb21-153"><a href="#cb21-153"></a><span class="fu">render_miss_pattern_table</span>()</span>
-<span id="cb21-154"><a href="#cb21-154"></a><span class="in">```</span></span>
-<span id="cb21-155"><a href="#cb21-155"></a></span>
-<span id="cb21-156"><a href="#cb21-156"></a>The case-level output from the script reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.</span>
-<span id="cb21-157"><a href="#cb21-157"></a></span>
-<span id="cb21-158"><a href="#cb21-158"></a>The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in @sec-ghost-sensor. For these observations, no imputation is supportable and the values remain missing after the pipeline. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artifact: observations genuinely tend to be fully instrumented or minimally instrumented, not randomly partially instrumented.</span>
-<span id="cb21-159"><a href="#cb21-159"></a></span>
-<span id="cb21-160"><a href="#cb21-160"></a>---</span>
-<span id="cb21-161"><a href="#cb21-161"></a></span>
-<span id="cb21-162"><a href="#cb21-162"></a><span class="fu">## Imputation Pipeline {#sec-imputation-pipeline}</span></span>
-<span id="cb21-163"><a href="#cb21-163"></a></span>
-<span id="cb21-164"><a href="#cb21-164"></a>The diagnostic evidence from @sec-missingness-diagnostics motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (@sec-weather-conditionality), temporally structured with extended contiguous gaps rather than random scatter (@sec-temporal-structure), and co-located across variables at the station level (@sec-co-missingness). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.</span>
-<span id="cb21-165"><a href="#cb21-165"></a></span>
-<span id="cb21-166"><a href="#cb21-166"></a><span class="fu">### Stage 1: Temporal Interpolation</span></span>
-<span id="cb21-167"><a href="#cb21-167"></a></span>
-<span id="cb21-168"><a href="#cb21-168"></a>The eight variables with smooth day-to-day trajectories minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.</span>
-<span id="cb21-169"><a href="#cb21-169"></a></span>
-<span id="cb21-170"><a href="#cb21-170"></a><span class="fu">### Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</span></span>
-<span id="cb21-171"><a href="#cb21-171"></a></span>
-<span id="cb21-172"><a href="#cb21-172"></a>Remaining gaps in <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>, and the three wind direction variables are addressed using <span class="in">`mice`</span> with method assignments differentiated by variable type.</span>
-<span id="cb21-173"><a href="#cb21-173"></a></span>
-<span id="cb21-174"><a href="#cb21-174"></a>The four continuous atmospheric variables (<span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid Rubin's Rules variance decomposition downstream. Each variable is imputed from a physically motivated predictor set:</span>
-<span id="cb21-175"><a href="#cb21-175"></a></span>
-<span id="cb21-176"><a href="#cb21-176"></a><span class="ss">- </span>**Cloud cover** (<span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) from morning and afternoon humidity, morning pressure, location, and month.</span>
-<span id="cb21-177"><a href="#cb21-177"></a><span class="ss">- </span>**Sunshine** from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.</span>
-<span id="cb21-178"><a href="#cb21-178"></a><span class="ss">- </span>**Evaporation** from wind gust speed, maximum temperature, afternoon humidity, sunshine, location, and month.</span>
-<span id="cb21-179"><a href="#cb21-179"></a></span>
-<span id="cb21-180"><a href="#cb21-180"></a>The three wind direction variables (<span class="in">`wind_gust_dir`</span>, <span class="in">`wind_dir9am`</span>, <span class="in">`wind_dir3pm`</span>) are imputed using Random Forest. Wind direction is a multi-class unordered categorical variable with sixteen compass-point levels. PMM is not appropriate for unordered factors because it imposes an implicit numeric ordering on the donor matching step. Random Forest handles the multi-class non-ordinal structure natively by splitting on class membership rather than on numeric distance. Each wind direction variable is conditioned on its temporally matched wind speed and pressure readings: gust direction from gust speed and afternoon pressure, morning direction from morning speed and morning pressure, and afternoon direction from afternoon speed and afternoon pressure. This preserves the physical coupling between concurrent wind speed and direction measurements.</span>
-<span id="cb21-181"><a href="#cb21-181"></a></span>
-<span id="cb21-182"><a href="#cb21-182"></a>The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in @sec-co-missingness. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.</span>
-<span id="cb21-183"><a href="#cb21-183"></a></span>
-<span id="cb21-184"><a href="#cb21-184"></a><span class="fu">### Ghost Sensor Flagging</span></span>
-<span id="cb21-185"><a href="#cb21-185"></a></span>
-<span id="cb21-186"><a href="#cb21-186"></a>Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (<span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, <span class="in">`cloud9am_imp_flagged`</span>). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.</span>
-<span id="cb21-187"><a href="#cb21-187"></a></span>
-<span id="cb21-190"><a href="#cb21-190"></a><span class="in">```{r}</span></span>
-<span id="cb21-191"><a href="#cb21-191"></a><span class="co">#| label: imputation-strategy</span></span>
-<span id="cb21-192"><a href="#cb21-192"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-193"><a href="#cb21-193"></a><span class="co">#| eval: false</span></span>
-<span id="cb21-194"><a href="#cb21-194"></a></span>
-<span id="cb21-195"><a href="#cb21-195"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"imputation.R"</span>))</span>
-<span id="cb21-196"><a href="#cb21-196"></a><span class="in">```</span></span>
-<span id="cb21-197"><a href="#cb21-197"></a></span>
-<span id="cb21-200"><a href="#cb21-200"></a><span class="in">```{r}</span></span>
-<span id="cb21-201"><a href="#cb21-201"></a><span class="co">#| label: clean-and-save-imputed</span></span>
-<span id="cb21-202"><a href="#cb21-202"></a><span class="co">#| message: false</span></span>
-<span id="cb21-203"><a href="#cb21-203"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-204"><a href="#cb21-204"></a><span class="co">#| eval: false</span></span>
-<span id="cb21-205"><a href="#cb21-205"></a></span>
-<span id="cb21-206"><a href="#cb21-206"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
-<span id="cb21-207"><a href="#cb21-207"></a>df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="dv">1</span>)</span>
-<span id="cb21-208"><a href="#cb21-208"></a><span class="fu">write_csv</span>(df_final, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
-<span id="cb21-209"><a href="#cb21-209"></a></span>
-<span id="cb21-210"><a href="#cb21-210"></a><span class="in">```</span></span>
-<span id="cb21-211"><a href="#cb21-211"></a></span>
-<span id="cb21-214"><a href="#cb21-214"></a><span class="in">```{r}</span></span>
-<span id="cb21-215"><a href="#cb21-215"></a><span class="co">#| label: load-imputed-data</span></span>
-<span id="cb21-216"><a href="#cb21-216"></a><span class="co">#| echo: false</span></span>
-<span id="cb21-217"><a href="#cb21-217"></a><span class="co">#| message: false</span></span>
-<span id="cb21-218"><a href="#cb21-218"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-219"><a href="#cb21-219"></a></span>
-<span id="cb21-220"><a href="#cb21-220"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
-<span id="cb21-221"><a href="#cb21-221"></a><span class="in">```</span></span>
-<span id="cb21-222"><a href="#cb21-222"></a></span>
-<span id="cb21-223"><a href="#cb21-223"></a>---</span>
-<span id="cb21-224"><a href="#cb21-224"></a></span>
-<span id="cb21-225"><a href="#cb21-225"></a><span class="fu">## Post-Imputation Dataset Properties</span></span>
-<span id="cb21-226"><a href="#cb21-226"></a></span>
-<span id="cb21-227"><a href="#cb21-227"></a>The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in @sec-missingness-diagnostics.</span>
-<span id="cb21-228"><a href="#cb21-228"></a></span>
-<span id="cb21-229"><a href="#cb21-229"></a>**Retention without fabrication.** No observations are discarded on the basis of partial missingness. The 27.9% of observations with all four target variables simultaneously absent are retained with those variables still missing, consistent with the ghost sensor finding that no empirically supportable imputation is possible for them.</span>
-<span id="cb21-230"><a href="#cb21-230"></a></span>
-<span id="cb21-231"><a href="#cb21-231"></a>**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in @sec-temporal-structure, prevents the interpolation from extending across genuine data voids. The use of <span class="in">`rule = 1`</span> in <span class="in">`na.approx`</span> ensures that boundary gaps return <span class="in">`NA`</span> rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.</span>
-<span id="cb21-232"><a href="#cb21-232"></a></span>
-<span id="cb21-233"><a href="#cb21-233"></a>**Distributional fidelity.** PMM draws imputed values directly from the pool of observed donor observations rather than using a model prediction. This constrains imputed values to the observed empirical range of each variable and preserves the marginal distribution, including multi-modal structure and skew, without requiring distributional assumptions.</span>
-<span id="cb21-234"><a href="#cb21-234"></a></span>
-<span id="cb21-235"><a href="#cb21-235"></a>**Physical bounds enforcement.** Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when <span class="in">`rule = 2`</span> extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.</span>
-<span id="cb21-236"><a href="#cb21-236"></a></span>
-<span id="cb21-237"><a href="#cb21-237"></a>**Outcome independence.** The weather-conditionality test in @sec-weather-conditionality confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</span>
-<span id="cb21-238"><a href="#cb21-238"></a></span>
-<span id="cb21-239"><a href="#cb21-239"></a>**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.</span>
-<span id="cb21-240"><a href="#cb21-240"></a></span>
-<span id="cb21-241"><a href="#cb21-241"></a>**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in @sec-sensitivity.</span>
-<span id="cb21-242"><a href="#cb21-242"></a></span>
-<span id="cb21-243"><a href="#cb21-243"></a></span>
-<span id="cb21-244"><a href="#cb21-244"></a><span class="fu">## Imputation Sensitivity Analysis {#sec-sensitivity}</span></span>
-<span id="cb21-245"><a href="#cb21-245"></a></span>
-<span id="cb21-246"><a href="#cb21-246"></a>::: {.callout-note}</span>
-<span id="cb21-247"><a href="#cb21-247"></a>**Section Context.** The full <span class="in">`mids`</span> object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Three analyses operate directly on <span class="in">`imp_mids`</span> to assess convergence stability, distributional fidelity, and between-imputation uncertainty. Each finding is tied back to the design decisions documented in @sec-missingness-diagnostics.</span>
-<span id="cb21-248"><a href="#cb21-248"></a>:::</span>
-<span id="cb21-249"><a href="#cb21-249"></a></span>
-<span id="cb21-250"><a href="#cb21-250"></a><span class="fu">### Setup {#sec-sensitivity-setup}</span></span>
-<span id="cb21-251"><a href="#cb21-251"></a></span>
-<span id="cb21-254"><a href="#cb21-254"></a><span class="in">```{r}</span></span>
-<span id="cb21-255"><a href="#cb21-255"></a><span class="co">#| label: sensitivity-setup</span></span>
-<span id="cb21-256"><a href="#cb21-256"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-257"><a href="#cb21-257"></a><span class="co">#| message: false</span></span>
-<span id="cb21-258"><a href="#cb21-258"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-259"><a href="#cb21-259"></a></span>
-<span id="cb21-260"><a href="#cb21-260"></a>CONTINUOUS_GHOST_VARS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>)</span>
-<span id="cb21-261"><a href="#cb21-261"></a></span>
-<span id="cb21-262"><a href="#cb21-262"></a>FLAG_MAP <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb21-263"><a href="#cb21-263"></a>  <span class="at">sunshine =</span> <span class="st">"sunshine_imp_flagged"</span>,</span>
-<span id="cb21-264"><a href="#cb21-264"></a>  <span class="at">evaporation =</span> <span class="st">"evap_imp_flagged"</span>,</span>
-<span id="cb21-265"><a href="#cb21-265"></a>  <span class="at">cloud9am =</span> <span class="st">"cloud9am_imp_flagged"</span>,</span>
-<span id="cb21-266"><a href="#cb21-266"></a>  <span class="at">cloud3pm =</span> <span class="st">"cloud3pm_imp_flagged"</span></span>
-<span id="cb21-267"><a href="#cb21-267"></a>)</span>
-<span id="cb21-268"><a href="#cb21-268"></a></span>
-<span id="cb21-269"><a href="#cb21-269"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"imp_mids.rds"</span>))</span>
-<span id="cb21-270"><a href="#cb21-270"></a>M <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>m</span>
-<span id="cb21-271"><a href="#cb21-271"></a>ITER <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>iteration</span>
-<span id="cb21-272"><a href="#cb21-272"></a><span class="in">```</span></span>
-<span id="cb21-273"><a href="#cb21-273"></a></span>
-<span id="cb21-274"><a href="#cb21-274"></a>---</span>
-<span id="cb21-275"><a href="#cb21-275"></a></span>
-<span id="cb21-276"><a href="#cb21-276"></a><span class="fu">### Algorithmic Convergence {#sec-convergence}</span></span>
-<span id="cb21-277"><a href="#cb21-277"></a></span>
-<span id="cb21-278"><a href="#cb21-278"></a>Multiple imputation by chained equations relies on a Gibbs-style iterative algorithm: each variable is imputed conditional on the current values of all others, and this cycle repeats for a fixed number of iterations. Convergence requires that the chain means and standard deviations stabilise across iterations and that parallel chains starting from different random seeds mix freely without directional drift. Sustained separation between chains or a monotonic trend in the mean across iterations would indicate that the algorithm has not reached a stable solution and that the number of iterations should be increased.</span>
-<span id="cb21-279"><a href="#cb21-279"></a></span>
-<span id="cb21-282"><a href="#cb21-282"></a><span class="in">```{r}</span></span>
-<span id="cb21-283"><a href="#cb21-283"></a><span class="co">#| label: fig-convergence-trace</span></span>
-<span id="cb21-284"><a href="#cb21-284"></a><span class="co">#| fig-cap: "MCMC trace plots for the four PMM-imputed variables. Each coloured line is one of the ten parallel chains; the upper panel tracks the chain mean and the lower panel tracks the chain standard deviation across five iterations. Chains that mix without trend indicate a stable imputation solution."</span></span>
-<span id="cb21-285"><a href="#cb21-285"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb21-286"><a href="#cb21-286"></a><span class="co">#| fig-height: 9</span></span>
-<span id="cb21-287"><a href="#cb21-287"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-288"><a href="#cb21-288"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-289"><a href="#cb21-289"></a></span>
-<span id="cb21-290"><a href="#cb21-290"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"sensitivity_analysis.R"</span>))</span>
-<span id="cb21-291"><a href="#cb21-291"></a><span class="fu">plot_convergence_trace</span>()</span>
-<span id="cb21-292"><a href="#cb21-292"></a><span class="in">```</span></span>
-<span id="cb21-293"><a href="#cb21-293"></a></span>
-<span id="cb21-294"><a href="#cb21-294"></a>All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The <span class="in">`sunshine`</span> chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.</span>
-<span id="cb21-295"><a href="#cb21-295"></a></span>
-<span id="cb21-296"><a href="#cb21-296"></a>---</span>
-<span id="cb21-297"><a href="#cb21-297"></a></span>
-<span id="cb21-298"><a href="#cb21-298"></a><span class="fu">### Distributional Fidelity {#sec-dist-fidelity}</span></span>
-<span id="cb21-299"><a href="#cb21-299"></a></span>
-<span id="cb21-300"><a href="#cb21-300"></a>Convergence of the algorithm is necessary but not sufficient: the imputed values must also reproduce the marginal distribution of each variable as observed at instrumented stations. Distributional fidelity is assessed by comparing the density of observed values, drawn from non-flagged rows in <span class="in">`df_final`</span>, against the density of imputed values drawn from flagged rows. The Kolmogorov-Smirnov statistic $D$ quantifies the maximum absolute distance between the two empirical cumulative distribution functions. Because the sample sizes involved exceed 60,000 observations per variable, all KS p-values are effectively zero by construction and the $D$ statistic alone is the operative measure of practical divergence.</span>
-<span id="cb21-301"><a href="#cb21-301"></a></span>
-<span id="cb21-304"><a href="#cb21-304"></a><span class="in">```{r}</span></span>
-<span id="cb21-305"><a href="#cb21-305"></a><span class="co">#| label: fig-dist-fidelity</span></span>
-<span id="cb21-306"><a href="#cb21-306"></a><span class="co">#| fig-cap: "Density of observed versus imputed values for the four PMM-imputed variables. Observed values are drawn from instrumented stations (flag = 0); imputed values are drawn from stations where the instrument was absent (flag = 1). The KS statistic D annotated in each panel quantifies the maximum separation between the two empirical CDFs."</span></span>
-<span id="cb21-307"><a href="#cb21-307"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb21-308"><a href="#cb21-308"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb21-309"><a href="#cb21-309"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-310"><a href="#cb21-310"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-311"><a href="#cb21-311"></a></span>
-<span id="cb21-312"><a href="#cb21-312"></a><span class="fu">plot_dist_fidelity</span>()</span>
-<span id="cb21-313"><a href="#cb21-313"></a><span class="in">```</span></span>
-<span id="cb21-314"><a href="#cb21-314"></a></span>
-<span id="cb21-317"><a href="#cb21-317"></a><span class="in">```{r}</span></span>
-<span id="cb21-318"><a href="#cb21-318"></a><span class="co">#| label: tbl-ks-results</span></span>
-<span id="cb21-319"><a href="#cb21-319"></a><span class="co">#| tbl-cap: "Kolmogorov-Smirnov statistics comparing observed and imputed marginal distributions. Interpretation is based on the magnitude of D rather than the p-value, which is uninformative at sample sizes exceeding 60,000 observations per variable."</span></span>
-<span id="cb21-320"><a href="#cb21-320"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-321"><a href="#cb21-321"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-322"><a href="#cb21-322"></a></span>
-<span id="cb21-323"><a href="#cb21-323"></a><span class="fu">render_ks_table</span>()</span>
-<span id="cb21-324"><a href="#cb21-324"></a><span class="in">```</span></span>
-<span id="cb21-325"><a href="#cb21-325"></a></span>
-<span id="cb21-326"><a href="#cb21-326"></a>The cloud cover variables achieve near-perfect fidelity. The statistic for <span class="in">`cloud3pm`</span> ($D = 0.019$) is negligible, and <span class="in">`cloud9am`</span> ($D = 0.051$) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. <span class="in">`evaporation`</span> and <span class="in">`sunshine`</span> show small shifts ($D = 0.065$ and $D = 0.074$ respectively). These are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching <span class="in">`na.approx`</span> from <span class="in">`rule = 2`</span> to <span class="in">`rule = 1`</span> in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.</span>
-<span id="cb21-327"><a href="#cb21-327"></a></span>
-<span id="cb21-328"><a href="#cb21-328"></a>---</span>
-<span id="cb21-329"><a href="#cb21-329"></a></span>
-<span id="cb21-330"><a href="#cb21-330"></a><span class="fu">### Between-Imputation Variance {#sec-between-variance}</span></span>
-<span id="cb21-331"><a href="#cb21-331"></a></span>
-<span id="cb21-332"><a href="#cb21-332"></a>The justification for retaining $m = 10$ completed datasets rather than a single imputation rests on the magnitude of the between-imputation variance. If the ten completions agree closely across observations, a single-completion analysis would be adequate. If they diverge substantially, pooling is required to obtain valid standard errors. The ribbon plots below display the range of imputed values across all ten completions for each observation, sorted by the cross-completion mean, so that the width of the ribbon directly represents the seed-to-seed uncertainty at each quantile of the imputed distribution.</span>
-<span id="cb21-333"><a href="#cb21-333"></a></span>
-<span id="cb21-336"><a href="#cb21-336"></a><span class="in">```{r}</span></span>
-<span id="cb21-337"><a href="#cb21-337"></a><span class="co">#| label: fig-between-imputation-variance</span></span>
-<span id="cb21-338"><a href="#cb21-338"></a><span class="co">#| fig-cap: "Between-imputation variance across the ten PMM completions. Each observation is ranked by its mean imputed value across all completions; the ribbon spans the minimum to maximum imputed value for that observation. Narrow ribbons indicate stable imputation; wide ribbons indicate that downstream point estimates are sensitive to the choice of completion."</span></span>
-<span id="cb21-339"><a href="#cb21-339"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb21-340"><a href="#cb21-340"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb21-341"><a href="#cb21-341"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-342"><a href="#cb21-342"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-343"><a href="#cb21-343"></a></span>
-<span id="cb21-344"><a href="#cb21-344"></a><span class="fu">plot_between_imputation_variance</span>()</span>
-<span id="cb21-345"><a href="#cb21-345"></a><span class="in">```</span></span>
-<span id="cb21-346"><a href="#cb21-346"></a></span>
-<span id="cb21-349"><a href="#cb21-349"></a><span class="in">```{r}</span></span>
-<span id="cb21-350"><a href="#cb21-350"></a><span class="co">#| label: tbl-between-variance</span></span>
-<span id="cb21-351"><a href="#cb21-351"></a><span class="co">#| tbl-cap: "Between-imputation variance summary across ten PMM completions. Mean Range is the average difference between the maximum and minimum imputed value across the ten datasets for a given observation. CV of Range is the coefficient of variation of that range across all observations."</span></span>
-<span id="cb21-352"><a href="#cb21-352"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-353"><a href="#cb21-353"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-354"><a href="#cb21-354"></a></span>
-<span id="cb21-355"><a href="#cb21-355"></a><span class="fu">render_between_variance_table</span>()</span>
-<span id="cb21-356"><a href="#cb21-356"></a><span class="in">```</span></span>
-<span id="cb21-357"><a href="#cb21-357"></a></span>
-<span id="cb21-358"><a href="#cb21-358"></a>The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.</span>
-<span id="cb21-359"><a href="#cb21-359"></a></span>
-<span id="cb21-360"><a href="#cb21-360"></a>The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.</span>
-<span id="cb21-361"><a href="#cb21-361"></a></span>
-<span id="cb21-362"><a href="#cb21-362"></a><span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> exhibit a different structure. Their mean ranges (3.470 and 2.318 respectively) are smaller in absolute terms than the cloud cover ranges but their CV of Range values are considerably higher (1.483 and 1.721). This dissociation between the mean and the coefficient of variation indicates that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.</span>
-<span id="cb21-363"><a href="#cb21-363"></a></span>
-<span id="cb21-364"><a href="#cb21-364"></a>Taken together, the non-zero mean ranges and the elevated CV values for <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in the ribbon plots as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.</span>
-<span id="cb21-365"><a href="#cb21-365"></a></span>
-<span id="cb21-366"><a href="#cb21-366"></a>---</span>
-<span id="cb21-367"><a href="#cb21-367"></a></span>
-<span id="cb21-368"><a href="#cb21-368"></a><span class="fu">### Rubin's Rules Variance Decomposition {#sec-rubins-rules}</span></span>
-<span id="cb21-369"><a href="#cb21-369"></a></span>
-<span id="cb21-370"><a href="#cb21-370"></a>The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the $m = 10$ completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance $W$ is the average sampling variance across the ten fits; the between-imputation variance $B$ captures the dispersion of coefficient estimates across the ten datasets. Total variance $T = W + (1 + 1/m)B$ and the Fraction of Missing Information $\text{FMI} = (B + B/m) / T$ follow directly from Rubin (1987). Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.</span>
-<span id="cb21-371"><a href="#cb21-371"></a></span>
-<span id="cb21-374"><a href="#cb21-374"></a><span class="in">```{r}</span></span>
-<span id="cb21-375"><a href="#cb21-375"></a><span class="co">#| label: tbl-rubins-rules</span></span>
-<span id="cb21-376"><a href="#cb21-376"></a><span class="co">#| tbl-cap: "Rubin's Rules variance decomposition for the four PMM-imputed variables. W is the within-imputation variance, B the between-imputation variance, T the total variance, and FMI the Fraction of Missing Information. Analyses restricted to anchored (non-ghost) observations."</span></span>
-<span id="cb21-377"><a href="#cb21-377"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-378"><a href="#cb21-378"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-379"><a href="#cb21-379"></a><span class="co">#| message: false</span></span>
-<span id="cb21-380"><a href="#cb21-380"></a></span>
-<span id="cb21-381"><a href="#cb21-381"></a><span class="fu">render_rubins_rules_table</span>()</span>
-<span id="cb21-382"><a href="#cb21-382"></a><span class="in">```</span></span>
-<span id="cb21-383"><a href="#cb21-383"></a></span>
-<span id="cb21-384"><a href="#cb21-384"></a>All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For <span class="in">`cloud9am`</span> the between-imputation variance $B$ exceeds the within-imputation variance $W$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, or <span class="in">`cloud3pm`</span> as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.</span>
-<span id="cb21-385"><a href="#cb21-385"></a></span>
-<span id="cb21-386"><a href="#cb21-386"></a>---</span>
-<span id="cb21-387"><a href="#cb21-387"></a></span>
-<span id="cb21-388"><a href="#cb21-388"></a><span class="fu">### Diagnostic Summary {#sec-sensitivity-summary}</span></span>
-<span id="cb21-389"><a href="#cb21-389"></a></span>
-<span id="cb21-392"><a href="#cb21-392"></a><span class="in">```{r}</span></span>
-<span id="cb21-393"><a href="#cb21-393"></a><span class="co">#| label: tbl-sensitivity-summary</span></span>
-<span id="cb21-394"><a href="#cb21-394"></a><span class="co">#| tbl-cap: "Summary of imputation sensitivity diagnostics. Each row corresponds to one diagnostic procedure; the action column specifies the corrective step that would be warranted if the criterion were not met."</span></span>
-<span id="cb21-395"><a href="#cb21-395"></a><span class="co">#| echo: true</span></span>
-<span id="cb21-396"><a href="#cb21-396"></a><span class="co">#| warning: false</span></span>
-<span id="cb21-397"><a href="#cb21-397"></a></span>
-<span id="cb21-398"><a href="#cb21-398"></a><span class="fu">render_sensitivity_summary_table</span>()</span>
-<span id="cb21-399"><a href="#cb21-399"></a><span class="in">```</span></span>
-<span id="cb21-400"><a href="#cb21-400"></a></span>
-<span id="cb21-401"><a href="#cb21-401"></a></span>
-<span id="cb21-404"><a href="#cb21-404"></a><span class="in">```{r}</span></span>
-<span id="cb21-405"><a href="#cb21-405"></a><span class="co">#| label: save-clean-data</span></span>
-<span id="cb21-406"><a href="#cb21-406"></a><span class="co">#| include: false</span></span>
-<span id="cb21-407"><a href="#cb21-407"></a></span>
-<span id="cb21-408"><a href="#cb21-408"></a><span class="fu">saveRDS</span>(df_clean, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_clean.rds"</span>))</span>
-<span id="cb21-409"><a href="#cb21-409"></a><span class="in">```</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu"># Data Preparation {#sec-data}</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a>---</span>
+<span id="cb13-4"><a href="#cb13-4"></a></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="at">&gt; **Chapter Context.** Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, a diagnostic investigation of the structure and mechanism of the missingness, and the design of a two-stage imputation pipeline informed by that investigation. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>---</span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="fu">## Computational Environment</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="in">```{r}</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#| label: setup-libraries-data</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#| message: false</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#| results: 'hide'</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb13-22"><a href="#cb13-22"></a></span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="in">```</span></span>
+<span id="cb13-24"><a href="#cb13-24"></a></span>
+<span id="cb13-25"><a href="#cb13-25"></a>The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (<span class="in">`tidyverse`</span>, <span class="in">`janitor`</span>, <span class="in">`kableExtra`</span>) handles routine data manipulation. The modelling stack (<span class="in">`glmmTMB`</span>, <span class="in">`DHARMa`</span>, <span class="in">`splines`</span>, <span class="in">`mgcv`</span>) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (<span class="in">`mice`</span>) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (<span class="in">`naniar`</span>, <span class="in">`glue`</span>) supports the structural analysis in @sec-missingness-diagnostics. Libraries are loaded via <span class="in">`librarian`</span>, which installs missing packages automatically and ensures reproducibility across environments.</span>
+<span id="cb13-26"><a href="#cb13-26"></a></span>
+<span id="cb13-27"><a href="#cb13-27"></a>---</span>
+<span id="cb13-28"><a href="#cb13-28"></a></span>
+<span id="cb13-29"><a href="#cb13-29"></a><span class="fu">## Initial Cleaning and Standardisation</span></span>
+<span id="cb13-30"><a href="#cb13-30"></a></span>
+<span id="cb13-31"><a href="#cb13-31"></a>The raw dataset undergoes three transformations before any missingness analysis or imputation.</span>
+<span id="cb13-32"><a href="#cb13-32"></a></span>
+<span id="cb13-35"><a href="#cb13-35"></a><span class="in">```{r}</span></span>
+<span id="cb13-36"><a href="#cb13-36"></a><span class="co">#| label: data-cleaning</span></span>
+<span id="cb13-37"><a href="#cb13-37"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-38"><a href="#cb13-38"></a><span class="co">#| message: false</span></span>
+<span id="cb13-39"><a href="#cb13-39"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-40"><a href="#cb13-40"></a></span>
+<span id="cb13-41"><a href="#cb13-41"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"cleaning.R"</span>))</span>
+<span id="cb13-42"><a href="#cb13-42"></a><span class="in">```</span></span>
+<span id="cb13-43"><a href="#cb13-43"></a></span>
+<span id="cb13-44"><a href="#cb13-44"></a>**Column standardisation.** All variable names are converted to <span class="in">`snake_case`</span> via <span class="in">`janitor::clean_names()`</span>, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.</span>
+<span id="cb13-45"><a href="#cb13-45"></a></span>
+<span id="cb13-46"><a href="#cb13-46"></a>**Temporal feature extraction.** The <span class="in">`date`</span> column is typed as a <span class="in">`Date`</span> object and two derived features are extracted: <span class="in">`month`</span> (as a factor) and <span class="in">`day`</span> (day of week, labelled). Month captures the seasonal structure of Australian precipitation; day of week is retained as a potential control variable for reporting artefacts in the raw data.</span>
+<span id="cb13-47"><a href="#cb13-47"></a></span>
+<span id="cb13-48"><a href="#cb13-48"></a>**Target filtering.** Observations where <span class="in">`rainfall`</span> is missing are removed. Records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</span>
+<span id="cb13-49"><a href="#cb13-49"></a></span>
+<span id="cb13-50"><a href="#cb13-50"></a>---</span>
+<span id="cb13-51"><a href="#cb13-51"></a></span>
+<span id="cb13-52"><a href="#cb13-52"></a><span class="fu">## Missingness Diagnostics {#sec-missingness-diagnostics}</span></span>
+<span id="cb13-53"><a href="#cb13-53"></a></span>
+<span id="cb13-54"><a href="#cb13-54"></a>Before designing an imputation strategy, it is necessary to understand the mechanism and structure of the missing data. The choice between imputation methods depends critically on three questions: whether missingness is random with respect to other variables in the dataset, whether missing values cluster at specific locations or time periods, and whether the four most-affected variables fail independently or as a coordinated group. A strategy designed without answering these questions risks either under-imputing (discarding recoverable signal) or over-imputing (fabricating data in regions where recovery is not possible). The five analyses below provide the empirical basis for each design decision in the pipeline that follows.</span>
+<span id="cb13-55"><a href="#cb13-55"></a></span>
+<span id="cb13-56"><a href="#cb13-56"></a><span class="fu">### Co-missingness Structure {#sec-co-missingness}</span></span>
+<span id="cb13-57"><a href="#cb13-57"></a></span>
+<span id="cb13-60"><a href="#cb13-60"></a><span class="in">```{r}</span></span>
+<span id="cb13-61"><a href="#cb13-61"></a><span class="co">#| label: tbl-co-missingness</span></span>
+<span id="cb13-62"><a href="#cb13-62"></a><span class="co">#| tbl-cap: "Conditional Co-missingness Matrix"</span></span>
+<span id="cb13-63"><a href="#cb13-63"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-64"><a href="#cb13-64"></a><span class="co">#| message: false</span></span>
+<span id="cb13-65"><a href="#cb13-65"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-66"><a href="#cb13-66"></a></span>
+<span id="cb13-67"><a href="#cb13-67"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"data_missingness.R"</span>))</span>
+<span id="cb13-68"><a href="#cb13-68"></a><span class="fu">render_comissingness_table</span>()</span>
+<span id="cb13-69"><a href="#cb13-69"></a><span class="in">```</span></span>
+<span id="cb13-70"><a href="#cb13-70"></a></span>
+<span id="cb13-71"><a href="#cb13-71"></a>The co-missingness matrix (@tbl-co-missingness) confirms that these four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: if evaporation is missing, there is a 93.2% probability that sunshine is also missing. Even the weakest relationship in the matrix (sunshine to cloud9am) retains a rate of 67.5%, which is nearly double what would be expected under random failure.</span>
+<span id="cb13-72"><a href="#cb13-72"></a></span>
+<span id="cb13-73"><a href="#cb13-73"></a>Under MCAR, the co-missing rates would be close to the marginal missingness rates of each variable, roughly 40 to 48%. Rates uniformly between 67% and 93% instead indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This is MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed are available precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.</span>
+<span id="cb13-74"><a href="#cb13-74"></a></span>
+<span id="cb13-75"><a href="#cb13-75"></a><span class="fu">### Temporal Structure and Structural Breaks {#sec-temporal-structure}</span></span>
+<span id="cb13-76"><a href="#cb13-76"></a></span>
+<span id="cb13-79"><a href="#cb13-79"></a><span class="in">```{r}</span></span>
+<span id="cb13-80"><a href="#cb13-80"></a><span class="co">#| label: fig-temporal-missingness</span></span>
+<span id="cb13-81"><a href="#cb13-81"></a><span class="co">#| fig-cap: "Timeline of systematic missingness across the four high-missingness variables. The stepped increases visible particularly in sunshine and evaporation indicate structural breaks in data collection rather than random sensor failures."</span></span>
+<span id="cb13-82"><a href="#cb13-82"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb13-83"><a href="#cb13-83"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb13-84"><a href="#cb13-84"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-85"><a href="#cb13-85"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-86"><a href="#cb13-86"></a></span>
+<span id="cb13-87"><a href="#cb13-87"></a><span class="fu">plot_temporal_missingness</span>()</span>
+<span id="cb13-88"><a href="#cb13-88"></a><span class="in">```</span></span>
+<span id="cb13-89"><a href="#cb13-89"></a></span>
+<span id="cb13-90"><a href="#cb13-90"></a>The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.</span>
+<span id="cb13-91"><a href="#cb13-91"></a></span>
+<span id="cb13-92"><a href="#cb13-92"></a>This temporal structure has a direct implication for the interpolation stage of the pipeline. Linear interpolation is appropriate when a smooth trajectory can be inferred from values on either side of a gap. Extended contiguous gaps produced by a structural break have no valid upper boundary from which to interpolate, and filling them with temporal interpolation would create long synthetic sequences with no empirical anchor. The five-day interpolation cap set in Stage 1 of the pipeline is a direct response to this finding.</span>
+<span id="cb13-93"><a href="#cb13-93"></a></span>
+<span id="cb13-94"><a href="#cb13-94"></a><span class="fu">### Geographic Concentration: Ghost Sensor Identification {#sec-ghost-sensor}</span></span>
+<span id="cb13-95"><a href="#cb13-95"></a></span>
+<span id="cb13-98"><a href="#cb13-98"></a><span class="in">```{r}</span></span>
+<span id="cb13-99"><a href="#cb13-99"></a><span class="co">#| label: ghost-sensors</span></span>
+<span id="cb13-100"><a href="#cb13-100"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-101"><a href="#cb13-101"></a><span class="co">#| message: false</span></span>
+<span id="cb13-102"><a href="#cb13-102"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-103"><a href="#cb13-103"></a></span>
+<span id="cb13-104"><a href="#cb13-104"></a><span class="fu">render_ghost_sensor_table</span>()</span>
+<span id="cb13-105"><a href="#cb13-105"></a><span class="in">```</span></span>
+<span id="cb13-106"><a href="#cb13-106"></a></span>
+<span id="cb13-107"><a href="#cb13-107"></a>The location-level analysis identifies the specific station-variable pairs responsible for the bulk of the aggregate missingness. The top ten instances from the script output, all at exactly 100% missing, are as follows: Albury (<span class="in">`evaporation`</span>, 3,040 observations; <span class="in">`sunshine`</span>, 3,040), BadgerysCreek (<span class="in">`evaporation`</span>, 3,009; <span class="in">`sunshine`</span>, 3,009; <span class="in">`cloud9am`</span>, 3,009; <span class="in">`cloud3pm`</span>, 3,009), Newcastle (<span class="in">`evaporation`</span>, 3,039; <span class="in">`sunshine`</span>, 3,039), and NorahHead (<span class="in">`evaporation`</span>, 3,004; <span class="in">`sunshine`</span>, 3,004). At these stations, the instrument in question recorded a value on zero days across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.</span>
+<span id="cb13-108"><a href="#cb13-108"></a></span>
+<span id="cb13-109"><a href="#cb13-109"></a>The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support whatsoever: there is no observed value at that station and variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.</span>
+<span id="cb13-110"><a href="#cb13-110"></a></span>
+<span id="cb13-111"><a href="#cb13-111"></a><span class="fu">### Weather-Conditionality of Sunshine Missingness {#sec-weather-conditionality}</span></span>
+<span id="cb13-112"><a href="#cb13-112"></a></span>
+<span id="cb13-115"><a href="#cb13-115"></a><span class="in">```{r}</span></span>
+<span id="cb13-116"><a href="#cb13-116"></a><span class="co">#| label: tbl-sunshine-mcar-test</span></span>
+<span id="cb13-117"><a href="#cb13-117"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-118"><a href="#cb13-118"></a><span class="co">#| message: false</span></span>
+<span id="cb13-119"><a href="#cb13-119"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-120"><a href="#cb13-120"></a></span>
+<span id="cb13-121"><a href="#cb13-121"></a><span class="fu">render_sunshine_mcar_table</span>()</span>
+<span id="cb13-122"><a href="#cb13-122"></a><span class="in">```</span></span>
+<span id="cb13-123"><a href="#cb13-123"></a></span>
+<span id="cb13-126"><a href="#cb13-126"></a><span class="in">```{r}</span></span>
+<span id="cb13-127"><a href="#cb13-127"></a><span class="co">#| label: fig-sunshine-rainfall-density</span></span>
+<span id="cb13-128"><a href="#cb13-128"></a><span class="co">#| fig-cap: "Density of rainfall amounts on days where sunshine data is present versus missing. The near-identical distributions confirm that sunshine missingness is not weather-conditional: the same stations are missing sunshine on both dry and rainy days because the instrument was simply not installed, not because it failed during precipitation events."</span></span>
+<span id="cb13-129"><a href="#cb13-129"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb13-130"><a href="#cb13-130"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb13-131"><a href="#cb13-131"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-132"><a href="#cb13-132"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-133"><a href="#cb13-133"></a></span>
+<span id="cb13-134"><a href="#cb13-134"></a><span class="fu">plot_sunshine_rainfall_density</span>()</span>
+<span id="cb13-135"><a href="#cb13-135"></a><span class="in">```</span></span>
+<span id="cb13-136"><a href="#cb13-136"></a></span>
+<span id="cb13-137"><a href="#cb13-137"></a>A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.</span>
+<span id="cb13-138"><a href="#cb13-138"></a></span>
+<span id="cb13-139"><a href="#cb13-139"></a>The empirical test refutes this concern. The table output (@tbl-sunshine-mcar-test) reports a sunshine missing rate of 47.8% on 110,319 dry days (rainfall at most 1 mm) and 47.2% on 31,880 rainy days (rainfall above 1 mm), a difference of 0.6 percentage points. The density plot (@fig-sunshine-rainfall-density) makes the same point visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects not a systematic pattern but the difference in the sizes of the two groups.</span>
+<span id="cb13-140"><a href="#cb13-140"></a></span>
+<span id="cb13-141"><a href="#cb13-141"></a>Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates, because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.</span>
+<span id="cb13-142"><a href="#cb13-142"></a></span>
+<span id="cb13-143"><a href="#cb13-143"></a><span class="fu">### Missing Pattern Structure</span></span>
+<span id="cb13-144"><a href="#cb13-144"></a></span>
+<span id="cb13-147"><a href="#cb13-147"></a><span class="in">```{r}</span></span>
+<span id="cb13-148"><a href="#cb13-148"></a><span class="co">#| label: miss-pattern-table</span></span>
+<span id="cb13-149"><a href="#cb13-149"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-150"><a href="#cb13-150"></a><span class="co">#| message: false</span></span>
+<span id="cb13-151"><a href="#cb13-151"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-152"><a href="#cb13-152"></a></span>
+<span id="cb13-153"><a href="#cb13-153"></a><span class="fu">render_miss_pattern_table</span>()</span>
+<span id="cb13-154"><a href="#cb13-154"></a><span class="in">```</span></span>
+<span id="cb13-155"><a href="#cb13-155"></a></span>
+<span id="cb13-156"><a href="#cb13-156"></a>The case-level output from the script reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.</span>
+<span id="cb13-157"><a href="#cb13-157"></a></span>
+<span id="cb13-158"><a href="#cb13-158"></a>The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in @sec-ghost-sensor. For these observations, no imputation is supportable and the values remain missing after the pipeline. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artifact: observations genuinely tend to be fully instrumented or minimally instrumented, not randomly partially instrumented.</span>
+<span id="cb13-159"><a href="#cb13-159"></a></span>
+<span id="cb13-160"><a href="#cb13-160"></a>---</span>
+<span id="cb13-161"><a href="#cb13-161"></a></span>
+<span id="cb13-162"><a href="#cb13-162"></a><span class="fu">## Imputation Pipeline {#sec-imputation-pipeline}</span></span>
+<span id="cb13-163"><a href="#cb13-163"></a></span>
+<span id="cb13-164"><a href="#cb13-164"></a>The diagnostic evidence from @sec-missingness-diagnostics motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (@sec-weather-conditionality), temporally structured with extended contiguous gaps rather than random scatter (@sec-temporal-structure), and co-located across variables at the station level (@sec-co-missingness). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.</span>
+<span id="cb13-165"><a href="#cb13-165"></a></span>
+<span id="cb13-166"><a href="#cb13-166"></a><span class="fu">### Stage 1: Temporal Interpolation</span></span>
+<span id="cb13-167"><a href="#cb13-167"></a></span>
+<span id="cb13-168"><a href="#cb13-168"></a>The eight variables with smooth day-to-day trajectories minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.</span>
+<span id="cb13-169"><a href="#cb13-169"></a></span>
+<span id="cb13-170"><a href="#cb13-170"></a><span class="fu">### Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</span></span>
+<span id="cb13-171"><a href="#cb13-171"></a></span>
+<span id="cb13-172"><a href="#cb13-172"></a>Remaining gaps in <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>, and the three wind direction variables are addressed using <span class="in">`mice`</span> with method assignments differentiated by variable type.</span>
+<span id="cb13-173"><a href="#cb13-173"></a></span>
+<span id="cb13-174"><a href="#cb13-174"></a>The four continuous atmospheric variables (<span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid Rubin's Rules variance decomposition downstream. Each variable is imputed from a physically motivated predictor set:</span>
+<span id="cb13-175"><a href="#cb13-175"></a></span>
+<span id="cb13-176"><a href="#cb13-176"></a><span class="ss">- </span>**Cloud cover** (<span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) from morning and afternoon humidity, morning pressure, location, and month.</span>
+<span id="cb13-177"><a href="#cb13-177"></a><span class="ss">- </span>**Sunshine** from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.</span>
+<span id="cb13-178"><a href="#cb13-178"></a><span class="ss">- </span>**Evaporation** from wind gust speed, maximum temperature, afternoon humidity, sunshine, location, and month.</span>
+<span id="cb13-179"><a href="#cb13-179"></a></span>
+<span id="cb13-180"><a href="#cb13-180"></a>The three wind direction variables (<span class="in">`wind_gust_dir`</span>, <span class="in">`wind_dir9am`</span>, <span class="in">`wind_dir3pm`</span>) are imputed using Random Forest. Wind direction is a multi-class unordered categorical variable with sixteen compass-point levels. PMM is not appropriate for unordered factors because it imposes an implicit numeric ordering on the donor matching step. Random Forest handles the multi-class non-ordinal structure natively by splitting on class membership rather than on numeric distance. Each wind direction variable is conditioned on its temporally matched wind speed and pressure readings: gust direction from gust speed and afternoon pressure, morning direction from morning speed and morning pressure, and afternoon direction from afternoon speed and afternoon pressure. This preserves the physical coupling between concurrent wind speed and direction measurements.</span>
+<span id="cb13-181"><a href="#cb13-181"></a></span>
+<span id="cb13-182"><a href="#cb13-182"></a>The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in @sec-co-missingness. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.</span>
+<span id="cb13-183"><a href="#cb13-183"></a></span>
+<span id="cb13-184"><a href="#cb13-184"></a><span class="fu">### Ghost Sensor Flagging</span></span>
+<span id="cb13-185"><a href="#cb13-185"></a></span>
+<span id="cb13-186"><a href="#cb13-186"></a>Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (<span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, <span class="in">`cloud9am_imp_flagged`</span>). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.</span>
+<span id="cb13-187"><a href="#cb13-187"></a></span>
+<span id="cb13-190"><a href="#cb13-190"></a><span class="in">```{r}</span></span>
+<span id="cb13-191"><a href="#cb13-191"></a><span class="co">#| label: imputation-strategy</span></span>
+<span id="cb13-192"><a href="#cb13-192"></a><span class="co">#| echo: true</span></span>
+<span id="cb13-193"><a href="#cb13-193"></a><span class="co">#| eval: false</span></span>
+<span id="cb13-194"><a href="#cb13-194"></a></span>
+<span id="cb13-195"><a href="#cb13-195"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"imputation.R"</span>))</span>
+<span id="cb13-196"><a href="#cb13-196"></a><span class="in">```</span></span>
+<span id="cb13-197"><a href="#cb13-197"></a></span>
+<span id="cb13-200"><a href="#cb13-200"></a><span class="in">```{r}</span></span>
+<span id="cb13-201"><a href="#cb13-201"></a><span class="co">#| label: clean-and-save-imputed</span></span>
+<span id="cb13-202"><a href="#cb13-202"></a><span class="co">#| message: false</span></span>
+<span id="cb13-203"><a href="#cb13-203"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-204"><a href="#cb13-204"></a><span class="co">#| eval: false</span></span>
+<span id="cb13-205"><a href="#cb13-205"></a></span>
+<span id="cb13-206"><a href="#cb13-206"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
+<span id="cb13-207"><a href="#cb13-207"></a>df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="dv">1</span>)</span>
+<span id="cb13-208"><a href="#cb13-208"></a><span class="fu">write_csv</span>(df_final, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
+<span id="cb13-209"><a href="#cb13-209"></a></span>
+<span id="cb13-210"><a href="#cb13-210"></a><span class="in">```</span></span>
+<span id="cb13-211"><a href="#cb13-211"></a></span>
+<span id="cb13-214"><a href="#cb13-214"></a><span class="in">```{r}</span></span>
+<span id="cb13-215"><a href="#cb13-215"></a><span class="co">#| label: load-imputed-data</span></span>
+<span id="cb13-216"><a href="#cb13-216"></a><span class="co">#| echo: false</span></span>
+<span id="cb13-217"><a href="#cb13-217"></a><span class="co">#| message: false</span></span>
+<span id="cb13-218"><a href="#cb13-218"></a><span class="co">#| warning: false</span></span>
+<span id="cb13-219"><a href="#cb13-219"></a></span>
+<span id="cb13-220"><a href="#cb13-220"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
+<span id="cb13-221"><a href="#cb13-221"></a><span class="in">```</span></span>
+<span id="cb13-222"><a href="#cb13-222"></a></span>
+<span id="cb13-223"><a href="#cb13-223"></a>---</span>
+<span id="cb13-224"><a href="#cb13-224"></a></span>
+<span id="cb13-225"><a href="#cb13-225"></a><span class="fu">## Post-Imputation Dataset Properties</span></span>
+<span id="cb13-226"><a href="#cb13-226"></a></span>
+<span id="cb13-227"><a href="#cb13-227"></a>The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in @sec-missingness-diagnostics.</span>
+<span id="cb13-228"><a href="#cb13-228"></a></span>
+<span id="cb13-229"><a href="#cb13-229"></a>**Retention without fabrication.** No observations are discarded on the basis of partial missingness. The 27.9% of observations with all four target variables simultaneously absent are retained with those variables still missing, consistent with the ghost sensor finding that no empirically supportable imputation is possible for them.</span>
+<span id="cb13-230"><a href="#cb13-230"></a></span>
+<span id="cb13-231"><a href="#cb13-231"></a>**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in @sec-temporal-structure, prevents the interpolation from extending across genuine data voids. The use of <span class="in">`rule = 1`</span> in <span class="in">`na.approx`</span> ensures that boundary gaps return <span class="in">`NA`</span> rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.</span>
+<span id="cb13-232"><a href="#cb13-232"></a></span>
+<span id="cb13-233"><a href="#cb13-233"></a>**Distributional fidelity.** PMM draws imputed values directly from the pool of observed donor observations rather than using a model prediction. This constrains imputed values to the observed empirical range of each variable and preserves the marginal distribution, including multi-modal structure and skew, without requiring distributional assumptions.</span>
+<span id="cb13-234"><a href="#cb13-234"></a></span>
+<span id="cb13-235"><a href="#cb13-235"></a>**Physical bounds enforcement.** Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when <span class="in">`rule = 2`</span> extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.</span>
+<span id="cb13-236"><a href="#cb13-236"></a></span>
+<span id="cb13-237"><a href="#cb13-237"></a>**Outcome independence.** The weather-conditionality test in @sec-weather-conditionality confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</span>
+<span id="cb13-238"><a href="#cb13-238"></a></span>
+<span id="cb13-239"><a href="#cb13-239"></a>**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.</span>
+<span id="cb13-240"><a href="#cb13-240"></a></span>
+<span id="cb13-241"><a href="#cb13-241"></a>**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in @sec-sensitivity.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
