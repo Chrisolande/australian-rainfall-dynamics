@@ -82,7 +82,7 @@ stage_datasets <- function(datasets) {
   run_dir <- tempfile(pattern = "mi_pool_")
   dir.create(run_dir, recursive = TRUE)
 
-  paths <- purrr::imap_chr(datasets, \(dat, i) {
+  paths <- imap_chr(datasets, \(dat, i) {
     path <- file.path(run_dir, sprintf("imp_dataset_%02d.rds", as.integer(i)))
     saveRDS(dat, path, compress = FALSE)
     path
@@ -131,4 +131,35 @@ evict_model <- function(...) {
     }
   }
   gc()
+}
+
+sanitize_coef_names <- function(nms) {
+  nms %>%
+    gsub(
+      "splines::ns\\(([^,)]+)(?:,\\s*df\\s*=\\s*(\\d+))?\\)(\\d*)",
+      "ns_\\1_\\3",
+      .,
+      perl = TRUE
+    ) %>%
+    gsub("[^a-zA-Z0-9_.]", "_", .) %>%
+    gsub("_+", "_", .) %>%
+    gsub("_$", "", .)
+}
+
+clean_term <- function(term, zi_prefix = "ZI: ") {
+  term %>%
+    gsub("^zi\\.", zi_prefix, .) %>%
+    gsub("^disp\\.", "Disp: ", .) %>%
+    gsub("_", " ", .) %>%
+    gsub(
+      "\\bsplines::ns\\((.+),\\s*df\\s*=\\s*(\\d+)\\)",
+      "\\1 (spline, df=\\2)",
+      .
+    ) %>%
+    gsub("\\bns\\((.+),\\s*df\\s*=\\s*(\\d+)\\)", "\\1 (spline, df=\\2)", .) %>%
+    gsub("\\bsplines::ns\\((.+)\\)", "\\1 (spline)", .) %>%
+    gsub("\\bns\\((.+)\\)", "\\1 (spline)", .) %>%
+    gsub("\\(Intercept\\)", "Intercept", .) %>%
+    gsub("rain yesterdayYes", "Rain yesterday (yes)", .) %>%
+    gsub("\\b([a-z])", "\\U\\1", ., perl = TRUE)
 }

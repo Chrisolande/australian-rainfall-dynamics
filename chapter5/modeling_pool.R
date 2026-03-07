@@ -31,7 +31,11 @@ pool_zprob <- function(good, tmp_paths, good_idx) {
 # Rubin's rules pooling per Van Buuren (FIMD, sec 2.3)
 # https://stefvanbuuren.name/fimd/sec-whyandwhen.html
 # %%
-pool_rubin <- function(fit_list, component = c("cond", "zi"), dfcom = NULL) {
+pool_rubin <- function(
+  fit_list,
+  component = c("cond", "zi", "disp"),
+  dfcom = NULL
+) {
   component <- match.arg(component)
   m <- length(fit_list)
 
@@ -96,18 +100,23 @@ pool_rubin <- function(fit_list, component = c("cond", "zi"), dfcom = NULL) {
 pool_rubin_full <- function(good) {
   fit_list <- map(good, "fit")
   has_zi <- all(map_lgl(fit_list, \(f) length(fixef(f)$zi) > 0))
+  has_disp <- all(map_lgl(fit_list, \(f) length(fixef(f)$disp) > 0))
 
-  pooled <- if (has_zi) {
-    bind_rows(pool_rubin(fit_list, "cond"), pool_rubin(fit_list, "zi"))
-  } else {
-    pool_rubin(fit_list, "cond")
-  }
+  pooled <- bind_rows(
+    pool_rubin(fit_list, "cond"),
+    if (has_zi) pool_rubin(fit_list, "zi"),
+    if (has_disp) pool_rubin(fit_list, "disp")
+  )
 
   crit <- qt(0.975, df = pooled$df)
 
   mutate(
     pooled,
-    term_full = if_else(component == "zi", paste0("zi_", term), term),
+    term_full = case_when(
+      component == "zi" ~ paste0("zi_", term),
+      component == "disp" ~ paste0("disp_", term),
+      TRUE ~ term
+    ),
     conf.low = estimate - crit * std.error,
     conf.high = estimate + crit * std.error
   )

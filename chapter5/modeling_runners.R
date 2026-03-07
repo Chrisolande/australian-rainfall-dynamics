@@ -3,8 +3,8 @@ run_fits_sequential <- function(
   tmp_paths,
   cond_formula,
   zi_formula,
-  control,
   dispformula,
+  control,
   offset = 0L
 ) {
   disable_multi_threading()
@@ -49,7 +49,8 @@ run_fits_parallel <- function(
   zi_formula,
   dispformula,
   control,
-  workers = 4L
+  workers = 4L,
+  offset = 0L
 ) {
   if (workers == 1L) {
     message("Running in sequential mode.")

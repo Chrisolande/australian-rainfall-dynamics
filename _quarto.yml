@@ -30,16 +30,17 @@ book:
     - part: "Data"
       chapters:
         - chapters/02-data-prep.qmd
-        - chapters/03-eda.qmd
+        - chapters/03-sensitivity.qmd
+        - chapters/04-eda.qmd
     - part: "Feature Engineering"
       chapters:
-        - chapters/04-features.qmd
+        - chapters/05-features.qmd
     - part: "Modelling"
       chapters:
-        - chapters/05-modeling.qmd
-        - chapters/06-evaluation.qmd
-        - chapters/07-model-selection.qmd
-    - chapters/08-conclusion.qmd
+        - chapters/06-modeling.qmd
+        - chapters/07-evaluation.qmd
+        - chapters/08-model-selection.qmd
+    - chapters/09-conclusion.qmd
 
 execute:
   warning: false

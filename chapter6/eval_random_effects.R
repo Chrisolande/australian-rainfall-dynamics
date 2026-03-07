@@ -99,40 +99,5 @@ plot_location_effects <- function(model = m6_mixed) {
       x = "Baseline Rainfall Adjustment (Log mm)",
       y = NULL,
       caption = "Interpretation: A value of +0.5 means approximately 65% more rain than an average location with identical conditions [exp(0.5) \u2248 1.65]"
-    ) +
-    theme_minimal(base_size = 12) +
-    theme(
-      panel.grid.major.y = element_line(color = "grey90", linewidth = 0.3),
-      panel.grid.minor = element_blank(),
-      panel.grid.major.x = element_line(color = "grey90", linewidth = 0.3),
-      plot.title = element_text(
-        face = "bold",
-        size = 16,
-        margin = margin(b = 5)
-      ),
-      plot.subtitle = element_text(
-        color = "grey30",
-        size = 11,
-        margin = margin(b = 15)
-      ),
-      plot.caption = element_text(
-        color = "grey50",
-        size = 9,
-        hjust = 0,
-        margin = margin(t = 10)
-      ),
-      axis.text.y = element_text(size = 10, face = "bold"),
-      axis.text.x = element_text(size = 10),
-      axis.title.x = element_text(
-        size = 11,
-        face = "bold",
-        margin = margin(t = 10)
-      ),
-      legend.position = "top",
-      legend.justification = "left",
-      legend.title = element_text(face = "bold", size = 10),
-      legend.text = element_text(size = 9),
-      plot.margin = margin(15, 15, 15, 15)
     )
 }
-

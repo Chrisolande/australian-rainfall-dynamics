@@ -1,14 +1,14 @@
-# %%
+# # %%
 source(here::here("config.R"))
 source(here::here("utils.R"))
-source(here::here("chapter5", "feature_eng.R"))
+source(here::here("chapter4", "feature_engineering.R"))
 source(here::here("chapter5", "modeling_core.R"))
 source(here::here("chapter5", "modeling_pool.R"))
 source(here::here("chapter5", "modeling_runners.R"))
 source(here::here("chapter5", "mitml_wrappers.R"))
 source(here::here("chapter5", "Reporting.R"))
 
-# %%
+# # %%
 df_final <- read_csv(here::here("data", "df_final.csv"))
 # m5_wind <- readRDS(here::here("models", "m5_wind.rds"))
 # m4_energy <- readRDS(here::here("models", "m4_energy.rds"))
@@ -37,9 +37,9 @@ for (cfg in model_configs) {
   fit <- fit_and_pool(
     cond_formula = cfg$cond,
     zi_formula = cfg$zi,
-    dispformula = ~1,
     datasets = engineered_list,
     control = control,
+    dispformula = ~1,
     preflight_n = 0,
     fail_fast = TRUE,
     parallel = TRUE,
@@ -53,7 +53,6 @@ for (cfg in model_configs) {
   gc()
 }
 
-
 # %%
 m6_mixed <- fit_and_pool(
   cond_formula = m6_cond,
@@ -63,9 +62,9 @@ m6_mixed <- fit_and_pool(
     optimizer = nlminb,
     optCtrl = list(iter.max = 1200, eval.max = 1500, rel.tol = 1e-8)
   ),
+  dispformula = dispformula,
   preflight_n = 0,
   fail_fast = TRUE,
   parallel = TRUE,
   workers = 4
 )
-
