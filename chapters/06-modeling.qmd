@@ -159,24 +159,6 @@ saveRDS(m1_moisture, here::here("models", "m1_moisture.rds"))
 render_pooled_model_table(get_model("m1_moisture"), "Model 1: Moisture and Pressure Dynamics")
 ```
 
-```{r}
-#| label: m1-vs-m0
-#| echo: false
-
-compare_models(
-  m_large = get_model("m1_moisture"),
-  m_small = get_model("m0_null")
-) %>% 
-  render_comparison_table(names = c("+ Moisture & Pressure", "Null Baseline"))
-```
-
-```{r}
-#| label: clean-up-1
-#| include: false
-evict_model("m0_null", "m1_moisture")
-```
-
-
 The correlation analysis in @sec-eda identified afternoon relative humidity and morning dewpoint temperature as among the strongest individual predictors of rainfall occurrence. That analysis also established that both the absolute level and the diurnal rate of change of sea-level pressure carry discriminating signal. Model 1 formalises these findings by introducing the four most physically direct atmospheric moisture and pressure drivers into the conditional intensity submodel, and a subset of the moisture indicators into the zero-inflation submodel.
 
 The AIC falls from 461,669.7 to 425,731.4, a reduction of 35,938.3 points. This is the largest single improvement across the entire model sequence, and its magnitude confirms that atmospheric moisture and pressure dynamics are not merely correlated with rainfall but constitute its fundamental predictive substrate. All four conditional predictors are highly significant ($p < 0.001$).
@@ -210,24 +192,6 @@ saveRDS(m2_temporal, here::here("models", "m2_temporal.rds"))
 #| echo: false
 
 render_pooled_model_table(get_model("m2_temporal"), "Model 2: Seasonality and Persistence Effects")
-```
-
-```{r}
-#| label: m2-vs-m1
-#| echo: false
-
-compare_models(
-  m_large = get_model("m2_temporal"),
-  m_small = get_model("m1_moisture")
-) %>% 
-  render_comparison_table(names = c("+ Seasonality & Persistence", "Moisture Only"))
-
-evict_model("m1_moisture", "m2_temporal")
-```
-```{r}
-#| label: clean-up-2
-#| include: false
-evict_model("m1_moisture", "m2_temporal")
 ```
 
 
@@ -264,23 +228,6 @@ saveRDS(m3_history, here::here("models", "m3_history.rds"))
 #| echo: false
 
 render_pooled_model_table(get_model("m3_history"), "Model 3: Accumulated Weather History")
-```
-
-```{r}
-#| label: m3-vs-m2
-#| echo: false
-
-compare_models(
-  m_large = get_model("m3_history"),
-  m_small = get_model("m2_temporal")
-) %>% 
-  render_comparison_table(names = c("+ Accumulated History", "Seasonality & Persistence"))
-```
-
-```{r}
-#| label: clean-up-3
-#| include: false
-evict_model("m2_temporal", "m3_history")
 ```
 
 While Model 2 captured the binary rain state of the previous day, it does not represent the *accumulated* atmospheric condition over a longer antecedent window. The dry spell analysis in @sec-dry-spell demonstrated that rainfall probability decays as dry spells lengthen, and the moving average analysis showed that 7-day smoothed signals substantially reduce the stochastic variance of both the rainfall and humidity series. Model 3 introduces these medium-horizon history features (`rainfall_ma7`, `humidity_ma7`, `days_since_rain`, and the binary `rain_yesterday`) into the conditional intensity submodel.
@@ -320,25 +267,6 @@ saveRDS(m4_energy, here::here("models", "m4_energy.rds"))
 render_pooled_model_table(get_model("m4_energy"), "Model 4: Thermodynamic Energy and Interactions")
 ```
 
-```{r}
-#| label: m4-vs-m3
-#| echo: false
-
-compare_models(
-  m_large = get_model("m4_energy"),
-  m_small = get_model("m3_history")
-) %>% 
-  render_comparison_table(names = c("+ Thermodynamics & Interaction", "Accumulated History"))
-
-
-
-```
-```{r}
-#| label: clean-up-4
-#| include: false
-evict_model("m3_history", "m4_energy")
-```
-
 
 The bivariate density analysis in @sec-bivariate-density identified a structural non-linearity in the joint distribution of afternoon humidity and sunshine hours: intense rainfall occurs almost exclusively in the region of the bivariate distribution where humidity is high and sunshine is simultaneously low. An additive model is structurally incapable of representing this conditional geometry. Model 4 introduces the multiplicative `sun_humid_interaction` term alongside a broader set of thermodynamic energy predictors (`sunshine`, `evaporation`, `instability_index`, and `cloud_development`) to formalise the physical hypothesis that convective rainfall arises from the conjunction of available moisture and atmospheric instability rather than from either factor in isolation.
 
@@ -375,25 +303,7 @@ saveRDS(m5_wind, here::here("models", "m5_wind.rds"))
 render_pooled_model_table(get_model("m5_wind"), "Model 5: Wind Vector Dynamics")
 ```
 
-```{r}
-#| label: m5-vs-m4
-#| echo: false
 
-compare_models(
-  m_large = get_model("m5_wind"),
-  m_small = get_model("m4_energy")
-) %>% 
-  render_comparison_table(names = c("+ Wind Vectors", "Thermodynamics & Interaction"))
-
-
-```
-
-```{r}
-#| label: clean-up-5
-#| include: false
-
-evict_model("m4_energy", "m5_wind")
-```
 Model 5 tests whether the directional provenance of air masses provides additional information about rainfall intensity beyond the instantaneous thermodynamic state of the atmosphere. As developed in @sec-feature-eng, wind direction is encoded as orthogonal zonal (U, east-west) and meridional (V, north-south) vector components, preserving the circular geometry of directional data and avoiding the discontinuity that would arise from treating compass bearing as a linear predictor. Both peak gust components and the 9:00 AM surface wind vectors are included, allowing the model to distinguish between the background synoptic circulation at day onset and the turbulent dynamics associated with active rainfall systems.
 
 The AIC falls to 409,149.2, a reduction of 652.4 points relative to Model 4 (BIC = 409,415.5). This is the smallest stepwise improvement in the sequence. The BIC penalty for the four additional parameters is relatively restrictive, indicating that the marginal gain should be interpreted in the context of the physical interpretability of the effects rather than purely through information criteria.
@@ -438,25 +348,6 @@ saveRDS(m6_mixed, here::here("models", "m6_mixed.rds"))
 render_pooled_model_table(get_model("m6_mixed"), "M6: Fixed Effects Model")
 ```
 
-```{r}
-#| label: m6-vs-m5
-#| echo: false
-
-compare_models(
-  m_large = get_model("m6_mixed"),
-  m_small = get_model("m5_wind")
-) %>% 
-  render_comparison_table(names = c("+ Random Effects", "Wind Vectors"))
-
-
-```
-
-```{r}
-#| label: clean-up-6
-#| include: false
-
-evict_model("m5_wind", "m6_mixed")
-```
 
 All five preceding models implicitly assume that the relationship between each atmospheric predictor and rainfall is spatially uniform, as though the sensitivity of rainfall intensity to afternoon humidity were identical in coastal Sydney, the tropical far north, and the arid interior. For a continent as climatologically heterogeneous as Australia, spanning tropical monsoon, subtropical semi-arid, temperate oceanic, and Mediterranean regimes, this homogeneity assumption is difficult to defend. The EDA in @sec-eda confirmed that both mean rainfall levels and seasonal patterns vary substantially across the station network.
 
@@ -469,75 +360,3 @@ The fixed-effect estimates for the global-mean relationships remain directionall
 The natural spline terms for `days_since_rain` in the zero-inflation submodel are collectively non-significant at conventional thresholds, with the second basis function marginally approaching significance ($\hat{\beta} = 0.115$, $p = 0.075$). This suggests that the dry spell decay function, while visually non-linear in the analysis of @sec-dry-spell, does not depart substantially from linearity once the full complement of humidity, seasonal, and persistence predictors is included. The spline is retained for its robustness to potential non-linearity, but the practical difference from a linear specification appears limited given the current covariate set.
 
 ---
-
-## Progressive Model Comparison
-
-The AIC trajectory across the model sequence (summarised in @tbl-model-comparison) reveals a pattern of steeply front-loaded improvement followed by diminishing but genuine increments, with a notable secondary gain at the step to mixed effects.
-
-```{r}
-#| label: tbl-model-comparison
-#| echo: false
-#| warning: false
-#| message: false
-
-library(tidyverse)
-library(kableExtra)
-
-model_summary <- tibble(
-  Model = c("M0", "M1", "M2", "M3", "M4", "M5", "M6"),
-  Description = c(
-    "Null (intercept only)",
-    "Moisture and pressure",
-    "Seasonality and persistence",
-    "Accumulated history",
-    "Thermodynamics and interactions",
-    "Wind vectors",
-    "Spatial mixed effects (final)"
-  ),
-  AIC = c(
-    461669.7,
-    425731.4,
-    412448.4,
-    411060.3,
-    409801.6,
-    409149.2,
-    400997.9
-  )
-) %>%
-  mutate(
-    `Delta AIC` = max(AIC) - AIC,
-    `% of Total Gain` = `Delta AIC` / max(`Delta AIC`),
-    AIC = scales::comma(AIC, accuracy = 0.1),
-    `Delta AIC` = ifelse(
-      Model == "M0", "-",
-      scales::comma(`Delta AIC`, accuracy = 0.1)
-    ),
-    `% of Total Gain` = ifelse(
-      Model == "M0", "-",
-      scales::percent(`% of Total Gain`, accuracy = 0.1)
-    )
-  )
-
-model_summary %>%
-  kable(
-    col.names = c("Model", "Description", "AIC", "Change in AIC vs Null", "% of Total Gain"),
-    align = "llrrr",
-    caption = "Progressive Model Comparison: AIC Trajectory"
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed"),
-    full_width = FALSE,
-    position = "center"
-  ) %>%
-  row_spec(7, bold = TRUE, background = "#e6f3ff", color = "#212529") %>%
-  add_footnote(
-    c(
-      "AIC: Akaike Information Criterion (Lower is better)",
-      "Total Gain is calculated relative to the maximum improvement achieved by Model 6."
-    ),
-    notation = "none"
-  )
-```
-Moisture and pressure dynamics alone account for 55.3% of the total AIC improvement, confirming that atmospheric water content is the primary physical driver of both rainfall occurrence and intensity in the Australian context. The addition of seasonal cycles and day-to-day persistence in Model 2 raises the cumulative share to 75.7%, establishing that temporal structure (the annual insolation cycle and the short-range memory of the atmosphere) constitutes the second-order source of predictive information. The thermodynamic and wind components (Models 4 and 5) each contribute positively but with diminishing returns, reflecting the fact that the mechanistic pathways they represent are partially encoded in earlier proxies.
-
-The step to mixed effects (Model 6) recovers 19.3 percentage points of additional gain, the largest single improvement after the initial moisture signal. This disproportionate improvement, despite the fact that the fixed-effect predictor set changes relatively little between Models 5 and 6, makes explicit a conclusion that is implicit in the geography of the station network: the parameters governing the moisture-intensity relationship, rainfall persistence, and dewpoint sensitivity are not continental constants but regional properties that vary systematically with climate zone. Treating them as such is not a statistical convenience but a physical necessity.

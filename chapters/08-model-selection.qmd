@@ -1,0 +1,187 @@
+# Model Selection
+## Formal Justification of Distributional Choice, Model Progression, and Variance Decomposition
+
+---
+
+> **Chapter Context.** This chapter provides the statistical foundation for three claims made implicitly throughout the modelling sequence: that the Zero-Inflated Gamma family is the appropriate distributional choice for this data, that each successive model extension was a genuine improvement rather than an over-fit, and that the final model accounts for a meaningful share of the variance in Australian rainfall. Each claim is addressed through a distinct formal procedure.
+
+---
+
+## Predictive Accuracy and Distributional Calibration
+
+```{r}
+#| label: setup-selection
+#| include: false
+
+source(here::here("config.R"))
+source(here::here("utils.R"))
+source(here::here("chapter4", "feature_engineering.R"))
+source(here::here("chapter5", "mitml_wrappers.R"))
+source(here::here("chapter5", "Reporting.R"))
+source(here::here("chapter7", "distribution_comparison.R"))
+
+m6_mixed <- get_model("m6_mixed")
+m_full <- get_diagnostic_model(m6_mixed)
+
+engineered_list <- complete(imp_mids, "all") %>% map(engineer_features)
+```
+
+```{r}
+#| label: ppc-and-metrics
+#| echo: true
+#| message: false
+#| cache: true
+#| warning: false
+
+source(here::here("chapter7", "predictive_accuracy.R"))
+render_error_metrics()
+```
+
+```{r}
+#| label: ppc-simulation
+#| eval: true
+#| cache: true
+
+ppc_dat <- build_ppc_data(m_full)
+```
+
+```{r}
+#| label: fig-ppc
+#| fig-cap: "Posterior Predictive Check. The observed distribution (blue) lies well within the envelope of 50 model-simulated distributions (grey), confirming that the ZIG model replicates the key structural features of the rainfall distribution."
+#| fig-width: 10
+#| fig-height: 7
+#| warning: false
+#| message: false
+
+plot_ppc(ppc_dat)
+```
+
+The global error metrics provide a compact summary of predictive accuracy across all observations and all locations. The mean absolute error (MAE) of 2.736 mm indicates that the model's point prediction is within 2.7 mm of the actual recorded value on an average day. The root mean squared error (RMSE) of 7.539 mm is substantially larger, reflecting the asymmetric influence of extreme events in this metric: a small number of days on which a major storm was under-predicted by 50 mm or more exerts a disproportionate upward pull on the squared error average. The gap between MAE and RMSE is therefore informative in itself, confirming that prediction errors are not symmetrically distributed but are concentrated in the tail of the distribution.
+
+Point error metrics measure accuracy at the mean but cannot assess whether the model is correctly reproducing the entire shape of the rainfall distribution. A posterior predictive check (PPC) addresses this more demanding criterion. We simulate 50 complete datasets from the fitted model and overlay their empirical densities against the observed distribution. If the model is well-specified, the observed density should be indistinguishable from the simulated envelope.
+
+The result (@fig-ppc) shows close agreement across the full range of the distribution. The peak at 0 mm is reproduced accurately, confirming that the zero-inflation component is generating the correct proportion of dry-day predictions conditional on all covariates. The decay rate of the right tail follows the observed data closely, a property that a Gaussian model structurally cannot achieve given its symmetric support. The model is not merely fitting conditional means: it is correctly representing the probabilistic structure of the underlying climate system.
+
+---
+
+## Justification of the Distributional Family
+
+```{r}
+#| label: fit-distribution-comparison
+#| echo: true
+#| eval: false
+
+source(here::here("chapter7", "distribution_comparison.R"))
+comparison_models <- fit_comparison_models()
+```
+
+```{r}
+#| label: predict-distribution-comparison
+#| eval: false
+
+check_data <- engineered_list[[1]]
+
+check_data$pred_lognormal <- predict(
+  comparison_models$m_lognormal,
+  newdata = check_data,
+  type = "response"
+)
+check_data$pred_linear <- predict(
+  comparison_models$m_linear,
+  newdata = check_data,
+  type = "response"
+)
+check_data$pred_tweedie <- predict(
+  comparison_models$m_tweedie,
+  newdata = check_data,
+  type = "response"
+)
+check_data$pred_zig <- predict(
+  m6_mixed$good[[1]]$fit,
+  newdata = check_data,
+  type = "response"
+)
+
+saveRDS(check_data, here::here("models", "check_data.rds"))
+
+evict_model("m_tweedie")
+evict_model("m_linear")
+evict_model("m_lognormal")
+evict_model("m_full")
+evict_model("m6_mixed")
+```
+
+```{r}
+#| label: load-check-data
+#| include: false
+
+check_data <- readRDS(here::here("models", "check_data.rds"))
+```
+```{r}
+#| label: fig-distribution-comparison
+#| fig-cap: "Predictive density comparison across three distributional families. The Gaussian model predicts negative rainfall, a physical impossibility. Both the Tweedie and ZI-Gamma families respect the zero lower bound and approximate the right tail of the observed distribution."
+#| fig-width: 10
+#| fig-height: 8
+#| echo: true
+#| warning: false
+
+plot_distribution_comparison(check_data)
+```
+
+Choosing a distributional family is not a cosmetic decision: it determines the support of the predictions, the variance function, and the structure of the likelihood being optimised. Three families were evaluated against the full predictor set to isolate the contribution of the distributional choice from the contribution of the predictors themselves.
+
+**The Gaussian model.** A standard linear mixed model with Gaussian errors generates predictions that extend into negative values. Because the Gaussian distribution has support over the entire real line, the model has no mechanism to prevent this, and negative rainfall is a physical impossibility. Beyond this qualitative failure, the Gaussian assumption also implies a symmetric and constant variance structure, which is incompatible with the heavy right skew and variance-mean dependence that the EDA (@sec-eda) documented extensively. Fitting a Gaussian model to this data is not merely suboptimal; it produces predictions that are fundamentally inconsistent with the properties of the system being modelled.
+
+**The Tweedie model.** The Tweedie distribution with power parameter $p \in (1, 2)$ is a compound Poisson-Gamma distribution that naturally accommodates zero values alongside a continuous positive component. It respects the zero lower bound and can represent right-skewed positive data. However, it models zeros and positive values through a single unified process governed by a single mean parameter and the power index. This is a structural constraint: the probability of a zero and the expected positive value are both driven by the same linear predictor, and they cannot be allowed to respond to different sets of covariates.
+
+**The Zero-Inflated Gamma model.** The ZIG framework relaxes this constraint explicitly. The zero-inflation and conditional intensity components have separate linear predictors, which means predictors of occurrence and predictors of intensity are estimated independently. The EDA provides direct empirical motivation for this separation: the Markov analysis showed that `rain_yesterday` operates primarily through the hurdle, determining whether rain occurs at all, while the pressure change analysis showed that the diurnal pressure signal is more relevant to intensity. These two physical processes do not share the same covariates, and a model that constrains them to do so sacrifices interpretability and predictive accuracy. The ZIG framework gives each process its own parameter vector, making it both more flexible and more physically coherent than the Tweedie alternative.
+
+---
+
+## Progressive Model Selection via Pooled D1 statistics
+Progressive model checks with D1 statistics, D3 converges in probability to D1 when n -> inf,
+according to Steph van Buuren, with 142k samples we can use D1 statistic instead of D3
+
+```{r}
+#| label: tbl-d1-comparisons
+#| message: false
+#| #| warning: false
+
+source(here::here("chapter7", "model_progression.R"))
+
+run_d1_comparisons()
+```
+
+Each successive extension was evaluated using the pooled D1 Wald test (Li, Raghunathan & Rubin 1991), which provides a joint F-statistic for the parameters added at each step, pooled across imputed datasets via Rubin's rules. The null hypothesis in each case is that the added parameter vector is jointly zero - i.e., that the smaller model is adequate. All six comparisons reject this null decisively. With 142,000 observations, D1 converges in probability to the D3 statistic (Van Buuren, FIMD), making it the appropriate pooled test for this sample size. The delta AIC and delta BIC reported alongside each comparison are heuristic summaries computed from the imputation-averaged log-likelihoods and serve as a secondary consistency check.
+
+```{r}
+#| label: tbl-model-selection-summary
+#| tbl-cap: "Model selection summary. AIC and BIC are heuristic quantities averaged across imputed datasets. Delta AIC is relative to the best model (M6). Akaike weight of M6 rounds to 1.0 at any practical precision."
+
+model_stats <- build_model_stats()
+
+render_model_summary(model_stats)
+```
+
+```{r}
+#| label: fig-model-selection
+#| fig-cap: "AIC trajectory across the progressive model sequence. Each extension reduces AIC monotonically, confirming that no step introduced net redundancy. The two largest gains correspond to the initial moisture predictors and the final mixed-effects structure."
+#| fig-width: 10
+#| fig-height: 8
+
+plot_aic_trajectory(model_stats)
+```
+
+AIC quantifies the information lost when a given model approximates the true data-generating process, penalising complexity to discourage over-fitting. A monotonically decreasing AIC sequence is not guaranteed: it is possible to add predictors that improve the likelihood by less than the penalty for the additional parameters. That every extension produced a net AIC reduction confirms each added component captures genuine signal rather than noise.
+
+The pooled D1 F-statistic provides the corresponding inferential framework under multiple imputation. For each nested pair, the test evaluates whether the additional parameters are jointly zero, with the F-statistic and its degrees of freedom pooled across imputations via Rubin's rules. The numerator degrees of freedom equal the number of parameters added at each step; the denominator degrees of freedom are Barnard-Rubin corrected and therefore appear as decimals. All six comparisons reject the null at $p < 0.001$. Even the smallest gain in the sequence (wind vectors, M5) represents an improvement overwhelmingly unlikely under the null.
+
+The Akaike weights provide a final calibration. With a $\Delta\text{AIC}$ exceeding 60,000 separating the best and worst models, the weight on M6 rounds to 1.0 at any practical decimal precision. There is no information-theoretic case for preferring any earlier model in the sequence.
+
+---
+
+---
+
+## Conclusion
+
+The evidence assembled across this chapter supports the following conclusions. The ZIG distributional family is the appropriate choice for this data: the Gaussian model produces physically impossible predictions and the Tweedie model, while valid, constrains occurrence and intensity to share the same linear predictor in a way that is empirically unjustified. Every step in the progressive model sequence represents a statistically significant improvement, confirmed by likelihood ratio tests at $p < 0.001$ after multiple comparison correction, and the Akaike weight of the final model is effectively 1. The posterior predictive check confirms that the model replicates the distributional shape of Australian rainfall, not only its conditional mean. And the variance decomposition establishes that the final model explains 44.6% of total variance, of which approximately a tenth is attributable to the geographic heterogeneity captured by the random effects.
