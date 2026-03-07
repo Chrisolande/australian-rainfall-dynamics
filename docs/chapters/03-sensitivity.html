@@ -454,7 +454,6 @@ window.Quarto = {
   <li><a href="#sec-dist-fidelity" id="toc-sec-dist-fidelity" class="nav-link" data-scroll-target="#sec-dist-fidelity"><span class="header-section-number">3.3</span> Distributional Fidelity</a></li>
   <li><a href="#sec-between-variance" id="toc-sec-between-variance" class="nav-link" data-scroll-target="#sec-between-variance"><span class="header-section-number">3.4</span> Between-Imputation Variance</a></li>
   <li><a href="#sec-rubins-rules" id="toc-sec-rubins-rules" class="nav-link" data-scroll-target="#sec-rubins-rules"><span class="header-section-number">3.5</span> Rubin’s Rules Variance Decomposition</a></li>
-  <li><a href="#sec-sensitivity-summary" id="toc-sec-sensitivity-summary" class="nav-link" data-scroll-target="#sec-sensitivity-summary"><span class="header-section-number">3.6</span> Diagnostic Summary</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/chapters/03-sensitivity.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -485,7 +484,7 @@ window.Quarto = {
 <h2 data-number="3.1" class="anchored" data-anchor-id="validating-the-two-stage-imputation-pipeline"><span class="header-section-number">3.1</span> Validating the Two-Stage Imputation Pipeline</h2>
 <hr>
 <blockquote class="blockquote">
-<p><strong>Chapter Context.</strong> The full <code>mids</code> object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Four analyses operate directly on <code>imp_mids</code> to assess convergence stability, distributional fidelity, between-imputation uncertainty, and variance decomposition via Rubin’s Rules. Each finding is tied back to the design decisions documented in <a href="02-data-prep.html#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.3</span></a>.</p>
+<p><strong>Chapter Context.</strong> The full <code>mids</code> object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Four analyses operate directly on <code>imp_mids</code> to assess convergence stability, distributional fidelity, between-imputation uncertainty, and variance decomposition via Rubin’s Rules. Each finding is tied back to the design decisions documented in <a href="02-data-prep.html#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.2</span></a>.</p>
 </blockquote>
 <hr>
 <hr>
@@ -511,7 +510,7 @@ Figure&nbsp;3.1: MCMC trace plots for the four PMM-imputed variables. Each colou
 </div>
 </div>
 </div>
-<p>All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The <code>sunshine</code> chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable’s observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.</p>
+<p>All four variables exhibit satisfactory convergence (<a href="#fig-convergence-trace" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>). The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The <code>sunshine</code> chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable’s observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.</p>
 <hr>
 </section>
 <section id="sec-dist-fidelity" class="level2" data-number="3.3">
@@ -583,7 +582,7 @@ Table&nbsp;3.1: Kolmogorov-Smirnov statistics comparing observed and imputed mar
 </figure>
 </div>
 </div>
-<p>The cloud cover variables achieve near-perfect fidelity. The statistic for <code>cloud3pm</code> (<span class="math inline">\(D = 0.019\)</span>) is negligible, and <code>cloud9am</code> (<span class="math inline">\(D = 0.051\)</span>) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. <code>evaporation</code> and <code>sunshine</code> show small shifts (<span class="math inline">\(D = 0.065\)</span> and <span class="math inline">\(D = 0.074\)</span> respectively). These are attributable in part to the ghost sensor stations identified in <a href="02-data-prep.html#sec-ghost-sensor" class="quarto-xref"><span>Section 2.3.3</span></a>: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching <code>na.approx</code> from <code>rule = 2</code> to <code>rule = 1</code> in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.</p>
+<p>The cloud cover variables achieve near-perfect fidelity (<a href="#tbl-ks-results" class="quarto-xref">Table&nbsp;<span>3.1</span></a>). <code>cloud9am</code> records <span class="math inline">\(D = 0.009\)</span> and <code>cloud3pm</code> records <span class="math inline">\(D = 0.038\)</span>; both are negligible, and the multi-modal peaks in each cloud cover distribution are reproduced accurately by the imputed draws. <code>evaporation</code> (<span class="math inline">\(D = 0.012\)</span>) likewise shows a negligible shift. <code>sunshine</code> shows a moderate shift (<span class="math inline">\(D = 0.115\)</span>), which exceeds the 0.10 threshold and warrants monitoring of sunshine coefficients for sensitivity in downstream models. The shifts for the three lower-fidelity variables are attributable in part to the ghost sensor stations identified in <a href="02-data-prep.html#sec-ghost-sensor" class="quarto-xref"><span>Section 2.2.3</span></a>: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching <code>na.approx</code> from <code>rule = 2</code> to <code>rule = 1</code> in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.</p>
 <hr>
 </section>
 <section id="sec-between-variance" class="level2" data-number="3.4">
@@ -660,15 +659,20 @@ Table&nbsp;3.2: Between-imputation variance summary across ten PMM completions. 
 </figure>
 </div>
 </div>
-<p>The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.</p>
+<p>The between-imputation variance is material for all four variables, though its structure differs meaningfully across them (<a href="#tbl-between-variance" class="quarto-xref">Table&nbsp;<span>3.2</span></a>).</p>
 <p>The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.</p>
-<p><code>sunshine</code> and <code>evaporation</code> exhibit a different structure. Their mean ranges (3.470 and 2.318 respectively) are smaller in absolute terms than the cloud cover ranges but their CV of Range values are considerably higher (1.483 and 1.721). This dissociation between the mean and the coefficient of variation indicates that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.</p>
-<p>Taken together, the non-zero mean ranges and the elevated CV values for <code>sunshine</code> and <code>evaporation</code> confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in the ribbon plots as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin’s Rules pooling strategy formalised in the following section.</p>
+<p><code>sunshine</code> and <code>evaporation</code> exhibit a different structure. Their mean ranges (3.470 and 3.201 respectively) are smaller in absolute terms than the cloud cover ranges, but their CV of Range values (1.172 and 1.721) indicate that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.</p>
+<p>Taken together, the non-zero mean ranges and the elevated CV values for <code>sunshine</code> and <code>evaporation</code> confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in <a href="#fig-between-imputation-variance" class="quarto-xref">Figure&nbsp;<span>3.3</span></a> as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin’s Rules pooling strategy formalised in the following section.</p>
 <hr>
 </section>
 <section id="sec-rubins-rules" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="sec-rubins-rules"><span class="header-section-number">3.5</span> Rubin’s Rules Variance Decomposition</h2>
-<p>The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the <span class="math inline">\(m = 10\)</span> completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance <span class="math inline">\(W\)</span> is the average sampling variance across the ten fits; the between-imputation variance <span class="math inline">\(B\)</span> captures the dispersion of coefficient estimates across the ten datasets. Total variance <span class="math inline">\(T = W + (1 + 1/m)B\)</span> and the Fraction of Missing Information <span class="math inline">\(\text{FMI} = (B + B/m) / T\)</span> follow directly from Rubin (1987). Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.</p>
+<p>The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the <span class="math inline">\(m = 10\)</span> completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance <span class="math inline">\(W\)</span> is the average sampling variance across the ten fits; the between-imputation variance <span class="math inline">\(B\)</span> captures the dispersion of coefficient estimates across the ten datasets. Total variance and the Fraction of Missing Information follow from:</p>
+<p><span class="math display">\[
+T = W + \left(1 + \frac{1}{m}\right)B, \qquad
+\text{FMI} = \frac{\left(1 + \frac{1}{m}\right)B}{T}
+\]</span></p>
+<p>Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -737,64 +741,7 @@ Table&nbsp;3.3: Rubin’s Rules variance decomposition for the four PMM-imputed 
 </figure>
 </div>
 </div>
-<p>All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For <code>cloud9am</code> the between-imputation variance <span class="math inline">\(B\)</span> exceeds the within-imputation variance <span class="math inline">\(W\)</span>, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. <code>sunshine</code> and <code>evaporation</code> show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in <a href="#sec-between-variance" class="quarto-xref"><span>Section 3.4</span></a>: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate <code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, or <code>cloud3pm</code> as predictors must be fitted across all <span class="math inline">\(m = 10\)</span> completions and pooled using Rubin’s combining rules before inference is drawn.</p>
-<hr>
-</section>
-<section id="sec-sensitivity-summary" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="sec-sensitivity-summary"><span class="header-section-number">3.6</span> Diagnostic Summary</h2>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">render_sensitivity_summary_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div id="tbl-sensitivity-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sensitivity-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;3.4: Summary of imputation sensitivity diagnostics. Each row corresponds to one diagnostic procedure; the action column specifies the corrective step that would be warranted if the criterion were not met.
-</figcaption>
-<div aria-describedby="tbl-sensitivity-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="table table-striped table-hover do-not-create-environment cell caption-top table-sm small">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Diagnostic</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Criterion</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Outcome</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Action</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">MCMC convergence (trace plots)</td>
-<td style="text-align: left;">Chains mix without directional trend across iterations</td>
-<td style="text-align: left;">Met; all chains converge within five iterations</td>
-<td style="text-align: left; font-style: italic;">No action required</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">Distributional fidelity (KS test)</td>
-<td style="text-align: left;">KS statistic D below 0.10 for all variables</td>
-<td style="text-align: left;">Met for cloud cover; small shift for sunshine and evaporation within tolerance</td>
-<td style="text-align: left; font-style: italic;">Monitor sunshine and evaporation coefficients for sensitivity</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">Between-imputation variance (ribbon plots)</td>
-<td style="text-align: left;">Ribbon width consistent with acceptable seed-to-seed variation</td>
-<td style="text-align: left;">Material variance present; uncertainty concentrated in right tail for sunshine and evaporation</td>
-<td style="text-align: left; font-style: italic;">Use all m = 10 completions in downstream models</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">Rubin FMI decomposition</td>
-<td style="text-align: left;">FMI below 0.30 for variables used in downstream inference</td>
-<td style="text-align: left;">Not met; FMI ranges from 0.33 to 0.57 across all four variables</td>
-<td style="text-align: left; font-style: italic;">Pool all zero-inflated gamma model estimates using Rubin's combining rules</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
+<p>All four FMI values exceed 0.30, the threshold above which single-completion inference is inadvisable (<a href="#tbl-rubins-rules" class="quarto-xref">Table&nbsp;<span>3.3</span></a>). For <code>cloud9am</code> the between-imputation variance <span class="math inline">\(B = 1.5596\)</span> exceeds the within-imputation variance <span class="math inline">\(W = 1.4452\)</span>, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. <code>sunshine</code> and <code>evaporation</code> show FMI values of 0.5477 and 0.4701 respectively, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in <a href="#sec-between-variance" class="quarto-xref"><span>Section 3.4</span></a>: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate <code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, or <code>cloud3pm</code> as predictors must be fitted across all <span class="math inline">\(m = 10\)</span> completions and pooled using Rubin’s combining rules before inference is drawn.</p>
 
 
 <!-- -->
@@ -1285,149 +1232,145 @@ Table&nbsp;3.4: Summary of imputation sensitivity diagnostics. Each row correspo
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu"># Imputation Sensitivity Analysis {#sec-sensitivity}</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">## Validating the Two-Stage Imputation Pipeline</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a></span>
-<span id="cb8-4"><a href="#cb8-4"></a>---</span>
-<span id="cb8-5"><a href="#cb8-5"></a></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="at">&gt; **Chapter Context.** The full </span><span class="in">`mids`</span><span class="at"> object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Four analyses operate directly on </span><span class="in">`imp_mids`</span><span class="at"> to assess convergence stability, distributional fidelity, between-imputation uncertainty, and variance decomposition via Rubin's Rules. Each finding is tied back to the design decisions documented in @sec-missingness-diagnostics.</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a></span>
-<span id="cb8-8"><a href="#cb8-8"></a>---</span>
-<span id="cb8-9"><a href="#cb8-9"></a></span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="in">```{r}</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#| label: setup-sensitivity</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#| include: false</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a></span>
-<span id="cb8-16"><a href="#cb8-16"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
-<span id="cb8-17"><a href="#cb8-17"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"sensitivity_analysis.R"</span>))</span>
-<span id="cb8-19"><a href="#cb8-19"></a></span>
-<span id="cb8-20"><a href="#cb8-20"></a>CONTINUOUS_GHOST_VARS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>)</span>
-<span id="cb8-21"><a href="#cb8-21"></a></span>
-<span id="cb8-22"><a href="#cb8-22"></a>FLAG_MAP <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb8-23"><a href="#cb8-23"></a>  <span class="at">sunshine    =</span> <span class="st">"sunshine_imp_flagged"</span>,</span>
-<span id="cb8-24"><a href="#cb8-24"></a>  <span class="at">evaporation =</span> <span class="st">"evap_imp_flagged"</span>,</span>
-<span id="cb8-25"><a href="#cb8-25"></a>  <span class="at">cloud9am    =</span> <span class="st">"cloud9am_imp_flagged"</span>,</span>
-<span id="cb8-26"><a href="#cb8-26"></a>  <span class="at">cloud3pm    =</span> <span class="st">"cloud3pm_imp_flagged"</span></span>
-<span id="cb8-27"><a href="#cb8-27"></a>)</span>
-<span id="cb8-28"><a href="#cb8-28"></a></span>
-<span id="cb8-29"><a href="#cb8-29"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"imp_mids.rds"</span>))</span>
-<span id="cb8-30"><a href="#cb8-30"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
-<span id="cb8-31"><a href="#cb8-31"></a>M    <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>m</span>
-<span id="cb8-32"><a href="#cb8-32"></a>ITER <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>iteration</span>
-<span id="cb8-33"><a href="#cb8-33"></a><span class="in">```</span></span>
-<span id="cb8-34"><a href="#cb8-34"></a></span>
-<span id="cb8-35"><a href="#cb8-35"></a>---</span>
-<span id="cb8-36"><a href="#cb8-36"></a></span>
-<span id="cb8-37"><a href="#cb8-37"></a><span class="fu">## Algorithmic Convergence {#sec-convergence}</span></span>
-<span id="cb8-38"><a href="#cb8-38"></a></span>
-<span id="cb8-39"><a href="#cb8-39"></a>Multiple imputation by chained equations relies on a Gibbs-style iterative algorithm: each variable is imputed conditional on the current values of all others, and this cycle repeats for a fixed number of iterations. Convergence requires that the chain means and standard deviations stabilise across iterations and that parallel chains starting from different random seeds mix freely without directional drift. Sustained separation between chains or a monotonic trend in the mean across iterations would indicate that the algorithm has not reached a stable solution and that the number of iterations should be increased.</span>
-<span id="cb8-40"><a href="#cb8-40"></a></span>
-<span id="cb8-43"><a href="#cb8-43"></a><span class="in">```{r}</span></span>
-<span id="cb8-44"><a href="#cb8-44"></a><span class="co">#| label: fig-convergence-trace</span></span>
-<span id="cb8-45"><a href="#cb8-45"></a><span class="co">#| fig-cap: "MCMC trace plots for the four PMM-imputed variables. Each coloured line is one of the ten parallel chains; the upper panel tracks the chain mean and the lower panel tracks the chain standard deviation across five iterations. Chains that mix without trend indicate a stable imputation solution."</span></span>
-<span id="cb8-46"><a href="#cb8-46"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb8-47"><a href="#cb8-47"></a><span class="co">#| fig-height: 9</span></span>
-<span id="cb8-48"><a href="#cb8-48"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-49"><a href="#cb8-49"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-50"><a href="#cb8-50"></a></span>
-<span id="cb8-51"><a href="#cb8-51"></a><span class="fu">plot_convergence_trace</span>()</span>
-<span id="cb8-52"><a href="#cb8-52"></a><span class="in">```</span></span>
-<span id="cb8-53"><a href="#cb8-53"></a></span>
-<span id="cb8-54"><a href="#cb8-54"></a>All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The <span class="in">`sunshine`</span> chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.</span>
-<span id="cb8-55"><a href="#cb8-55"></a></span>
-<span id="cb8-56"><a href="#cb8-56"></a>---</span>
-<span id="cb8-57"><a href="#cb8-57"></a></span>
-<span id="cb8-58"><a href="#cb8-58"></a><span class="fu">## Distributional Fidelity {#sec-dist-fidelity}</span></span>
-<span id="cb8-59"><a href="#cb8-59"></a></span>
-<span id="cb8-60"><a href="#cb8-60"></a>Convergence of the algorithm is necessary but not sufficient: the imputed values must also reproduce the marginal distribution of each variable as observed at instrumented stations. Distributional fidelity is assessed by comparing the density of observed values, drawn from non-flagged rows in <span class="in">`df_final`</span>, against the density of imputed values drawn from flagged rows. The Kolmogorov-Smirnov statistic $D$ quantifies the maximum absolute distance between the two empirical cumulative distribution functions. Because the sample sizes involved exceed 60,000 observations per variable, all KS p-values are effectively zero by construction and the $D$ statistic alone is the operative measure of practical divergence.</span>
-<span id="cb8-61"><a href="#cb8-61"></a></span>
-<span id="cb8-64"><a href="#cb8-64"></a><span class="in">```{r}</span></span>
-<span id="cb8-65"><a href="#cb8-65"></a><span class="co">#| label: fig-dist-fidelity</span></span>
-<span id="cb8-66"><a href="#cb8-66"></a><span class="co">#| fig-cap: "Density of observed versus imputed values for the four PMM-imputed variables. Observed values are drawn from instrumented stations (flag = 0); imputed values are drawn from stations where the instrument was absent (flag = 1). The KS statistic D annotated in each panel quantifies the maximum separation between the two empirical CDFs."</span></span>
-<span id="cb8-67"><a href="#cb8-67"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb8-68"><a href="#cb8-68"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb8-69"><a href="#cb8-69"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-70"><a href="#cb8-70"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-71"><a href="#cb8-71"></a></span>
-<span id="cb8-72"><a href="#cb8-72"></a><span class="fu">plot_dist_fidelity</span>()</span>
-<span id="cb8-73"><a href="#cb8-73"></a><span class="in">```</span></span>
-<span id="cb8-74"><a href="#cb8-74"></a></span>
-<span id="cb8-77"><a href="#cb8-77"></a><span class="in">```{r}</span></span>
-<span id="cb8-78"><a href="#cb8-78"></a><span class="co">#| label: tbl-ks-results</span></span>
-<span id="cb8-79"><a href="#cb8-79"></a><span class="co">#| tbl-cap: "Kolmogorov-Smirnov statistics comparing observed and imputed marginal distributions. Interpretation is based on the magnitude of D rather than the p-value, which is uninformative at sample sizes exceeding 60,000 observations per variable."</span></span>
-<span id="cb8-80"><a href="#cb8-80"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-81"><a href="#cb8-81"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-82"><a href="#cb8-82"></a></span>
-<span id="cb8-83"><a href="#cb8-83"></a><span class="fu">render_ks_table</span>()</span>
-<span id="cb8-84"><a href="#cb8-84"></a><span class="in">```</span></span>
-<span id="cb8-85"><a href="#cb8-85"></a></span>
-<span id="cb8-86"><a href="#cb8-86"></a>The cloud cover variables achieve near-perfect fidelity. The statistic for <span class="in">`cloud3pm`</span> ($D = 0.019$) is negligible, and <span class="in">`cloud9am`</span> ($D = 0.051$) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. <span class="in">`evaporation`</span> and <span class="in">`sunshine`</span> show small shifts ($D = 0.065$ and $D = 0.074$ respectively). These are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching <span class="in">`na.approx`</span> from <span class="in">`rule = 2`</span> to <span class="in">`rule = 1`</span> in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.</span>
-<span id="cb8-87"><a href="#cb8-87"></a></span>
-<span id="cb8-88"><a href="#cb8-88"></a>---</span>
-<span id="cb8-89"><a href="#cb8-89"></a></span>
-<span id="cb8-90"><a href="#cb8-90"></a><span class="fu">## Between-Imputation Variance {#sec-between-variance}</span></span>
-<span id="cb8-91"><a href="#cb8-91"></a></span>
-<span id="cb8-92"><a href="#cb8-92"></a>The justification for retaining $m = 10$ completed datasets rather than a single imputation rests on the magnitude of the between-imputation variance. If the ten completions agree closely across observations, a single-completion analysis would be adequate. If they diverge substantially, pooling is required to obtain valid standard errors. The ribbon plots below display the range of imputed values across all ten completions for each observation, sorted by the cross-completion mean, so that the width of the ribbon directly represents the seed-to-seed uncertainty at each quantile of the imputed distribution.</span>
-<span id="cb8-93"><a href="#cb8-93"></a></span>
-<span id="cb8-96"><a href="#cb8-96"></a><span class="in">```{r}</span></span>
-<span id="cb8-97"><a href="#cb8-97"></a><span class="co">#| label: fig-between-imputation-variance</span></span>
-<span id="cb8-98"><a href="#cb8-98"></a><span class="co">#| fig-cap: "Between-imputation variance across the ten PMM completions. Each observation is ranked by its mean imputed value across all completions; the ribbon spans the minimum to maximum imputed value for that observation. Narrow ribbons indicate stable imputation; wide ribbons indicate that downstream point estimates are sensitive to the choice of completion."</span></span>
-<span id="cb8-99"><a href="#cb8-99"></a><span class="co">#| fig-width: 11</span></span>
-<span id="cb8-100"><a href="#cb8-100"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb8-101"><a href="#cb8-101"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-102"><a href="#cb8-102"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-103"><a href="#cb8-103"></a></span>
-<span id="cb8-104"><a href="#cb8-104"></a><span class="fu">plot_between_imputation_variance</span>()</span>
-<span id="cb8-105"><a href="#cb8-105"></a><span class="in">```</span></span>
-<span id="cb8-106"><a href="#cb8-106"></a></span>
-<span id="cb8-109"><a href="#cb8-109"></a><span class="in">```{r}</span></span>
-<span id="cb8-110"><a href="#cb8-110"></a><span class="co">#| label: tbl-between-variance</span></span>
-<span id="cb8-111"><a href="#cb8-111"></a><span class="co">#| tbl-cap: "Between-imputation variance summary across ten PMM completions. Mean Range is the average difference between the maximum and minimum imputed value across the ten datasets for a given observation. CV of Range is the coefficient of variation of that range across all observations."</span></span>
-<span id="cb8-112"><a href="#cb8-112"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-113"><a href="#cb8-113"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-114"><a href="#cb8-114"></a></span>
-<span id="cb8-115"><a href="#cb8-115"></a><span class="fu">render_between_variance_table</span>()</span>
-<span id="cb8-116"><a href="#cb8-116"></a><span class="in">```</span></span>
-<span id="cb8-117"><a href="#cb8-117"></a></span>
-<span id="cb8-118"><a href="#cb8-118"></a>The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.</span>
-<span id="cb8-119"><a href="#cb8-119"></a></span>
-<span id="cb8-120"><a href="#cb8-120"></a>The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.</span>
-<span id="cb8-121"><a href="#cb8-121"></a></span>
-<span id="cb8-122"><a href="#cb8-122"></a><span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> exhibit a different structure. Their mean ranges (3.470 and 2.318 respectively) are smaller in absolute terms than the cloud cover ranges but their CV of Range values are considerably higher (1.483 and 1.721). This dissociation between the mean and the coefficient of variation indicates that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.</span>
-<span id="cb8-123"><a href="#cb8-123"></a></span>
-<span id="cb8-124"><a href="#cb8-124"></a>Taken together, the non-zero mean ranges and the elevated CV values for <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in the ribbon plots as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.</span>
-<span id="cb8-125"><a href="#cb8-125"></a></span>
-<span id="cb8-126"><a href="#cb8-126"></a>---</span>
-<span id="cb8-127"><a href="#cb8-127"></a></span>
-<span id="cb8-128"><a href="#cb8-128"></a><span class="fu">## Rubin's Rules Variance Decomposition {#sec-rubins-rules}</span></span>
-<span id="cb8-129"><a href="#cb8-129"></a></span>
-<span id="cb8-130"><a href="#cb8-130"></a>The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the $m = 10$ completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance $W$ is the average sampling variance across the ten fits; the between-imputation variance $B$ captures the dispersion of coefficient estimates across the ten datasets. Total variance $T = W + (1 + 1/m)B$ and the Fraction of Missing Information $\text{FMI} = (B + B/m) / T$ follow directly from Rubin (1987). Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.</span>
-<span id="cb8-131"><a href="#cb8-131"></a></span>
-<span id="cb8-134"><a href="#cb8-134"></a><span class="in">```{r}</span></span>
-<span id="cb8-135"><a href="#cb8-135"></a><span class="co">#| label: tbl-rubins-rules</span></span>
-<span id="cb8-136"><a href="#cb8-136"></a><span class="co">#| tbl-cap: "Rubin's Rules variance decomposition for the four PMM-imputed variables. W is the within-imputation variance, B the between-imputation variance, T the total variance, and FMI the Fraction of Missing Information. Analyses restricted to anchored (non-ghost) observations."</span></span>
-<span id="cb8-137"><a href="#cb8-137"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-138"><a href="#cb8-138"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-139"><a href="#cb8-139"></a><span class="co">#| message: false</span></span>
-<span id="cb8-140"><a href="#cb8-140"></a></span>
-<span id="cb8-141"><a href="#cb8-141"></a><span class="fu">render_rubins_rules_table</span>()</span>
-<span id="cb8-142"><a href="#cb8-142"></a><span class="in">```</span></span>
-<span id="cb8-143"><a href="#cb8-143"></a></span>
-<span id="cb8-144"><a href="#cb8-144"></a>All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For <span class="in">`cloud9am`</span> the between-imputation variance $B$ exceeds the within-imputation variance $W$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, or <span class="in">`cloud3pm`</span> as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.</span>
-<span id="cb8-145"><a href="#cb8-145"></a></span>
-<span id="cb8-146"><a href="#cb8-146"></a>---</span>
-<span id="cb8-147"><a href="#cb8-147"></a></span>
-<span id="cb8-148"><a href="#cb8-148"></a><span class="fu">## Diagnostic Summary {#sec-sensitivity-summary}</span></span>
-<span id="cb8-149"><a href="#cb8-149"></a></span>
-<span id="cb8-152"><a href="#cb8-152"></a><span class="in">```{r}</span></span>
-<span id="cb8-153"><a href="#cb8-153"></a><span class="co">#| label: tbl-sensitivity-summary</span></span>
-<span id="cb8-154"><a href="#cb8-154"></a><span class="co">#| tbl-cap: "Summary of imputation sensitivity diagnostics. Each row corresponds to one diagnostic procedure; the action column specifies the corrective step that would be warranted if the criterion were not met."</span></span>
-<span id="cb8-155"><a href="#cb8-155"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-156"><a href="#cb8-156"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-157"><a href="#cb8-157"></a></span>
-<span id="cb8-158"><a href="#cb8-158"></a><span class="fu">render_sensitivity_summary_table</span>()</span>
-<span id="cb8-159"><a href="#cb8-159"></a><span class="in">```</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu"># Imputation Sensitivity Analysis {#sec-sensitivity}</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">## Validating the Two-Stage Imputation Pipeline</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a>---</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="at">&gt; **Chapter Context.** The full </span><span class="in">`mids`</span><span class="at"> object from the production imputation is retained at runtime, enabling native MICE diagnostics rather than post-hoc approximations. Four analyses operate directly on </span><span class="in">`imp_mids`</span><span class="at"> to assess convergence stability, distributional fidelity, between-imputation uncertainty, and variance decomposition via Rubin's Rules. Each finding is tied back to the design decisions documented in @sec-missingness-diagnostics.</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>---</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="in">```{r}</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#| label: setup-sensitivity</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#| include: false</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"sensitivity_analysis.R"</span>))</span>
+<span id="cb7-20"><a href="#cb7-20"></a></span>
+<span id="cb7-21"><a href="#cb7-21"></a>CONTINUOUS_GHOST_VARS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sunshine"</span>, <span class="st">"evaporation"</span>, <span class="st">"cloud9am"</span>, <span class="st">"cloud3pm"</span>)</span>
+<span id="cb7-22"><a href="#cb7-22"></a></span>
+<span id="cb7-23"><a href="#cb7-23"></a>FLAG_MAP <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-24"><a href="#cb7-24"></a>  <span class="at">sunshine =</span> <span class="st">"sunshine_imp_flagged"</span>,</span>
+<span id="cb7-25"><a href="#cb7-25"></a>  <span class="at">evaporation =</span> <span class="st">"evap_imp_flagged"</span>,</span>
+<span id="cb7-26"><a href="#cb7-26"></a>  <span class="at">cloud9am =</span> <span class="st">"cloud9am_imp_flagged"</span>,</span>
+<span id="cb7-27"><a href="#cb7-27"></a>  <span class="at">cloud3pm =</span> <span class="st">"cloud3pm_imp_flagged"</span></span>
+<span id="cb7-28"><a href="#cb7-28"></a>)</span>
+<span id="cb7-29"><a href="#cb7-29"></a></span>
+<span id="cb7-30"><a href="#cb7-30"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"imp_mids.rds"</span>))</span>
+<span id="cb7-31"><a href="#cb7-31"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
+<span id="cb7-32"><a href="#cb7-32"></a>M <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>m</span>
+<span id="cb7-33"><a href="#cb7-33"></a>ITER <span class="ot">&lt;-</span> imp_mids<span class="sc">$</span>iteration</span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="in">```</span></span>
+<span id="cb7-35"><a href="#cb7-35"></a></span>
+<span id="cb7-36"><a href="#cb7-36"></a>---</span>
+<span id="cb7-37"><a href="#cb7-37"></a></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="fu">## Algorithmic Convergence {#sec-convergence}</span></span>
+<span id="cb7-39"><a href="#cb7-39"></a></span>
+<span id="cb7-40"><a href="#cb7-40"></a>Multiple imputation by chained equations relies on a Gibbs-style iterative algorithm: each variable is imputed conditional on the current values of all others, and this cycle repeats for a fixed number of iterations. Convergence requires that the chain means and standard deviations stabilise across iterations and that parallel chains starting from different random seeds mix freely without directional drift. Sustained separation between chains or a monotonic trend in the mean across iterations would indicate that the algorithm has not reached a stable solution and that the number of iterations should be increased.</span>
+<span id="cb7-41"><a href="#cb7-41"></a></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="in">```{r}</span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#| label: fig-convergence-trace</span></span>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#| fig-cap: "MCMC trace plots for the four PMM-imputed variables. Each coloured line is one of the ten parallel chains; the upper panel tracks the chain mean and the lower panel tracks the chain standard deviation across five iterations. Chains that mix without trend indicate a stable imputation solution."</span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb7-48"><a href="#cb7-48"></a><span class="co">#| fig-height: 9</span></span>
+<span id="cb7-49"><a href="#cb7-49"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-50"><a href="#cb7-50"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-51"><a href="#cb7-51"></a></span>
+<span id="cb7-52"><a href="#cb7-52"></a><span class="fu">plot_convergence_trace</span>()</span>
+<span id="cb7-53"><a href="#cb7-53"></a><span class="in">```</span></span>
+<span id="cb7-54"><a href="#cb7-54"></a></span>
+<span id="cb7-55"><a href="#cb7-55"></a>All four variables exhibit satisfactory convergence (@fig-convergence-trace). The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The <span class="in">`sunshine`</span> chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.</span>
+<span id="cb7-56"><a href="#cb7-56"></a></span>
+<span id="cb7-57"><a href="#cb7-57"></a>---</span>
+<span id="cb7-58"><a href="#cb7-58"></a></span>
+<span id="cb7-59"><a href="#cb7-59"></a><span class="fu">## Distributional Fidelity {#sec-dist-fidelity}</span></span>
+<span id="cb7-60"><a href="#cb7-60"></a></span>
+<span id="cb7-61"><a href="#cb7-61"></a>Convergence of the algorithm is necessary but not sufficient: the imputed values must also reproduce the marginal distribution of each variable as observed at instrumented stations. Distributional fidelity is assessed by comparing the density of observed values, drawn from non-flagged rows in <span class="in">`df_final`</span>, against the density of imputed values drawn from flagged rows. The Kolmogorov-Smirnov statistic $D$ quantifies the maximum absolute distance between the two empirical cumulative distribution functions. Because the sample sizes involved exceed 60,000 observations per variable, all KS p-values are effectively zero by construction and the $D$ statistic alone is the operative measure of practical divergence.</span>
+<span id="cb7-62"><a href="#cb7-62"></a></span>
+<span id="cb7-65"><a href="#cb7-65"></a><span class="in">```{r}</span></span>
+<span id="cb7-66"><a href="#cb7-66"></a><span class="co">#| label: fig-dist-fidelity</span></span>
+<span id="cb7-67"><a href="#cb7-67"></a><span class="co">#| fig-cap: "Density of observed versus imputed values for the four PMM-imputed variables. Observed values are drawn from instrumented stations (flag = 0); imputed values are drawn from stations where the instrument was absent (flag = 1). The KS statistic D annotated in each panel quantifies the maximum separation between the two empirical CDFs."</span></span>
+<span id="cb7-68"><a href="#cb7-68"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb7-69"><a href="#cb7-69"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb7-70"><a href="#cb7-70"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-71"><a href="#cb7-71"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-72"><a href="#cb7-72"></a></span>
+<span id="cb7-73"><a href="#cb7-73"></a><span class="fu">plot_dist_fidelity</span>()</span>
+<span id="cb7-74"><a href="#cb7-74"></a><span class="in">```</span></span>
+<span id="cb7-75"><a href="#cb7-75"></a></span>
+<span id="cb7-78"><a href="#cb7-78"></a><span class="in">```{r}</span></span>
+<span id="cb7-79"><a href="#cb7-79"></a><span class="co">#| label: tbl-ks-results</span></span>
+<span id="cb7-80"><a href="#cb7-80"></a><span class="co">#| tbl-cap: "Kolmogorov-Smirnov statistics comparing observed and imputed marginal distributions. Interpretation is based on the magnitude of D rather than the p-value, which is uninformative at sample sizes exceeding 60,000 observations per variable."</span></span>
+<span id="cb7-81"><a href="#cb7-81"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-82"><a href="#cb7-82"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-83"><a href="#cb7-83"></a></span>
+<span id="cb7-84"><a href="#cb7-84"></a><span class="fu">render_ks_table</span>()</span>
+<span id="cb7-85"><a href="#cb7-85"></a><span class="in">```</span></span>
+<span id="cb7-86"><a href="#cb7-86"></a></span>
+<span id="cb7-87"><a href="#cb7-87"></a>The cloud cover variables achieve near-perfect fidelity (@tbl-ks-results). <span class="in">`cloud9am`</span> records $D = 0.009$ and <span class="in">`cloud3pm`</span> records $D = 0.038$; both are negligible, and the multi-modal peaks in each cloud cover distribution are reproduced accurately by the imputed draws. <span class="in">`evaporation`</span> ($D = 0.012$) likewise shows a negligible shift. <span class="in">`sunshine`</span> shows a moderate shift ($D = 0.115$), which exceeds the 0.10 threshold and warrants monitoring of sunshine coefficients for sensitivity in downstream models. The shifts for the three lower-fidelity variables are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching <span class="in">`na.approx`</span> from <span class="in">`rule = 2`</span> to <span class="in">`rule = 1`</span> in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.</span>
+<span id="cb7-88"><a href="#cb7-88"></a></span>
+<span id="cb7-89"><a href="#cb7-89"></a></span>
+<span id="cb7-90"><a href="#cb7-90"></a>---</span>
+<span id="cb7-91"><a href="#cb7-91"></a></span>
+<span id="cb7-92"><a href="#cb7-92"></a><span class="fu">## Between-Imputation Variance {#sec-between-variance}</span></span>
+<span id="cb7-93"><a href="#cb7-93"></a></span>
+<span id="cb7-94"><a href="#cb7-94"></a>The justification for retaining $m = 10$ completed datasets rather than a single imputation rests on the magnitude of the between-imputation variance. If the ten completions agree closely across observations, a single-completion analysis would be adequate. If they diverge substantially, pooling is required to obtain valid standard errors. The ribbon plots below display the range of imputed values across all ten completions for each observation, sorted by the cross-completion mean, so that the width of the ribbon directly represents the seed-to-seed uncertainty at each quantile of the imputed distribution.</span>
+<span id="cb7-95"><a href="#cb7-95"></a></span>
+<span id="cb7-98"><a href="#cb7-98"></a><span class="in">```{r}</span></span>
+<span id="cb7-99"><a href="#cb7-99"></a><span class="co">#| label: fig-between-imputation-variance</span></span>
+<span id="cb7-100"><a href="#cb7-100"></a><span class="co">#| fig-cap: "Between-imputation variance across the ten PMM completions. Each observation is ranked by its mean imputed value across all completions; the ribbon spans the minimum to maximum imputed value for that observation. Narrow ribbons indicate stable imputation; wide ribbons indicate that downstream point estimates are sensitive to the choice of completion."</span></span>
+<span id="cb7-101"><a href="#cb7-101"></a><span class="co">#| fig-width: 11</span></span>
+<span id="cb7-102"><a href="#cb7-102"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb7-103"><a href="#cb7-103"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-104"><a href="#cb7-104"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-105"><a href="#cb7-105"></a></span>
+<span id="cb7-106"><a href="#cb7-106"></a><span class="fu">plot_between_imputation_variance</span>()</span>
+<span id="cb7-107"><a href="#cb7-107"></a><span class="in">```</span></span>
+<span id="cb7-108"><a href="#cb7-108"></a></span>
+<span id="cb7-111"><a href="#cb7-111"></a><span class="in">```{r}</span></span>
+<span id="cb7-112"><a href="#cb7-112"></a><span class="co">#| label: tbl-between-variance</span></span>
+<span id="cb7-113"><a href="#cb7-113"></a><span class="co">#| tbl-cap: "Between-imputation variance summary across ten PMM completions. Mean Range is the average difference between the maximum and minimum imputed value across the ten datasets for a given observation. CV of Range is the coefficient of variation of that range across all observations."</span></span>
+<span id="cb7-114"><a href="#cb7-114"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-115"><a href="#cb7-115"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-116"><a href="#cb7-116"></a></span>
+<span id="cb7-117"><a href="#cb7-117"></a><span class="fu">render_between_variance_table</span>()</span>
+<span id="cb7-118"><a href="#cb7-118"></a><span class="in">```</span></span>
+<span id="cb7-119"><a href="#cb7-119"></a></span>
+<span id="cb7-120"><a href="#cb7-120"></a>The between-imputation variance is material for all four variables, though its structure differs meaningfully across them (@tbl-between-variance).</span>
+<span id="cb7-121"><a href="#cb7-121"></a></span>
+<span id="cb7-122"><a href="#cb7-122"></a>The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.</span>
+<span id="cb7-123"><a href="#cb7-123"></a></span>
+<span id="cb7-124"><a href="#cb7-124"></a><span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> exhibit a different structure. Their mean ranges (3.470 and 3.201 respectively) are smaller in absolute terms than the cloud cover ranges, but their CV of Range values (1.172 and 1.721) indicate that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.</span>
+<span id="cb7-125"><a href="#cb7-125"></a></span>
+<span id="cb7-126"><a href="#cb7-126"></a>Taken together, the non-zero mean ranges and the elevated CV values for <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in @fig-between-imputation-variance as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.</span>
+<span id="cb7-127"><a href="#cb7-127"></a></span>
+<span id="cb7-128"><a href="#cb7-128"></a>---</span>
+<span id="cb7-129"><a href="#cb7-129"></a></span>
+<span id="cb7-130"><a href="#cb7-130"></a><span class="fu">## Rubin's Rules Variance Decomposition {#sec-rubins-rules}</span></span>
+<span id="cb7-131"><a href="#cb7-131"></a></span>
+<span id="cb7-132"><a href="#cb7-132"></a>The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the $m = 10$ completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance $W$ is the average sampling variance across the ten fits; the between-imputation variance $B$ captures the dispersion of coefficient estimates across the ten datasets. Total variance and the Fraction of Missing Information follow from:</span>
+<span id="cb7-133"><a href="#cb7-133"></a></span>
+<span id="cb7-134"><a href="#cb7-134"></a>$$</span>
+<span id="cb7-135"><a href="#cb7-135"></a>T = W + \left(1 + \frac{1}{m}\right)B, \qquad</span>
+<span id="cb7-136"><a href="#cb7-136"></a>\text{FMI} = \frac{\left(1 + \frac{1}{m}\right)B}{T}</span>
+<span id="cb7-137"><a href="#cb7-137"></a>$$</span>
+<span id="cb7-138"><a href="#cb7-138"></a></span>
+<span id="cb7-139"><a href="#cb7-139"></a>Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.</span>
+<span id="cb7-140"><a href="#cb7-140"></a></span>
+<span id="cb7-143"><a href="#cb7-143"></a><span class="in">```{r}</span></span>
+<span id="cb7-144"><a href="#cb7-144"></a><span class="co">#| label: tbl-rubins-rules</span></span>
+<span id="cb7-145"><a href="#cb7-145"></a><span class="co">#| tbl-cap: "Rubin's Rules variance decomposition for the four PMM-imputed variables. W is the within-imputation variance, B the between-imputation variance, T the total variance, and FMI the Fraction of Missing Information. Analyses restricted to anchored (non-ghost) observations."</span></span>
+<span id="cb7-146"><a href="#cb7-146"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-147"><a href="#cb7-147"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-148"><a href="#cb7-148"></a><span class="co">#| message: false</span></span>
+<span id="cb7-149"><a href="#cb7-149"></a></span>
+<span id="cb7-150"><a href="#cb7-150"></a><span class="fu">render_rubins_rules_table</span>()</span>
+<span id="cb7-151"><a href="#cb7-151"></a><span class="in">```</span></span>
+<span id="cb7-152"><a href="#cb7-152"></a></span>
+<span id="cb7-153"><a href="#cb7-153"></a>All four FMI values exceed 0.30, the threshold above which single-completion inference is inadvisable (@tbl-rubins-rules). For <span class="in">`cloud9am`</span> the between-imputation variance $B = 1.5596$ exceeds the within-imputation variance $W = 1.4452$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> show FMI values of 0.5477 and 0.4701 respectively, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, or <span class="in">`cloud3pm`</span> as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

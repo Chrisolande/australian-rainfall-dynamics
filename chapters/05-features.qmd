@@ -1,17 +1,10 @@
 # Feature Engineering {#sec-feature-eng}
-## From Raw Meteorological Signals to Predictive Inputs
 
 ---
 
 > **Chapter Context.** This chapter documents the feature engineering pipeline that bridges the exploratory analysis and the final model. Each design decision traces directly to an empirical finding from the EDA: the features constructed here are not ad hoc transformations but targeted responses to identified distributional and structural properties of the data.
 
 ---
-
-## Signal Extraction via Moving Averages
-
-Daily meteorological observations are inherently noisy. A single day's rainfall measurement reflects both the underlying weather regime and a high-frequency stochastic component, the difference between a storm cell passing directly over a station versus five kilometres to its east. Before engineering predictive features from this signal, we must first assess whether smoothing can reduce this noise and, if so, at what cost.
-
-Rolling means over 3-day and 7-day trailing windows are computed for both rainfall and afternoon humidity. Right-alignment is enforced throughout, meaning the average at time $t$ is computed from observations at $t$, $t-1$, ..., $t-(k-1)$. This is a necessary precaution against data leakage: any lookahead alignment would contaminate the training signal with future observations.
 
 ```{r}
 #| label: setup-features
@@ -21,6 +14,11 @@ source(here::here("config.R"))
 source(here::here("utils.R"))
 ```
 
+## Signal Extraction via Moving Averages {#sec-moving-averages}
+
+Daily meteorological observations are inherently noisy. A single day's rainfall measurement reflects both the underlying weather regime and a high-frequency stochastic component, the difference between a storm cell passing directly over a station versus five kilometres to its east. Before engineering predictive features from this signal, it is necessary to assess whether smoothing can reduce this noise and, if so, at what cost.
+
+Rolling means over 3-day and 7-day trailing windows are computed for both rainfall and afternoon humidity. Right-alignment is enforced throughout, meaning the average at time $t$ is computed from observations at $t$, $t-1$, $\ldots$, $t-(k-1)$. This is a necessary precaution against data leakage: any lookahead alignment would contaminate the training signal with future observations.
 
 ```{r}
 #| label: ma-feature-engineering
@@ -29,10 +27,9 @@ source(here::here("utils.R"))
 
 source(here::here("chapter4", "moving_averages.R"))
 ma_dat <- build_ma_data()
-
 ```
 
-### Noise Reduction
+### Noise Reduction {#sec-noise-reduction}
 
 ```{r}
 #| label: fig-signal-extraction
@@ -67,15 +64,15 @@ plot_variance_reduction(ma_dat)
 plot_ma_ridgeline(ma_dat)
 ```
 
-The density plots in @fig-signal-extraction make the smoothing effect immediately apparent. The raw daily distribution is severely right-skewed with a long tail reaching into the hundreds of millimetres, a consequence of the extreme kurtosis documented in @sec-eda. The 3-day moving average begins to suppress this variance, and the 7-day average produces a substantially more concentrated distribution whose peak is considerably higher and whose tails are dramatically shorter.
+@fig-signal-extraction makes the smoothing effect immediately apparent. The raw daily distribution is severely right-skewed with a long tail reaching into the hundreds of millimetres, a consequence of the extreme kurtosis documented in @sec-eda. The 3-day moving average begins to suppress this variance, and the 7-day average produces a substantially more concentrated distribution whose peak is considerably higher and whose tails are dramatically shorter.
 
-Quantitatively (@fig-variance-reduction), the standard deviation of rainfall intensity falls from 13.1 mm in the raw series to 5.8 mm under the 7-day average, a reduction of 56%. The ridgeline plot (@fig-ma-ridgeline) confirms that this compression is not an artefact of the summary statistic: the entire shape of the distribution tightens, with the median remaining stable across windows while the spread narrows. The 7-day average can therefore be interpreted as a measure of the prevailing weekly wetness regime, a smoothed characterisation of whether the preceding week has been generally wet or dry rather than a reflection of any single day's unpredictability.
+@fig-variance-reduction shows the standard deviation of rainfall intensity falling from 13.1 mm in the raw series to 5.8 mm under the 7-day average, a reduction of 56%. @fig-ma-ridgeline confirms that this compression is not an artefact of the summary statistic: the entire shape of the distribution tightens, with the median remaining stable across windows while the spread narrows. The 7-day average can therefore be interpreted as a measure of the prevailing weekly wetness regime, a smoothed characterisation of whether the preceding week has been generally wet or dry rather than a reflection of any single day's unpredictability.
 
-### Multicollinearity Trade-off
+### Multicollinearity Trade-off {#sec-ma-collinearity}
 
 ```{r}
 #| label: fig-ma-correlation
-#| fig-cap: "Spearman correlations between raw rainfall and humidity variables and their moving average counterparts. The high within-variable correlations (upper-left and lower-right blocks) confirm that including multiple windows of the same variable in a linear model would produce a near-singular design matrix."
+#| fig-cap: "Spearman correlations between raw rainfall and humidity variables and their moving average counterparts. The high within-variable correlations confirm that including multiple windows of the same variable in a linear model would produce a near-singular design matrix."
 #| fig-width: 8
 #| fig-height: 7
 #| echo: true
@@ -85,17 +82,13 @@ source(here::here("chapter4", "ma_correlation.R"))
 plot_ma_correlation(ma_dat)
 ```
 
-The noise-reduction benefit of moving averages comes at a cost. As shown in @fig-ma-correlation, the 3-day and 7-day humidity moving averages share a Spearman correlation of 0.89, and the equivalent rainfall moving averages are similarly collinear with each other and with the raw series. Including multiple moving average windows alongside their source variables in the same linear model would produce a near-singular design matrix, inflating coefficient standard errors and making the model numerically unstable.
+The noise-reduction benefit of moving averages comes at a cost. As shown in @fig-ma-correlation,  the 3-day and 7-day humidity moving averages share a Spearman correlation of 0.89, and the equivalent rainfall moving averages are similarly collinear with each other and with the raw series. Including multiple moving average windows alongside their source variables in the same linear model would produce a near-singular design matrix, inflating coefficient standard errors and making the model numerically unstable.
 
 This presents a choice between responsiveness and stability. The 3-day average reacts more quickly to changing conditions but retains more of the day-to-day variability. The 7-day average is more stable but slower to reflect recent changes in the weather regime. For linear model families such as logistic regression, only one window can be safely retained per variable; including both is not viable. For tree-based models such as Random Forest and Gradient Boosting, this constraint does not apply, since these methods select among correlated features at each split rather than inverting the full covariance matrix. The moving average selection strategy therefore depends on the model family, a consideration that informs the variable selection carried out in the subsequent modelling chapter.
 
 ---
 
----
-
-## Feature Engineering Pipeline
-
-The following pipeline implements the complete set of features motivated by the EDA. Each transformation is annotated to its originating empirical finding.
+## Feature Engineering Pipeline {#sec-eng-pipeline}
 
 ```{r}
 #| label: feature-engineering
@@ -108,48 +101,60 @@ source(here::here("chapter4", "feature_engineering.R"))
 
 The pipeline is organised into four conceptually distinct transformations, each addressing a specific structural property identified in the EDA.
 
-### Cyclical Encoding of Seasonality
+### Cyclical Encoding of Seasonality {#sec-cyclical-encoding}
 
 The seasonal analysis established that rainfall frequency and intensity follow a smooth annual cycle: summer events are rarer but more intense, winter events are more frequent but lighter, and the transition months connect these poles continuously. Treating month as a standard integer (1 through 12) would incorrectly imply that January and December are maximally distant on the number line, when in reality they are climatologically adjacent. Treating it as an unordered factor imposes no such adjacency constraint but discards ordinal information entirely.
 
 The appropriate solution is to represent the annual cycle as a point on the unit circle, decomposed into its sine and cosine components:
 
-$$\text{day\_sin} = \sin\!\left(\frac{2\pi \cdot \text{day\_of\_year}}{365}\right), \quad \text{day\_cos} = \cos\!\left(\frac{2\pi \cdot \text{day\_of\_year}}{365}\right)$$
+$$
+\text{day\_sin} = \sin\!\left(\frac{2\pi \cdot \text{day\_of\_year}}{365}\right), \quad
+\text{day\_cos} = \cos\!\left(\frac{2\pi \cdot \text{day\_of\_year}}{365}\right)
+$$
 
 Together, these two features encode any day of the year as a unique coordinate on the unit circle. The distance between any two days in this space reflects their true circular proximity: the December-to-January transition corresponds to a small arc, not a large jump. The model can learn smooth seasonal effects directly from the geometry of this representation.
 
-### Temporal Persistence Features
+### Temporal Persistence Features {#sec-temporal-features}
 
 The Markov Chain analysis (@sec-markov) demonstrated that the previous day's rain state carries a moderate but meaningful signal ($V \approx 0.31$), and the dry spell analysis showed that the probability of rain decays in a non-linear pattern as dry spells lengthen. Three features capture these dynamics.
 
-`rain_yesterday` is a direct binary indicator of the previous day's state, encoding the first-order Markov transition as a predictor. `days_since_rain` counts the number of consecutive dry days preceding the current observation, capturing the progressive stabilisation of dry conditions that the logistic regression and spline analysis identified. `rainfall_ma7` and `humidity_ma7` provide a smoothed weekly context for both the rainfall and moisture signals, lagged by one additional day beyond the rolling window to ensure that no same-day information is included when predicting today's outcome.
+`rain_yesterday` is a direct binary indicator of the previous day's state, encoding the first-order Markov transition as a predictor. `days_since_rain` counts the number of consecutive dry days preceding the current observation, capturing the progressive stabilisation of dry conditions that the logistic regression and spline analysis identified. `rainfall_ma7` and `humidity_ma7` provide a smoothed weekly context for both the rainfall and moisture signals, lagged by one additional day beyond the rolling window to ensure that no same-day information is included when predicting the current day's outcome.
 
 The lagging step deserves emphasis. Without it, the 7-day moving average at time $t$ includes the observation at time $t$ itself, meaning a model trained on this feature would have access to the value it is trying to predict. This form of data leakage produces artificially optimistic training metrics that do not generalise to deployment, where future observations are unavailable by definition.
 
-### Physical Interaction and Derived Indices
+### Physical Interaction and Derived Indices {#sec-interactions-derived}
 
 The bivariate density analysis (@sec-bivariate-density) identified a qualitative difference in the joint distribution of humidity and sunshine between rainy and dry days: rain occurs almost exclusively when afternoon humidity is high and sunshine hours are low simultaneously, the "Rain Corner" phenomenon. An additive model cannot represent this conditional structure; a multiplicative interaction term is required.
 
-Prior to computing the interaction, both `sunshine` and `humidity3pm` are mean-centred by subtracting their grand means. This is not merely a cosmetic step. When an interaction term is formed from un-centred variables, the resulting product is algebraically correlated with both main effects, inflating the VIF of all three terms and making their individual coefficients difficult to interpret. Centring removes this artificial correlation: the main effects then represent the effect of each variable at the average level of the other, and the interaction term represents the additional effect of their joint deviation from those averages. This is confirmed empirically in the VIF diagnostics in Section 3.
+Prior to computing the interaction, both `sunshine` and `humidity3pm` are mean-centred by subtracting their grand means. When an interaction term is formed from un-centred variables, the resulting product is algebraically correlated with both main effects, inflating the VIF of all three terms and making their individual coefficients difficult to interpret. Centring removes this artificial correlation: the main effects then represent the effect of each variable at the average level of the other, and the interaction term represents the additional effect of their joint deviation from those averages. This is confirmed empirically in the VIF diagnostics in @sec-vif.
 
-Beyond the interaction term, five derived meteorological indices are constructed from physically motivated combinations of the available variables. The dewpoint temperatures at 9:00 AM and 3:00 PM, computed from the Magnus approximation $T_d \approx T - \frac{100 - RH}{5}$, represent the temperature at which the air would become saturated if cooled at constant pressure. The change in dewpoint across the day (`dewpoint_change`) measures whether the atmosphere is gaining or losing moisture over the course of the day, a signal not directly recoverable from temperature or humidity alone. The `moisture_index` encodes the combined effect of high humidity and limited solar exposure. The `instability_index` combines pressure deficit from the standard 1020 hPa baseline with humidity, approximating the atmospheric conditions that favour convective development. `cloud_development` captures upward cloud formation during the day, which the pressure analysis identified as a meaningful precursor to precipitation.
+Beyond the interaction term, five derived meteorological indices are constructed from physically motivated combinations of the available variables. The dewpoint temperatures at 9:00 AM and 3:00 PM are computed from the Magnus approximation
 
-### Circular Wind Vector Decomposition
+$$
+T_d \approx T - \frac{100 - RH}{5}
+$$
+
+and represent the temperature at which the air would become saturated if cooled at constant pressure. The change in dewpoint across the day (`dewpoint_change`) measures whether the atmosphere is gaining or losing moisture over the course of the day, a signal not directly recoverable from temperature or humidity alone. The `moisture_index` encodes the combined effect of high humidity and limited solar exposure. The `instability_index` combines pressure deficit from the standard 1020 hPa baseline with humidity, approximating the atmospheric conditions that favour convective development. `cloud_development` captures upward cloud formation during the day, which the pressure analysis identified as a meaningful precursor to precipitation.
+
+### Circular Wind Vector Decomposition {#sec-wind-decomposition}
 
 Wind direction is a circular variable: 360 degrees and 0 degrees represent the same direction (due North), yet a naive numeric encoding would treat them as maximally distant. This misrepresentation is particularly consequential for wind because the directional origin of an air mass carries meaningful physical content: moisture-laden northerly flows behave very differently from dry southerly flows in the Australian context.
 
 The standard solution is to decompose each directional reading into orthogonal Cartesian components by projecting the wind vector onto the north-south and east-west axes:
 
-$$U_{EW} = v \cdot \sin(\theta), \quad V_{NS} = v \cdot \cos(\theta)$$
+$$
+U_{EW} = v \cdot \sin(\theta), \quad V_{NS} = v \cdot \cos(\theta)
+$$
 
-where $v$ is wind speed (in km/h) and $\theta$ is the compass bearing in radians. The resulting U and V components are continuous and interpretable: a purely northerly wind of 20 km/h produces $V_{NS} = 20$, $U_{EW} = 0$; a purely easterly wind of the same speed produces $V_{NS} = 0$, $U_{EW} = 20$. This transformation is applied to both the peak gust and the 9:00 AM wind observations, yielding four wind component features in total.
+where $v$ is wind speed in km/h and $\theta$ is the compass bearing in radians. The resulting $U$ and $V$ components are continuous and interpretable: a purely northerly wind of 20 km/h produces $V_{NS} = 20$, $U_{EW} = 0$; a purely easterly wind of the same speed produces $V_{NS} = 0$, $U_{EW} = 20$. This transformation is applied to both the peak gust and the 9:00 AM wind observations, yielding four wind component features in total.
 
 ---
 
-## Multicollinearity Diagnostics
+## Multicollinearity Diagnostics {#sec-vif}
 
 ```{r}
-#| label: multicollinearity-check
+#| label: tbl-vif
+#| tbl-cap: "Variance Inflation Factor (VIF) for selected predictors in the engineered feature set."
 #| echo: true
 #| message: false
 #| warning: false
@@ -160,13 +165,13 @@ engineered_list <- complete(imp_mids, action = "all") %>%
 render_vif_table(engineered_list[[1]])
 ```
 
+Feature engineering that introduces interaction terms, composite indices, and temporal aggregates necessarily creates new correlational structure in the design matrix. The Variance Inflation Factor (VIF) is used to verify that no predictor has become so collinear with the others that its coefficient in a linear model would be effectively unidentifiable. The VIF for a given predictor quantifies how much its coefficient variance is inflated relative to what it would be in an orthogonal design: a VIF of $k$ indicates that the standard error of that coefficient is $\sqrt{k}$ times larger than it would be if the predictor were uncorrelated with all others. Values above 10 are conventionally treated as indicating severe collinearity requiring remediation.
 
-Feature engineering that introduces interaction terms, composite indices, and temporal aggregates necessarily creates new correlational structure in the design matrix. After constructing the full feature set, it is essential to verify that no predictor has become so collinear with the others that its coefficient in a linear model would be effectively unidentifiable. We use the Variance Inflation Factor (VIF) for this diagnosis. The VIF for a given predictor quantifies how much its coefficient variance is inflated relative to what it would be in an orthogonal design: a VIF of $k$ indicates that the standard error of that coefficient is $\sqrt{k}$ times larger than it would be if the predictor were uncorrelated with all others. Values above 10 are conventionally treated as indicating severe collinearity requiring remediation.
+**Cyclical and wind components.** The `day_sin`, `day_cos`, `gust_V_NS`, and `gust_U_EW` features all show VIF values well below 3 (@tbl-vif). This confirms that the decomposition strategies, sine/cosine for the annual cycle and $U$/$V$ projection for wind direction successfully converted circular variables into continuous representations without introducing redundancy. Each component carries information that is approximately orthogonal to its pair.
 
-**Cyclical and wind components.** The `day_sin`, `day_cos`, `gust_V_NS`, and `gust_U_EW` features all show VIF values well below 3. This confirms that the decomposition strategies, sine/cosine for the annual cycle and U/V projection for wind direction, successfully converted circular variables into continuous representations without introducing redundancy. Each component carries information that is approximately orthogonal to its pair.
+**Interaction stability.** The `sun_humid_interaction` term has a VIF of 1.174 (@tbl-vif), which is exceptionally low for a multiplicative interaction. Without mean-centring the constituent variables before multiplication, interaction terms routinely exhibit VIFs above 10 due to their algebraic overlap with the main effects. The observed value of 1.174 provides empirical confirmation that centring eliminated this artificial correlation, and that the interaction term is capturing a genuinely distinct dimension of the feature space, the joint Rain Corner structure identified in @sec-bivariate-density.
 
-**Interaction stability.** The `sun_humid_interaction` term has a VIF of 1.182, which is exceptionally low for a multiplicative interaction. Without mean-centring the constituent variables before multiplication, interaction terms routinely exhibit VIFs above 10 due to their algebraic overlap with the main effects. The observed value of 1.182 provides empirical confirmation that centring eliminated this artificial correlation, and that the interaction term is capturing a genuinely distinct dimension of the feature space, the joint Rain Corner structure identified in @sec-bivariate-density.
+**Elevated collinearity in humidity.** The highest observed VIF is for `humidity3pm` at 4.776 (@tbl-vif). This is expected: humidity participates structurally in three of the derived features (`moisture_index`, `instability_index`, and `sun_humid_interaction`), and its 7-day moving average is also present in the feature set. A VIF of 4.776 lies below the conventional threshold of 10 for severe concern and is consistent with moderate collinearity. The decision to retain `humidity3pm` despite this inflation is deliberate: it is the single strongest individual predictor of rainfall in the dataset (Spearman $r = 0.44$, as established in @sec-correlation), and removing it in favour of its derived aggregates would sacrifice the direct same-day atmospheric moisture signal for the sake of a marginal improvement in collinearity. For tree-based models, this trade-off does not arise, since these methods are not sensitive to multicollinearity by design.
 
-**Elevated collinearity in humidity.** The highest observed VIF is for `humidity3pm` at approximately 4.841. This is expected: humidity participates structurally in three of the derived features (`moisture_index`, `instability_index`, and `sun_humid_interaction`), and its 7-day moving average is also present in the feature set. A VIF of 5 lies below the conventional threshold of 10 for severe concern and is consistent with what the literature describes as moderate collinearity. The decision to retain `humidity3pm` despite this inflation is deliberate: it is the single strongest individual predictor of rainfall in the dataset (Spearman $r = 0.44$, as established in @sec-eda), and removing it in favour of its derived aggregates would sacrifice the direct same-day atmospheric moisture signal for the sake of a marginal improvement in collinearity. For tree-based models, this trade-off does not arise, since these methods are not sensitive to multicollinearity by design.
+**Overall assessment.** The full engineered feature set is numerically stable for use in linear model families. No VIF exceeds the critical threshold of 10 (@tbl-vif), and the majority of features show values below 3. The pipeline has successfully converted the raw meteorological signals into a representation that is both physically interpretable and statistically well-conditioned for the modelling stage.
 
-**Overall assessment.** The full engineered feature set is numerically stable for use in linear model families. No VIF exceeds the critical threshold of 10, and the majority of features show values below 3. The pipeline has successfully converted the raw meteorological signals into a representation that is both physically interpretable and statistically well-conditioned for the modelling stage.

@@ -113,6 +113,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 <script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="../site_libs/datatables-binding-0.34.0/datatables.js"></script>
+<script src="../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="../site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="../site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="../site_libs/jszip-1.13.6/jszip.min.js"></script>
+<link href="../site_libs/dt-ext-buttons-1.13.6/css/buttons.dataTables.min.css" rel="stylesheet">
+<script src="../site_libs/dt-ext-buttons-1.13.6/js/dataTables.buttons.min.js"></script>
+<script src="../site_libs/dt-ext-buttons-1.13.6/js/buttons.html5.min.js"></script>
+<script src="../site_libs/dt-ext-buttons-1.13.6/js/buttons.colVis.min.js"></script>
+<script src="../site_libs/dt-ext-buttons-1.13.6/js/buttons.print.min.js"></script>
+<link href="../site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet">
+<script src="../site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="../site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet">
+<script src="../site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 
 
 </head>
@@ -420,23 +440,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#computational-environment" id="toc-computational-environment" class="nav-link active" data-scroll-target="#computational-environment"><span class="header-section-number">2.1</span> Computational Environment</a></li>
-  <li><a href="#initial-cleaning-and-standardisation" id="toc-initial-cleaning-and-standardisation" class="nav-link" data-scroll-target="#initial-cleaning-and-standardisation"><span class="header-section-number">2.2</span> Initial Cleaning and Standardisation</a></li>
-  <li><a href="#sec-missingness-diagnostics" id="toc-sec-missingness-diagnostics" class="nav-link" data-scroll-target="#sec-missingness-diagnostics"><span class="header-section-number">2.3</span> Missingness Diagnostics</a>
+  <li><a href="#sec-cleaning" id="toc-sec-cleaning" class="nav-link active" data-scroll-target="#sec-cleaning"><span class="header-section-number">2.1</span> Initial Cleaning and Standardisation</a></li>
+  <li><a href="#sec-missingness-diagnostics" id="toc-sec-missingness-diagnostics" class="nav-link" data-scroll-target="#sec-missingness-diagnostics"><span class="header-section-number">2.2</span> Missingness Diagnostics</a>
   <ul class="collapse">
-  <li><a href="#sec-co-missingness" id="toc-sec-co-missingness" class="nav-link" data-scroll-target="#sec-co-missingness"><span class="header-section-number">2.3.1</span> Co-missingness Structure</a></li>
-  <li><a href="#sec-temporal-structure" id="toc-sec-temporal-structure" class="nav-link" data-scroll-target="#sec-temporal-structure"><span class="header-section-number">2.3.2</span> Temporal Structure and Structural Breaks</a></li>
-  <li><a href="#sec-ghost-sensor" id="toc-sec-ghost-sensor" class="nav-link" data-scroll-target="#sec-ghost-sensor"><span class="header-section-number">2.3.3</span> Geographic Concentration: Ghost Sensor Identification</a></li>
-  <li><a href="#sec-weather-conditionality" id="toc-sec-weather-conditionality" class="nav-link" data-scroll-target="#sec-weather-conditionality"><span class="header-section-number">2.3.4</span> Weather-Conditionality of Sunshine Missingness</a></li>
-  <li><a href="#missing-pattern-structure" id="toc-missing-pattern-structure" class="nav-link" data-scroll-target="#missing-pattern-structure"><span class="header-section-number">2.3.5</span> Missing Pattern Structure</a></li>
+  <li><a href="#sec-co-missingness" id="toc-sec-co-missingness" class="nav-link" data-scroll-target="#sec-co-missingness"><span class="header-section-number">2.2.1</span> Co-missingness Structure</a></li>
+  <li><a href="#sec-temporal-structure" id="toc-sec-temporal-structure" class="nav-link" data-scroll-target="#sec-temporal-structure"><span class="header-section-number">2.2.2</span> Temporal Structure and Structural Breaks</a></li>
+  <li><a href="#sec-ghost-sensor" id="toc-sec-ghost-sensor" class="nav-link" data-scroll-target="#sec-ghost-sensor"><span class="header-section-number">2.2.3</span> Geographic Concentration: Ghost Sensor Identification</a></li>
+  <li><a href="#sec-weather-conditionality" id="toc-sec-weather-conditionality" class="nav-link" data-scroll-target="#sec-weather-conditionality"><span class="header-section-number">2.2.4</span> Weather-Conditionality of Sunshine Missingness</a></li>
+  <li><a href="#sec-missing-pattern" id="toc-sec-missing-pattern" class="nav-link" data-scroll-target="#sec-missing-pattern"><span class="header-section-number">2.2.5</span> Missing Pattern Structure</a></li>
   </ul></li>
-  <li><a href="#sec-imputation-pipeline" id="toc-sec-imputation-pipeline" class="nav-link" data-scroll-target="#sec-imputation-pipeline"><span class="header-section-number">2.4</span> Imputation Pipeline</a>
+  <li><a href="#sec-imputation-pipeline" id="toc-sec-imputation-pipeline" class="nav-link" data-scroll-target="#sec-imputation-pipeline"><span class="header-section-number">2.3</span> Imputation Pipeline</a>
   <ul class="collapse">
-  <li><a href="#stage-1-temporal-interpolation" id="toc-stage-1-temporal-interpolation" class="nav-link" data-scroll-target="#stage-1-temporal-interpolation"><span class="header-section-number">2.4.1</span> Stage 1: Temporal Interpolation</a></li>
-  <li><a href="#stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest" id="toc-stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest" class="nav-link" data-scroll-target="#stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest"><span class="header-section-number">2.4.2</span> Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</a></li>
-  <li><a href="#ghost-sensor-flagging" id="toc-ghost-sensor-flagging" class="nav-link" data-scroll-target="#ghost-sensor-flagging"><span class="header-section-number">2.4.3</span> Ghost Sensor Flagging</a></li>
+  <li><a href="#stage-1-temporal-interpolation" id="toc-stage-1-temporal-interpolation" class="nav-link" data-scroll-target="#stage-1-temporal-interpolation"><span class="header-section-number">2.3.1</span> Stage 1: Temporal Interpolation</a></li>
+  <li><a href="#stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest" id="toc-stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest" class="nav-link" data-scroll-target="#stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest"><span class="header-section-number">2.3.2</span> Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</a></li>
+  <li><a href="#sec-ghost-flagging" id="toc-sec-ghost-flagging" class="nav-link" data-scroll-target="#sec-ghost-flagging"><span class="header-section-number">2.3.3</span> Ghost Sensor Flagging</a></li>
   </ul></li>
-  <li><a href="#post-imputation-dataset-properties" id="toc-post-imputation-dataset-properties" class="nav-link" data-scroll-target="#post-imputation-dataset-properties"><span class="header-section-number">2.5</span> Post-Imputation Dataset Properties</a></li>
+  <li><a href="#sec-post-imputation" id="toc-sec-post-imputation" class="nav-link" data-scroll-target="#sec-post-imputation"><span class="header-section-number">2.4</span> Post-Imputation Dataset Properties</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/chapters/02-data-prep.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -468,25 +487,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Chapter Context.</strong> Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, a diagnostic investigation of the structure and mechanism of the missingness, and the design of a two-stage imputation pipeline informed by that investigation. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</p>
 </blockquote>
 <hr>
-<section id="computational-environment" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="computational-environment"><span class="header-section-number">2.1</span> Computational Environment</h2>
-<div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (<code>tidyverse</code>, <code>janitor</code>, <code>kableExtra</code>) handles routine data manipulation. The modelling stack (<code>glmmTMB</code>, <code>DHARMa</code>, <code>splines</code>, <code>mgcv</code>) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (<code>mice</code>) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (<code>naniar</code>, <code>glue</code>) supports the structural analysis in <a href="#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.3</span></a>. Libraries are loaded via <code>librarian</code>, which installs missing packages automatically and ensures reproducibility across environments.</p>
-<hr>
-</section>
-<section id="initial-cleaning-and-standardisation" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="initial-cleaning-and-standardisation"><span class="header-section-number">2.2</span> Initial Cleaning and Standardisation</h2>
+<section id="sec-cleaning" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-cleaning"><span class="header-section-number">2.1</span> Initial Cleaning and Standardisation</h2>
 <p>The raw dataset undergoes three transformations before any missingness analysis or imputation.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"cleaning.R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"cleaning.R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p><strong>Column standardisation.</strong> All variable names are converted to <code>snake_case</code> via <code>janitor::clean_names()</code>, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.</p>
@@ -494,32 +501,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Target filtering.</strong> Observations where <code>rainfall</code> is missing are removed. Records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</p>
 <hr>
 </section>
-<section id="sec-missingness-diagnostics" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="sec-missingness-diagnostics"><span class="header-section-number">2.3</span> Missingness Diagnostics</h2>
+<section id="sec-missingness-diagnostics" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-missingness-diagnostics"><span class="header-section-number">2.2</span> Missingness Diagnostics</h2>
 <p>Before designing an imputation strategy, it is necessary to understand the mechanism and structure of the missing data. The choice between imputation methods depends critically on three questions: whether missingness is random with respect to other variables in the dataset, whether missing values cluster at specific locations or time periods, and whether the four most-affected variables fail independently or as a coordinated group. A strategy designed without answering these questions risks either under-imputing (discarding recoverable signal) or over-imputing (fabricating data in regions where recovery is not possible). The five analyses below provide the empirical basis for each design decision in the pipeline that follows.</p>
-<section id="sec-co-missingness" class="level3" data-number="2.3.1">
-<h3 data-number="2.3.1" class="anchored" data-anchor-id="sec-co-missingness"><span class="header-section-number">2.3.1</span> Co-missingness Structure</h3>
+<section id="sec-co-missingness" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-co-missingness"><span class="header-section-number">2.2.1</span> Co-missingness Structure</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"data_missingness.R"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">render_comissingness_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"data_missingness.R"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">render_comissingness_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; High missingness variables: sunshine, evaporation, cloud3pm, cloud9am 
-#&gt; 
-#&gt;   evaporation -&gt; sunshine: 93.2%  (when evaporation is missing, sunshine is missing) 
-#&gt;   cloud9am -&gt; cloud3pm: 92.6%  (when cloud9am is missing, cloud3pm is missing) 
-#&gt;   cloud3pm -&gt; cloud9am: 87.2%  (when cloud3pm is missing, cloud9am is missing) 
-#&gt;   cloud9am -&gt; sunshine: 84.3%  (when cloud9am is missing, sunshine is missing) 
-#&gt;   sunshine -&gt; evaporation: 83.8%  (when sunshine is missing, evaporation is missing) 
-#&gt;   cloud3pm -&gt; sunshine: 82.5%  (when cloud3pm is missing, sunshine is missing) 
-#&gt;   cloud9am -&gt; evaporation: 81.4%  (when cloud9am is missing, evaporation is missing) 
-#&gt;   cloud3pm -&gt; evaporation: 78%  (when cloud3pm is missing, evaporation is missing) 
-#&gt;   evaporation -&gt; cloud3pm: 73.7%  (when evaporation is missing, cloud3pm is missing) 
-#&gt;   evaporation -&gt; cloud9am: 72.5%  (when evaporation is missing, cloud9am is missing) 
-#&gt;   sunshine -&gt; cloud3pm: 70.1%  (when sunshine is missing, cloud3pm is missing) 
-#&gt;   sunshine -&gt; cloud9am: 67.5%  (when sunshine is missing, cloud9am is missing)</code></pre>
+<pre><code>#&gt; High missingness variables: sunshine, evaporation, cloud3pm, cloud9am</code></pre>
 </div>
 <div id="tbl-co-missingness" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -605,15 +599,15 @@ Table&nbsp;2.1: Conditional Co-missingness Matrix
 </figure>
 </div>
 </div>
-<p>The co-missingness matrix (<a href="#tbl-co-missingness" class="quarto-xref">Table&nbsp;<span>2.1</span></a>) confirms that these four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: if evaporation is missing, there is a 93.2% probability that sunshine is also missing. Even the weakest relationship in the matrix (sunshine to cloud9am) retains a rate of 67.5%, which is nearly double what would be expected under random failure.</p>
-<p>Under MCAR, the co-missing rates would be close to the marginal missingness rates of each variable, roughly 40 to 48%. Rates uniformly between 67% and 93% instead indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This is MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed are available precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.</p>
+<p>The co-missingness matrix (<a href="#tbl-co-missingness" class="quarto-xref">Table&nbsp;<span>2.1</span></a>) confirms that the four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: when evaporation is missing, the conditional probability that sunshine is also missing is 93.2%. Even the weakest relationship in the matrix, sunshine missing given cloud9am missing, retains a rate of 67.5%, which is nearly double what would be expected under random failure.</p>
+<p>Under MCAR, co-missing rates would approximate the marginal missingness rate of each variable, roughly 40 to 48%. Rates uniformly between 67.5% and 93.2% indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This constitutes MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed arise precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.</p>
 </section>
-<section id="sec-temporal-structure" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" class="anchored" data-anchor-id="sec-temporal-structure"><span class="header-section-number">2.3.2</span> Temporal Structure and Structural Breaks</h3>
+<section id="sec-temporal-structure" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="sec-temporal-structure"><span class="header-section-number">2.2.2</span> Temporal Structure and Structural Breaks</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">plot_temporal_missingness</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">plot_temporal_missingness</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-temporal-missingness" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -628,410 +622,48 @@ Figure&nbsp;2.1: Timeline of systematic missingness across the four high-missing
 </div>
 </div>
 </div>
-<p>The temporal analysis (<a href="#fig-temporal-missingness" class="quarto-xref">Figure&nbsp;<span>2.1</span></a>) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The <code>sunshine</code> and <code>evaporation</code> variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.</p>
+<p>The temporal analysis (<a href="#fig-temporal-missingness" class="quarto-xref">Figure&nbsp;<span>2.1</span></a>) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations that never recorded these measurements. The <code>sunshine</code> and <code>evaporation</code> variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.</p>
 <p>This temporal structure has a direct implication for the interpolation stage of the pipeline. Linear interpolation is appropriate when a smooth trajectory can be inferred from values on either side of a gap. Extended contiguous gaps produced by a structural break have no valid upper boundary from which to interpolate, and filling them with temporal interpolation would create long synthetic sequences with no empirical anchor. The five-day interpolation cap set in Stage 1 of the pipeline is a direct response to this finding.</p>
 </section>
-<section id="sec-ghost-sensor" class="level3" data-number="2.3.3">
-<h3 data-number="2.3.3" class="anchored" data-anchor-id="sec-ghost-sensor"><span class="header-section-number">2.3.3</span> Geographic Concentration: Ghost Sensor Identification</h3>
+<section id="sec-ghost-sensor" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="sec-ghost-sensor"><span class="header-section-number">2.2.3</span> Geographic Concentration: Ghost Sensor Identification</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">render_ghost_sensor_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">render_ghost_sensor_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; 
 #&gt; Total ghost sensor instances identified: 60 across 22 locations</code></pre>
 </div>
+<div id="tbl-ghost-sensors" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-ghost-sensors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.2
+</figcaption>
+<div aria-describedby="tbl-ghost-sensors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small">
-<caption>Ghost Sensor Instances: Location-Variable Pairs with &gt;90% Missingness</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Location</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Missing (n)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Missing (%)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Albury</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Albury</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BadgerysCreek</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">BadgerysCreek</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BadgerysCreek</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">BadgerysCreek</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Newcastle</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Newcastle</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">NorahHead</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3004</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">NorahHead</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3004</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">NorahHead</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3004</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">NorahHead</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3004</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Penrith</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Penrith</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Penrith</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Penrith</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Richmond</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Wollongong</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Wollongong</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Tuggeranong</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Tuggeranong</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Tuggeranong</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Tuggeranong</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3039</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MountGinini</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MountGinini</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MountGinini</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MountGinini</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ballarat</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Ballarat</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Bendigo</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Nhil</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Nhil</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Nhil</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Nhil</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Dartmoor</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Dartmoor</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">GoldCoast</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">GoldCoast</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">GoldCoast</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">GoldCoast</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Adelaide</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3193</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Adelaide</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3193</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Witchcliffe</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Witchcliffe</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Witchcliffe</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Witchcliffe</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">PearceRAAF</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3009</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SalmonGums</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3001</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">SalmonGums</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3001</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SalmonGums</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3001</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">SalmonGums</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3001</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Walpole</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">3006</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Walpole</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3006</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Walpole</td>
-<td style="text-align: left;">cloud9am</td>
-<td style="text-align: right;">3006</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Walpole</td>
-<td style="text-align: left;">cloud3pm</td>
-<td style="text-align: right;">3006</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Launceston</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">3040</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Katherine</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Uluru</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Uluru</td>
-<td style="text-align: left;">sunshine</td>
-<td style="text-align: right;">1578</td>
-<td style="text-align: right;">100</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Launceston</td>
-<td style="text-align: left;">evaporation</td>
-<td style="text-align: right;">2899</td>
-<td style="text-align: right;">95.4</td>
-</tr>
-</tbody>
-</table>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ed18b5138cb117a91e9c" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ed18b5138cb117a91e9c">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1578\" data-max=\"3193\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"95.4\" data-max=\"100\" data-scale=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"caption":"<caption>Ghost Sensor Instances: Location-Variable Pairs with &gt;90% Missingness<\/caption>","data":[["Albury","Albury","BadgerysCreek","BadgerysCreek","BadgerysCreek","BadgerysCreek","Newcastle","Newcastle","NorahHead","NorahHead","NorahHead","NorahHead","Penrith","Penrith","Penrith","Penrith","Richmond","Wollongong","Wollongong","Tuggeranong","Tuggeranong","Tuggeranong","Tuggeranong","MountGinini","MountGinini","MountGinini","MountGinini","Ballarat","Ballarat","Bendigo","Nhil","Nhil","Nhil","Nhil","Dartmoor","Dartmoor","GoldCoast","GoldCoast","GoldCoast","GoldCoast","Adelaide","Adelaide","Witchcliffe","Witchcliffe","Witchcliffe","Witchcliffe","PearceRAAF","SalmonGums","SalmonGums","SalmonGums","SalmonGums","Walpole","Walpole","Walpole","Walpole","Launceston","Katherine","Uluru","Uluru","Launceston"],["evaporation","sunshine","evaporation","sunshine","cloud9am","cloud3pm","evaporation","sunshine","evaporation","sunshine","cloud9am","cloud3pm","evaporation","sunshine","cloud9am","cloud3pm","sunshine","evaporation","sunshine","evaporation","sunshine","cloud9am","cloud3pm","evaporation","sunshine","cloud9am","cloud3pm","evaporation","sunshine","sunshine","evaporation","sunshine","cloud9am","cloud3pm","cloud9am","cloud3pm","evaporation","sunshine","cloud9am","cloud3pm","cloud9am","cloud3pm","evaporation","sunshine","cloud9am","cloud3pm","evaporation","evaporation","sunshine","cloud9am","cloud3pm","evaporation","sunshine","cloud9am","cloud3pm","sunshine","sunshine","evaporation","sunshine","evaporation"],[3040,3040,3009,3009,3009,3009,3039,3039,3004,3004,3004,3004,3039,3039,3039,3039,3009,3040,3040,3039,3039,3039,3039,3040,3040,3040,3040,3040,3040,3040,1578,1578,1578,1578,3009,3009,3040,3040,3040,3040,3193,3193,3009,3009,3009,3009,3009,3001,3001,3001,3001,3006,3006,3006,3006,3040,1578,1578,1578,2899],[100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,95.40000000000001]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Location<\/th>\n      <th>Variable<\/th>\n      <th>Missing (n)<\/th>\n      <th>Missing (%)<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":15,"lengthMenu":[10,15,25,50],"dom":"Bfrtip","buttons":["csv","excel"],"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3]},{"name":"Location","targets":0},{"name":"Variable","targets":1},{"name":"Missing (n)","targets":2},{"name":"Missing (%)","targets":3}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'background':isNaN(parseFloat(value)) || value <= 0.000000 ? '' : 'linear-gradient(90.000000deg, transparent ' + Math.max(100.000000 - value, 0)/100.000000 * 100 + '%, #f87171 ' + Math.max(100.000000 - value, 0)/100.000000 * 100 + '%)','background-size':'100% 80%','background-repeat':'no-repeat','background-position':'center'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
 </div>
 </div>
-<p>The location-level analysis identifies the specific station-variable pairs responsible for the bulk of the aggregate missingness. The top ten instances from the script output, all at exactly 100% missing, are as follows: Albury (<code>evaporation</code>, 3,040 observations; <code>sunshine</code>, 3,040), BadgerysCreek (<code>evaporation</code>, 3,009; <code>sunshine</code>, 3,009; <code>cloud9am</code>, 3,009; <code>cloud3pm</code>, 3,009), Newcastle (<code>evaporation</code>, 3,039; <code>sunshine</code>, 3,039), and NorahHead (<code>evaporation</code>, 3,004; <code>sunshine</code>, 3,004). At these stations, the instrument in question recorded a value on zero days across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.</p>
-<p>The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support whatsoever: there is no observed value at that station and variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.</p>
+</figure>
+</div>
+</div>
+<p>The location-level analysis (<a href="#tbl-ghost-sensors" class="quarto-xref">Table&nbsp;<span>2.2</span></a>) identifies 60 ghost sensor instances across 22 locations. At each of these station-variable pairs, the instrument recorded a value on zero days (or fewer than 5% of days) across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.</p>
+<p>The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support: there is no observed value at that station-variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.</p>
 </section>
-<section id="sec-weather-conditionality" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="sec-weather-conditionality"><span class="header-section-number">2.3.4</span> Weather-Conditionality of Sunshine Missingness</h3>
+<section id="sec-weather-conditionality" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="sec-weather-conditionality"><span class="header-section-number">2.2.4</span> Weather-Conditionality of Sunshine Missingness</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">render_sunshine_mcar_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">render_sunshine_mcar_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-sunshine-mcar-test" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sunshine-mcar-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.2: Sunshine Missingness Rate by Daily Rainfall Status
+Table&nbsp;2.3: Sunshine Missingness Rate by Daily Rainfall Status
 </figcaption>
 <div aria-describedby="tbl-sunshine-mcar-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1064,7 +696,7 @@ Table&nbsp;2.2: Sunshine Missingness Rate by Daily Rainfall Status
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">plot_sunshine_rainfall_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">plot_sunshine_rainfall_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-sunshine-rainfall-density" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -1079,20 +711,25 @@ Figure&nbsp;2.2: Density of rainfall amounts on days where sunshine data is pres
 </div>
 </div>
 </div>
-<p>A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.</p>
-<p>The empirical test refutes this concern. The table output (<a href="#tbl-sunshine-mcar-test" class="quarto-xref">Table&nbsp;<span>2.2</span></a>) reports a sunshine missing rate of 47.8% on 110,319 dry days (rainfall at most 1 mm) and 47.2% on 31,880 rainy days (rainfall above 1 mm), a difference of 0.6 percentage points. The density plot (<a href="#fig-sunshine-rainfall-density" class="quarto-xref">Figure&nbsp;<span>2.2</span></a>) makes the same point visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects not a systematic pattern but the difference in the sizes of the two groups.</p>
-<p>Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates, because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.</p>
+<p>A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.</p>
+<p>The empirical test refutes this concern. <a href="#tbl-sunshine-mcar-test" class="quarto-xref">Table&nbsp;<span>2.3</span></a> reports a sunshine missing rate of 47.8% on 110,319 dry days and 47.2% on 31,880 rainy days, a difference of 0.6 percentage points. <a href="#fig-sunshine-rainfall-density" class="quarto-xref">Figure&nbsp;<span>2.2</span></a> confirms this visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects the difference in group sizes rather than a systematic pattern.</p>
+<p>Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.</p>
 </section>
-<section id="missing-pattern-structure" class="level3" data-number="2.3.5">
-<h3 data-number="2.3.5" class="anchored" data-anchor-id="missing-pattern-structure"><span class="header-section-number">2.3.5</span> Missing Pattern Structure</h3>
+<section id="sec-missing-pattern" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="sec-missing-pattern"><span class="header-section-number">2.2.5</span> Missing Pattern Structure</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">render_miss_pattern_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">render_miss_pattern_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div id="tbl-miss-pattern" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-miss-pattern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.4: Distribution of Missing Variable Count per Observation
+</figcaption>
+<div aria-describedby="tbl-miss-pattern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small">
-<caption>Distribution of Missing Variable Count per Observation</caption>
+<table class="table table-striped table-hover do-not-create-environment cell caption-top table-sm small">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">Variables Missing (of 4)</th>
@@ -1130,60 +767,63 @@ Figure&nbsp;2.2: Density of rainfall amounts on days where sunshine data is pres
 </table>
 </div>
 </div>
-<p>The case-level output from the script reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.</p>
-<p>The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in <a href="#sec-ghost-sensor" class="quarto-xref"><span>Section 2.3.3</span></a>. For these observations, no imputation is supportable and the values remain missing after the pipeline. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artifact: observations genuinely tend to be fully instrumented or minimally instrumented, not randomly partially instrumented.</p>
+</figure>
+</div>
+</div>
+<p><a href="#tbl-miss-pattern" class="quarto-xref">Table&nbsp;<span>2.4</span></a> reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.</p>
+<p>The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in <a href="#sec-ghost-sensor" class="quarto-xref"><span>Section 2.2.3</span></a>. For these observations, no imputation is supportable and the values remain missing after the pipeline runs. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artefact: observations genuinely tend to be either fully instrumented or minimally instrumented, not randomly partially instrumented.</p>
 <hr>
 </section>
 </section>
-<section id="sec-imputation-pipeline" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="sec-imputation-pipeline"><span class="header-section-number">2.4</span> Imputation Pipeline</h2>
-<p>The diagnostic evidence from <a href="#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.3</span></a> motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (<a href="#sec-weather-conditionality" class="quarto-xref"><span>Section 2.3.4</span></a>), temporally structured with extended contiguous gaps rather than random scatter (<a href="#sec-temporal-structure" class="quarto-xref"><span>Section 2.3.2</span></a>), and co-located across variables at the station level (<a href="#sec-co-missingness" class="quarto-xref"><span>Section 2.3.1</span></a>). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.</p>
-<section id="stage-1-temporal-interpolation" class="level3" data-number="2.4.1">
-<h3 data-number="2.4.1" class="anchored" data-anchor-id="stage-1-temporal-interpolation"><span class="header-section-number">2.4.1</span> Stage 1: Temporal Interpolation</h3>
-<p>The eight variables with smooth day-to-day trajectories minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.</p>
+<section id="sec-imputation-pipeline" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-imputation-pipeline"><span class="header-section-number">2.3</span> Imputation Pipeline</h2>
+<p>The diagnostic evidence from <a href="#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.2</span></a> motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (<a href="#sec-weather-conditionality" class="quarto-xref"><span>Section 2.2.4</span></a>), temporally structured with extended contiguous gaps rather than random scatter (<a href="#sec-temporal-structure" class="quarto-xref"><span>Section 2.2.2</span></a>), and co-located across variables at the station level (<a href="#sec-co-missingness" class="quarto-xref"><span>Section 2.2.1</span></a>). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.</p>
+<section id="stage-1-temporal-interpolation" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="stage-1-temporal-interpolation"><span class="header-section-number">2.3.1</span> Stage 1: Temporal Interpolation</h3>
+<p>The eight variables with smooth day-to-day trajectories, minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.</p>
 </section>
-<section id="stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest" class="level3" data-number="2.4.2">
-<h3 data-number="2.4.2" class="anchored" data-anchor-id="stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest"><span class="header-section-number">2.4.2</span> Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</h3>
+<section id="stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="stage-2-multivariate-imputation-via-predictive-mean-matching-and-random-forest"><span class="header-section-number">2.3.2</span> Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</h3>
 <p>Remaining gaps in <code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, <code>cloud3pm</code>, and the three wind direction variables are addressed using <code>mice</code> with method assignments differentiated by variable type.</p>
-<p>The four continuous atmospheric variables (<code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, <code>cloud3pm</code>) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid Rubin’s Rules variance decomposition downstream. Each variable is imputed from a physically motivated predictor set:</p>
+<p>The four continuous atmospheric variables (<code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, <code>cloud3pm</code>) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid variance decomposition via Rubin’s Rules downstream. Each variable is imputed from a physically motivated predictor set:</p>
 <ul>
 <li><strong>Cloud cover</strong> (<code>cloud9am</code>, <code>cloud3pm</code>) from morning and afternoon humidity, morning pressure, location, and month.</li>
 <li><strong>Sunshine</strong> from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.</li>
 <li><strong>Evaporation</strong> from wind gust speed, maximum temperature, afternoon humidity, sunshine, location, and month.</li>
 </ul>
 <p>The three wind direction variables (<code>wind_gust_dir</code>, <code>wind_dir9am</code>, <code>wind_dir3pm</code>) are imputed using Random Forest. Wind direction is a multi-class unordered categorical variable with sixteen compass-point levels. PMM is not appropriate for unordered factors because it imposes an implicit numeric ordering on the donor matching step. Random Forest handles the multi-class non-ordinal structure natively by splitting on class membership rather than on numeric distance. Each wind direction variable is conditioned on its temporally matched wind speed and pressure readings: gust direction from gust speed and afternoon pressure, morning direction from morning speed and morning pressure, and afternoon direction from afternoon speed and afternoon pressure. This preserves the physical coupling between concurrent wind speed and direction measurements.</p>
-<p>The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in <a href="#sec-co-missingness" class="quarto-xref"><span>Section 2.3.1</span></a>. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable’s predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.</p>
+<p>The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in <a href="#sec-co-missingness" class="quarto-xref"><span>Section 2.2.1</span></a>. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable’s predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.</p>
 </section>
-<section id="ghost-sensor-flagging" class="level3" data-number="2.4.3">
-<h3 data-number="2.4.3" class="anchored" data-anchor-id="ghost-sensor-flagging"><span class="header-section-number">2.4.3</span> Ghost Sensor Flagging</h3>
-<p>Before Stage 2 runs, all station-variable pairs identified in <a href="#sec-ghost-sensor" class="quarto-xref"><span>Section 2.3.3</span></a> as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (<code>sunshine_imp_flagged</code>, <code>evap_imp_flagged</code>, <code>cloud3pm_imp_flagged</code>, <code>cloud9am_imp_flagged</code>). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.</p>
+<section id="sec-ghost-flagging" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="sec-ghost-flagging"><span class="header-section-number">2.3.3</span> Ghost Sensor Flagging</h3>
+<p>Before Stage 2 runs, all station-variable pairs identified in <a href="#sec-ghost-sensor" class="quarto-xref"><span>Section 2.2.3</span></a> as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (<code>sunshine_imp_flagged</code>, <code>evap_imp_flagged</code>, <code>cloud3pm_imp_flagged</code>, <code>cloud9am_imp_flagged</code>). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"imputation.R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"imputation.R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
-<span id="cb12-2"><a href="#cb12-2"></a>df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="dv">1</span>)</span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="fu">write_csv</span>(df_final, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
+<span id="cb11-2"><a href="#cb11-2"></a>df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="dv">1</span>)</span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">write_csv</span>(df_final, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <hr>
 </section>
 </section>
-<section id="post-imputation-dataset-properties" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="post-imputation-dataset-properties"><span class="header-section-number">2.5</span> Post-Imputation Dataset Properties</h2>
-<p>The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in <a href="#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.3</span></a>.</p>
+<section id="sec-post-imputation" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-post-imputation"><span class="header-section-number">2.4</span> Post-Imputation Dataset Properties</h2>
+<p>The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in <a href="#sec-missingness-diagnostics" class="quarto-xref"><span>Section 2.2</span></a>.</p>
 <p><strong>Retention without fabrication.</strong> No observations are discarded on the basis of partial missingness. The 27.9% of observations with all four target variables simultaneously absent are retained with those variables still missing, consistent with the ghost sensor finding that no empirically supportable imputation is possible for them.</p>
-<p><strong>Temporal coherence.</strong> The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in <a href="#sec-temporal-structure" class="quarto-xref"><span>Section 2.3.2</span></a>, prevents the interpolation from extending across genuine data voids. The use of <code>rule = 1</code> in <code>na.approx</code> ensures that boundary gaps return <code>NA</code> rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.</p>
+<p><strong>Temporal coherence.</strong> The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in <a href="#sec-temporal-structure" class="quarto-xref"><span>Section 2.2.2</span></a>, prevents the interpolation from extending across genuine data voids. The use of <code>rule = 1</code> in <code>na.approx</code> ensures that boundary gaps return <code>NA</code> rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.</p>
 <p><strong>Distributional fidelity.</strong> PMM draws imputed values directly from the pool of observed donor observations rather than using a model prediction. This constrains imputed values to the observed empirical range of each variable and preserves the marginal distribution, including multi-modal structure and skew, without requiring distributional assumptions.</p>
 <p><strong>Physical bounds enforcement.</strong> Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when <code>rule = 2</code> extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.</p>
-<p><strong>Outcome independence.</strong> The weather-conditionality test in <a href="#sec-weather-conditionality" class="quarto-xref"><span>Section 2.3.4</span></a> confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</p>
-<p><strong>Wind direction coherence.</strong> Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.</p>
-<p><strong>Provenance transparency.</strong> Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in <a href="03-sensitivity.html" class="quarto-xref"><span>Chapter 3</span></a>.</p>
+<p><strong>Outcome independence.</strong> The weather-conditionality test in <a href="#sec-weather-conditionality" class="quarto-xref"><span>Section 2.2.4</span></a> confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</p>
+<p><strong>Wind direction coherence.</strong> Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories.</p>
+<p><strong>Provenance transparency.</strong> Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in the following chapter.</p>
 
 
 <!-- -->
@@ -1674,225 +1314,220 @@ Figure&nbsp;2.2: Density of rainfall amounts on days where sunshine data is pres
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu"># Data Preparation {#sec-data}</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a></span>
-<span id="cb13-3"><a href="#cb13-3"></a>---</span>
-<span id="cb13-4"><a href="#cb13-4"></a></span>
-<span id="cb13-5"><a href="#cb13-5"></a><span class="at">&gt; **Chapter Context.** Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, a diagnostic investigation of the structure and mechanism of the missingness, and the design of a two-stage imputation pipeline informed by that investigation. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</span></span>
-<span id="cb13-6"><a href="#cb13-6"></a></span>
-<span id="cb13-7"><a href="#cb13-7"></a>---</span>
-<span id="cb13-8"><a href="#cb13-8"></a></span>
-<span id="cb13-9"><a href="#cb13-9"></a><span class="fu">## Computational Environment</span></span>
-<span id="cb13-10"><a href="#cb13-10"></a></span>
-<span id="cb13-13"><a href="#cb13-13"></a><span class="in">```{r}</span></span>
-<span id="cb13-14"><a href="#cb13-14"></a><span class="co">#| label: setup-libraries-data</span></span>
-<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#| message: false</span></span>
-<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-18"><a href="#cb13-18"></a><span class="co">#| results: 'hide'</span></span>
-<span id="cb13-19"><a href="#cb13-19"></a></span>
-<span id="cb13-20"><a href="#cb13-20"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb13-22"><a href="#cb13-22"></a></span>
-<span id="cb13-23"><a href="#cb13-23"></a><span class="in">```</span></span>
-<span id="cb13-24"><a href="#cb13-24"></a></span>
-<span id="cb13-25"><a href="#cb13-25"></a>The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (<span class="in">`tidyverse`</span>, <span class="in">`janitor`</span>, <span class="in">`kableExtra`</span>) handles routine data manipulation. The modelling stack (<span class="in">`glmmTMB`</span>, <span class="in">`DHARMa`</span>, <span class="in">`splines`</span>, <span class="in">`mgcv`</span>) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (<span class="in">`mice`</span>) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (<span class="in">`naniar`</span>, <span class="in">`glue`</span>) supports the structural analysis in @sec-missingness-diagnostics. Libraries are loaded via <span class="in">`librarian`</span>, which installs missing packages automatically and ensures reproducibility across environments.</span>
-<span id="cb13-26"><a href="#cb13-26"></a></span>
-<span id="cb13-27"><a href="#cb13-27"></a>---</span>
-<span id="cb13-28"><a href="#cb13-28"></a></span>
-<span id="cb13-29"><a href="#cb13-29"></a><span class="fu">## Initial Cleaning and Standardisation</span></span>
-<span id="cb13-30"><a href="#cb13-30"></a></span>
-<span id="cb13-31"><a href="#cb13-31"></a>The raw dataset undergoes three transformations before any missingness analysis or imputation.</span>
-<span id="cb13-32"><a href="#cb13-32"></a></span>
-<span id="cb13-35"><a href="#cb13-35"></a><span class="in">```{r}</span></span>
-<span id="cb13-36"><a href="#cb13-36"></a><span class="co">#| label: data-cleaning</span></span>
-<span id="cb13-37"><a href="#cb13-37"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-38"><a href="#cb13-38"></a><span class="co">#| message: false</span></span>
-<span id="cb13-39"><a href="#cb13-39"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-40"><a href="#cb13-40"></a></span>
-<span id="cb13-41"><a href="#cb13-41"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"cleaning.R"</span>))</span>
-<span id="cb13-42"><a href="#cb13-42"></a><span class="in">```</span></span>
-<span id="cb13-43"><a href="#cb13-43"></a></span>
-<span id="cb13-44"><a href="#cb13-44"></a>**Column standardisation.** All variable names are converted to <span class="in">`snake_case`</span> via <span class="in">`janitor::clean_names()`</span>, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.</span>
-<span id="cb13-45"><a href="#cb13-45"></a></span>
-<span id="cb13-46"><a href="#cb13-46"></a>**Temporal feature extraction.** The <span class="in">`date`</span> column is typed as a <span class="in">`Date`</span> object and two derived features are extracted: <span class="in">`month`</span> (as a factor) and <span class="in">`day`</span> (day of week, labelled). Month captures the seasonal structure of Australian precipitation; day of week is retained as a potential control variable for reporting artefacts in the raw data.</span>
-<span id="cb13-47"><a href="#cb13-47"></a></span>
-<span id="cb13-48"><a href="#cb13-48"></a>**Target filtering.** Observations where <span class="in">`rainfall`</span> is missing are removed. Records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</span>
-<span id="cb13-49"><a href="#cb13-49"></a></span>
-<span id="cb13-50"><a href="#cb13-50"></a>---</span>
-<span id="cb13-51"><a href="#cb13-51"></a></span>
-<span id="cb13-52"><a href="#cb13-52"></a><span class="fu">## Missingness Diagnostics {#sec-missingness-diagnostics}</span></span>
-<span id="cb13-53"><a href="#cb13-53"></a></span>
-<span id="cb13-54"><a href="#cb13-54"></a>Before designing an imputation strategy, it is necessary to understand the mechanism and structure of the missing data. The choice between imputation methods depends critically on three questions: whether missingness is random with respect to other variables in the dataset, whether missing values cluster at specific locations or time periods, and whether the four most-affected variables fail independently or as a coordinated group. A strategy designed without answering these questions risks either under-imputing (discarding recoverable signal) or over-imputing (fabricating data in regions where recovery is not possible). The five analyses below provide the empirical basis for each design decision in the pipeline that follows.</span>
-<span id="cb13-55"><a href="#cb13-55"></a></span>
-<span id="cb13-56"><a href="#cb13-56"></a><span class="fu">### Co-missingness Structure {#sec-co-missingness}</span></span>
-<span id="cb13-57"><a href="#cb13-57"></a></span>
-<span id="cb13-60"><a href="#cb13-60"></a><span class="in">```{r}</span></span>
-<span id="cb13-61"><a href="#cb13-61"></a><span class="co">#| label: tbl-co-missingness</span></span>
-<span id="cb13-62"><a href="#cb13-62"></a><span class="co">#| tbl-cap: "Conditional Co-missingness Matrix"</span></span>
-<span id="cb13-63"><a href="#cb13-63"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-64"><a href="#cb13-64"></a><span class="co">#| message: false</span></span>
-<span id="cb13-65"><a href="#cb13-65"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-66"><a href="#cb13-66"></a></span>
-<span id="cb13-67"><a href="#cb13-67"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"data_missingness.R"</span>))</span>
-<span id="cb13-68"><a href="#cb13-68"></a><span class="fu">render_comissingness_table</span>()</span>
-<span id="cb13-69"><a href="#cb13-69"></a><span class="in">```</span></span>
-<span id="cb13-70"><a href="#cb13-70"></a></span>
-<span id="cb13-71"><a href="#cb13-71"></a>The co-missingness matrix (@tbl-co-missingness) confirms that these four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: if evaporation is missing, there is a 93.2% probability that sunshine is also missing. Even the weakest relationship in the matrix (sunshine to cloud9am) retains a rate of 67.5%, which is nearly double what would be expected under random failure.</span>
-<span id="cb13-72"><a href="#cb13-72"></a></span>
-<span id="cb13-73"><a href="#cb13-73"></a>Under MCAR, the co-missing rates would be close to the marginal missingness rates of each variable, roughly 40 to 48%. Rates uniformly between 67% and 93% instead indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This is MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed are available precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.</span>
-<span id="cb13-74"><a href="#cb13-74"></a></span>
-<span id="cb13-75"><a href="#cb13-75"></a><span class="fu">### Temporal Structure and Structural Breaks {#sec-temporal-structure}</span></span>
-<span id="cb13-76"><a href="#cb13-76"></a></span>
-<span id="cb13-79"><a href="#cb13-79"></a><span class="in">```{r}</span></span>
-<span id="cb13-80"><a href="#cb13-80"></a><span class="co">#| label: fig-temporal-missingness</span></span>
-<span id="cb13-81"><a href="#cb13-81"></a><span class="co">#| fig-cap: "Timeline of systematic missingness across the four high-missingness variables. The stepped increases visible particularly in sunshine and evaporation indicate structural breaks in data collection rather than random sensor failures."</span></span>
-<span id="cb13-82"><a href="#cb13-82"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb13-83"><a href="#cb13-83"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb13-84"><a href="#cb13-84"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-85"><a href="#cb13-85"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-86"><a href="#cb13-86"></a></span>
-<span id="cb13-87"><a href="#cb13-87"></a><span class="fu">plot_temporal_missingness</span>()</span>
-<span id="cb13-88"><a href="#cb13-88"></a><span class="in">```</span></span>
-<span id="cb13-89"><a href="#cb13-89"></a></span>
-<span id="cb13-90"><a href="#cb13-90"></a>The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.</span>
-<span id="cb13-91"><a href="#cb13-91"></a></span>
-<span id="cb13-92"><a href="#cb13-92"></a>This temporal structure has a direct implication for the interpolation stage of the pipeline. Linear interpolation is appropriate when a smooth trajectory can be inferred from values on either side of a gap. Extended contiguous gaps produced by a structural break have no valid upper boundary from which to interpolate, and filling them with temporal interpolation would create long synthetic sequences with no empirical anchor. The five-day interpolation cap set in Stage 1 of the pipeline is a direct response to this finding.</span>
-<span id="cb13-93"><a href="#cb13-93"></a></span>
-<span id="cb13-94"><a href="#cb13-94"></a><span class="fu">### Geographic Concentration: Ghost Sensor Identification {#sec-ghost-sensor}</span></span>
-<span id="cb13-95"><a href="#cb13-95"></a></span>
-<span id="cb13-98"><a href="#cb13-98"></a><span class="in">```{r}</span></span>
-<span id="cb13-99"><a href="#cb13-99"></a><span class="co">#| label: ghost-sensors</span></span>
-<span id="cb13-100"><a href="#cb13-100"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-101"><a href="#cb13-101"></a><span class="co">#| message: false</span></span>
-<span id="cb13-102"><a href="#cb13-102"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-103"><a href="#cb13-103"></a></span>
-<span id="cb13-104"><a href="#cb13-104"></a><span class="fu">render_ghost_sensor_table</span>()</span>
-<span id="cb13-105"><a href="#cb13-105"></a><span class="in">```</span></span>
-<span id="cb13-106"><a href="#cb13-106"></a></span>
-<span id="cb13-107"><a href="#cb13-107"></a>The location-level analysis identifies the specific station-variable pairs responsible for the bulk of the aggregate missingness. The top ten instances from the script output, all at exactly 100% missing, are as follows: Albury (<span class="in">`evaporation`</span>, 3,040 observations; <span class="in">`sunshine`</span>, 3,040), BadgerysCreek (<span class="in">`evaporation`</span>, 3,009; <span class="in">`sunshine`</span>, 3,009; <span class="in">`cloud9am`</span>, 3,009; <span class="in">`cloud3pm`</span>, 3,009), Newcastle (<span class="in">`evaporation`</span>, 3,039; <span class="in">`sunshine`</span>, 3,039), and NorahHead (<span class="in">`evaporation`</span>, 3,004; <span class="in">`sunshine`</span>, 3,004). At these stations, the instrument in question recorded a value on zero days across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.</span>
-<span id="cb13-108"><a href="#cb13-108"></a></span>
-<span id="cb13-109"><a href="#cb13-109"></a>The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support whatsoever: there is no observed value at that station and variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.</span>
-<span id="cb13-110"><a href="#cb13-110"></a></span>
-<span id="cb13-111"><a href="#cb13-111"></a><span class="fu">### Weather-Conditionality of Sunshine Missingness {#sec-weather-conditionality}</span></span>
-<span id="cb13-112"><a href="#cb13-112"></a></span>
-<span id="cb13-115"><a href="#cb13-115"></a><span class="in">```{r}</span></span>
-<span id="cb13-116"><a href="#cb13-116"></a><span class="co">#| label: tbl-sunshine-mcar-test</span></span>
-<span id="cb13-117"><a href="#cb13-117"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-118"><a href="#cb13-118"></a><span class="co">#| message: false</span></span>
-<span id="cb13-119"><a href="#cb13-119"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-120"><a href="#cb13-120"></a></span>
-<span id="cb13-121"><a href="#cb13-121"></a><span class="fu">render_sunshine_mcar_table</span>()</span>
-<span id="cb13-122"><a href="#cb13-122"></a><span class="in">```</span></span>
-<span id="cb13-123"><a href="#cb13-123"></a></span>
-<span id="cb13-126"><a href="#cb13-126"></a><span class="in">```{r}</span></span>
-<span id="cb13-127"><a href="#cb13-127"></a><span class="co">#| label: fig-sunshine-rainfall-density</span></span>
-<span id="cb13-128"><a href="#cb13-128"></a><span class="co">#| fig-cap: "Density of rainfall amounts on days where sunshine data is present versus missing. The near-identical distributions confirm that sunshine missingness is not weather-conditional: the same stations are missing sunshine on both dry and rainy days because the instrument was simply not installed, not because it failed during precipitation events."</span></span>
-<span id="cb13-129"><a href="#cb13-129"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb13-130"><a href="#cb13-130"></a><span class="co">#| fig-height: 6</span></span>
-<span id="cb13-131"><a href="#cb13-131"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-132"><a href="#cb13-132"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-133"><a href="#cb13-133"></a></span>
-<span id="cb13-134"><a href="#cb13-134"></a><span class="fu">plot_sunshine_rainfall_density</span>()</span>
-<span id="cb13-135"><a href="#cb13-135"></a><span class="in">```</span></span>
-<span id="cb13-136"><a href="#cb13-136"></a></span>
-<span id="cb13-137"><a href="#cb13-137"></a>A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.</span>
-<span id="cb13-138"><a href="#cb13-138"></a></span>
-<span id="cb13-139"><a href="#cb13-139"></a>The empirical test refutes this concern. The table output (@tbl-sunshine-mcar-test) reports a sunshine missing rate of 47.8% on 110,319 dry days (rainfall at most 1 mm) and 47.2% on 31,880 rainy days (rainfall above 1 mm), a difference of 0.6 percentage points. The density plot (@fig-sunshine-rainfall-density) makes the same point visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects not a systematic pattern but the difference in the sizes of the two groups.</span>
-<span id="cb13-140"><a href="#cb13-140"></a></span>
-<span id="cb13-141"><a href="#cb13-141"></a>Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates, because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.</span>
-<span id="cb13-142"><a href="#cb13-142"></a></span>
-<span id="cb13-143"><a href="#cb13-143"></a><span class="fu">### Missing Pattern Structure</span></span>
-<span id="cb13-144"><a href="#cb13-144"></a></span>
-<span id="cb13-147"><a href="#cb13-147"></a><span class="in">```{r}</span></span>
-<span id="cb13-148"><a href="#cb13-148"></a><span class="co">#| label: miss-pattern-table</span></span>
-<span id="cb13-149"><a href="#cb13-149"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-150"><a href="#cb13-150"></a><span class="co">#| message: false</span></span>
-<span id="cb13-151"><a href="#cb13-151"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-152"><a href="#cb13-152"></a></span>
-<span id="cb13-153"><a href="#cb13-153"></a><span class="fu">render_miss_pattern_table</span>()</span>
-<span id="cb13-154"><a href="#cb13-154"></a><span class="in">```</span></span>
-<span id="cb13-155"><a href="#cb13-155"></a></span>
-<span id="cb13-156"><a href="#cb13-156"></a>The case-level output from the script reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.</span>
-<span id="cb13-157"><a href="#cb13-157"></a></span>
-<span id="cb13-158"><a href="#cb13-158"></a>The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in @sec-ghost-sensor. For these observations, no imputation is supportable and the values remain missing after the pipeline. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artifact: observations genuinely tend to be fully instrumented or minimally instrumented, not randomly partially instrumented.</span>
-<span id="cb13-159"><a href="#cb13-159"></a></span>
-<span id="cb13-160"><a href="#cb13-160"></a>---</span>
-<span id="cb13-161"><a href="#cb13-161"></a></span>
-<span id="cb13-162"><a href="#cb13-162"></a><span class="fu">## Imputation Pipeline {#sec-imputation-pipeline}</span></span>
-<span id="cb13-163"><a href="#cb13-163"></a></span>
-<span id="cb13-164"><a href="#cb13-164"></a>The diagnostic evidence from @sec-missingness-diagnostics motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (@sec-weather-conditionality), temporally structured with extended contiguous gaps rather than random scatter (@sec-temporal-structure), and co-located across variables at the station level (@sec-co-missingness). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.</span>
-<span id="cb13-165"><a href="#cb13-165"></a></span>
-<span id="cb13-166"><a href="#cb13-166"></a><span class="fu">### Stage 1: Temporal Interpolation</span></span>
-<span id="cb13-167"><a href="#cb13-167"></a></span>
-<span id="cb13-168"><a href="#cb13-168"></a>The eight variables with smooth day-to-day trajectories minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.</span>
-<span id="cb13-169"><a href="#cb13-169"></a></span>
-<span id="cb13-170"><a href="#cb13-170"></a><span class="fu">### Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</span></span>
-<span id="cb13-171"><a href="#cb13-171"></a></span>
-<span id="cb13-172"><a href="#cb13-172"></a>Remaining gaps in <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>, and the three wind direction variables are addressed using <span class="in">`mice`</span> with method assignments differentiated by variable type.</span>
-<span id="cb13-173"><a href="#cb13-173"></a></span>
-<span id="cb13-174"><a href="#cb13-174"></a>The four continuous atmospheric variables (<span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid Rubin's Rules variance decomposition downstream. Each variable is imputed from a physically motivated predictor set:</span>
-<span id="cb13-175"><a href="#cb13-175"></a></span>
-<span id="cb13-176"><a href="#cb13-176"></a><span class="ss">- </span>**Cloud cover** (<span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) from morning and afternoon humidity, morning pressure, location, and month.</span>
-<span id="cb13-177"><a href="#cb13-177"></a><span class="ss">- </span>**Sunshine** from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.</span>
-<span id="cb13-178"><a href="#cb13-178"></a><span class="ss">- </span>**Evaporation** from wind gust speed, maximum temperature, afternoon humidity, sunshine, location, and month.</span>
-<span id="cb13-179"><a href="#cb13-179"></a></span>
-<span id="cb13-180"><a href="#cb13-180"></a>The three wind direction variables (<span class="in">`wind_gust_dir`</span>, <span class="in">`wind_dir9am`</span>, <span class="in">`wind_dir3pm`</span>) are imputed using Random Forest. Wind direction is a multi-class unordered categorical variable with sixteen compass-point levels. PMM is not appropriate for unordered factors because it imposes an implicit numeric ordering on the donor matching step. Random Forest handles the multi-class non-ordinal structure natively by splitting on class membership rather than on numeric distance. Each wind direction variable is conditioned on its temporally matched wind speed and pressure readings: gust direction from gust speed and afternoon pressure, morning direction from morning speed and morning pressure, and afternoon direction from afternoon speed and afternoon pressure. This preserves the physical coupling between concurrent wind speed and direction measurements.</span>
-<span id="cb13-181"><a href="#cb13-181"></a></span>
-<span id="cb13-182"><a href="#cb13-182"></a>The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in @sec-co-missingness. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.</span>
-<span id="cb13-183"><a href="#cb13-183"></a></span>
-<span id="cb13-184"><a href="#cb13-184"></a><span class="fu">### Ghost Sensor Flagging</span></span>
-<span id="cb13-185"><a href="#cb13-185"></a></span>
-<span id="cb13-186"><a href="#cb13-186"></a>Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (<span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, <span class="in">`cloud9am_imp_flagged`</span>). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.</span>
-<span id="cb13-187"><a href="#cb13-187"></a></span>
-<span id="cb13-190"><a href="#cb13-190"></a><span class="in">```{r}</span></span>
-<span id="cb13-191"><a href="#cb13-191"></a><span class="co">#| label: imputation-strategy</span></span>
-<span id="cb13-192"><a href="#cb13-192"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-193"><a href="#cb13-193"></a><span class="co">#| eval: false</span></span>
-<span id="cb13-194"><a href="#cb13-194"></a></span>
-<span id="cb13-195"><a href="#cb13-195"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"imputation.R"</span>))</span>
-<span id="cb13-196"><a href="#cb13-196"></a><span class="in">```</span></span>
-<span id="cb13-197"><a href="#cb13-197"></a></span>
-<span id="cb13-200"><a href="#cb13-200"></a><span class="in">```{r}</span></span>
-<span id="cb13-201"><a href="#cb13-201"></a><span class="co">#| label: clean-and-save-imputed</span></span>
-<span id="cb13-202"><a href="#cb13-202"></a><span class="co">#| message: false</span></span>
-<span id="cb13-203"><a href="#cb13-203"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-204"><a href="#cb13-204"></a><span class="co">#| eval: false</span></span>
-<span id="cb13-205"><a href="#cb13-205"></a></span>
-<span id="cb13-206"><a href="#cb13-206"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
-<span id="cb13-207"><a href="#cb13-207"></a>df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="dv">1</span>)</span>
-<span id="cb13-208"><a href="#cb13-208"></a><span class="fu">write_csv</span>(df_final, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
-<span id="cb13-209"><a href="#cb13-209"></a></span>
-<span id="cb13-210"><a href="#cb13-210"></a><span class="in">```</span></span>
-<span id="cb13-211"><a href="#cb13-211"></a></span>
-<span id="cb13-214"><a href="#cb13-214"></a><span class="in">```{r}</span></span>
-<span id="cb13-215"><a href="#cb13-215"></a><span class="co">#| label: load-imputed-data</span></span>
-<span id="cb13-216"><a href="#cb13-216"></a><span class="co">#| echo: false</span></span>
-<span id="cb13-217"><a href="#cb13-217"></a><span class="co">#| message: false</span></span>
-<span id="cb13-218"><a href="#cb13-218"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-219"><a href="#cb13-219"></a></span>
-<span id="cb13-220"><a href="#cb13-220"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
-<span id="cb13-221"><a href="#cb13-221"></a><span class="in">```</span></span>
-<span id="cb13-222"><a href="#cb13-222"></a></span>
-<span id="cb13-223"><a href="#cb13-223"></a>---</span>
-<span id="cb13-224"><a href="#cb13-224"></a></span>
-<span id="cb13-225"><a href="#cb13-225"></a><span class="fu">## Post-Imputation Dataset Properties</span></span>
-<span id="cb13-226"><a href="#cb13-226"></a></span>
-<span id="cb13-227"><a href="#cb13-227"></a>The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in @sec-missingness-diagnostics.</span>
-<span id="cb13-228"><a href="#cb13-228"></a></span>
-<span id="cb13-229"><a href="#cb13-229"></a>**Retention without fabrication.** No observations are discarded on the basis of partial missingness. The 27.9% of observations with all four target variables simultaneously absent are retained with those variables still missing, consistent with the ghost sensor finding that no empirically supportable imputation is possible for them.</span>
-<span id="cb13-230"><a href="#cb13-230"></a></span>
-<span id="cb13-231"><a href="#cb13-231"></a>**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in @sec-temporal-structure, prevents the interpolation from extending across genuine data voids. The use of <span class="in">`rule = 1`</span> in <span class="in">`na.approx`</span> ensures that boundary gaps return <span class="in">`NA`</span> rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.</span>
-<span id="cb13-232"><a href="#cb13-232"></a></span>
-<span id="cb13-233"><a href="#cb13-233"></a>**Distributional fidelity.** PMM draws imputed values directly from the pool of observed donor observations rather than using a model prediction. This constrains imputed values to the observed empirical range of each variable and preserves the marginal distribution, including multi-modal structure and skew, without requiring distributional assumptions.</span>
-<span id="cb13-234"><a href="#cb13-234"></a></span>
-<span id="cb13-235"><a href="#cb13-235"></a>**Physical bounds enforcement.** Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when <span class="in">`rule = 2`</span> extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.</span>
-<span id="cb13-236"><a href="#cb13-236"></a></span>
-<span id="cb13-237"><a href="#cb13-237"></a>**Outcome independence.** The weather-conditionality test in @sec-weather-conditionality confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</span>
-<span id="cb13-238"><a href="#cb13-238"></a></span>
-<span id="cb13-239"><a href="#cb13-239"></a>**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.</span>
-<span id="cb13-240"><a href="#cb13-240"></a></span>
-<span id="cb13-241"><a href="#cb13-241"></a>**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in @sec-sensitivity.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu"># Data Preparation {#sec-data}</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>---</span>
+<span id="cb12-4"><a href="#cb12-4"></a></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="at">&gt; **Chapter Context.** Before any statistical analysis can proceed, the raw dataset must be transformed into a form that is both analytically tractable and physically credible. This chapter documents three decisions that have downstream consequences throughout the report: the syntactic and temporal standardisation of the raw data, a diagnostic investigation of the structure and mechanism of the missingness, and the design of a two-stage imputation pipeline informed by that investigation. Each decision is motivated by the properties of the data-generating process rather than by computational convenience.</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a>---</span>
+<span id="cb12-8"><a href="#cb12-8"></a></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="fu">## Initial Cleaning and Standardisation {#sec-cleaning}</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a></span>
+<span id="cb12-11"><a href="#cb12-11"></a>The raw dataset undergoes three transformations before any missingness analysis or imputation.</span>
+<span id="cb12-12"><a href="#cb12-12"></a></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="in">```{r}</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#| label: setup-libraries-data</span></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="co">#| include: false</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a><span class="co">#| message: false</span></span>
+<span id="cb12-19"><a href="#cb12-19"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-20"><a href="#cb12-20"></a><span class="co">#| results: 'hide'</span></span>
+<span id="cb12-21"><a href="#cb12-21"></a></span>
+<span id="cb12-22"><a href="#cb12-22"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
+<span id="cb12-23"><a href="#cb12-23"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb12-24"><a href="#cb12-24"></a></span>
+<span id="cb12-25"><a href="#cb12-25"></a><span class="in">```</span></span>
+<span id="cb12-26"><a href="#cb12-26"></a></span>
+<span id="cb12-27"><a href="#cb12-27"></a></span>
+<span id="cb12-30"><a href="#cb12-30"></a><span class="in">```{r}</span></span>
+<span id="cb12-31"><a href="#cb12-31"></a><span class="co">#| label: data-cleaning</span></span>
+<span id="cb12-32"><a href="#cb12-32"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-33"><a href="#cb12-33"></a><span class="co">#| message: false</span></span>
+<span id="cb12-34"><a href="#cb12-34"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-35"><a href="#cb12-35"></a></span>
+<span id="cb12-36"><a href="#cb12-36"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"cleaning.R"</span>))</span>
+<span id="cb12-37"><a href="#cb12-37"></a><span class="in">```</span></span>
+<span id="cb12-38"><a href="#cb12-38"></a></span>
+<span id="cb12-39"><a href="#cb12-39"></a>**Column standardisation.** All variable names are converted to <span class="in">`snake_case`</span> via <span class="in">`janitor::clean_names()`</span>, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.</span>
+<span id="cb12-40"><a href="#cb12-40"></a></span>
+<span id="cb12-41"><a href="#cb12-41"></a>**Temporal feature extraction.** The <span class="in">`date`</span> column is typed as a <span class="in">`Date`</span> object and two derived features are extracted: <span class="in">`month`</span> (as a factor) and <span class="in">`day`</span> (day of week, labelled). Month captures the seasonal structure of Australian precipitation; day of week is retained as a potential control variable for reporting artefacts in the raw data.</span>
+<span id="cb12-42"><a href="#cb12-42"></a></span>
+<span id="cb12-43"><a href="#cb12-43"></a>**Target filtering.** Observations where <span class="in">`rainfall`</span> is missing are removed. Records without a ground-truth rainfall measurement have no supervised learning value and cannot contribute to either the hurdle or the intensity component of the ZIG model.</span>
+<span id="cb12-44"><a href="#cb12-44"></a></span>
+<span id="cb12-45"><a href="#cb12-45"></a>---</span>
+<span id="cb12-46"><a href="#cb12-46"></a></span>
+<span id="cb12-47"><a href="#cb12-47"></a><span class="fu">## Missingness Diagnostics {#sec-missingness-diagnostics}</span></span>
+<span id="cb12-48"><a href="#cb12-48"></a></span>
+<span id="cb12-49"><a href="#cb12-49"></a>Before designing an imputation strategy, it is necessary to understand the mechanism and structure of the missing data. The choice between imputation methods depends critically on three questions: whether missingness is random with respect to other variables in the dataset, whether missing values cluster at specific locations or time periods, and whether the four most-affected variables fail independently or as a coordinated group. A strategy designed without answering these questions risks either under-imputing (discarding recoverable signal) or over-imputing (fabricating data in regions where recovery is not possible). The five analyses below provide the empirical basis for each design decision in the pipeline that follows.</span>
+<span id="cb12-50"><a href="#cb12-50"></a></span>
+<span id="cb12-51"><a href="#cb12-51"></a><span class="fu">### Co-missingness Structure {#sec-co-missingness}</span></span>
+<span id="cb12-52"><a href="#cb12-52"></a></span>
+<span id="cb12-55"><a href="#cb12-55"></a><span class="in">```{r}</span></span>
+<span id="cb12-56"><a href="#cb12-56"></a><span class="co">#| label: tbl-co-missingness</span></span>
+<span id="cb12-57"><a href="#cb12-57"></a><span class="co">#| tbl-cap: "Conditional Co-missingness Matrix"</span></span>
+<span id="cb12-58"><a href="#cb12-58"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-59"><a href="#cb12-59"></a><span class="co">#| message: false</span></span>
+<span id="cb12-60"><a href="#cb12-60"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-61"><a href="#cb12-61"></a></span>
+<span id="cb12-62"><a href="#cb12-62"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"data_missingness.R"</span>))</span>
+<span id="cb12-63"><a href="#cb12-63"></a><span class="fu">render_comissingness_table</span>()</span>
+<span id="cb12-64"><a href="#cb12-64"></a><span class="in">```</span></span>
+<span id="cb12-65"><a href="#cb12-65"></a></span>
+<span id="cb12-66"><a href="#cb12-66"></a>The co-missingness matrix (@tbl-co-missingness) confirms that the four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: when evaporation is missing, the conditional probability that sunshine is also missing is 93.2%. Even the weakest relationship in the matrix, sunshine missing given cloud9am missing, retains a rate of 67.5%, which is nearly double what would be expected under random failure.</span>
+<span id="cb12-67"><a href="#cb12-67"></a></span>
+<span id="cb12-68"><a href="#cb12-68"></a>Under MCAR, co-missing rates would approximate the marginal missingness rate of each variable, roughly 40 to 48%. Rates uniformly between 67.5% and 93.2% indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This constitutes MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed arise precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.</span>
+<span id="cb12-69"><a href="#cb12-69"></a></span>
+<span id="cb12-70"><a href="#cb12-70"></a><span class="fu">### Temporal Structure and Structural Breaks {#sec-temporal-structure}</span></span>
+<span id="cb12-71"><a href="#cb12-71"></a></span>
+<span id="cb12-74"><a href="#cb12-74"></a><span class="in">```{r}</span></span>
+<span id="cb12-75"><a href="#cb12-75"></a><span class="co">#| label: fig-temporal-missingness</span></span>
+<span id="cb12-76"><a href="#cb12-76"></a><span class="co">#| fig-cap: "Timeline of systematic missingness across the four high-missingness variables. The stepped increases visible particularly in sunshine and evaporation indicate structural breaks in data collection rather than random sensor failures."</span></span>
+<span id="cb12-77"><a href="#cb12-77"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb12-78"><a href="#cb12-78"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb12-79"><a href="#cb12-79"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-80"><a href="#cb12-80"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-81"><a href="#cb12-81"></a></span>
+<span id="cb12-82"><a href="#cb12-82"></a><span class="fu">plot_temporal_missingness</span>()</span>
+<span id="cb12-83"><a href="#cb12-83"></a><span class="in">```</span></span>
+<span id="cb12-84"><a href="#cb12-84"></a></span>
+<span id="cb12-85"><a href="#cb12-85"></a>The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations that never recorded these measurements. The <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span> variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.</span>
+<span id="cb12-86"><a href="#cb12-86"></a></span>
+<span id="cb12-87"><a href="#cb12-87"></a>This temporal structure has a direct implication for the interpolation stage of the pipeline. Linear interpolation is appropriate when a smooth trajectory can be inferred from values on either side of a gap. Extended contiguous gaps produced by a structural break have no valid upper boundary from which to interpolate, and filling them with temporal interpolation would create long synthetic sequences with no empirical anchor. The five-day interpolation cap set in Stage 1 of the pipeline is a direct response to this finding.</span>
+<span id="cb12-88"><a href="#cb12-88"></a></span>
+<span id="cb12-89"><a href="#cb12-89"></a><span class="fu">### Geographic Concentration: Ghost Sensor Identification {#sec-ghost-sensor}</span></span>
+<span id="cb12-90"><a href="#cb12-90"></a></span>
+<span id="cb12-93"><a href="#cb12-93"></a><span class="in">```{r}</span></span>
+<span id="cb12-94"><a href="#cb12-94"></a><span class="co">#| label: tbl-ghost-sensors</span></span>
+<span id="cb12-95"><a href="#cb12-95"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-96"><a href="#cb12-96"></a><span class="co">#| message: false</span></span>
+<span id="cb12-97"><a href="#cb12-97"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-98"><a href="#cb12-98"></a></span>
+<span id="cb12-99"><a href="#cb12-99"></a><span class="fu">render_ghost_sensor_table</span>()</span>
+<span id="cb12-100"><a href="#cb12-100"></a><span class="in">```</span></span>
+<span id="cb12-101"><a href="#cb12-101"></a></span>
+<span id="cb12-102"><a href="#cb12-102"></a>The location-level analysis (@tbl-ghost-sensors) identifies 60 ghost sensor instances across 22 locations. At each of these station-variable pairs, the instrument recorded a value on zero days (or fewer than 5% of days) across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.</span>
+<span id="cb12-103"><a href="#cb12-103"></a></span>
+<span id="cb12-104"><a href="#cb12-104"></a>The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support: there is no observed value at that station-variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.</span>
+<span id="cb12-105"><a href="#cb12-105"></a></span>
+<span id="cb12-106"><a href="#cb12-106"></a><span class="fu">### Weather-Conditionality of Sunshine Missingness {#sec-weather-conditionality}</span></span>
+<span id="cb12-107"><a href="#cb12-107"></a></span>
+<span id="cb12-110"><a href="#cb12-110"></a><span class="in">```{r}</span></span>
+<span id="cb12-111"><a href="#cb12-111"></a><span class="co">#| label: tbl-sunshine-mcar-test</span></span>
+<span id="cb12-112"><a href="#cb12-112"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-113"><a href="#cb12-113"></a><span class="co">#| message: false</span></span>
+<span id="cb12-114"><a href="#cb12-114"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-115"><a href="#cb12-115"></a></span>
+<span id="cb12-116"><a href="#cb12-116"></a><span class="fu">render_sunshine_mcar_table</span>()</span>
+<span id="cb12-117"><a href="#cb12-117"></a><span class="in">```</span></span>
+<span id="cb12-118"><a href="#cb12-118"></a></span>
+<span id="cb12-121"><a href="#cb12-121"></a><span class="in">```{r}</span></span>
+<span id="cb12-122"><a href="#cb12-122"></a><span class="co">#| label: fig-sunshine-rainfall-density</span></span>
+<span id="cb12-123"><a href="#cb12-123"></a><span class="co">#| fig-cap: "Density of rainfall amounts on days where sunshine data is present versus missing. The near-identical distributions confirm that sunshine missingness is not weather-conditional: the same stations are missing sunshine on both dry and rainy days because the instrument was simply not installed, not because it failed during precipitation events."</span></span>
+<span id="cb12-124"><a href="#cb12-124"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb12-125"><a href="#cb12-125"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb12-126"><a href="#cb12-126"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-127"><a href="#cb12-127"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-128"><a href="#cb12-128"></a></span>
+<span id="cb12-129"><a href="#cb12-129"></a><span class="fu">plot_sunshine_rainfall_density</span>()</span>
+<span id="cb12-130"><a href="#cb12-130"></a><span class="in">```</span></span>
+<span id="cb12-131"><a href="#cb12-131"></a></span>
+<span id="cb12-132"><a href="#cb12-132"></a>A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.</span>
+<span id="cb12-133"><a href="#cb12-133"></a></span>
+<span id="cb12-134"><a href="#cb12-134"></a>The empirical test refutes this concern. @tbl-sunshine-mcar-test reports a sunshine missing rate of 47.8% on 110,319 dry days and 47.2% on 31,880 rainy days, a difference of 0.6 percentage points. @fig-sunshine-rainfall-density confirms this visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects the difference in group sizes rather than a systematic pattern.</span>
+<span id="cb12-135"><a href="#cb12-135"></a></span>
+<span id="cb12-136"><a href="#cb12-136"></a>Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.</span>
+<span id="cb12-137"><a href="#cb12-137"></a></span>
+<span id="cb12-138"><a href="#cb12-138"></a><span class="fu">### Missing Pattern Structure {#sec-missing-pattern}</span></span>
+<span id="cb12-139"><a href="#cb12-139"></a></span>
+<span id="cb12-142"><a href="#cb12-142"></a><span class="in">```{r}</span></span>
+<span id="cb12-143"><a href="#cb12-143"></a><span class="co">#| label: tbl-miss-pattern</span></span>
+<span id="cb12-144"><a href="#cb12-144"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-145"><a href="#cb12-145"></a><span class="co">#| message: false</span></span>
+<span id="cb12-146"><a href="#cb12-146"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-147"><a href="#cb12-147"></a></span>
+<span id="cb12-148"><a href="#cb12-148"></a><span class="fu">render_miss_pattern_table</span>()</span>
+<span id="cb12-149"><a href="#cb12-149"></a><span class="in">```</span></span>
+<span id="cb12-150"><a href="#cb12-150"></a></span>
+<span id="cb12-151"><a href="#cb12-151"></a>@tbl-miss-pattern reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.</span>
+<span id="cb12-152"><a href="#cb12-152"></a></span>
+<span id="cb12-153"><a href="#cb12-153"></a>The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in @sec-ghost-sensor. For these observations, no imputation is supportable and the values remain missing after the pipeline runs. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artefact: observations genuinely tend to be either fully instrumented or minimally instrumented, not randomly partially instrumented.</span>
+<span id="cb12-154"><a href="#cb12-154"></a></span>
+<span id="cb12-155"><a href="#cb12-155"></a>---</span>
+<span id="cb12-156"><a href="#cb12-156"></a></span>
+<span id="cb12-157"><a href="#cb12-157"></a><span class="fu">## Imputation Pipeline {#sec-imputation-pipeline}</span></span>
+<span id="cb12-158"><a href="#cb12-158"></a></span>
+<span id="cb12-159"><a href="#cb12-159"></a>The diagnostic evidence from @sec-missingness-diagnostics motivates each design decision in the imputation pipeline. Missingness is station-level rather than weather-conditional (@sec-weather-conditionality), temporally structured with extended contiguous gaps rather than random scatter (@sec-temporal-structure), and co-located across variables at the station level (@sec-co-missingness). These properties rule out simple listwise deletion and mean imputation. They call for a pipeline that respects temporal continuity for smoothly-evolving variables, exploits cross-variable correlations for the structured variables, and declines to impute where the data is genuinely unrecoverable.</span>
+<span id="cb12-160"><a href="#cb12-160"></a></span>
+<span id="cb12-161"><a href="#cb12-161"></a><span class="fu">### Stage 1: Temporal Interpolation</span></span>
+<span id="cb12-162"><a href="#cb12-162"></a></span>
+<span id="cb12-163"><a href="#cb12-163"></a>The eight variables with smooth day-to-day trajectories, minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.</span>
+<span id="cb12-164"><a href="#cb12-164"></a></span>
+<span id="cb12-165"><a href="#cb12-165"></a><span class="fu">### Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest</span></span>
+<span id="cb12-166"><a href="#cb12-166"></a></span>
+<span id="cb12-167"><a href="#cb12-167"></a>Remaining gaps in <span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>, and the three wind direction variables are addressed using <span class="in">`mice`</span> with method assignments differentiated by variable type.</span>
+<span id="cb12-168"><a href="#cb12-168"></a></span>
+<span id="cb12-169"><a href="#cb12-169"></a>The four continuous atmospheric variables (<span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid variance decomposition via Rubin's Rules downstream. Each variable is imputed from a physically motivated predictor set:</span>
+<span id="cb12-170"><a href="#cb12-170"></a></span>
+<span id="cb12-171"><a href="#cb12-171"></a><span class="ss">- </span>**Cloud cover** (<span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) from morning and afternoon humidity, morning pressure, location, and month.</span>
+<span id="cb12-172"><a href="#cb12-172"></a><span class="ss">- </span>**Sunshine** from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.</span>
+<span id="cb12-173"><a href="#cb12-173"></a><span class="ss">- </span>**Evaporation** from wind gust speed, maximum temperature, afternoon humidity, sunshine, location, and month.</span>
+<span id="cb12-174"><a href="#cb12-174"></a></span>
+<span id="cb12-175"><a href="#cb12-175"></a>The three wind direction variables (<span class="in">`wind_gust_dir`</span>, <span class="in">`wind_dir9am`</span>, <span class="in">`wind_dir3pm`</span>) are imputed using Random Forest. Wind direction is a multi-class unordered categorical variable with sixteen compass-point levels. PMM is not appropriate for unordered factors because it imposes an implicit numeric ordering on the donor matching step. Random Forest handles the multi-class non-ordinal structure natively by splitting on class membership rather than on numeric distance. Each wind direction variable is conditioned on its temporally matched wind speed and pressure readings: gust direction from gust speed and afternoon pressure, morning direction from morning speed and morning pressure, and afternoon direction from afternoon speed and afternoon pressure. This preserves the physical coupling between concurrent wind speed and direction measurements.</span>
+<span id="cb12-176"><a href="#cb12-176"></a></span>
+<span id="cb12-177"><a href="#cb12-177"></a>The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in @sec-co-missingness. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.</span>
+<span id="cb12-178"><a href="#cb12-178"></a></span>
+<span id="cb12-179"><a href="#cb12-179"></a><span class="fu">### Ghost Sensor Flagging {#sec-ghost-flagging}</span></span>
+<span id="cb12-180"><a href="#cb12-180"></a></span>
+<span id="cb12-181"><a href="#cb12-181"></a>Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (<span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, <span class="in">`cloud9am_imp_flagged`</span>). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.</span>
+<span id="cb12-182"><a href="#cb12-182"></a></span>
+<span id="cb12-185"><a href="#cb12-185"></a><span class="in">```{r}</span></span>
+<span id="cb12-186"><a href="#cb12-186"></a><span class="co">#| label: imputation-strategy</span></span>
+<span id="cb12-187"><a href="#cb12-187"></a><span class="co">#| echo: true</span></span>
+<span id="cb12-188"><a href="#cb12-188"></a><span class="co">#| eval: false</span></span>
+<span id="cb12-189"><a href="#cb12-189"></a></span>
+<span id="cb12-190"><a href="#cb12-190"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter2"</span>, <span class="st">"imputation.R"</span>))</span>
+<span id="cb12-191"><a href="#cb12-191"></a><span class="in">```</span></span>
+<span id="cb12-192"><a href="#cb12-192"></a></span>
+<span id="cb12-195"><a href="#cb12-195"></a><span class="in">```{r}</span></span>
+<span id="cb12-196"><a href="#cb12-196"></a><span class="co">#| label: clean-and-save-imputed</span></span>
+<span id="cb12-197"><a href="#cb12-197"></a><span class="co">#| message: false</span></span>
+<span id="cb12-198"><a href="#cb12-198"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-199"><a href="#cb12-199"></a><span class="co">#| eval: false</span></span>
+<span id="cb12-200"><a href="#cb12-200"></a></span>
+<span id="cb12-201"><a href="#cb12-201"></a>imp_mids <span class="ot">&lt;-</span> <span class="fu">clean_and_impute_weather</span>(df)</span>
+<span id="cb12-202"><a href="#cb12-202"></a>df_final <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="dv">1</span>)</span>
+<span id="cb12-203"><a href="#cb12-203"></a><span class="fu">write_csv</span>(df_final, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
+<span id="cb12-204"><a href="#cb12-204"></a></span>
+<span id="cb12-205"><a href="#cb12-205"></a><span class="in">```</span></span>
+<span id="cb12-206"><a href="#cb12-206"></a></span>
+<span id="cb12-209"><a href="#cb12-209"></a><span class="in">```{r}</span></span>
+<span id="cb12-210"><a href="#cb12-210"></a><span class="co">#| label: load-imputed-data</span></span>
+<span id="cb12-211"><a href="#cb12-211"></a><span class="co">#| echo: false</span></span>
+<span id="cb12-212"><a href="#cb12-212"></a><span class="co">#| message: false</span></span>
+<span id="cb12-213"><a href="#cb12-213"></a><span class="co">#| warning: false</span></span>
+<span id="cb12-214"><a href="#cb12-214"></a></span>
+<span id="cb12-215"><a href="#cb12-215"></a>df_final <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"df_final.csv"</span>))</span>
+<span id="cb12-216"><a href="#cb12-216"></a><span class="in">```</span></span>
+<span id="cb12-217"><a href="#cb12-217"></a></span>
+<span id="cb12-218"><a href="#cb12-218"></a>---</span>
+<span id="cb12-219"><a href="#cb12-219"></a></span>
+<span id="cb12-220"><a href="#cb12-220"></a><span class="fu">## Post-Imputation Dataset Properties {#sec-post-imputation}</span></span>
+<span id="cb12-221"><a href="#cb12-221"></a></span>
+<span id="cb12-222"><a href="#cb12-222"></a>The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in @sec-missingness-diagnostics.</span>
+<span id="cb12-223"><a href="#cb12-223"></a></span>
+<span id="cb12-224"><a href="#cb12-224"></a>**Retention without fabrication.** No observations are discarded on the basis of partial missingness. The 27.9% of observations with all four target variables simultaneously absent are retained with those variables still missing, consistent with the ghost sensor finding that no empirically supportable imputation is possible for them.</span>
+<span id="cb12-225"><a href="#cb12-225"></a></span>
+<span id="cb12-226"><a href="#cb12-226"></a>**Temporal coherence.** The interpolated variables maintain their within-location autocorrelation structure. The five-day cap, set in response to the temporal structural break analysis in @sec-temporal-structure, prevents the interpolation from extending across genuine data voids. The use of <span class="in">`rule = 1`</span> in <span class="in">`na.approx`</span> ensures that boundary gaps return <span class="in">`NA`</span> rather than extrapolated values, which would fall outside the physically credible range of the variable and corrupt the donor pool used by PMM in Stage 2.</span>
+<span id="cb12-227"><a href="#cb12-227"></a></span>
+<span id="cb12-228"><a href="#cb12-228"></a>**Distributional fidelity.** PMM draws imputed values directly from the pool of observed donor observations rather than using a model prediction. This constrains imputed values to the observed empirical range of each variable and preserves the marginal distribution, including multi-modal structure and skew, without requiring distributional assumptions.</span>
+<span id="cb12-229"><a href="#cb12-229"></a></span>
+<span id="cb12-230"><a href="#cb12-230"></a>**Physical bounds enforcement.** Because PMM can only return values that exist in the observed data, imputed values for all continuous variables are guaranteed to fall within the range of the observed training set. This property eliminated the out-of-range predictions that arose when <span class="in">`rule = 2`</span> extrapolation in Stage 1 produced boundary values below zero for sunshine, which then contaminated the PMM donor matching step.</span>
+<span id="cb12-231"><a href="#cb12-231"></a></span>
+<span id="cb12-232"><a href="#cb12-232"></a>**Outcome independence.** The weather-conditionality test in @sec-weather-conditionality confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.</span>
+<span id="cb12-233"><a href="#cb12-233"></a></span>
+<span id="cb12-234"><a href="#cb12-234"></a>**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories.</span>
+<span id="cb12-235"><a href="#cb12-235"></a></span>
+<span id="cb12-236"><a href="#cb12-236"></a>**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in the following chapter.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

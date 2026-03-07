@@ -1,4 +1,5 @@
 # Imputation Sensitivity Analysis {#sec-sensitivity}
+
 ## Validating the Two-Stage Imputation Pipeline
 
 ---
@@ -18,15 +19,15 @@ source(here::here("chapter2", "sensitivity_analysis.R"))
 CONTINUOUS_GHOST_VARS <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
 
 FLAG_MAP <- c(
-  sunshine    = "sunshine_imp_flagged",
+  sunshine = "sunshine_imp_flagged",
   evaporation = "evap_imp_flagged",
-  cloud9am    = "cloud9am_imp_flagged",
-  cloud3pm    = "cloud3pm_imp_flagged"
+  cloud9am = "cloud9am_imp_flagged",
+  cloud3pm = "cloud3pm_imp_flagged"
 )
 
 imp_mids <- readRDS(here::here("data", "imp_mids.rds"))
 df_final <- read_csv(here::here("data", "df_final.csv"))
-M    <- imp_mids$m
+M <- imp_mids$m
 ITER <- imp_mids$iteration
 ```
 
@@ -47,7 +48,7 @@ Multiple imputation by chained equations relies on a Gibbs-style iterative algor
 plot_convergence_trace()
 ```
 
-All four variables exhibit satisfactory convergence. The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The `sunshine` chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.
+All four variables exhibit satisfactory convergence (@fig-convergence-trace). The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The `sunshine` chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.
 
 ---
 
@@ -75,7 +76,8 @@ plot_dist_fidelity()
 render_ks_table()
 ```
 
-The cloud cover variables achieve near-perfect fidelity. The statistic for `cloud3pm` ($D = 0.019$) is negligible, and `cloud9am` ($D = 0.051$) remains well within the small-shift range. Both multi-modal peaks in the cloud cover distributions are reproduced accurately by the imputed draws. `evaporation` and `sunshine` show small shifts ($D = 0.065$ and $D = 0.074$ respectively). These are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching `na.approx` from `rule = 2` to `rule = 1` in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.
+The cloud cover variables achieve near-perfect fidelity (@tbl-ks-results). `cloud9am` records $D = 0.009$ and `cloud3pm` records $D = 0.038$; both are negligible, and the multi-modal peaks in each cloud cover distribution are reproduced accurately by the imputed draws. `evaporation` ($D = 0.012$) likewise shows a negligible shift. `sunshine` shows a moderate shift ($D = 0.115$), which exceeds the 0.10 threshold and warrants monitoring of sunshine coefficients for sensitivity in downstream models. The shifts for the three lower-fidelity variables are attributable in part to the ghost sensor stations identified in @sec-ghost-sensor: those stations have climatological profiles that differ systematically from the instrumented set, and PMM donor matching correctly reflects those differences rather than suppressing them. All imputed values respect the physical bounds of each variable, a consequence of switching `na.approx` from `rule = 2` to `rule = 1` in Stage 1, which eliminated the out-of-range boundary extrapolations that would otherwise contaminate the PMM donor pool.
+
 
 ---
 
@@ -103,19 +105,26 @@ plot_between_imputation_variance()
 render_between_variance_table()
 ```
 
-The between-imputation variance is material for all four variables, though its structure differs meaningfully across them.
+The between-imputation variance is material for all four variables, though its structure differs meaningfully across them (@tbl-between-variance).
 
 The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.
 
-`sunshine` and `evaporation` exhibit a different structure. Their mean ranges (3.470 and 2.318 respectively) are smaller in absolute terms than the cloud cover ranges but their CV of Range values are considerably higher (1.483 and 1.721). This dissociation between the mean and the coefficient of variation indicates that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.
+`sunshine` and `evaporation` exhibit a different structure. Their mean ranges (3.470 and 3.201 respectively) are smaller in absolute terms than the cloud cover ranges, but their CV of Range values (1.172 and 1.721) indicate that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.
 
-Taken together, the non-zero mean ranges and the elevated CV values for `sunshine` and `evaporation` confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in the ribbon plots as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.
+Taken together, the non-zero mean ranges and the elevated CV values for `sunshine` and `evaporation` confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in @fig-between-imputation-variance as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.
 
 ---
 
 ## Rubin's Rules Variance Decomposition {#sec-rubins-rules}
 
-The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the $m = 10$ completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance $W$ is the average sampling variance across the ten fits; the between-imputation variance $B$ captures the dispersion of coefficient estimates across the ten datasets. Total variance $T = W + (1 + 1/m)B$ and the Fraction of Missing Information $\text{FMI} = (B + B/m) / T$ follow directly from Rubin (1987). Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.
+The Rubin variance decomposition provides a formal quantification of how much of the total estimator uncertainty is attributable to missingness rather than to ordinary sampling variation. For each variable, a linear model is fitted to each of the $m = 10$ completed datasets using a physically motivated predictor set that mirrors the production imputation matrix. The within-imputation variance $W$ is the average sampling variance across the ten fits; the between-imputation variance $B$ captures the dispersion of coefficient estimates across the ten datasets. Total variance and the Fraction of Missing Information follow from:
+
+$$
+T = W + \left(1 + \frac{1}{m}\right)B, \qquad
+\text{FMI} = \frac{\left(1 + \frac{1}{m}\right)B}{T}
+$$
+
+Ghost sensor observations are excluded from these fits because their zero within-location variance causes numerical instability in the linear model; only anchored observations with empirical support are used.
 
 ```{r}
 #| label: tbl-rubins-rules
@@ -127,17 +136,4 @@ The Rubin variance decomposition provides a formal quantification of how much of
 render_rubins_rules_table()
 ```
 
-All four FMI values exceed 0.30, the threshold above which Rubin (1987) recommends against single-completion inference. For `cloud9am` the between-imputation variance $B$ exceeds the within-imputation variance $W$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. `sunshine` and `evaporation` show FMI values in the 0.47 to 0.55 range, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate `sunshine`, `evaporation`, `cloud9am`, or `cloud3pm` as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.
-
----
-
-## Diagnostic Summary {#sec-sensitivity-summary}
-
-```{r}
-#| label: tbl-sensitivity-summary
-#| tbl-cap: "Summary of imputation sensitivity diagnostics. Each row corresponds to one diagnostic procedure; the action column specifies the corrective step that would be warranted if the criterion were not met."
-#| echo: true
-#| warning: false
-
-render_sensitivity_summary_table()
-```
+All four FMI values exceed 0.30, the threshold above which single-completion inference is inadvisable (@tbl-rubins-rules). For `cloud9am` the between-imputation variance $B = 1.5596$ exceeds the within-imputation variance $W = 1.4452$, meaning that uncertainty from the missing data mechanism is the dominant source of variability in the intercept estimate rather than sampling noise. `sunshine` and `evaporation` show FMI values of 0.5477 and 0.4701 respectively, implying that roughly half of the total variance in downstream estimates involving these variables is attributable to missingness if only a single completed dataset is used. These FMI magnitudes are consistent with the right-tail volatility identified in @sec-between-variance: the observations where imputation uncertainty is highest are also the observations that exercise the tails of the coefficient distributions most strongly. The consequence for subsequent modelling is direct: all zero-inflated gamma model estimates that incorporate `sunshine`, `evaporation`, `cloud9am`, or `cloud3pm` as predictors must be fitted across all $m = 10$ completions and pooled using Rubin's combining rules before inference is drawn.

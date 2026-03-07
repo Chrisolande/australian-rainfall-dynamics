@@ -6,11 +6,13 @@
 
 ---
 
-## Computational Environment
+## Initial Cleaning and Standardisation {#sec-cleaning}
+
+The raw dataset undergoes three transformations before any missingness analysis or imputation.
 
 ```{r}
 #| label: setup-libraries-data
-#| echo: true
+#| include: false
 #| message: false
 #| warning: false
 #| results: 'hide'
@@ -20,13 +22,6 @@ source(here::here("utils.R"))
 
 ```
 
-The package selection reflects the specific demands of meteorological data analysis. The core wrangling and visualisation toolkit (`tidyverse`, `janitor`, `kableExtra`) handles routine data manipulation. The modelling stack (`glmmTMB`, `DHARMa`, `splines`, `mgcv`) is assembled for the zero-inflated mixed-effects framework documented in later chapters. The imputation stack (`mice`) supports the Random Forest and chained imputation procedures described below. The missingness diagnostic stack (`naniar`, `glue`) supports the structural analysis in @sec-missingness-diagnostics. Libraries are loaded via `librarian`, which installs missing packages automatically and ensures reproducibility across environments.
-
----
-
-## Initial Cleaning and Standardisation
-
-The raw dataset undergoes three transformations before any missingness analysis or imputation.
 
 ```{r}
 #| label: data-cleaning
@@ -62,9 +57,9 @@ source(here::here("chapter2", "data_missingness.R"))
 render_comissingness_table()
 ```
 
-The co-missingness matrix (@tbl-co-missingness) confirms that these four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: if evaporation is missing, there is a 93.2% probability that sunshine is also missing. Even the weakest relationship in the matrix (sunshine to cloud9am) retains a rate of 67.5%, which is nearly double what would be expected under random failure.
+The co-missingness matrix (@tbl-co-missingness) confirms that the four variables fail as a systematic cluster rather than independently. The dependencies are strongest between instrumental pairs: when evaporation is missing, the conditional probability that sunshine is also missing is 93.2%. Even the weakest relationship in the matrix, sunshine missing given cloud9am missing, retains a rate of 67.5%, which is nearly double what would be expected under random failure.
 
-Under MCAR, the co-missing rates would be close to the marginal missingness rates of each variable, roughly 40 to 48%. Rates uniformly between 67% and 93% instead indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This is MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed are available precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.
+Under MCAR, co-missing rates would approximate the marginal missingness rate of each variable, roughly 40 to 48%. Rates uniformly between 67.5% and 93.2% indicate a shared upstream cause: the instrumentation profile of each station. Sunshine recorders, evaporation pans, and cloud coverage sensors are deployed as a package, not individually. A station without one is very likely to lack the others. This constitutes MNAR at the station level. The practical consequence for imputation is that treating the four variables as independently missing would be incorrect: their correlations when observed arise precisely because they fail together, and a multivariate imputation method that exploits those cross-variable relationships will outperform four separate univariate models.
 
 ### Temporal Structure and Structural Breaks {#sec-temporal-structure}
 
@@ -79,14 +74,14 @@ Under MCAR, the co-missing rates would be close to the marginal missingness rate
 plot_temporal_missingness()
 ```
 
-The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations never having recorded these measurements. The `sunshine` and `evaporation` variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.
+The temporal analysis (@fig-temporal-missingness) confirms that missingness is not randomly distributed over time. The cloud cover variables maintain a roughly stable and high missingness rate across the observation window, consistent with a fixed set of stations that never recorded these measurements. The `sunshine` and `evaporation` variables show a distinct stepped pattern: missingness rises at specific breakpoints rather than fluctuating randomly, indicating that certain stations were decommissioned or that recording protocols changed at identifiable calendar dates.
 
 This temporal structure has a direct implication for the interpolation stage of the pipeline. Linear interpolation is appropriate when a smooth trajectory can be inferred from values on either side of a gap. Extended contiguous gaps produced by a structural break have no valid upper boundary from which to interpolate, and filling them with temporal interpolation would create long synthetic sequences with no empirical anchor. The five-day interpolation cap set in Stage 1 of the pipeline is a direct response to this finding.
 
 ### Geographic Concentration: Ghost Sensor Identification {#sec-ghost-sensor}
 
 ```{r}
-#| label: ghost-sensors
+#| label: tbl-ghost-sensors
 #| echo: true
 #| message: false
 #| warning: false
@@ -94,9 +89,9 @@ This temporal structure has a direct implication for the interpolation stage of 
 render_ghost_sensor_table()
 ```
 
-The location-level analysis identifies the specific station-variable pairs responsible for the bulk of the aggregate missingness. The top ten instances from the script output, all at exactly 100% missing, are as follows: Albury (`evaporation`, 3,040 observations; `sunshine`, 3,040), BadgerysCreek (`evaporation`, 3,009; `sunshine`, 3,009; `cloud9am`, 3,009; `cloud3pm`, 3,009), Newcastle (`evaporation`, 3,039; `sunshine`, 3,039), and NorahHead (`evaporation`, 3,004; `sunshine`, 3,004). At these stations, the instrument in question recorded a value on zero days across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.
+The location-level analysis (@tbl-ghost-sensors) identifies 60 ghost sensor instances across 22 locations. At each of these station-variable pairs, the instrument recorded a value on zero days (or fewer than 5% of days) across the entire observation window. These are not sensors experiencing intermittent failure; they are sensors that were never present or that were removed before the data collection period began.
 
-The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support whatsoever: there is no observed value at that station and variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.
+The distinction between ghost sensors and ordinary missingness is consequential for imputation. For a gap of five to fifteen consecutive missing days, a Random Forest model can generate reasonable predictions by drawing on correlated variables at the same station and the same variable at nearby stations. For a gap spanning 3,000 or more consecutive observations, this extrapolation has no empirical support: there is no observed value at that station-variable combination to anchor or validate the prediction. Values produced for these pairs would be statistically plausible by construction but would carry no physical information about what the instrument would have actually recorded. Ghost sensor pairs are identified before Stage 2 runs and flagged so that their imputed values can be treated with appropriate scepticism in downstream analysis.
 
 ### Weather-Conditionality of Sunshine Missingness {#sec-weather-conditionality}
 
@@ -120,16 +115,16 @@ render_sunshine_mcar_table()
 plot_sunshine_rainfall_density()
 ```
 
-A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, then the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.
+A specific concern when imputing a predictor variable is outcome-related missingness: if sunshine sensors failed more often on rainy days, the imputed values would carry a directional signal about the target variable and could introduce bias into the training data.
 
-The empirical test refutes this concern. The table output (@tbl-sunshine-mcar-test) reports a sunshine missing rate of 47.8% on 110,319 dry days (rainfall at most 1 mm) and 47.2% on 31,880 rainy days (rainfall above 1 mm), a difference of 0.6 percentage points. The density plot (@fig-sunshine-rainfall-density) makes the same point visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects not a systematic pattern but the difference in the sizes of the two groups.
+The empirical test refutes this concern. @tbl-sunshine-mcar-test reports a sunshine missing rate of 47.8% on 110,319 dry days and 47.2% on 31,880 rainy days, a difference of 0.6 percentage points. @fig-sunshine-rainfall-density confirms this visually: the distribution of rainfall amounts on days with missing sunshine and on days with present sunshine are indistinguishable across the full range from 0 to 50 mm. The slight visual offset in the figure reflects the difference in group sizes rather than a systematic pattern.
 
-Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates, because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.
+Sunshine missingness is station-conditional rather than weather-conditional. The same stations record missing sunshine on both dry and rainy days at nearly identical rates because the instrument is absent from those stations entirely. This finding clears the imputation path: there is no outcome-related confound to correct for.
 
-### Missing Pattern Structure
+### Missing Pattern Structure {#sec-missing-pattern}
 
 ```{r}
-#| label: miss-pattern-table
+#| label: tbl-miss-pattern
 #| echo: true
 #| message: false
 #| warning: false
@@ -137,9 +132,9 @@ Sunshine missingness is station-conditional rather than weather-conditional. The
 render_miss_pattern_table()
 ```
 
-The case-level output from the script reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.
+@tbl-miss-pattern reveals a strongly bimodal structure across five distinct patterns. Of all observations: 62,566 (43.0%) have none of the four variables missing; 10,525 (7.2%) have exactly one missing; 20,376 (14.0%) have exactly two missing; 11,378 (7.8%) have exactly three missing; and 40,615 (27.9%) have all four missing simultaneously. The two endpoint categories, zero missing and all four missing, together account for 70.9% of all observations.
 
-The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in @sec-ghost-sensor. For these observations, no imputation is supportable and the values remain missing after the pipeline. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artifact: observations genuinely tend to be fully instrumented or minimally instrumented, not randomly partially instrumented.
+The 27.9% with complete simultaneous missingness corresponds directly to the ghost sensor stations identified in @sec-ghost-sensor. For these observations, no imputation is supportable and the values remain missing after the pipeline runs. The 43.0% with no missingness require no intervention. The substantive imputation work is concentrated in the remaining 29.1% across the three intermediate patterns, where partial instrumentation means that correlated predictors are available to inform the Random Forest estimates. The bimodal structure also confirms that the co-missingness finding is not a statistical artefact: observations genuinely tend to be either fully instrumented or minimally instrumented, not randomly partially instrumented.
 
 ---
 
@@ -149,13 +144,13 @@ The diagnostic evidence from @sec-missingness-diagnostics motivates each design 
 
 ### Stage 1: Temporal Interpolation
 
-The eight variables with smooth day-to-day trajectories minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.
+The eight variables with smooth day-to-day trajectories, minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity are imputed via linear interpolation grouped by location, bounded by a five-day maximum gap. The five-day cap is set directly in response to the temporal structural break finding: gaps of up to five days lie within a regime where the values at both boundaries sufficiently constrain the trajectory, while longer gaps are associated with structural collection failures that interpolation cannot safely bridge.
 
 ### Stage 2: Multivariate Imputation via Predictive Mean Matching and Random Forest
 
 Remaining gaps in `sunshine`, `evaporation`, `cloud9am`, `cloud3pm`, and the three wind direction variables are addressed using `mice` with method assignments differentiated by variable type.
 
-The four continuous atmospheric variables (`sunshine`, `evaporation`, `cloud9am`, `cloud3pm`) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid Rubin's Rules variance decomposition downstream. Each variable is imputed from a physically motivated predictor set:
+The four continuous atmospheric variables (`sunshine`, `evaporation`, `cloud9am`, `cloud3pm`) are imputed using predictive mean matching (PMM). PMM draws imputed values from a pool of observed donor observations whose predicted values are closest to the predicted value of the missing case, rather than using the model prediction directly. This has two practical advantages over a point-prediction method for these variables. First, PMM is constrained to return values that exist in the observed data, which enforces physical bounds without requiring explicit constraints. Second, the stochastic donor draw introduces genuine between-imputation variability, which is necessary for valid variance decomposition via Rubin's Rules downstream. Each variable is imputed from a physically motivated predictor set:
 
 - **Cloud cover** (`cloud9am`, `cloud3pm`) from morning and afternoon humidity, morning pressure, location, and month.
 - **Sunshine** from cloud cover at both observation times, maximum temperature, afternoon humidity, location, and month.
@@ -165,7 +160,7 @@ The three wind direction variables (`wind_gust_dir`, `wind_dir9am`, `wind_dir3pm
 
 The use of targeted predictor sets for all variables is motivated directly by the co-missingness finding in @sec-co-missingness. Because the four atmospheric variables tend to be absent together at the station level, their cross-variable correlations when observed are strong and reliable signals for imputation. Restricting each variable's predictor set to physically motivated covariates exploits this structure while reducing the risk of imputing on spurious correlations introduced by including variables that carry no physical relationship to the target.
 
-### Ghost Sensor Flagging
+### Ghost Sensor Flagging {#sec-ghost-flagging}
 
 Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor as ghost sensors (more than 90% missing across the full observation window) are catalogued and binary missingness flags are attached to the data (`sunshine_imp_flagged`, `evap_imp_flagged`, `cloud3pm_imp_flagged`, `cloud9am_imp_flagged`). These flags serve two purposes: they are excluded from the MICE predictor matrix so they cannot contaminate the imputation model, and they remain in the final dataset as explicit markers of which values are extrapolated with no empirical anchor at the station level. The raw date column is also excluded from the predictor matrix to prevent temporal data leakage. Neither PMM nor Random Forest has empirical support for predicting values at a station where an instrument was never present; the flags make this provenance transparent for any downstream analysis that needs to account for it.
 
@@ -200,7 +195,7 @@ df_final <- read_csv(here::here("data", "df_final.csv"))
 
 ---
 
-## Post-Imputation Dataset Properties
+## Post-Imputation Dataset Properties {#sec-post-imputation}
 
 The two-stage pipeline produces a dataset whose properties are each traceable to a specific finding from the diagnostic analysis in @sec-missingness-diagnostics.
 
@@ -214,6 +209,7 @@ The two-stage pipeline produces a dataset whose properties are each traceable to
 
 **Outcome independence.** The weather-conditionality test in @sec-weather-conditionality confirmed that sunshine missingness does not covary with rainfall amounts. Imputed sunshine values therefore do not introduce a directional bias into the training labels for the hurdle or intensity components of the downstream model.
 
-**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories, which PMM would handle incorrectly.
+**Wind direction coherence.** Wind direction variables are imputed as unordered categorical factors using Random Forest, with each direction variable conditioned on its temporally matched speed and pressure readings. This preserves the physical coupling between concurrent wind speed and direction measurements while respecting the non-ordinal structure of compass-point categories.
 
-**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in @sec-sensitivity.
+**Provenance transparency.** Binary imputation flags for the four ghost-prone variables are retained in the final dataset. These flags enable downstream models or diagnostics to condition on or exclude observations where imputed values carry no empirical anchor at the station level, and they are used directly in the sensitivity analysis documented in the following chapter.
+
