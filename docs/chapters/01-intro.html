@@ -114,35 +114,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -349,7 +320,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Predicting Australian Rainfall</span></a>
+ <span class="menu-text">Predicting Australian Rainfall: A Hierarchical Zero-Inflated Gamma Framework</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -449,10 +420,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#why-standard-models-fail" id="toc-why-standard-models-fail" class="nav-link active" data-scroll-target="#why-standard-models-fail"><span class="header-section-number">1.1</span> Why Standard Models Fail</a></li>
-  <li><a href="#the-modelling-framework" id="toc-the-modelling-framework" class="nav-link" data-scroll-target="#the-modelling-framework"><span class="header-section-number">1.2</span> The Modelling Framework</a></li>
-  <li><a href="#report-structure" id="toc-report-structure" class="nav-link" data-scroll-target="#report-structure"><span class="header-section-number">1.3</span> Report Structure</a></li>
-  <li><a href="#research-objectives" id="toc-research-objectives" class="nav-link" data-scroll-target="#research-objectives"><span class="header-section-number">1.4</span> Research Objectives</a></li>
+  <li><a href="#sec-pathology" id="toc-sec-pathology" class="nav-link active" data-scroll-target="#sec-pathology"><span class="header-section-number">1.1</span> Why Standard Models Fail</a></li>
+  <li><a href="#sec-framework" id="toc-sec-framework" class="nav-link" data-scroll-target="#sec-framework"><span class="header-section-number">1.2</span> The Modelling Framework</a></li>
+  <li><a href="#sec-structure" id="toc-sec-structure" class="nav-link" data-scroll-target="#sec-structure"><span class="header-section-number">1.3</span> Report Structure</a></li>
+  <li><a href="#sec-objectives" id="toc-sec-objectives" class="nav-link" data-scroll-target="#sec-objectives"><span class="header-section-number">1.4</span> Research Objectives</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/chapters/01-intro.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -479,55 +450,35 @@ window.Quarto = {
 </header>
 
 
-<p>Rainfall in Australia is a problem of statistical extremes. The continent experiences some of the most pronounced hydrological variability on Earth: years of crippling drought give way to sudden, widespread flooding, driven by large-scale climate oscillations including the El Nino-Southern Oscillation and the Indian Ocean Dipole. For any predictive model, this variability is not background noise to be absorbed but a central structural feature to be represented.</p>
-<p>The core challenge is that precipitation data violates the assumptions of standard regression in three simultaneous ways, each of which requires a distinct methodological response. This report develops a framework that addresses all three, building from first principles through empirical analysis to a validated hierarchical model.</p>
-<section id="why-standard-models-fail" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="why-standard-models-fail"><span class="header-section-number">1.1</span> Why Standard Models Fail</h2>
-<div class="callout callout-style-simple callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Three Structural Violations in Australian Rainfall Data
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Zero-inflation.</strong> Approximately 64% of daily observations record exactly zero rainfall. A Gaussian linear model fitted to this data is forced to place probability mass on negative values in order to fit the bulk of the distribution correctly, producing predictions that are physically impossible. This is not a problem of outliers or transformations; it is a consequence of the data-generating process having two qualitatively different states.</p>
-<p><strong>Heavy right tail.</strong> When rain does fall, the distribution of daily amounts is severely right-skewed, with a kurtosis of 181 and a maximum recorded value of 371 mm. The variance is approximately sixteen times the square of the mean. Standard models that assume a symmetric or light-tailed error distribution will systematically underestimate both the probability and the magnitude of extreme events.</p>
-<p><strong>Temporal dependence.</strong> Daily observations are not independent. Whether it rained yesterday is one of the strongest predictors of whether it will rain today, with a transition probability of 47% from wet to wet compared to only 15% from dry to wet. Any model that treats consecutive observations as exchangeable ignores a substantial and recoverable source of predictive information.</p>
-</div>
-</div>
-<p>Each of these violations is not merely a statistical inconvenience. Each reflects a physical property of the atmosphere: the discrete threshold between no-precipitation and precipitation conditions, the stochastic intensity of convective and frontal systems once that threshold is crossed, and the temporal persistence of synoptic weather regimes. A model that ignores these properties is not a simplification of the problem; it is a misspecification of it.</p>
+<p>Rainfall in Australia is a problem of statistical extremes. The continent experiences pronounced hydrological variability: years of drought give way to sudden widespread flooding, driven by large-scale climate oscillations including the El Niño-Southern Oscillation and the Indian Ocean Dipole. For any predictive model, this variability is not background noise to be absorbed but a central structural feature to be represented.</p>
+<p>The core challenge is that precipitation data violates the assumptions of standard regression in three simultaneous ways, each of which requires a distinct methodological response. This report develops a framework that addresses all three, building from empirical analysis through feature design to a validated hierarchical model.</p>
+<hr>
+<section id="sec-pathology" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="sec-pathology"><span class="header-section-number">1.1</span> Why Standard Models Fail</h2>
+<p><strong>Zero-inflation.</strong> 64.05% of the 142,199 daily observations record exactly zero rainfall, and the median of the response variable is zero. A Gaussian linear model fitted to this data is forced to place probability mass on negative values in order to fit the bulk of the distribution, producing predictions that are physically impossible. This is not a problem that a transformation resolves; it is a consequence of the data-generating process having two qualitatively different states.</p>
+<p><strong>Heavy right tail.</strong> When rain does fall, the distribution of daily amounts is severely right-skewed with a skewness of 9.836 and a kurtosis of 181.146. The maximum recorded value is 371 mm and 151 events exceed 100 mm. Standard models that assume a symmetric or light-tailed error distribution will systematically underestimate both the probability and the magnitude of extreme events.</p>
+<p><strong>Temporal dependence.</strong> Daily observations are not independent. The Markov Chain analysis in <a href="04-eda.html#sec-markov" class="quarto-xref"><span>Section 4.4.2</span></a> establishes that the transition probability from a wet day to a subsequent wet day is 47%, compared to only 15% from a dry day to a wet day. The dry state has an 85% probability of persisting to the following day. Any model that treats consecutive observations as exchangeable ignores a substantial and recoverable source of predictive information.</p>
+<p>Each of these violations reflects a physical property of the atmosphere: the discrete threshold between no-precipitation and precipitation conditions, the stochastic intensity of convective and frontal systems once that threshold is crossed, and the temporal persistence of synoptic weather regimes. A model that ignores these properties is not a simplification of the problem; it is a misspecification of it.</p>
+<hr>
 </section>
-<section id="the-modelling-framework" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="the-modelling-framework"><span class="header-section-number">1.2</span> The Modelling Framework</h2>
-<p>This analysis uses a <strong>Zero-Inflated Gamma (ZIG)</strong> hierarchical model. The core innovation is to treat rainfall occurrence and rainfall intensity as two distinct sub-problems with separate linear predictors, linked through a shared observation mechanism.</p>
-<p>The formal structure is as follows. For each observation <span class="math inline">\(i\)</span>, the model defines:</p>
-<p><span class="math display">\[P(Y_i = 0) = \pi_i + (1 - \pi_i) \cdot f_\Gamma(0 \mid \mu_i, \phi)\]</span></p>
-<p><span class="math display">\[P(Y_i = y) = (1 - \pi_i) \cdot f_\Gamma(y \mid \mu_i, \phi), \quad y &gt; 0\]</span></p>
-<p>where <span class="math inline">\(\pi_i = \text{logit}^{-1}(\mathbf{z}_i^\top \boldsymbol{\gamma})\)</span> governs the probability of a structurally dry day, and <span class="math inline">\(\mu_i = \exp(\mathbf{x}_i^\top \boldsymbol{\beta})\)</span> governs the expected intensity given that rain falls. The two predictor vectors <span class="math inline">\(\mathbf{z}_i\)</span> and <span class="math inline">\(\mathbf{x}_i\)</span> are estimated separately, allowing the atmospheric conditions that trigger rain to differ from those that determine how much falls.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Why Not Tweedie?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The Tweedie distribution is a natural alternative for zero-inflated positive continuous data, using a compound Poisson-Gamma structure to accommodate zero values alongside a continuous positive component. It was evaluated here and rejected on empirical grounds. The exploratory analysis (see <a href="04-eda.html" class="quarto-xref"><span>Chapter 4</span></a>) demonstrates that the predictors of occurrence and the predictors of intensity are not the same: <code>rain_yesterday</code> and <code>pressure_change</code> operate primarily through the hurdle component, while wind vectors and the sunshine-humidity interaction drive the conditional intensity. A Tweedie model constrains both to share a single linear predictor, obscuring this physical distinction and reducing interpretability without improving fit.</p>
-</div>
-</div>
+<section id="sec-framework" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-framework"><span class="header-section-number">1.2</span> The Modelling Framework</h2>
+<p>This analysis uses a Zero-Inflated Gamma (ZIG) hierarchical model. The core structure is to treat rainfall occurrence and rainfall intensity as two distinct sub-problems with separate linear predictors, linked through a shared observation mechanism. The formal mathematical specification is given on the project index.</p>
+<p><strong>Why not Tweedie?</strong> The Tweedie distribution is a natural alternative for zero-inflated positive continuous data, using a compound Poisson-Gamma structure to accommodate zero values alongside a continuous positive component. It was evaluated and rejected on empirical grounds. The EDA in <a href="04-eda.html" class="quarto-xref"><span>Chapter 4</span></a> demonstrates that the predictors of occurrence and the predictors of intensity are not the same: <code>rain_yesterday</code> operates primarily through the hurdle component, determining whether rain occurs at all, while pressure change and wind vectors operate primarily through the conditional intensity component. A Tweedie model constrains both processes to share a single linear predictor, obscuring this physical distinction and reducing interpretability without improving fit, as confirmed by the distributional comparison in <a href="08-model-selection.html#sec-distributional-justification" class="quarto-xref"><span>Section 8.3</span></a>.</p>
+<hr>
 </section>
-<section id="report-structure" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="report-structure"><span class="header-section-number">1.3</span> Report Structure</h2>
+<section id="sec-structure" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="sec-structure"><span class="header-section-number">1.3</span> Report Structure</h2>
 <p>This document is organised as a progressive validation of modelling choices, beginning with data quality and proceeding through feature design, model construction, diagnostic testing, and formal selection. Each chapter is motivated by empirical findings from the preceding one.</p>
 <div class="cell" data-layout-align="center">
+<div id="tbl-structure" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.1: Chapter structure and content.
+</figcaption>
+<div aria-describedby="tbl-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top table-sm small">
-<caption>Project Structure and Content</caption>
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Chapter</th>
@@ -536,48 +487,52 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Introduction</td>
-<td style="text-align: left; width: 12cm;">Statistical pathology of rainfall data and limitations of standard approaches.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">2: Data Preparation</td>
+<td style="text-align: left; width: 10cm;">Two-stage hybrid imputation for 42-48% missingness in key meteorological variables.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Data</td>
-<td style="text-align: left; width: 12cm;">Two-stage imputation strategy for the 42-48% missing rate in key meteorological variables.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">3: Imputation Sensitivity</td>
+<td style="text-align: left; width: 10cm;">Convergence diagnostics, distributional fidelity, and Rubin's Rules variance decomposition.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; width: 4cm; font-weight: bold;">EDA</td>
-<td style="text-align: left; width: 12cm;">Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">4: Exploratory Data Analysis</td>
+<td style="text-align: left; width: 10cm;">Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Feature Engineering</td>
-<td style="text-align: left; width: 12cm;">Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">5: Feature Engineering</td>
+<td style="text-align: left; width: 10cm;">Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Modelling</td>
-<td style="text-align: left; width: 12cm;">Progressive construction of the ZIG model from null baseline through spatial mixed effects.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">6: Modelling</td>
+<td style="text-align: left; width: 10cm;">Progressive ZIG model construction from null baseline through spatial mixed effects.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Model Evaluation</td>
-<td style="text-align: left; width: 12cm;">Validation via ROC analysis, random effects diagnostics, DHARMa simulation tests, and autocorrelation checks.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">7: Model Evaluation</td>
+<td style="text-align: left; width: 10cm;">Validation via ROC analysis, spatial random effects, DHARMa diagnostics, and autocorrelation testing.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Model Selection</td>
-<td style="text-align: left; width: 12cm;">Formal comparison of distributional families, likelihood ratio tests, and variance decomposition.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">8: Model Selection</td>
+<td style="text-align: left; width: 10cm;">Distributional family comparison, pooled D1 Wald tests, and AIC model sequence.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 4cm; font-weight: bold;">Conclusion</td>
-<td style="text-align: left; width: 12cm;">Summary of findings, limitations, and deployment recommendations.</td>
+<td style="text-align: left; width: 4cm; font-weight: bold;">9: Conclusion</td>
+<td style="text-align: left; width: 10cm;">Principal findings, limitations, and recommended extensions.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+</figure>
+</div>
+</div>
+<hr>
 </section>
-<section id="research-objectives" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="research-objectives"><span class="header-section-number">1.4</span> Research Objectives</h2>
-<p><strong>Recover missing data without introducing bias.</strong> Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a two-stage imputation strategy that combines linear temporal interpolation with multivariate Random Forest imputation via <code>mice</code>, using physically motivated predictor sets for each variable to fill these gaps while preserving both sample size and predictive signal.</p>
-<p><strong>Represent weather dynamics as continuous physical processes.</strong> Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. We develop features that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for seasonality, and a mean-centred multiplicative term for the humidity-sunshine interaction.</p>
-<p><strong>Account for spatial heterogeneity.</strong> The relationship between atmospheric conditions and rainfall is not uniform across a continent as climatologically diverse as Australia. We introduce location-specific random effects that allow baseline rainfall levels and key covariate relationships to vary by station, without requiring a separate model for each location.</p>
-<p><strong>Validate against the data-generating process, not just the mean.</strong> Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. We use simulation-based residual diagnostics to verify that the model replicates the full statistical distribution of Australian rainfall, including its zero-inflation rate, tail behaviour, and temporal independence structure.</p>
+<section id="sec-objectives" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="sec-objectives"><span class="header-section-number">1.4</span> Research Objectives</h2>
+<p><strong>Recover missing data without introducing bias.</strong> Instrumentation gaps affect 47.69% of observations for <code>sunshine</code> and 42.54% for <code>evaporation</code>, two of the most predictive meteorological variables. The imputation pipeline applies linear temporal interpolation where observations are close in time and multivariate imputation via predictive mean matching and Random Forest otherwise, using physically motivated predictor sets for each variable. Distributional fidelity is confirmed by Kolmogorov-Smirnov statistics below 0.12 for all four imputed variables, as documented in <a href="03-sensitivity.html#sec-dist-fidelity" class="quarto-xref"><span>Section 3.3</span></a>.</p>
+<p><strong>Represent weather dynamics as continuous physical processes.</strong> Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. The feature engineering pipeline develops representations that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for the day-of-year cycle, and a mean-centred multiplicative term for the humidity-sunshine interaction identified in <a href="04-eda.html#sec-bivariate-density" class="quarto-xref"><span>Section 4.7</span></a>.</p>
+<p><strong>Account for spatial heterogeneity.</strong> The relationship between atmospheric conditions and rainfall is not uniform across a climatologically diverse continent. Location-specific random effects allow baseline rainfall levels to vary by station without requiring a separate model for each location. The random effects analysis in <a href="07-evaluation.html#sec-random-effects" class="quarto-xref"><span>Section 7.2</span></a> establishes that tropical stations produce roughly 75 to 77 percent more rainfall than a station with average geographic characteristics at identical atmospheric conditions, while arid interior stations produce approximately half as much.</p>
+<p><strong>Validate against the data-generating process, not only the conditional mean.</strong> Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. Simulation-based residual diagnostics via DHARMa verify that the model replicates the full statistical structure of Australian rainfall, including its 64.05% zero-inflation rate, tail behaviour, and temporal independence of residuals.</p>
 
 
 <!-- -->
@@ -1058,8 +1013,8 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link" aria-label="Predicting Australian Rainfall">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Predicting Australian Rainfall</span>
+      <a href="../index.html" class="pagination-link" aria-label="Predicting Australian Rainfall: A Hierarchical Zero-Inflated Gamma Framework">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Predicting Australian Rainfall: A Hierarchical Zero-Inflated Gamma Framework</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -1068,104 +1023,101 @@ window.Quarto = {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu"># Introduction {#sec-intro}</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a>Rainfall in Australia is a problem of statistical extremes. The continent experiences some of the most pronounced hydrological variability on Earth: years of crippling drought give way to sudden, widespread flooding, driven by large-scale climate oscillations including the El Nino-Southern Oscillation and the Indian Ocean Dipole. For any predictive model, this variability is not background noise to be absorbed but a central structural feature to be represented.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#| label: setup-intro</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#| include: false</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a>The core challenge is that precipitation data violates the assumptions of standard regression in three simultaneous ways, each of which requires a distinct methodological response. This report develops a framework that addresses all three, building from first principles through empirical analysis to a validated hierarchical model.</span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">## Why Standard Models Fail</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a></span>
-<span id="cb1-9"><a href="#cb1-9"></a>::: {.callout-note appearance="simple"}</span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">## Three Structural Violations in Australian Rainfall Data</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="in">```</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">## Introduction {#sec-intro}</span></span>
 <span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a>**Zero-inflation.** Approximately 64% of daily observations record exactly zero rainfall. A Gaussian linear model fitted to this data is forced to place probability mass on negative values in order to fit the bulk of the distribution correctly, producing predictions that are physically impossible. This is not a problem of outliers or transformations; it is a consequence of the data-generating process having two qualitatively different states.</span>
+<span id="cb1-12"><a href="#cb1-12"></a>Rainfall in Australia is a problem of statistical extremes. The continent experiences pronounced hydrological variability: years of drought give way to sudden widespread flooding, driven by large-scale climate oscillations including the El Niño-Southern Oscillation and the Indian Ocean Dipole. For any predictive model, this variability is not background noise to be absorbed but a central structural feature to be represented.</span>
 <span id="cb1-13"><a href="#cb1-13"></a></span>
-<span id="cb1-14"><a href="#cb1-14"></a>**Heavy right tail.** When rain does fall, the distribution of daily amounts is severely right-skewed, with a kurtosis of 181 and a maximum recorded value of 371 mm. The variance is approximately sixteen times the square of the mean. Standard models that assume a symmetric or light-tailed error distribution will systematically underestimate both the probability and the magnitude of extreme events.</span>
+<span id="cb1-14"><a href="#cb1-14"></a>The core challenge is that precipitation data violates the assumptions of standard regression in three simultaneous ways, each of which requires a distinct methodological response. This report develops a framework that addresses all three, building from empirical analysis through feature design to a validated hierarchical model.</span>
 <span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a>**Temporal dependence.** Daily observations are not independent. Whether it rained yesterday is one of the strongest predictors of whether it will rain today, with a transition probability of 47% from wet to wet compared to only 15% from dry to wet. Any model that treats consecutive observations as exchangeable ignores a substantial and recoverable source of predictive information.</span>
-<span id="cb1-17"><a href="#cb1-17"></a>:::</span>
-<span id="cb1-18"><a href="#cb1-18"></a></span>
-<span id="cb1-19"><a href="#cb1-19"></a>Each of these violations is not merely a statistical inconvenience. Each reflects a physical property of the atmosphere: the discrete threshold between no-precipitation and precipitation conditions, the stochastic intensity of convective and frontal systems once that threshold is crossed, and the temporal persistence of synoptic weather regimes. A model that ignores these properties is not a simplification of the problem; it is a misspecification of it.</span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a><span class="fu">## The Modelling Framework</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a></span>
-<span id="cb1-23"><a href="#cb1-23"></a>This analysis uses a **Zero-Inflated Gamma (ZIG)** hierarchical model. The core innovation is to treat rainfall occurrence and rainfall intensity as two distinct sub-problems with separate linear predictors, linked through a shared observation mechanism.</span>
-<span id="cb1-24"><a href="#cb1-24"></a></span>
-<span id="cb1-25"><a href="#cb1-25"></a>The formal structure is as follows. For each observation $i$, the model defines:</span>
-<span id="cb1-26"><a href="#cb1-26"></a></span>
-<span id="cb1-27"><a href="#cb1-27"></a>$$P(Y_i = 0) = \pi_i + (1 - \pi_i) \cdot f_\Gamma(0 \mid \mu_i, \phi)$$</span>
-<span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a>$$P(Y_i = y) = (1 - \pi_i) \cdot f_\Gamma(y \mid \mu_i, \phi), \quad y &gt; 0$$</span>
-<span id="cb1-30"><a href="#cb1-30"></a></span>
-<span id="cb1-31"><a href="#cb1-31"></a>where $\pi_i = \text{logit}^{-1}(\mathbf{z}_i^\top \boldsymbol{\gamma})$ governs the probability of a structurally dry day, and $\mu_i = \exp(\mathbf{x}_i^\top \boldsymbol{\beta})$ governs the expected intensity given that rain falls. The two predictor vectors $\mathbf{z}_i$ and $\mathbf{x}_i$ are estimated separately, allowing the atmospheric conditions that trigger rain to differ from those that determine how much falls.</span>
-<span id="cb1-32"><a href="#cb1-32"></a></span>
-<span id="cb1-33"><a href="#cb1-33"></a>::: {.callout-important}</span>
-<span id="cb1-34"><a href="#cb1-34"></a><span class="fu">## Why Not Tweedie?</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a>The Tweedie distribution is a natural alternative for zero-inflated positive continuous data, using a compound Poisson-Gamma structure to accommodate zero values alongside a continuous positive component. It was evaluated here and rejected on empirical grounds. The exploratory analysis (see @sec-eda) demonstrates that the predictors of occurrence and the predictors of intensity are not the same: <span class="in">`rain_yesterday`</span> and <span class="in">`pressure_change`</span> operate primarily through the hurdle component, while wind vectors and the sunshine-humidity interaction drive the conditional intensity. A Tweedie model constrains both to share a single linear predictor, obscuring this physical distinction and reducing interpretability without improving fit.</span>
-<span id="cb1-36"><a href="#cb1-36"></a>:::</span>
+<span id="cb1-16"><a href="#cb1-16"></a>---</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="fu">## Why Standard Models Fail {#sec-pathology}</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a>**Zero-inflation.** 64.05% of the 142,199 daily observations record exactly zero rainfall, and the median of the response variable is zero. A Gaussian linear model fitted to this data is forced to place probability mass on negative values in order to fit the bulk of the distribution, producing predictions that are physically impossible. This is not a problem that a transformation resolves; it is a consequence of the data-generating process having two qualitatively different states.</span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a>**Heavy right tail.** When rain does fall, the distribution of daily amounts is severely right-skewed with a skewness of 9.836 and a kurtosis of 181.146. The maximum recorded value is 371 mm and 151 events exceed 100 mm. Standard models that assume a symmetric or light-tailed error distribution will systematically underestimate both the probability and the magnitude of extreme events.</span>
+<span id="cb1-23"><a href="#cb1-23"></a></span>
+<span id="cb1-24"><a href="#cb1-24"></a>**Temporal dependence.** Daily observations are not independent. The Markov Chain analysis in @sec-markov establishes that the transition probability from a wet day to a subsequent wet day is 47%, compared to only 15% from a dry day to a wet day. The dry state has an 85% probability of persisting to the following day. Any model that treats consecutive observations as exchangeable ignores a substantial and recoverable source of predictive information.</span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
+<span id="cb1-26"><a href="#cb1-26"></a>Each of these violations reflects a physical property of the atmosphere: the discrete threshold between no-precipitation and precipitation conditions, the stochastic intensity of convective and frontal systems once that threshold is crossed, and the temporal persistence of synoptic weather regimes. A model that ignores these properties is not a simplification of the problem; it is a misspecification of it.</span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a>---</span>
+<span id="cb1-29"><a href="#cb1-29"></a></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="fu">## The Modelling Framework {#sec-framework}</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a></span>
+<span id="cb1-32"><a href="#cb1-32"></a>This analysis uses a Zero-Inflated Gamma (ZIG) hierarchical model. The core structure is to treat rainfall occurrence and rainfall intensity as two distinct sub-problems with separate linear predictors, linked through a shared observation mechanism. The formal mathematical specification is given on the project index.</span>
+<span id="cb1-33"><a href="#cb1-33"></a></span>
+<span id="cb1-34"><a href="#cb1-34"></a>**Why not Tweedie?** The Tweedie distribution is a natural alternative for zero-inflated positive continuous data, using a compound Poisson-Gamma structure to accommodate zero values alongside a continuous positive component. It was evaluated and rejected on empirical grounds. The EDA in @sec-eda demonstrates that the predictors of occurrence and the predictors of intensity are not the same: <span class="in">`rain_yesterday`</span> operates primarily through the hurdle component, determining whether rain occurs at all, while pressure change and wind vectors operate primarily through the conditional intensity component. A Tweedie model constrains both processes to share a single linear predictor, obscuring this physical distinction and reducing interpretability without improving fit, as confirmed by the distributional comparison in @sec-distributional-justification.</span>
+<span id="cb1-35"><a href="#cb1-35"></a></span>
+<span id="cb1-36"><a href="#cb1-36"></a>---</span>
 <span id="cb1-37"><a href="#cb1-37"></a></span>
-<span id="cb1-38"><a href="#cb1-38"></a><span class="fu">## Report Structure</span></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="fu">## Report Structure {#sec-structure}</span></span>
 <span id="cb1-39"><a href="#cb1-39"></a></span>
 <span id="cb1-40"><a href="#cb1-40"></a>This document is organised as a progressive validation of modelling choices, beginning with data quality and proceeding through feature design, model construction, diagnostic testing, and formal selection. Each chapter is motivated by empirical findings from the preceding one.</span>
 <span id="cb1-41"><a href="#cb1-41"></a></span>
 <span id="cb1-44"><a href="#cb1-44"></a><span class="in">```{r}</span></span>
-<span id="cb1-45"><a href="#cb1-45"></a><span class="co">#| label: chapter-table</span></span>
-<span id="cb1-46"><a href="#cb1-46"></a><span class="co">#| echo: false</span></span>
-<span id="cb1-47"><a href="#cb1-47"></a><span class="co">#| warning: false</span></span>
-<span id="cb1-48"><a href="#cb1-48"></a><span class="co">#| message: false</span></span>
-<span id="cb1-49"><a href="#cb1-49"></a></span>
-<span id="cb1-50"><a href="#cb1-50"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-51"><a href="#cb1-51"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-52"><a href="#cb1-52"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb1-53"><a href="#cb1-53"></a></span>
-<span id="cb1-54"><a href="#cb1-54"></a>chapter_matrix <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb1-55"><a href="#cb1-55"></a>  <span class="at">Chapter =</span> <span class="fu">c</span>(</span>
-<span id="cb1-56"><a href="#cb1-56"></a>    <span class="st">"Introduction"</span>,</span>
-<span id="cb1-57"><a href="#cb1-57"></a>    <span class="st">"Data"</span>,</span>
-<span id="cb1-58"><a href="#cb1-58"></a>    <span class="st">"EDA"</span>,</span>
-<span id="cb1-59"><a href="#cb1-59"></a>    <span class="st">"Feature Engineering"</span>,</span>
-<span id="cb1-60"><a href="#cb1-60"></a>    <span class="st">"Modelling"</span>,</span>
-<span id="cb1-61"><a href="#cb1-61"></a>    <span class="st">"Model Evaluation"</span>,</span>
-<span id="cb1-62"><a href="#cb1-62"></a>    <span class="st">"Model Selection"</span>,</span>
-<span id="cb1-63"><a href="#cb1-63"></a>    <span class="st">"Conclusion"</span></span>
-<span id="cb1-64"><a href="#cb1-64"></a>  ),</span>
-<span id="cb1-65"><a href="#cb1-65"></a>  <span class="at">Content =</span> <span class="fu">c</span>(</span>
-<span id="cb1-66"><a href="#cb1-66"></a>    <span class="st">"Statistical pathology of rainfall data and limitations of standard approaches."</span>,</span>
-<span id="cb1-67"><a href="#cb1-67"></a>    <span class="st">"Two-stage imputation strategy for the 42-48% missing rate in key meteorological variables."</span>,</span>
-<span id="cb1-68"><a href="#cb1-68"></a>    <span class="st">"Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions."</span>,</span>
-<span id="cb1-69"><a href="#cb1-69"></a>    <span class="st">"Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features."</span>,</span>
-<span id="cb1-70"><a href="#cb1-70"></a>    <span class="st">"Progressive construction of the ZIG model from null baseline through spatial mixed effects."</span>,</span>
-<span id="cb1-71"><a href="#cb1-71"></a>    <span class="st">"Validation via ROC analysis, random effects diagnostics, DHARMa simulation tests, and autocorrelation checks."</span>,</span>
-<span id="cb1-72"><a href="#cb1-72"></a>    <span class="st">"Formal comparison of distributional families, likelihood ratio tests, and variance decomposition."</span>,</span>
-<span id="cb1-73"><a href="#cb1-73"></a>    <span class="st">"Summary of findings, limitations, and deployment recommendations."</span></span>
-<span id="cb1-74"><a href="#cb1-74"></a>  )</span>
-<span id="cb1-75"><a href="#cb1-75"></a>)</span>
-<span id="cb1-76"><a href="#cb1-76"></a></span>
-<span id="cb1-77"><a href="#cb1-77"></a>chapter_matrix <span class="sc">%&gt;%</span></span>
-<span id="cb1-78"><a href="#cb1-78"></a>  <span class="fu">kable</span>(</span>
-<span id="cb1-79"><a href="#cb1-79"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Chapter"</span>, <span class="st">"Content"</span>),</span>
-<span id="cb1-80"><a href="#cb1-80"></a>    <span class="at">align =</span> <span class="st">"ll"</span>,</span>
-<span id="cb1-81"><a href="#cb1-81"></a>    <span class="at">caption =</span> <span class="st">"Project Structure and Content"</span></span>
+<span id="cb1-45"><a href="#cb1-45"></a><span class="co">#| label: tbl-structure</span></span>
+<span id="cb1-46"><a href="#cb1-46"></a><span class="co">#| tbl-cap: "Chapter structure and content."</span></span>
+<span id="cb1-47"><a href="#cb1-47"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-48"><a href="#cb1-48"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-49"><a href="#cb1-49"></a><span class="co">#| message: false</span></span>
+<span id="cb1-50"><a href="#cb1-50"></a></span>
+<span id="cb1-51"><a href="#cb1-51"></a><span class="fu">tibble</span>(</span>
+<span id="cb1-52"><a href="#cb1-52"></a>  <span class="at">Chapter =</span> <span class="fu">c</span>(</span>
+<span id="cb1-53"><a href="#cb1-53"></a>    <span class="st">"2: Data Preparation"</span>,</span>
+<span id="cb1-54"><a href="#cb1-54"></a>    <span class="st">"3: Imputation Sensitivity"</span>,</span>
+<span id="cb1-55"><a href="#cb1-55"></a>    <span class="st">"4: Exploratory Data Analysis"</span>,</span>
+<span id="cb1-56"><a href="#cb1-56"></a>    <span class="st">"5: Feature Engineering"</span>,</span>
+<span id="cb1-57"><a href="#cb1-57"></a>    <span class="st">"6: Modelling"</span>,</span>
+<span id="cb1-58"><a href="#cb1-58"></a>    <span class="st">"7: Model Evaluation"</span>,</span>
+<span id="cb1-59"><a href="#cb1-59"></a>    <span class="st">"8: Model Selection"</span>,</span>
+<span id="cb1-60"><a href="#cb1-60"></a>    <span class="st">"9: Conclusion"</span></span>
+<span id="cb1-61"><a href="#cb1-61"></a>  ),</span>
+<span id="cb1-62"><a href="#cb1-62"></a>  <span class="at">Content =</span> <span class="fu">c</span>(</span>
+<span id="cb1-63"><a href="#cb1-63"></a>    <span class="st">"Two-stage hybrid imputation for 42-48% missingness in key meteorological variables."</span>,</span>
+<span id="cb1-64"><a href="#cb1-64"></a>    <span class="st">"Convergence diagnostics, distributional fidelity, and Rubin's Rules variance decomposition."</span>,</span>
+<span id="cb1-65"><a href="#cb1-65"></a>    <span class="st">"Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions."</span>,</span>
+<span id="cb1-66"><a href="#cb1-66"></a>    <span class="st">"Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features."</span>,</span>
+<span id="cb1-67"><a href="#cb1-67"></a>    <span class="st">"Progressive ZIG model construction from null baseline through spatial mixed effects."</span>,</span>
+<span id="cb1-68"><a href="#cb1-68"></a>    <span class="st">"Validation via ROC analysis, spatial random effects, DHARMa diagnostics, and autocorrelation testing."</span>,</span>
+<span id="cb1-69"><a href="#cb1-69"></a>    <span class="st">"Distributional family comparison, pooled D1 Wald tests, and AIC model sequence."</span>,</span>
+<span id="cb1-70"><a href="#cb1-70"></a>    <span class="st">"Principal findings, limitations, and recommended extensions."</span></span>
+<span id="cb1-71"><a href="#cb1-71"></a>  )</span>
+<span id="cb1-72"><a href="#cb1-72"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-73"><a href="#cb1-73"></a>  <span class="fu">kable</span>(</span>
+<span id="cb1-74"><a href="#cb1-74"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Chapter"</span>, <span class="st">"Content"</span>),</span>
+<span id="cb1-75"><a href="#cb1-75"></a>    <span class="at">align =</span> <span class="fu">c</span>(<span class="st">"l"</span>, <span class="st">"l"</span>),</span>
+<span id="cb1-76"><a href="#cb1-76"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-77"><a href="#cb1-77"></a>    <span class="at">booktabs =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-78"><a href="#cb1-78"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-79"><a href="#cb1-79"></a>  <span class="fu">kable_styling</span>(</span>
+<span id="cb1-80"><a href="#cb1-80"></a>    <span class="at">latex_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hold_position"</span>),</span>
+<span id="cb1-81"><a href="#cb1-81"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span></span>
 <span id="cb1-82"><a href="#cb1-82"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-83"><a href="#cb1-83"></a>  <span class="fu">kable_styling</span>(</span>
-<span id="cb1-84"><a href="#cb1-84"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>),</span>
-<span id="cb1-85"><a href="#cb1-85"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb1-86"><a href="#cb1-86"></a>    <span class="at">position =</span> <span class="st">"left"</span></span>
-<span id="cb1-87"><a href="#cb1-87"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-88"><a href="#cb1-88"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"4cm"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-89"><a href="#cb1-89"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"12cm"</span>)</span>
-<span id="cb1-90"><a href="#cb1-90"></a><span class="in">```</span></span>
-<span id="cb1-91"><a href="#cb1-91"></a></span>
-<span id="cb1-92"><a href="#cb1-92"></a><span class="fu">## Research Objectives</span></span>
-<span id="cb1-93"><a href="#cb1-93"></a></span>
-<span id="cb1-94"><a href="#cb1-94"></a>**Recover missing data without introducing bias.** Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a two-stage imputation strategy that combines linear temporal interpolation with multivariate Random Forest imputation via <span class="in">`mice`</span>, using physically motivated predictor sets for each variable to fill these gaps while preserving both sample size and predictive signal.</span>
-<span id="cb1-95"><a href="#cb1-95"></a></span>
-<span id="cb1-96"><a href="#cb1-96"></a>**Represent weather dynamics as continuous physical processes.** Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. We develop features that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for seasonality, and a mean-centred multiplicative term for the humidity-sunshine interaction.</span>
-<span id="cb1-97"><a href="#cb1-97"></a></span>
-<span id="cb1-98"><a href="#cb1-98"></a>**Account for spatial heterogeneity.** The relationship between atmospheric conditions and rainfall is not uniform across a continent as climatologically diverse as Australia. We introduce location-specific random effects that allow baseline rainfall levels and key covariate relationships to vary by station, without requiring a separate model for each location.</span>
-<span id="cb1-99"><a href="#cb1-99"></a></span>
-<span id="cb1-100"><a href="#cb1-100"></a>**Validate against the data-generating process, not just the mean.** Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. We use simulation-based residual diagnostics to verify that the model replicates the full statistical distribution of Australian rainfall, including its zero-inflation rate, tail behaviour, and temporal independence structure.</span>
+<span id="cb1-83"><a href="#cb1-83"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"4cm"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-84"><a href="#cb1-84"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"10cm"</span>)</span>
+<span id="cb1-85"><a href="#cb1-85"></a><span class="in">```</span></span>
+<span id="cb1-86"><a href="#cb1-86"></a></span>
+<span id="cb1-87"><a href="#cb1-87"></a>---</span>
+<span id="cb1-88"><a href="#cb1-88"></a></span>
+<span id="cb1-89"><a href="#cb1-89"></a><span class="fu">## Research Objectives {#sec-objectives}</span></span>
+<span id="cb1-90"><a href="#cb1-90"></a></span>
+<span id="cb1-91"><a href="#cb1-91"></a>**Recover missing data without introducing bias.** Instrumentation gaps affect 47.69% of observations for <span class="in">`sunshine`</span> and 42.54% for <span class="in">`evaporation`</span>, two of the most predictive meteorological variables. The imputation pipeline applies linear temporal interpolation where observations are close in time and multivariate imputation via predictive mean matching and Random Forest otherwise, using physically motivated predictor sets for each variable. Distributional fidelity is confirmed by Kolmogorov-Smirnov statistics below 0.12 for all four imputed variables, as documented in @sec-dist-fidelity.</span>
+<span id="cb1-92"><a href="#cb1-92"></a></span>
+<span id="cb1-93"><a href="#cb1-93"></a>**Represent weather dynamics as continuous physical processes.** Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. The feature engineering pipeline develops representations that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for the day-of-year cycle, and a mean-centred multiplicative term for the humidity-sunshine interaction identified in @sec-bivariate-density.</span>
+<span id="cb1-94"><a href="#cb1-94"></a></span>
+<span id="cb1-95"><a href="#cb1-95"></a>**Account for spatial heterogeneity.** The relationship between atmospheric conditions and rainfall is not uniform across a climatologically diverse continent. Location-specific random effects allow baseline rainfall levels to vary by station without requiring a separate model for each location. The random effects analysis in @sec-random-effects establishes that tropical stations produce roughly 75 to 77 percent more rainfall than a station with average geographic characteristics at identical atmospheric conditions, while arid interior stations produce approximately half as much.</span>
+<span id="cb1-96"><a href="#cb1-96"></a></span>
+<span id="cb1-97"><a href="#cb1-97"></a>**Validate against the data-generating process, not only the conditional mean.** Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. Simulation-based residual diagnostics via DHARMa verify that the model replicates the full statistical structure of Australian rainfall, including its 64.05% zero-inflation rate, tail behaviour, and temporal independence of residuals.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
