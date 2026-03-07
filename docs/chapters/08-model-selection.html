@@ -496,34 +496,65 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">render_error_metrics</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 2 × 2
-#&gt;   .metric .estimate
-#&gt;   &lt;chr&gt;       &lt;dbl&gt;
-#&gt; 1 rmse        12.3 
-#&gt; 2 mae          5.61
-#&gt; # A tibble: 2 × 2
-#&gt;   .metric .estimate
-#&gt;   &lt;chr&gt;       &lt;dbl&gt;
-#&gt; 1 rmse         7.57
-#&gt; 2 mae          2.76</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt;             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-#&gt; Ncells   3970019  212.1    6595098  352.3   6595098  352.3
-#&gt; Vcells 265583332 2026.3  485719642 3705.8 485719642 3705.8</code></pre>
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small">
+<caption>Error Metrics</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold;">Metric</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: right;">7.567</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mae</td>
+<td style="text-align: right;">2.760</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ppc_dat <span class="ot">&lt;-</span> <span class="fu">build_ppc_data</span>(m_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">render_error_metrics</span>(<span class="at">filter_zeros =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small">
+<caption>Error Metrics</caption>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold;">Metric</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rmse</td>
+<td style="text-align: right;">12.263</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mae</td>
+<td style="text-align: right;">5.607</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>ppc_dat <span class="ot">&lt;-</span> <span class="fu">build_ppc_data</span>(m_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">plot_ppc</span>(ppc_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">plot_ppc</span>(ppc_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-ppc" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -548,49 +579,49 @@ Figure&nbsp;8.1: Posterior Predictive Check. The observed distribution (blue) li
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
-<span id="cb6-2"><a href="#cb6-2"></a>comparison_models <span class="ot">&lt;-</span> <span class="fu">fit_comparison_models</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
+<span id="cb5-2"><a href="#cb5-2"></a>comparison_models <span class="ot">&lt;-</span> <span class="fu">fit_comparison_models</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>check_data <span class="ot">&lt;-</span> engineered_list[[<span class="dv">1</span>]]</span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a>check_data<span class="sc">$</span>pred_lognormal <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb7-4"><a href="#cb7-4"></a>  comparison_models<span class="sc">$</span>m_lognormal,</span>
-<span id="cb7-5"><a href="#cb7-5"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8"></a>check_data<span class="sc">$</span>pred_linear <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb7-9"><a href="#cb7-9"></a>  comparison_models<span class="sc">$</span>m_linear,</span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb7-11"><a href="#cb7-11"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a>)</span>
-<span id="cb7-13"><a href="#cb7-13"></a>check_data<span class="sc">$</span>pred_tweedie <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb7-14"><a href="#cb7-14"></a>  comparison_models<span class="sc">$</span>m_tweedie,</span>
-<span id="cb7-15"><a href="#cb7-15"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb7-16"><a href="#cb7-16"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a>)</span>
-<span id="cb7-18"><a href="#cb7-18"></a>check_data<span class="sc">$</span>pred_zig <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb7-19"><a href="#cb7-19"></a>  m6_mixed<span class="sc">$</span>good[[<span class="dv">1</span>]]<span class="sc">$</span>fit,</span>
-<span id="cb7-20"><a href="#cb7-20"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb7-21"><a href="#cb7-21"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb7-22"><a href="#cb7-22"></a>)</span>
-<span id="cb7-23"><a href="#cb7-23"></a></span>
-<span id="cb7-24"><a href="#cb7-24"></a><span class="fu">saveRDS</span>(check_data, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"check_data.rds"</span>))</span>
-<span id="cb7-25"><a href="#cb7-25"></a></span>
-<span id="cb7-26"><a href="#cb7-26"></a><span class="fu">evict_model</span>(<span class="st">"m_tweedie"</span>)</span>
-<span id="cb7-27"><a href="#cb7-27"></a><span class="fu">evict_model</span>(<span class="st">"m_linear"</span>)</span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="fu">evict_model</span>(<span class="st">"m_lognormal"</span>)</span>
-<span id="cb7-29"><a href="#cb7-29"></a><span class="fu">evict_model</span>(<span class="st">"m_full"</span>)</span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="fu">evict_model</span>(<span class="st">"m6_mixed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>check_data <span class="ot">&lt;-</span> engineered_list[[<span class="dv">1</span>]]</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>check_data<span class="sc">$</span>pred_lognormal <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  comparison_models<span class="sc">$</span>m_lognormal,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8"></a>check_data<span class="sc">$</span>pred_linear <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb6-9"><a href="#cb6-9"></a>  comparison_models<span class="sc">$</span>m_linear,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb6-11"><a href="#cb6-11"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>)</span>
+<span id="cb6-13"><a href="#cb6-13"></a>check_data<span class="sc">$</span>pred_tweedie <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb6-14"><a href="#cb6-14"></a>  comparison_models<span class="sc">$</span>m_tweedie,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb6-16"><a href="#cb6-16"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a>)</span>
+<span id="cb6-18"><a href="#cb6-18"></a>check_data<span class="sc">$</span>pred_zig <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb6-19"><a href="#cb6-19"></a>  m6_mixed<span class="sc">$</span>good[[<span class="dv">1</span>]]<span class="sc">$</span>fit,</span>
+<span id="cb6-20"><a href="#cb6-20"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb6-21"><a href="#cb6-21"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a>)</span>
+<span id="cb6-23"><a href="#cb6-23"></a></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="fu">saveRDS</span>(check_data, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"check_data.rds"</span>))</span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="fu">evict_model</span>(<span class="st">"m_tweedie"</span>)</span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="fu">evict_model</span>(<span class="st">"m_linear"</span>)</span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="fu">evict_model</span>(<span class="st">"m_lognormal"</span>)</span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="fu">evict_model</span>(<span class="st">"m_full"</span>)</span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="fu">evict_model</span>(<span class="st">"m6_mixed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">plot_distribution_comparison</span>(check_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">plot_distribution_comparison</span>(check_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-distribution-comparison" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -614,38 +645,589 @@ Figure&nbsp;8.2: Predictive density comparison across three distributional famil
 <section id="progressive-model-selection-via-pooled-d1-statistics" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="progressive-model-selection-via-pooled-d1-statistics"><span class="header-section-number">8.4</span> Progressive Model Selection via Pooled D1 statistics</h2>
 <p>Progressive model checks with D1 statistics, D3 converges in probability to D1 when n -&gt; inf, according to Steph van Buuren, with 142k samples we can use D1 statistic instead of D3</p>
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"model_progression.R"</span>))</span>
-<span id="cb9-2"><a href="#cb9-2"></a></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">run_d1_comparisons</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m0_null"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>m1 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m1_moisture"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m1, <span class="at">m_small =</span> m0) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Moisture &amp; Pressure"</span>, <span class="st">"Null Baseline"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="tbl-d1-comparisons" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<div id="tbl-d1-m1-vs-m0" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-d1-comparisons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;8.1
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-d1-m1-vs-m0-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.1: Nested Model Comparison: + Moisture &amp; Pressure vs Null Baseline
 </figcaption>
-<div aria-describedby="tbl-d1-comparisons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt;             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-#&gt; Ncells   4316995  230.6    6820862  364.3   6820862  364.3
-#&gt; Vcells 410489230 3131.8  821421690 6267.0 635480396 4848.4</code></pre>
+<div aria-describedby="tbl-d1-m1-vs-m0-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Parameters tested</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">F</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df1</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df2</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">RIV</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em;">D1 pooled Wald</td>
+<td style="text-align: left; width: 20em; white-space: pre-wrap; word-break: break-word;">Humidity3pm<br>
+Dewpoint 9am<br>
+Dewpoint Change<br>
+Pressure Change</td>
+<td style="text-align: right; width: 5em;">141.806</td>
+<td style="text-align: right; width: 5em;">4</td>
+<td style="text-align: right; width: 5em;">39.8</td>
+<td style="text-align: right; width: 5em;">16.525</td>
+<td style="text-align: right; width: 5em;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note: </span></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> † p&lt;0.1 * p&lt;0.05 ** p&lt;0.01 *** p&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> delta AIC = -35938.32, delta BIC = -35899.87 (negative favours + Moisture &amp; Pressure; heuristic only). Based on 10 common imputations.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> Pooled via Rubin’s rules.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
 </div>
 </div>
 </figure>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m2_temporal"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m2, <span class="at">m_small =</span> m1) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Seasonality &amp; Persistence"</span>, <span class="st">"Moisture Only"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-d1-m2-vs-m1" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-d1-m2-vs-m1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.2: Nested Model Comparison: + Seasonality &amp; Persistence vs Moisture Only
+</figcaption>
+<div aria-describedby="tbl-d1-m2-vs-m1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Parameters tested</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">F</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df1</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df2</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">RIV</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em;">D1 pooled Wald</td>
+<td style="text-align: left; width: 20em; white-space: pre-wrap; word-break: break-word;">Day Cos<br>
+Day Sin<br>
+ZI: Rain Yesterday (Yes)<br>
+ZI: Cloud Development</td>
+<td style="text-align: right; width: 5em;">802.158</td>
+<td style="text-align: right; width: 5em;">4</td>
+<td style="text-align: right; width: 5em;">71.3</td>
+<td style="text-align: right; width: 5em;">2.098</td>
+<td style="text-align: right; width: 5em;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note: </span></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> † p&lt;0.1 * p&lt;0.05 ** p&lt;0.01 *** p&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> delta AIC = -12810.42, delta BIC = -12772.62 (negative favours + Seasonality &amp; Persistence; heuristic only). Based on 10 common imputations.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> Pooled via Rubin’s rules.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m3_history"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m3, <span class="at">m_small =</span> m2) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Accumulated History"</span>, <span class="st">"Seasonality &amp; Persistence"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-d1-m3-vs-m2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-d1-m3-vs-m2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.3: Nested Model Comparison: + Accumulated History vs Seasonality &amp; Persistence
+</figcaption>
+<div aria-describedby="tbl-d1-m3-vs-m2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Parameters tested</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">F</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df1</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df2</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">RIV</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em;">D1 pooled Wald</td>
+<td style="text-align: left; width: 20em; white-space: pre-wrap; word-break: break-word;">Rainfall Ma7<br>
+Days Since Rain<br>
+Humidity Ma7<br>
+ZI: Sunshine<br>
+ZI: Evaporation</td>
+<td style="text-align: right; width: 5em;">275.213</td>
+<td style="text-align: right; width: 5em;">5</td>
+<td style="text-align: right; width: 5em;">177.8</td>
+<td style="text-align: right; width: 5em;">0.902</td>
+<td style="text-align: right; width: 5em;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note: </span></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> † p&lt;0.1 * p&lt;0.05 ** p&lt;0.01 *** p&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> delta AIC = -4005.81, delta BIC = -3960.45 (negative favours + Accumulated History; heuristic only). Based on 10 common imputations.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> Pooled via Rubin’s rules.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m4_energy"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m4, <span class="at">m_small =</span> m3) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Thermodynamics &amp; Interaction"</span>, <span class="st">"Accumulated History"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-d1-m4-vs-m3" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-d1-m4-vs-m3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.4: Nested Model Comparison: + Thermodynamics &amp; Interaction vs Accumulated History
+</figcaption>
+<div aria-describedby="tbl-d1-m4-vs-m3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Parameters tested</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">F</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df1</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df2</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">RIV</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em;">D1 pooled Wald</td>
+<td style="text-align: left; width: 20em; white-space: pre-wrap; word-break: break-word;">Instability Index<br>
+Sun Humid Interaction</td>
+<td style="text-align: right; width: 5em;">49.375</td>
+<td style="text-align: right; width: 5em;">2</td>
+<td style="text-align: right; width: 5em;">24.1</td>
+<td style="text-align: right; width: 5em;">4.470</td>
+<td style="text-align: right; width: 5em;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note: </span></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> † p&lt;0.1 * p&lt;0.05 ** p&lt;0.01 *** p&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> delta AIC = -1066.31, delta BIC = -1028.51 (negative favours + Thermodynamics &amp; Interaction; heuristic only). Based on 10 common imputations.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> Pooled via Rubin’s rules.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m5_wind"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m5, <span class="at">m_small =</span> m4) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Wind Vectors"</span>, <span class="st">"Thermodynamics &amp; Interaction"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-d1-m5-vs-m4" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-d1-m5-vs-m4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.5: Nested Model Comparison: + Wind Vectors vs Thermodynamics &amp; Interaction
+</figcaption>
+<div aria-describedby="tbl-d1-m5-vs-m4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Parameters tested</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">F</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df1</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df2</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">RIV</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em;">D1 pooled Wald</td>
+<td style="text-align: left; width: 20em; white-space: pre-wrap; word-break: break-word;">Gust U EW<br>
+Gust V NS<br>
+Wind9am V NS<br>
+Wind9am U EW</td>
+<td style="text-align: right; width: 5em;">133.422</td>
+<td style="text-align: right; width: 5em;">4</td>
+<td style="text-align: right; width: 5em;">272.8</td>
+<td style="text-align: right; width: 5em;">0.497</td>
+<td style="text-align: right; width: 5em;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note: </span></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> † p&lt;0.1 * p&lt;0.05 ** p&lt;0.01 *** p&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> delta AIC = -782.35, delta BIC = -752.11 (negative favours + Wind Vectors; heuristic only). Based on 10 common imputations.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> Pooled via Rubin’s rules.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>m6 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m6, <span class="at">m_small =</span> m5) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Random Effects"</span>, <span class="st">"Wind Vectors"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-d1-m6-vs-m5" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-d1-m6-vs-m5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.6: Nested Model Comparison: + Random Effects vs Wind Vectors
+</figcaption>
+<div aria-describedby="tbl-d1-m6-vs-m5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Test</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">Parameters tested</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">F</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df1</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">df2</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">RIV</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: rgba(44, 62, 80, 255) !important;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 10em;">D1 pooled Wald</td>
+<td style="text-align: left; width: 20em; white-space: pre-wrap; word-break: break-word;">Dewpoint Change (Spline)<br>
+Pressure Change (Spline)<br>
+Evaporation (Spline)<br>
+Instability Index (Spline, Df=3)1<br>
+Instability Index (Spline, Df=3)2<br>
+Instability Index (Spline, Df=3)3<br>
+Gust U EW (Spline, Df=2)1<br>
+Gust U EW (Spline, Df=2)2<br>
+Wind9am U EW (Spline, Df=2)1<br>
+Wind9am U EW (Spline, Df=2)2</td>
+<td style="text-align: right; width: 5em;">75.283</td>
+<td style="text-align: right; width: 5em;">10</td>
+<td style="text-align: right; width: 5em;">138.9</td>
+<td style="text-align: right; width: 5em;">3.877</td>
+<td style="text-align: right; width: 5em;">&lt;0.001</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><span style="font-style: italic;">Note: </span></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> † p&lt;0.1 * p&lt;0.05 ** p&lt;0.01 *** p&lt;0.001</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> delta AIC = -6915.32, delta BIC = -6786.8 (negative favours + Random Effects; heuristic only). Based on 10 common imputations.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0;"><sup></sup> Pooled via Rubin’s rules.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+</div>
+</figure>
+</div>
 </div>
 <p>Each successive extension was evaluated using the pooled D1 Wald test (Li, Raghunathan &amp; Rubin 1991), which provides a joint F-statistic for the parameters added at each step, pooled across imputed datasets via Rubin’s rules. The null hypothesis in each case is that the added parameter vector is jointly zero - i.e., that the smaller model is adequate. All six comparisons reject this null decisively. With 142,000 observations, D1 converges in probability to the D3 statistic (Van Buuren, FIMD), making it the appropriate pooled test for this sample size. The delta AIC and delta BIC reported alongside each comparison are heuristic summaries computed from the imputation-averaged log-likelihoods and serve as a secondary consistency check.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>model_stats <span class="ot">&lt;-</span> <span class="fu">build_model_stats</span>()</span>
-<span id="cb11-2"><a href="#cb11-2"></a></span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">render_model_summary</span>(model_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"model_progression.R"</span>))</span>
+<span id="cb14-2"><a href="#cb14-2"></a>model_stats <span class="ot">&lt;-</span> <span class="fu">build_model_stats</span>()</span>
+<span id="cb14-3"><a href="#cb14-3"></a></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="fu">render_model_summary</span>(model_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-model-selection-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model-selection-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;8.2: Model selection summary. AIC and BIC are heuristic quantities averaged across imputed datasets. Delta AIC is relative to the best model (M6). Akaike weight of M6 rounds to 1.0 at any practical precision.
+Table&nbsp;8.7: Model selection summary. AIC and BIC are heuristic quantities averaged across imputed datasets. Delta AIC is relative to the best model (M6). Akaike weight of M6 rounds to 1.0 at any practical precision.
 </figcaption>
 <div aria-describedby="tbl-model-selection-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -720,7 +1302,7 @@ Table&nbsp;8.2: Model selection summary. AIC and BIC are heuristic quantities av
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">plot_aic_trajectory</span>(model_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">plot_aic_trajectory</span>(model_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-model-selection" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -1234,193 +1816,312 @@ Figure&nbsp;8.3: AIC trajectory across the progressive model sequence. Each exte
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu"># Model Selection</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">## Formal Justification of Distributional Choice, Model Progression, and Variance Decomposition</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a></span>
-<span id="cb13-4"><a href="#cb13-4"></a>---</span>
-<span id="cb13-5"><a href="#cb13-5"></a></span>
-<span id="cb13-6"><a href="#cb13-6"></a><span class="at">&gt; **Chapter Context.** This chapter provides the statistical foundation for three claims made implicitly throughout the modelling sequence: that the Zero-Inflated Gamma family is the appropriate distributional choice for this data, that each successive model extension was a genuine improvement rather than an over-fit, and that the final model accounts for a meaningful share of the variance in Australian rainfall. Each claim is addressed through a distinct formal procedure.</span></span>
-<span id="cb13-7"><a href="#cb13-7"></a></span>
-<span id="cb13-8"><a href="#cb13-8"></a>---</span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a><span class="fu">## Predictive Accuracy and Distributional Calibration</span></span>
-<span id="cb13-11"><a href="#cb13-11"></a></span>
-<span id="cb13-14"><a href="#cb13-14"></a><span class="in">```{r}</span></span>
-<span id="cb13-15"><a href="#cb13-15"></a><span class="co">#| label: setup-selection</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="co">#| include: false</span></span>
-<span id="cb13-17"><a href="#cb13-17"></a></span>
-<span id="cb13-18"><a href="#cb13-18"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
-<span id="cb13-19"><a href="#cb13-19"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb13-20"><a href="#cb13-20"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter4"</span>, <span class="st">"feature_engineering.R"</span>))</span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"mitml_wrappers.R"</span>))</span>
-<span id="cb13-22"><a href="#cb13-22"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"Reporting.R"</span>))</span>
-<span id="cb13-23"><a href="#cb13-23"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
-<span id="cb13-24"><a href="#cb13-24"></a></span>
-<span id="cb13-25"><a href="#cb13-25"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
-<span id="cb13-26"><a href="#cb13-26"></a>m_full <span class="ot">&lt;-</span> <span class="fu">get_diagnostic_model</span>(m6_mixed)</span>
-<span id="cb13-27"><a href="#cb13-27"></a></span>
-<span id="cb13-28"><a href="#cb13-28"></a>engineered_list <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="st">"all"</span>) <span class="sc">%&gt;%</span> <span class="fu">map</span>(engineer_features)</span>
-<span id="cb13-29"><a href="#cb13-29"></a><span class="in">```</span></span>
-<span id="cb13-30"><a href="#cb13-30"></a></span>
-<span id="cb13-33"><a href="#cb13-33"></a><span class="in">```{r}</span></span>
-<span id="cb13-34"><a href="#cb13-34"></a><span class="co">#| label: ppc-and-metrics</span></span>
-<span id="cb13-35"><a href="#cb13-35"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-36"><a href="#cb13-36"></a><span class="co">#| message: false</span></span>
-<span id="cb13-37"><a href="#cb13-37"></a><span class="co">#| cache: true</span></span>
-<span id="cb13-38"><a href="#cb13-38"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-39"><a href="#cb13-39"></a></span>
-<span id="cb13-40"><a href="#cb13-40"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
-<span id="cb13-41"><a href="#cb13-41"></a><span class="fu">render_error_metrics</span>()</span>
-<span id="cb13-42"><a href="#cb13-42"></a><span class="in">```</span></span>
-<span id="cb13-43"><a href="#cb13-43"></a></span>
-<span id="cb13-46"><a href="#cb13-46"></a><span class="in">```{r}</span></span>
-<span id="cb13-47"><a href="#cb13-47"></a><span class="co">#| label: ppc-simulation</span></span>
-<span id="cb13-48"><a href="#cb13-48"></a><span class="co">#| eval: true</span></span>
-<span id="cb13-49"><a href="#cb13-49"></a><span class="co">#| cache: true</span></span>
-<span id="cb13-50"><a href="#cb13-50"></a></span>
-<span id="cb13-51"><a href="#cb13-51"></a>ppc_dat <span class="ot">&lt;-</span> <span class="fu">build_ppc_data</span>(m_full)</span>
-<span id="cb13-52"><a href="#cb13-52"></a><span class="in">```</span></span>
-<span id="cb13-53"><a href="#cb13-53"></a></span>
-<span id="cb13-56"><a href="#cb13-56"></a><span class="in">```{r}</span></span>
-<span id="cb13-57"><a href="#cb13-57"></a><span class="co">#| label: fig-ppc</span></span>
-<span id="cb13-58"><a href="#cb13-58"></a><span class="co">#| fig-cap: "Posterior Predictive Check. The observed distribution (blue) lies well within the envelope of 50 model-simulated distributions (grey), confirming that the ZIG model replicates the key structural features of the rainfall distribution."</span></span>
-<span id="cb13-59"><a href="#cb13-59"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb13-60"><a href="#cb13-60"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb13-61"><a href="#cb13-61"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-62"><a href="#cb13-62"></a><span class="co">#| message: false</span></span>
-<span id="cb13-63"><a href="#cb13-63"></a></span>
-<span id="cb13-64"><a href="#cb13-64"></a><span class="fu">plot_ppc</span>(ppc_dat)</span>
-<span id="cb13-65"><a href="#cb13-65"></a><span class="in">```</span></span>
-<span id="cb13-66"><a href="#cb13-66"></a></span>
-<span id="cb13-67"><a href="#cb13-67"></a>The global error metrics provide a compact summary of predictive accuracy across all observations and all locations. The mean absolute error (MAE) of 2.736 mm indicates that the model's point prediction is within 2.7 mm of the actual recorded value on an average day. The root mean squared error (RMSE) of 7.539 mm is substantially larger, reflecting the asymmetric influence of extreme events in this metric: a small number of days on which a major storm was under-predicted by 50 mm or more exerts a disproportionate upward pull on the squared error average. The gap between MAE and RMSE is therefore informative in itself, confirming that prediction errors are not symmetrically distributed but are concentrated in the tail of the distribution.</span>
-<span id="cb13-68"><a href="#cb13-68"></a></span>
-<span id="cb13-69"><a href="#cb13-69"></a>Point error metrics measure accuracy at the mean but cannot assess whether the model is correctly reproducing the entire shape of the rainfall distribution. A posterior predictive check (PPC) addresses this more demanding criterion. We simulate 50 complete datasets from the fitted model and overlay their empirical densities against the observed distribution. If the model is well-specified, the observed density should be indistinguishable from the simulated envelope.</span>
-<span id="cb13-70"><a href="#cb13-70"></a></span>
-<span id="cb13-71"><a href="#cb13-71"></a>The result (@fig-ppc) shows close agreement across the full range of the distribution. The peak at 0 mm is reproduced accurately, confirming that the zero-inflation component is generating the correct proportion of dry-day predictions conditional on all covariates. The decay rate of the right tail follows the observed data closely, a property that a Gaussian model structurally cannot achieve given its symmetric support. The model is not merely fitting conditional means: it is correctly representing the probabilistic structure of the underlying climate system.</span>
-<span id="cb13-72"><a href="#cb13-72"></a></span>
-<span id="cb13-73"><a href="#cb13-73"></a>---</span>
-<span id="cb13-74"><a href="#cb13-74"></a></span>
-<span id="cb13-75"><a href="#cb13-75"></a><span class="fu">## Justification of the Distributional Family</span></span>
-<span id="cb13-76"><a href="#cb13-76"></a></span>
-<span id="cb13-79"><a href="#cb13-79"></a><span class="in">```{r}</span></span>
-<span id="cb13-80"><a href="#cb13-80"></a><span class="co">#| label: fit-distribution-comparison</span></span>
-<span id="cb13-81"><a href="#cb13-81"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-82"><a href="#cb13-82"></a><span class="co">#| eval: false</span></span>
-<span id="cb13-83"><a href="#cb13-83"></a></span>
-<span id="cb13-84"><a href="#cb13-84"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
-<span id="cb13-85"><a href="#cb13-85"></a>comparison_models <span class="ot">&lt;-</span> <span class="fu">fit_comparison_models</span>()</span>
-<span id="cb13-86"><a href="#cb13-86"></a><span class="in">```</span></span>
-<span id="cb13-87"><a href="#cb13-87"></a></span>
-<span id="cb13-90"><a href="#cb13-90"></a><span class="in">```{r}</span></span>
-<span id="cb13-91"><a href="#cb13-91"></a><span class="co">#| label: predict-distribution-comparison</span></span>
-<span id="cb13-92"><a href="#cb13-92"></a><span class="co">#| eval: false</span></span>
-<span id="cb13-93"><a href="#cb13-93"></a></span>
-<span id="cb13-94"><a href="#cb13-94"></a>check_data <span class="ot">&lt;-</span> engineered_list[[<span class="dv">1</span>]]</span>
-<span id="cb13-95"><a href="#cb13-95"></a></span>
-<span id="cb13-96"><a href="#cb13-96"></a>check_data<span class="sc">$</span>pred_lognormal <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb13-97"><a href="#cb13-97"></a>  comparison_models<span class="sc">$</span>m_lognormal,</span>
-<span id="cb13-98"><a href="#cb13-98"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb13-99"><a href="#cb13-99"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb13-100"><a href="#cb13-100"></a>)</span>
-<span id="cb13-101"><a href="#cb13-101"></a>check_data<span class="sc">$</span>pred_linear <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb13-102"><a href="#cb13-102"></a>  comparison_models<span class="sc">$</span>m_linear,</span>
-<span id="cb13-103"><a href="#cb13-103"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb13-104"><a href="#cb13-104"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb13-105"><a href="#cb13-105"></a>)</span>
-<span id="cb13-106"><a href="#cb13-106"></a>check_data<span class="sc">$</span>pred_tweedie <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb13-107"><a href="#cb13-107"></a>  comparison_models<span class="sc">$</span>m_tweedie,</span>
-<span id="cb13-108"><a href="#cb13-108"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb13-109"><a href="#cb13-109"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb13-110"><a href="#cb13-110"></a>)</span>
-<span id="cb13-111"><a href="#cb13-111"></a>check_data<span class="sc">$</span>pred_zig <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb13-112"><a href="#cb13-112"></a>  m6_mixed<span class="sc">$</span>good[[<span class="dv">1</span>]]<span class="sc">$</span>fit,</span>
-<span id="cb13-113"><a href="#cb13-113"></a>  <span class="at">newdata =</span> check_data,</span>
-<span id="cb13-114"><a href="#cb13-114"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
-<span id="cb13-115"><a href="#cb13-115"></a>)</span>
-<span id="cb13-116"><a href="#cb13-116"></a></span>
-<span id="cb13-117"><a href="#cb13-117"></a><span class="fu">saveRDS</span>(check_data, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"check_data.rds"</span>))</span>
-<span id="cb13-118"><a href="#cb13-118"></a></span>
-<span id="cb13-119"><a href="#cb13-119"></a><span class="fu">evict_model</span>(<span class="st">"m_tweedie"</span>)</span>
-<span id="cb13-120"><a href="#cb13-120"></a><span class="fu">evict_model</span>(<span class="st">"m_linear"</span>)</span>
-<span id="cb13-121"><a href="#cb13-121"></a><span class="fu">evict_model</span>(<span class="st">"m_lognormal"</span>)</span>
-<span id="cb13-122"><a href="#cb13-122"></a><span class="fu">evict_model</span>(<span class="st">"m_full"</span>)</span>
-<span id="cb13-123"><a href="#cb13-123"></a><span class="fu">evict_model</span>(<span class="st">"m6_mixed"</span>)</span>
-<span id="cb13-124"><a href="#cb13-124"></a><span class="in">```</span></span>
-<span id="cb13-125"><a href="#cb13-125"></a></span>
-<span id="cb13-128"><a href="#cb13-128"></a><span class="in">```{r}</span></span>
-<span id="cb13-129"><a href="#cb13-129"></a><span class="co">#| label: load-check-data</span></span>
-<span id="cb13-130"><a href="#cb13-130"></a><span class="co">#| include: false</span></span>
-<span id="cb13-131"><a href="#cb13-131"></a></span>
-<span id="cb13-132"><a href="#cb13-132"></a>check_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"check_data.rds"</span>))</span>
-<span id="cb13-133"><a href="#cb13-133"></a><span class="in">```</span></span>
-<span id="cb13-136"><a href="#cb13-136"></a><span class="in">```{r}</span></span>
-<span id="cb13-137"><a href="#cb13-137"></a><span class="co">#| label: fig-distribution-comparison</span></span>
-<span id="cb13-138"><a href="#cb13-138"></a><span class="co">#| fig-cap: "Predictive density comparison across three distributional families. The Gaussian model predicts negative rainfall, a physical impossibility. Both the Tweedie and ZI-Gamma families respect the zero lower bound and approximate the right tail of the observed distribution."</span></span>
-<span id="cb13-139"><a href="#cb13-139"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb13-140"><a href="#cb13-140"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb13-141"><a href="#cb13-141"></a><span class="co">#| echo: true</span></span>
-<span id="cb13-142"><a href="#cb13-142"></a><span class="co">#| warning: false</span></span>
-<span id="cb13-143"><a href="#cb13-143"></a></span>
-<span id="cb13-144"><a href="#cb13-144"></a><span class="fu">plot_distribution_comparison</span>(check_data)</span>
-<span id="cb13-145"><a href="#cb13-145"></a><span class="in">```</span></span>
-<span id="cb13-146"><a href="#cb13-146"></a></span>
-<span id="cb13-147"><a href="#cb13-147"></a>Choosing a distributional family is not a cosmetic decision: it determines the support of the predictions, the variance function, and the structure of the likelihood being optimised. Three families were evaluated against the full predictor set to isolate the contribution of the distributional choice from the contribution of the predictors themselves.</span>
-<span id="cb13-148"><a href="#cb13-148"></a></span>
-<span id="cb13-149"><a href="#cb13-149"></a>**The Gaussian model.** A standard linear mixed model with Gaussian errors generates predictions that extend into negative values. Because the Gaussian distribution has support over the entire real line, the model has no mechanism to prevent this, and negative rainfall is a physical impossibility. Beyond this qualitative failure, the Gaussian assumption also implies a symmetric and constant variance structure, which is incompatible with the heavy right skew and variance-mean dependence that the EDA (@sec-eda) documented extensively. Fitting a Gaussian model to this data is not merely suboptimal; it produces predictions that are fundamentally inconsistent with the properties of the system being modelled.</span>
-<span id="cb13-150"><a href="#cb13-150"></a></span>
-<span id="cb13-151"><a href="#cb13-151"></a>**The Tweedie model.** The Tweedie distribution with power parameter $p \in (1, 2)$ is a compound Poisson-Gamma distribution that naturally accommodates zero values alongside a continuous positive component. It respects the zero lower bound and can represent right-skewed positive data. However, it models zeros and positive values through a single unified process governed by a single mean parameter and the power index. This is a structural constraint: the probability of a zero and the expected positive value are both driven by the same linear predictor, and they cannot be allowed to respond to different sets of covariates.</span>
-<span id="cb13-152"><a href="#cb13-152"></a></span>
-<span id="cb13-153"><a href="#cb13-153"></a>**The Zero-Inflated Gamma model.** The ZIG framework relaxes this constraint explicitly. The zero-inflation and conditional intensity components have separate linear predictors, which means predictors of occurrence and predictors of intensity are estimated independently. The EDA provides direct empirical motivation for this separation: the Markov analysis showed that <span class="in">`rain_yesterday`</span> operates primarily through the hurdle, determining whether rain occurs at all, while the pressure change analysis showed that the diurnal pressure signal is more relevant to intensity. These two physical processes do not share the same covariates, and a model that constrains them to do so sacrifices interpretability and predictive accuracy. The ZIG framework gives each process its own parameter vector, making it both more flexible and more physically coherent than the Tweedie alternative.</span>
-<span id="cb13-154"><a href="#cb13-154"></a></span>
-<span id="cb13-155"><a href="#cb13-155"></a>---</span>
-<span id="cb13-156"><a href="#cb13-156"></a></span>
-<span id="cb13-157"><a href="#cb13-157"></a><span class="fu">## Progressive Model Selection via Pooled D1 statistics</span></span>
-<span id="cb13-158"><a href="#cb13-158"></a>Progressive model checks with D1 statistics, D3 converges in probability to D1 when n -&gt; inf,</span>
-<span id="cb13-159"><a href="#cb13-159"></a>according to Steph van Buuren, with 142k samples we can use D1 statistic instead of D3</span>
-<span id="cb13-160"><a href="#cb13-160"></a></span>
-<span id="cb13-163"><a href="#cb13-163"></a><span class="in">```{r}</span></span>
-<span id="cb13-164"><a href="#cb13-164"></a><span class="co">#| label: tbl-d1-comparisons</span></span>
-<span id="cb13-165"><a href="#cb13-165"></a><span class="co">#| message: false</span></span>
-<span id="cb13-166"><a href="#cb13-166"></a><span class="co">#| #| warning: false</span></span>
-<span id="cb13-167"><a href="#cb13-167"></a></span>
-<span id="cb13-168"><a href="#cb13-168"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"model_progression.R"</span>))</span>
-<span id="cb13-169"><a href="#cb13-169"></a></span>
-<span id="cb13-170"><a href="#cb13-170"></a><span class="fu">run_d1_comparisons</span>()</span>
-<span id="cb13-171"><a href="#cb13-171"></a><span class="in">```</span></span>
-<span id="cb13-172"><a href="#cb13-172"></a></span>
-<span id="cb13-173"><a href="#cb13-173"></a>Each successive extension was evaluated using the pooled D1 Wald test (Li, Raghunathan &amp; Rubin 1991), which provides a joint F-statistic for the parameters added at each step, pooled across imputed datasets via Rubin's rules. The null hypothesis in each case is that the added parameter vector is jointly zero - i.e., that the smaller model is adequate. All six comparisons reject this null decisively. With 142,000 observations, D1 converges in probability to the D3 statistic (Van Buuren, FIMD), making it the appropriate pooled test for this sample size. The delta AIC and delta BIC reported alongside each comparison are heuristic summaries computed from the imputation-averaged log-likelihoods and serve as a secondary consistency check.</span>
-<span id="cb13-174"><a href="#cb13-174"></a></span>
-<span id="cb13-177"><a href="#cb13-177"></a><span class="in">```{r}</span></span>
-<span id="cb13-178"><a href="#cb13-178"></a><span class="co">#| label: tbl-model-selection-summary</span></span>
-<span id="cb13-179"><a href="#cb13-179"></a><span class="co">#| tbl-cap: "Model selection summary. AIC and BIC are heuristic quantities averaged across imputed datasets. Delta AIC is relative to the best model (M6). Akaike weight of M6 rounds to 1.0 at any practical precision."</span></span>
-<span id="cb13-180"><a href="#cb13-180"></a></span>
-<span id="cb13-181"><a href="#cb13-181"></a>model_stats <span class="ot">&lt;-</span> <span class="fu">build_model_stats</span>()</span>
-<span id="cb13-182"><a href="#cb13-182"></a></span>
-<span id="cb13-183"><a href="#cb13-183"></a><span class="fu">render_model_summary</span>(model_stats)</span>
-<span id="cb13-184"><a href="#cb13-184"></a><span class="in">```</span></span>
-<span id="cb13-185"><a href="#cb13-185"></a></span>
-<span id="cb13-188"><a href="#cb13-188"></a><span class="in">```{r}</span></span>
-<span id="cb13-189"><a href="#cb13-189"></a><span class="co">#| label: fig-model-selection</span></span>
-<span id="cb13-190"><a href="#cb13-190"></a><span class="co">#| fig-cap: "AIC trajectory across the progressive model sequence. Each extension reduces AIC monotonically, confirming that no step introduced net redundancy. The two largest gains correspond to the initial moisture predictors and the final mixed-effects structure."</span></span>
-<span id="cb13-191"><a href="#cb13-191"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb13-192"><a href="#cb13-192"></a><span class="co">#| fig-height: 8</span></span>
-<span id="cb13-193"><a href="#cb13-193"></a></span>
-<span id="cb13-194"><a href="#cb13-194"></a><span class="fu">plot_aic_trajectory</span>(model_stats)</span>
-<span id="cb13-195"><a href="#cb13-195"></a><span class="in">```</span></span>
-<span id="cb13-196"><a href="#cb13-196"></a></span>
-<span id="cb13-197"><a href="#cb13-197"></a>AIC quantifies the information lost when a given model approximates the true data-generating process, penalising complexity to discourage over-fitting. A monotonically decreasing AIC sequence is not guaranteed: it is possible to add predictors that improve the likelihood by less than the penalty for the additional parameters. That every extension produced a net AIC reduction confirms each added component captures genuine signal rather than noise.</span>
-<span id="cb13-198"><a href="#cb13-198"></a></span>
-<span id="cb13-199"><a href="#cb13-199"></a>The pooled D1 F-statistic provides the corresponding inferential framework under multiple imputation. For each nested pair, the test evaluates whether the additional parameters are jointly zero, with the F-statistic and its degrees of freedom pooled across imputations via Rubin's rules. The numerator degrees of freedom equal the number of parameters added at each step; the denominator degrees of freedom are Barnard-Rubin corrected and therefore appear as decimals. All six comparisons reject the null at $p &lt; 0.001$. Even the smallest gain in the sequence (wind vectors, M5) represents an improvement overwhelmingly unlikely under the null.</span>
-<span id="cb13-200"><a href="#cb13-200"></a></span>
-<span id="cb13-201"><a href="#cb13-201"></a>The Akaike weights provide a final calibration. With a $\Delta\text{AIC}$ exceeding 60,000 separating the best and worst models, the weight on M6 rounds to 1.0 at any practical decimal precision. There is no information-theoretic case for preferring any earlier model in the sequence.</span>
-<span id="cb13-202"><a href="#cb13-202"></a></span>
-<span id="cb13-203"><a href="#cb13-203"></a>---</span>
-<span id="cb13-204"><a href="#cb13-204"></a></span>
-<span id="cb13-205"><a href="#cb13-205"></a>---</span>
-<span id="cb13-206"><a href="#cb13-206"></a></span>
-<span id="cb13-207"><a href="#cb13-207"></a><span class="fu">## Conclusion</span></span>
-<span id="cb13-208"><a href="#cb13-208"></a></span>
-<span id="cb13-209"><a href="#cb13-209"></a>The evidence assembled across this chapter supports the following conclusions. The ZIG distributional family is the appropriate choice for this data: the Gaussian model produces physically impossible predictions and the Tweedie model, while valid, constrains occurrence and intensity to share the same linear predictor in a way that is empirically unjustified. Every step in the progressive model sequence represents a statistically significant improvement, confirmed by likelihood ratio tests at $p &lt; 0.001$ after multiple comparison correction, and the Akaike weight of the final model is effectively 1. The posterior predictive check confirms that the model replicates the distributional shape of Australian rainfall, not only its conditional mean. And the variance decomposition establishes that the final model explains 44.6% of total variance, of which approximately a tenth is attributable to the geographic heterogeneity captured by the random effects.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu"># Model Selection</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">## Formal Justification of Distributional Choice, Model Progression, and Variance Decomposition</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a></span>
+<span id="cb16-4"><a href="#cb16-4"></a>---</span>
+<span id="cb16-5"><a href="#cb16-5"></a></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="at">&gt; **Chapter Context.** This chapter provides the statistical foundation for three claims made implicitly throughout the modelling sequence: that the Zero-Inflated Gamma family is the appropriate distributional choice for this data, that each successive model extension was a genuine improvement rather than an over-fit, and that the final model accounts for a meaningful share of the variance in Australian rainfall. Each claim is addressed through a distinct formal procedure.</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a>---</span>
+<span id="cb16-9"><a href="#cb16-9"></a></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="fu">## Predictive Accuracy and Distributional Calibration</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a></span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="in">```{r}</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="co">#| label: setup-selection</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co">#| include: false</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a></span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
+<span id="cb16-19"><a href="#cb16-19"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
+<span id="cb16-20"><a href="#cb16-20"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter4"</span>, <span class="st">"feature_engineering.R"</span>))</span>
+<span id="cb16-21"><a href="#cb16-21"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"mitml_wrappers.R"</span>))</span>
+<span id="cb16-22"><a href="#cb16-22"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"Reporting.R"</span>))</span>
+<span id="cb16-23"><a href="#cb16-23"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
+<span id="cb16-24"><a href="#cb16-24"></a></span>
+<span id="cb16-25"><a href="#cb16-25"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
+<span id="cb16-26"><a href="#cb16-26"></a>m_full <span class="ot">&lt;-</span> <span class="fu">get_diagnostic_model</span>(m6_mixed)</span>
+<span id="cb16-27"><a href="#cb16-27"></a>pred_rainfall <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"rainfall_preds.rds"</span>))</span>
+<span id="cb16-28"><a href="#cb16-28"></a></span>
+<span id="cb16-29"><a href="#cb16-29"></a>engineered_list <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="st">"all"</span>) <span class="sc">%&gt;%</span> <span class="fu">map</span>(engineer_features)</span>
+<span id="cb16-30"><a href="#cb16-30"></a><span class="in">```</span></span>
+<span id="cb16-31"><a href="#cb16-31"></a></span>
+<span id="cb16-34"><a href="#cb16-34"></a><span class="in">```{r}</span></span>
+<span id="cb16-35"><a href="#cb16-35"></a><span class="co">#| label: global-metrics</span></span>
+<span id="cb16-36"><a href="#cb16-36"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-37"><a href="#cb16-37"></a><span class="co">#| message: false</span></span>
+<span id="cb16-38"><a href="#cb16-38"></a><span class="co">#| cache: true</span></span>
+<span id="cb16-39"><a href="#cb16-39"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-40"><a href="#cb16-40"></a></span>
+<span id="cb16-41"><a href="#cb16-41"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
+<span id="cb16-42"><a href="#cb16-42"></a><span class="fu">render_error_metrics</span>()</span>
+<span id="cb16-43"><a href="#cb16-43"></a><span class="in">```</span></span>
+<span id="cb16-44"><a href="#cb16-44"></a></span>
+<span id="cb16-47"><a href="#cb16-47"></a><span class="in">```{r}</span></span>
+<span id="cb16-48"><a href="#cb16-48"></a><span class="co">#| label: positive-metrics</span></span>
+<span id="cb16-49"><a href="#cb16-49"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-50"><a href="#cb16-50"></a></span>
+<span id="cb16-51"><a href="#cb16-51"></a><span class="fu">render_error_metrics</span>(<span class="at">filter_zeros =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-52"><a href="#cb16-52"></a><span class="in">```</span></span>
+<span id="cb16-53"><a href="#cb16-53"></a></span>
+<span id="cb16-56"><a href="#cb16-56"></a><span class="in">```{r}</span></span>
+<span id="cb16-57"><a href="#cb16-57"></a><span class="co">#| label: load-ppc-dat</span></span>
+<span id="cb16-58"><a href="#cb16-58"></a><span class="co">#| include: false</span></span>
+<span id="cb16-59"><a href="#cb16-59"></a></span>
+<span id="cb16-60"><a href="#cb16-60"></a>ppc_dat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"ppc_dat.rds"</span>))</span>
+<span id="cb16-61"><a href="#cb16-61"></a><span class="in">```</span></span>
+<span id="cb16-62"><a href="#cb16-62"></a></span>
+<span id="cb16-65"><a href="#cb16-65"></a><span class="in">```{r}</span></span>
+<span id="cb16-66"><a href="#cb16-66"></a><span class="co">#| label: ppc-simulation</span></span>
+<span id="cb16-67"><a href="#cb16-67"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-68"><a href="#cb16-68"></a></span>
+<span id="cb16-69"><a href="#cb16-69"></a>ppc_dat <span class="ot">&lt;-</span> <span class="fu">build_ppc_data</span>(m_full)</span>
+<span id="cb16-70"><a href="#cb16-70"></a><span class="in">```</span></span>
+<span id="cb16-71"><a href="#cb16-71"></a></span>
+<span id="cb16-74"><a href="#cb16-74"></a><span class="in">```{r}</span></span>
+<span id="cb16-75"><a href="#cb16-75"></a><span class="co">#| label: fig-ppc</span></span>
+<span id="cb16-76"><a href="#cb16-76"></a><span class="co">#| fig-cap: "Posterior Predictive Check. The observed distribution (blue) lies well within the envelope of 50 model-simulated distributions (grey), confirming that the ZIG model replicates the key structural features of the rainfall distribution."</span></span>
+<span id="cb16-77"><a href="#cb16-77"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb16-78"><a href="#cb16-78"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb16-79"><a href="#cb16-79"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-80"><a href="#cb16-80"></a><span class="co">#| message: false</span></span>
+<span id="cb16-81"><a href="#cb16-81"></a></span>
+<span id="cb16-82"><a href="#cb16-82"></a><span class="fu">plot_ppc</span>(ppc_dat)</span>
+<span id="cb16-83"><a href="#cb16-83"></a><span class="in">```</span></span>
+<span id="cb16-84"><a href="#cb16-84"></a></span>
+<span id="cb16-85"><a href="#cb16-85"></a>The global error metrics provide a compact summary of predictive accuracy across all observations and all locations. The mean absolute error (MAE) of 2.736 mm indicates that the model's point prediction is within 2.7 mm of the actual recorded value on an average day. The root mean squared error (RMSE) of 7.539 mm is substantially larger, reflecting the asymmetric influence of extreme events in this metric: a small number of days on which a major storm was under-predicted by 50 mm or more exerts a disproportionate upward pull on the squared error average. The gap between MAE and RMSE is therefore informative in itself, confirming that prediction errors are not symmetrically distributed but are concentrated in the tail of the distribution.</span>
+<span id="cb16-86"><a href="#cb16-86"></a></span>
+<span id="cb16-87"><a href="#cb16-87"></a>Point error metrics measure accuracy at the mean but cannot assess whether the model is correctly reproducing the entire shape of the rainfall distribution. A posterior predictive check (PPC) addresses this more demanding criterion. We simulate 50 complete datasets from the fitted model and overlay their empirical densities against the observed distribution. If the model is well-specified, the observed density should be indistinguishable from the simulated envelope.</span>
+<span id="cb16-88"><a href="#cb16-88"></a></span>
+<span id="cb16-89"><a href="#cb16-89"></a>The result (@fig-ppc) shows close agreement across the full range of the distribution. The peak at 0 mm is reproduced accurately, confirming that the zero-inflation component is generating the correct proportion of dry-day predictions conditional on all covariates. The decay rate of the right tail follows the observed data closely, a property that a Gaussian model structurally cannot achieve given its symmetric support. The model is not merely fitting conditional means: it is correctly representing the probabilistic structure of the underlying climate system.</span>
+<span id="cb16-90"><a href="#cb16-90"></a></span>
+<span id="cb16-91"><a href="#cb16-91"></a>---</span>
+<span id="cb16-92"><a href="#cb16-92"></a></span>
+<span id="cb16-93"><a href="#cb16-93"></a><span class="fu">## Justification of the Distributional Family</span></span>
+<span id="cb16-94"><a href="#cb16-94"></a></span>
+<span id="cb16-97"><a href="#cb16-97"></a><span class="in">```{r}</span></span>
+<span id="cb16-98"><a href="#cb16-98"></a><span class="co">#| label: fit-distribution-comparison</span></span>
+<span id="cb16-99"><a href="#cb16-99"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-100"><a href="#cb16-100"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-101"><a href="#cb16-101"></a></span>
+<span id="cb16-102"><a href="#cb16-102"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
+<span id="cb16-103"><a href="#cb16-103"></a>comparison_models <span class="ot">&lt;-</span> <span class="fu">fit_comparison_models</span>()</span>
+<span id="cb16-104"><a href="#cb16-104"></a><span class="in">```</span></span>
+<span id="cb16-105"><a href="#cb16-105"></a></span>
+<span id="cb16-108"><a href="#cb16-108"></a><span class="in">```{r}</span></span>
+<span id="cb16-109"><a href="#cb16-109"></a><span class="co">#| label: predict-distribution-comparison</span></span>
+<span id="cb16-110"><a href="#cb16-110"></a><span class="co">#| eval: false</span></span>
+<span id="cb16-111"><a href="#cb16-111"></a></span>
+<span id="cb16-112"><a href="#cb16-112"></a>check_data <span class="ot">&lt;-</span> engineered_list[[<span class="dv">1</span>]]</span>
+<span id="cb16-113"><a href="#cb16-113"></a></span>
+<span id="cb16-114"><a href="#cb16-114"></a>check_data<span class="sc">$</span>pred_lognormal <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb16-115"><a href="#cb16-115"></a>  comparison_models<span class="sc">$</span>m_lognormal,</span>
+<span id="cb16-116"><a href="#cb16-116"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb16-117"><a href="#cb16-117"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb16-118"><a href="#cb16-118"></a>)</span>
+<span id="cb16-119"><a href="#cb16-119"></a>check_data<span class="sc">$</span>pred_linear <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb16-120"><a href="#cb16-120"></a>  comparison_models<span class="sc">$</span>m_linear,</span>
+<span id="cb16-121"><a href="#cb16-121"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb16-122"><a href="#cb16-122"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb16-123"><a href="#cb16-123"></a>)</span>
+<span id="cb16-124"><a href="#cb16-124"></a>check_data<span class="sc">$</span>pred_tweedie <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb16-125"><a href="#cb16-125"></a>  comparison_models<span class="sc">$</span>m_tweedie,</span>
+<span id="cb16-126"><a href="#cb16-126"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb16-127"><a href="#cb16-127"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb16-128"><a href="#cb16-128"></a>)</span>
+<span id="cb16-129"><a href="#cb16-129"></a>check_data<span class="sc">$</span>pred_zig <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb16-130"><a href="#cb16-130"></a>  m6_mixed<span class="sc">$</span>good[[<span class="dv">1</span>]]<span class="sc">$</span>fit,</span>
+<span id="cb16-131"><a href="#cb16-131"></a>  <span class="at">newdata =</span> check_data,</span>
+<span id="cb16-132"><a href="#cb16-132"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb16-133"><a href="#cb16-133"></a>)</span>
+<span id="cb16-134"><a href="#cb16-134"></a></span>
+<span id="cb16-135"><a href="#cb16-135"></a><span class="fu">saveRDS</span>(check_data, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"check_data.rds"</span>))</span>
+<span id="cb16-136"><a href="#cb16-136"></a></span>
+<span id="cb16-137"><a href="#cb16-137"></a><span class="fu">evict_model</span>(<span class="st">"m_tweedie"</span>)</span>
+<span id="cb16-138"><a href="#cb16-138"></a><span class="fu">evict_model</span>(<span class="st">"m_linear"</span>)</span>
+<span id="cb16-139"><a href="#cb16-139"></a><span class="fu">evict_model</span>(<span class="st">"m_lognormal"</span>)</span>
+<span id="cb16-140"><a href="#cb16-140"></a><span class="fu">evict_model</span>(<span class="st">"m_full"</span>)</span>
+<span id="cb16-141"><a href="#cb16-141"></a><span class="fu">evict_model</span>(<span class="st">"m6_mixed"</span>)</span>
+<span id="cb16-142"><a href="#cb16-142"></a><span class="in">```</span></span>
+<span id="cb16-143"><a href="#cb16-143"></a></span>
+<span id="cb16-146"><a href="#cb16-146"></a><span class="in">```{r}</span></span>
+<span id="cb16-147"><a href="#cb16-147"></a><span class="co">#| label: load-check-data</span></span>
+<span id="cb16-148"><a href="#cb16-148"></a><span class="co">#| include: false</span></span>
+<span id="cb16-149"><a href="#cb16-149"></a></span>
+<span id="cb16-150"><a href="#cb16-150"></a>check_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"check_data.rds"</span>))</span>
+<span id="cb16-151"><a href="#cb16-151"></a><span class="in">```</span></span>
+<span id="cb16-154"><a href="#cb16-154"></a><span class="in">```{r}</span></span>
+<span id="cb16-155"><a href="#cb16-155"></a><span class="co">#| label: fig-distribution-comparison</span></span>
+<span id="cb16-156"><a href="#cb16-156"></a><span class="co">#| fig-cap: "Predictive density comparison across three distributional families. The Gaussian model predicts negative rainfall, a physical impossibility. Both the Tweedie and ZI-Gamma families respect the zero lower bound and approximate the right tail of the observed distribution."</span></span>
+<span id="cb16-157"><a href="#cb16-157"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb16-158"><a href="#cb16-158"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb16-159"><a href="#cb16-159"></a><span class="co">#| echo: true</span></span>
+<span id="cb16-160"><a href="#cb16-160"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-161"><a href="#cb16-161"></a></span>
+<span id="cb16-162"><a href="#cb16-162"></a><span class="fu">plot_distribution_comparison</span>(check_data)</span>
+<span id="cb16-163"><a href="#cb16-163"></a><span class="in">```</span></span>
+<span id="cb16-164"><a href="#cb16-164"></a></span>
+<span id="cb16-165"><a href="#cb16-165"></a>Choosing a distributional family is not a cosmetic decision: it determines the support of the predictions, the variance function, and the structure of the likelihood being optimised. Three families were evaluated against the full predictor set to isolate the contribution of the distributional choice from the contribution of the predictors themselves.</span>
+<span id="cb16-166"><a href="#cb16-166"></a></span>
+<span id="cb16-167"><a href="#cb16-167"></a>**The Gaussian model.** A standard linear mixed model with Gaussian errors generates predictions that extend into negative values. Because the Gaussian distribution has support over the entire real line, the model has no mechanism to prevent this, and negative rainfall is a physical impossibility. Beyond this qualitative failure, the Gaussian assumption also implies a symmetric and constant variance structure, which is incompatible with the heavy right skew and variance-mean dependence that the EDA (@sec-eda) documented extensively. Fitting a Gaussian model to this data is not merely suboptimal; it produces predictions that are fundamentally inconsistent with the properties of the system being modelled.</span>
+<span id="cb16-168"><a href="#cb16-168"></a></span>
+<span id="cb16-169"><a href="#cb16-169"></a>**The Tweedie model.** The Tweedie distribution with power parameter $p \in (1, 2)$ is a compound Poisson-Gamma distribution that naturally accommodates zero values alongside a continuous positive component. It respects the zero lower bound and can represent right-skewed positive data. However, it models zeros and positive values through a single unified process governed by a single mean parameter and the power index. This is a structural constraint: the probability of a zero and the expected positive value are both driven by the same linear predictor, and they cannot be allowed to respond to different sets of covariates.</span>
+<span id="cb16-170"><a href="#cb16-170"></a></span>
+<span id="cb16-171"><a href="#cb16-171"></a>**The Zero-Inflated Gamma model.** The ZIG framework relaxes this constraint explicitly. The zero-inflation and conditional intensity components have separate linear predictors, which means predictors of occurrence and predictors of intensity are estimated independently. The EDA provides direct empirical motivation for this separation: the Markov analysis showed that <span class="in">`rain_yesterday`</span> operates primarily through the hurdle, determining whether rain occurs at all, while the pressure change analysis showed that the diurnal pressure signal is more relevant to intensity. These two physical processes do not share the same covariates, and a model that constrains them to do so sacrifices interpretability and predictive accuracy. The ZIG framework gives each process its own parameter vector, making it both more flexible and more physically coherent than the Tweedie alternative.</span>
+<span id="cb16-172"><a href="#cb16-172"></a></span>
+<span id="cb16-173"><a href="#cb16-173"></a>---</span>
+<span id="cb16-174"><a href="#cb16-174"></a></span>
+<span id="cb16-175"><a href="#cb16-175"></a><span class="fu">## Progressive Model Selection via Pooled D1 statistics</span></span>
+<span id="cb16-176"><a href="#cb16-176"></a>Progressive model checks with D1 statistics, D3 converges in probability to D1 when n -&gt; inf,</span>
+<span id="cb16-177"><a href="#cb16-177"></a>according to Steph van Buuren, with 142k samples we can use D1 statistic instead of D3</span>
+<span id="cb16-178"><a href="#cb16-178"></a></span>
+<span id="cb16-181"><a href="#cb16-181"></a><span class="in">```{r}</span></span>
+<span id="cb16-182"><a href="#cb16-182"></a><span class="co">#| label: tbl-d1-m1-vs-m0</span></span>
+<span id="cb16-183"><a href="#cb16-183"></a><span class="co">#| message: false</span></span>
+<span id="cb16-184"><a href="#cb16-184"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-185"><a href="#cb16-185"></a></span>
+<span id="cb16-186"><a href="#cb16-186"></a>m0 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m0_null"</span>)</span>
+<span id="cb16-187"><a href="#cb16-187"></a>m1 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m1_moisture"</span>)</span>
+<span id="cb16-188"><a href="#cb16-188"></a></span>
+<span id="cb16-189"><a href="#cb16-189"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m1, <span class="at">m_small =</span> m0) <span class="sc">%&gt;%</span></span>
+<span id="cb16-190"><a href="#cb16-190"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Moisture &amp; Pressure"</span>, <span class="st">"Null Baseline"</span>))</span>
+<span id="cb16-191"><a href="#cb16-191"></a></span>
+<span id="cb16-192"><a href="#cb16-192"></a><span class="in">```</span></span>
+<span id="cb16-193"><a href="#cb16-193"></a></span>
+<span id="cb16-196"><a href="#cb16-196"></a><span class="in">```{r}</span></span>
+<span id="cb16-197"><a href="#cb16-197"></a><span class="co">#| label: evict-mo</span></span>
+<span id="cb16-198"><a href="#cb16-198"></a><span class="co">#| include: false</span></span>
+<span id="cb16-199"><a href="#cb16-199"></a></span>
+<span id="cb16-200"><a href="#cb16-200"></a><span class="fu">evict_model</span>(<span class="st">"m0_null"</span>)</span>
+<span id="cb16-201"><a href="#cb16-201"></a><span class="in">```</span></span>
+<span id="cb16-204"><a href="#cb16-204"></a><span class="in">```{r}</span></span>
+<span id="cb16-205"><a href="#cb16-205"></a><span class="co">#| label: tbl-d1-m2-vs-m1</span></span>
+<span id="cb16-206"><a href="#cb16-206"></a><span class="co">#| message: false</span></span>
+<span id="cb16-207"><a href="#cb16-207"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-208"><a href="#cb16-208"></a></span>
+<span id="cb16-209"><a href="#cb16-209"></a>m2 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m2_temporal"</span>)</span>
+<span id="cb16-210"><a href="#cb16-210"></a></span>
+<span id="cb16-211"><a href="#cb16-211"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m2, <span class="at">m_small =</span> m1) <span class="sc">%&gt;%</span></span>
+<span id="cb16-212"><a href="#cb16-212"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Seasonality &amp; Persistence"</span>, <span class="st">"Moisture Only"</span>))</span>
+<span id="cb16-213"><a href="#cb16-213"></a></span>
+<span id="cb16-214"><a href="#cb16-214"></a></span>
+<span id="cb16-215"><a href="#cb16-215"></a><span class="in">```</span></span>
+<span id="cb16-216"><a href="#cb16-216"></a></span>
+<span id="cb16-219"><a href="#cb16-219"></a><span class="in">```{r}</span></span>
+<span id="cb16-220"><a href="#cb16-220"></a><span class="co">#| label: evict-m1</span></span>
+<span id="cb16-221"><a href="#cb16-221"></a><span class="co">#| include: false</span></span>
+<span id="cb16-222"><a href="#cb16-222"></a></span>
+<span id="cb16-223"><a href="#cb16-223"></a><span class="fu">evict_model</span>(<span class="st">"m1_moisture"</span>)</span>
+<span id="cb16-224"><a href="#cb16-224"></a><span class="in">```</span></span>
+<span id="cb16-225"><a href="#cb16-225"></a></span>
+<span id="cb16-228"><a href="#cb16-228"></a><span class="in">```{r}</span></span>
+<span id="cb16-229"><a href="#cb16-229"></a><span class="co">#| label: tbl-d1-m3-vs-m2</span></span>
+<span id="cb16-230"><a href="#cb16-230"></a><span class="co">#| message: false</span></span>
+<span id="cb16-231"><a href="#cb16-231"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-232"><a href="#cb16-232"></a></span>
+<span id="cb16-233"><a href="#cb16-233"></a>m3 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m3_history"</span>)</span>
+<span id="cb16-234"><a href="#cb16-234"></a></span>
+<span id="cb16-235"><a href="#cb16-235"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m3, <span class="at">m_small =</span> m2) <span class="sc">%&gt;%</span></span>
+<span id="cb16-236"><a href="#cb16-236"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Accumulated History"</span>, <span class="st">"Seasonality &amp; Persistence"</span>))</span>
+<span id="cb16-237"><a href="#cb16-237"></a></span>
+<span id="cb16-238"><a href="#cb16-238"></a><span class="in">```</span></span>
+<span id="cb16-239"><a href="#cb16-239"></a></span>
+<span id="cb16-242"><a href="#cb16-242"></a><span class="in">```{r}</span></span>
+<span id="cb16-243"><a href="#cb16-243"></a><span class="co">#| label: evict-m2</span></span>
+<span id="cb16-244"><a href="#cb16-244"></a><span class="co">#| include: false</span></span>
+<span id="cb16-245"><a href="#cb16-245"></a></span>
+<span id="cb16-246"><a href="#cb16-246"></a><span class="fu">evict_model</span>(<span class="st">"m2_temporal"</span>)</span>
+<span id="cb16-247"><a href="#cb16-247"></a><span class="in">```</span></span>
+<span id="cb16-248"><a href="#cb16-248"></a></span>
+<span id="cb16-251"><a href="#cb16-251"></a><span class="in">```{r}</span></span>
+<span id="cb16-252"><a href="#cb16-252"></a><span class="co">#| label: tbl-d1-m4-vs-m3</span></span>
+<span id="cb16-253"><a href="#cb16-253"></a><span class="co">#| message: false</span></span>
+<span id="cb16-254"><a href="#cb16-254"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-255"><a href="#cb16-255"></a></span>
+<span id="cb16-256"><a href="#cb16-256"></a>m4 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m4_energy"</span>)</span>
+<span id="cb16-257"><a href="#cb16-257"></a></span>
+<span id="cb16-258"><a href="#cb16-258"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m4, <span class="at">m_small =</span> m3) <span class="sc">%&gt;%</span></span>
+<span id="cb16-259"><a href="#cb16-259"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Thermodynamics &amp; Interaction"</span>, <span class="st">"Accumulated History"</span>))</span>
+<span id="cb16-260"><a href="#cb16-260"></a></span>
+<span id="cb16-261"><a href="#cb16-261"></a><span class="in">```</span></span>
+<span id="cb16-262"><a href="#cb16-262"></a></span>
+<span id="cb16-265"><a href="#cb16-265"></a><span class="in">```{r}</span></span>
+<span id="cb16-266"><a href="#cb16-266"></a><span class="co">#| label: evict-m3</span></span>
+<span id="cb16-267"><a href="#cb16-267"></a><span class="co">#| include: false</span></span>
+<span id="cb16-268"><a href="#cb16-268"></a></span>
+<span id="cb16-269"><a href="#cb16-269"></a><span class="fu">evict_model</span>(<span class="st">"m3_history"</span>)</span>
+<span id="cb16-270"><a href="#cb16-270"></a><span class="in">```</span></span>
+<span id="cb16-271"><a href="#cb16-271"></a></span>
+<span id="cb16-274"><a href="#cb16-274"></a><span class="in">```{r}</span></span>
+<span id="cb16-275"><a href="#cb16-275"></a><span class="co">#| label: tbl-d1-m5-vs-m4</span></span>
+<span id="cb16-276"><a href="#cb16-276"></a><span class="co">#| message: false</span></span>
+<span id="cb16-277"><a href="#cb16-277"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-278"><a href="#cb16-278"></a></span>
+<span id="cb16-279"><a href="#cb16-279"></a>m5 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m5_wind"</span>)</span>
+<span id="cb16-280"><a href="#cb16-280"></a></span>
+<span id="cb16-281"><a href="#cb16-281"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m5, <span class="at">m_small =</span> m4) <span class="sc">%&gt;%</span></span>
+<span id="cb16-282"><a href="#cb16-282"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Wind Vectors"</span>, <span class="st">"Thermodynamics &amp; Interaction"</span>))</span>
+<span id="cb16-283"><a href="#cb16-283"></a></span>
+<span id="cb16-284"><a href="#cb16-284"></a></span>
+<span id="cb16-285"><a href="#cb16-285"></a><span class="in">```</span></span>
+<span id="cb16-286"><a href="#cb16-286"></a></span>
+<span id="cb16-289"><a href="#cb16-289"></a><span class="in">```{r}</span></span>
+<span id="cb16-290"><a href="#cb16-290"></a><span class="co">#| label: evict-m4</span></span>
+<span id="cb16-291"><a href="#cb16-291"></a><span class="co">#| include: false</span></span>
+<span id="cb16-292"><a href="#cb16-292"></a></span>
+<span id="cb16-293"><a href="#cb16-293"></a><span class="fu">evict_model</span>(<span class="st">"m4_energy"</span>)</span>
+<span id="cb16-294"><a href="#cb16-294"></a><span class="in">```</span></span>
+<span id="cb16-295"><a href="#cb16-295"></a></span>
+<span id="cb16-298"><a href="#cb16-298"></a><span class="in">```{r}</span></span>
+<span id="cb16-299"><a href="#cb16-299"></a><span class="co">#| label: tbl-d1-m6-vs-m5</span></span>
+<span id="cb16-300"><a href="#cb16-300"></a><span class="co">#| message: false</span></span>
+<span id="cb16-301"><a href="#cb16-301"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-302"><a href="#cb16-302"></a></span>
+<span id="cb16-303"><a href="#cb16-303"></a>m6 <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
+<span id="cb16-304"><a href="#cb16-304"></a></span>
+<span id="cb16-305"><a href="#cb16-305"></a><span class="fu">compare_models</span>(<span class="at">m_large =</span> m6, <span class="at">m_small =</span> m5) <span class="sc">%&gt;%</span></span>
+<span id="cb16-306"><a href="#cb16-306"></a>  <span class="fu">render_comparison_table</span>(<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"+ Random Effects"</span>, <span class="st">"Wind Vectors"</span>))</span>
+<span id="cb16-307"><a href="#cb16-307"></a><span class="in">```</span></span>
+<span id="cb16-308"><a href="#cb16-308"></a></span>
+<span id="cb16-311"><a href="#cb16-311"></a><span class="in">```{r}</span></span>
+<span id="cb16-312"><a href="#cb16-312"></a><span class="co">#| label: evict-m5-m6</span></span>
+<span id="cb16-313"><a href="#cb16-313"></a><span class="co">#| include: false</span></span>
+<span id="cb16-314"><a href="#cb16-314"></a></span>
+<span id="cb16-315"><a href="#cb16-315"></a><span class="fu">evict_model</span>(<span class="st">"m5_wind"</span>, <span class="st">"m6_mixed"</span>)</span>
+<span id="cb16-316"><a href="#cb16-316"></a><span class="in">```</span></span>
+<span id="cb16-317"><a href="#cb16-317"></a>Each successive extension was evaluated using the pooled D1 Wald test (Li, Raghunathan &amp; Rubin 1991), which provides a joint F-statistic for the parameters added at each step, pooled across imputed datasets via Rubin's rules. The null hypothesis in each case is that the added parameter vector is jointly zero - i.e., that the smaller model is adequate. All six comparisons reject this null decisively. With 142,000 observations, D1 converges in probability to the D3 statistic (Van Buuren, FIMD), making it the appropriate pooled test for this sample size. The delta AIC and delta BIC reported alongside each comparison are heuristic summaries computed from the imputation-averaged log-likelihoods and serve as a secondary consistency check.</span>
+<span id="cb16-318"><a href="#cb16-318"></a></span>
+<span id="cb16-321"><a href="#cb16-321"></a><span class="in">```{r}</span></span>
+<span id="cb16-322"><a href="#cb16-322"></a><span class="co">#| label: tbl-model-selection-summary</span></span>
+<span id="cb16-323"><a href="#cb16-323"></a><span class="co">#| tbl-cap: "Model selection summary. AIC and BIC are heuristic quantities averaged across imputed datasets. Delta AIC is relative to the best model (M6). Akaike weight of M6 rounds to 1.0 at any practical precision."</span></span>
+<span id="cb16-324"><a href="#cb16-324"></a></span>
+<span id="cb16-325"><a href="#cb16-325"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"model_progression.R"</span>))</span>
+<span id="cb16-326"><a href="#cb16-326"></a>model_stats <span class="ot">&lt;-</span> <span class="fu">build_model_stats</span>()</span>
+<span id="cb16-327"><a href="#cb16-327"></a></span>
+<span id="cb16-328"><a href="#cb16-328"></a><span class="fu">render_model_summary</span>(model_stats)</span>
+<span id="cb16-329"><a href="#cb16-329"></a><span class="in">```</span></span>
+<span id="cb16-330"><a href="#cb16-330"></a></span>
+<span id="cb16-333"><a href="#cb16-333"></a><span class="in">```{r}</span></span>
+<span id="cb16-334"><a href="#cb16-334"></a><span class="co">#| label: fig-model-selection</span></span>
+<span id="cb16-335"><a href="#cb16-335"></a><span class="co">#| fig-cap: "AIC trajectory across the progressive model sequence. Each extension reduces AIC monotonically, confirming that no step introduced net redundancy. The two largest gains correspond to the initial moisture predictors and the final mixed-effects structure."</span></span>
+<span id="cb16-336"><a href="#cb16-336"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb16-337"><a href="#cb16-337"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb16-338"><a href="#cb16-338"></a></span>
+<span id="cb16-339"><a href="#cb16-339"></a><span class="fu">plot_aic_trajectory</span>(model_stats)</span>
+<span id="cb16-340"><a href="#cb16-340"></a><span class="in">```</span></span>
+<span id="cb16-341"><a href="#cb16-341"></a></span>
+<span id="cb16-342"><a href="#cb16-342"></a>AIC quantifies the information lost when a given model approximates the true data-generating process, penalising complexity to discourage over-fitting. A monotonically decreasing AIC sequence is not guaranteed: it is possible to add predictors that improve the likelihood by less than the penalty for the additional parameters. That every extension produced a net AIC reduction confirms each added component captures genuine signal rather than noise.</span>
+<span id="cb16-343"><a href="#cb16-343"></a></span>
+<span id="cb16-344"><a href="#cb16-344"></a>The pooled D1 F-statistic provides the corresponding inferential framework under multiple imputation. For each nested pair, the test evaluates whether the additional parameters are jointly zero, with the F-statistic and its degrees of freedom pooled across imputations via Rubin's rules. The numerator degrees of freedom equal the number of parameters added at each step; the denominator degrees of freedom are Barnard-Rubin corrected and therefore appear as decimals. All six comparisons reject the null at $p &lt; 0.001$. Even the smallest gain in the sequence (wind vectors, M5) represents an improvement overwhelmingly unlikely under the null.</span>
+<span id="cb16-345"><a href="#cb16-345"></a></span>
+<span id="cb16-346"><a href="#cb16-346"></a>The Akaike weights provide a final calibration. With a $\Delta\text{AIC}$ exceeding 60,000 separating the best and worst models, the weight on M6 rounds to 1.0 at any practical decimal precision. There is no information-theoretic case for preferring any earlier model in the sequence.</span>
+<span id="cb16-347"><a href="#cb16-347"></a></span>
+<span id="cb16-348"><a href="#cb16-348"></a>---</span>
+<span id="cb16-349"><a href="#cb16-349"></a></span>
+<span id="cb16-350"><a href="#cb16-350"></a>---</span>
+<span id="cb16-351"><a href="#cb16-351"></a></span>
+<span id="cb16-352"><a href="#cb16-352"></a><span class="fu">## Conclusion</span></span>
+<span id="cb16-353"><a href="#cb16-353"></a></span>
+<span id="cb16-354"><a href="#cb16-354"></a>The evidence assembled across this chapter supports the following conclusions. The ZIG distributional family is the appropriate choice for this data: the Gaussian model produces physically impossible predictions and the Tweedie model, while valid, constrains occurrence and intensity to share the same linear predictor in a way that is empirically unjustified. Every step in the progressive model sequence represents a statistically significant improvement, confirmed by likelihood ratio tests at $p &lt; 0.001$ after multiple comparison correction, and the Akaike weight of the final model is effectively 1. The posterior predictive check confirms that the model replicates the distributional shape of Australian rainfall, not only its conditional mean. And the variance decomposition establishes that the final model explains 44.6% of total variance, of which approximately a tenth is attributable to the geographic heterogeneity captured by the random effects.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
