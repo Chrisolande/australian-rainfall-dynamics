@@ -545,11 +545,11 @@ Table&nbsp;9.1: Summary of performance metrics for the final Mixed-Effects ZIG m
 </tr>
 <tr class="odd">
 <td style="text-align: left; width: 10cm;">Zero-inflation calibration ratio</td>
-<td style="text-align: right; width: 4cm;">1.00 (p = 0.976)</td>
+<td style="text-align: right; width: 4cm;">1.00 (p = 0.512)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; width: 10cm;">Dispersion test (p-value)</td>
-<td style="text-align: right; width: 4cm;">0.36</td>
+<td style="text-align: right; width: 4cm;">0.152</td>
 </tr>
 </tbody>
 </table>
@@ -558,7 +558,7 @@ Table&nbsp;9.1: Summary of performance metrics for the final Mixed-Effects ZIG m
 </figure>
 </div>
 </div>
-<p>The AUC of 0.813 confirms that the occurrence submodel correctly ranks a randomly drawn dry day above a randomly drawn wet day in 81.3% of cases, a threshold-free measure of discriminative performance that does not depend on any particular operating point. At the Youden-optimal threshold of 0.6246, the Brier Score of 0.1654 and Brier Skill Score of 0.2819 quantify the calibrated probabilistic accuracy of the occurrence submodel relative to a naive climatological baseline. The MAE of 2.760 mm represents the average absolute deviation between the model’s point prediction and the recorded observation across all days; the higher rain-day MAE of 5.607 mm reflects the harder prediction problem on positive observations once dry days are excluded. The zero-inflation calibration ratio of 1.00 (<span class="math inline">\(p = 0.976\)</span>) confirms that the hurdle component reproduces the 64.05% dry-day rate correctly across the full conditional distribution of covariates, not merely at the intercept. The dispersion test yields <span class="math inline">\(p = 0.36\)</span>, giving no evidence that the residual variance deviates from what the fitted ZIG family implies.</p>
+<p>The AUC of 0.813 confirms that the occurrence submodel correctly ranks a randomly drawn dry day above a randomly drawn wet day in 81.3% of cases, a threshold-free measure of discriminative performance that does not depend on any particular operating point. At the Youden-optimal threshold of 0.6246, the Brier Score of 0.1654 and Brier Skill Score of 0.2819 quantify the calibrated probabilistic accuracy of the occurrence submodel relative to a naive climatological baseline. The MAE of 2.760 mm represents the average absolute deviation between the model’s point prediction and the recorded observation across all days; the higher rain-day MAE of 5.607 mm reflects the harder prediction problem on positive observations once dry days are excluded. The zero-inflation calibration ratio of 1.00 (<span class="math inline">\(p = 0.512\)</span>) confirms that the hurdle component reproduces the 64.05% dry-day rate correctly across the full conditional distribution of covariates, not merely at the intercept. The dispersion test yields <span class="math inline">\(p = 0.152\)</span>, giving no evidence that the residual variance deviates from what the fitted ZIG family implies.</p>
 <hr>
 </section>
 <section id="sec-limitations" class="level2" data-number="9.3">
@@ -1130,8 +1130,8 @@ Table&nbsp;9.1: Summary of performance metrics for the final Mixed-Effects ZIG m
 <span id="cb1-65"><a href="#cb1-65"></a>    <span class="st">"5.607 mm"</span>,</span>
 <span id="cb1-66"><a href="#cb1-66"></a>    <span class="st">"7.567 mm"</span>,</span>
 <span id="cb1-67"><a href="#cb1-67"></a>    <span class="st">"12.263 mm"</span>,</span>
-<span id="cb1-68"><a href="#cb1-68"></a>    <span class="st">"1.00 (p = 0.976)"</span>,</span>
-<span id="cb1-69"><a href="#cb1-69"></a>    <span class="st">"0.36"</span></span>
+<span id="cb1-68"><a href="#cb1-68"></a>    <span class="st">"1.00 (p = 0.512)"</span>,</span>
+<span id="cb1-69"><a href="#cb1-69"></a>    <span class="st">"0.152"</span></span>
 <span id="cb1-70"><a href="#cb1-70"></a>  )</span>
 <span id="cb1-71"><a href="#cb1-71"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-72"><a href="#cb1-72"></a>  <span class="fu">kable</span>(</span>
@@ -1148,7 +1148,7 @@ Table&nbsp;9.1: Summary of performance metrics for the final Mixed-Effects ZIG m
 <span id="cb1-83"><a href="#cb1-83"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"4cm"</span>)</span>
 <span id="cb1-84"><a href="#cb1-84"></a><span class="in">```</span></span>
 <span id="cb1-85"><a href="#cb1-85"></a></span>
-<span id="cb1-86"><a href="#cb1-86"></a>The AUC of 0.813 confirms that the occurrence submodel correctly ranks a randomly drawn dry day above a randomly drawn wet day in 81.3% of cases, a threshold-free measure of discriminative performance that does not depend on any particular operating point. At the Youden-optimal threshold of 0.6246, the Brier Score of 0.1654 and Brier Skill Score of 0.2819 quantify the calibrated probabilistic accuracy of the occurrence submodel relative to a naive climatological baseline. The MAE of 2.760 mm represents the average absolute deviation between the model's point prediction and the recorded observation across all days; the higher rain-day MAE of 5.607 mm reflects the harder prediction problem on positive observations once dry days are excluded. The zero-inflation calibration ratio of 1.00 ($p = 0.976$) confirms that the hurdle component reproduces the 64.05% dry-day rate correctly across the full conditional distribution of covariates, not merely at the intercept. The dispersion test yields $p = 0.36$, giving no evidence that the residual variance deviates from what the fitted ZIG family implies. </span>
+<span id="cb1-86"><a href="#cb1-86"></a>The AUC of 0.813 confirms that the occurrence submodel correctly ranks a randomly drawn dry day above a randomly drawn wet day in 81.3% of cases, a threshold-free measure of discriminative performance that does not depend on any particular operating point. At the Youden-optimal threshold of 0.6246, the Brier Score of 0.1654 and Brier Skill Score of 0.2819 quantify the calibrated probabilistic accuracy of the occurrence submodel relative to a naive climatological baseline. The MAE of 2.760 mm represents the average absolute deviation between the model's point prediction and the recorded observation across all days; the higher rain-day MAE of 5.607 mm reflects the harder prediction problem on positive observations once dry days are excluded. The zero-inflation calibration ratio of 1.00 ($p = 0.512$) confirms that the hurdle component reproduces the 64.05% dry-day rate correctly across the full conditional distribution of covariates, not merely at the intercept. The dispersion test yields $p = 0.152$, giving no evidence that the residual variance deviates from what the fitted ZIG family implies. </span>
 <span id="cb1-87"><a href="#cb1-87"></a></span>
 <span id="cb1-88"><a href="#cb1-88"></a>---</span>
 <span id="cb1-89"><a href="#cb1-89"></a></span>

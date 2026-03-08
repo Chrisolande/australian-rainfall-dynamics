@@ -64,8 +64,8 @@ tibble(
     "5.607 mm",
     "7.567 mm",
     "12.263 mm",
-    "1.00 (p = 0.976)",
-    "0.36"
+    "1.00 (p = 0.512)",
+    "0.152"
   )
 ) %>%
   kable(
@@ -82,7 +82,7 @@ tibble(
   column_spec(2, width = "4cm")
 ```
 
-The AUC of 0.813 confirms that the occurrence submodel correctly ranks a randomly drawn dry day above a randomly drawn wet day in 81.3% of cases, a threshold-free measure of discriminative performance that does not depend on any particular operating point. At the Youden-optimal threshold of 0.6246, the Brier Score of 0.1654 and Brier Skill Score of 0.2819 quantify the calibrated probabilistic accuracy of the occurrence submodel relative to a naive climatological baseline. The MAE of 2.760 mm represents the average absolute deviation between the model's point prediction and the recorded observation across all days; the higher rain-day MAE of 5.607 mm reflects the harder prediction problem on positive observations once dry days are excluded. The zero-inflation calibration ratio of 1.00 ($p = 0.976$) confirms that the hurdle component reproduces the 64.05% dry-day rate correctly across the full conditional distribution of covariates, not merely at the intercept. The dispersion test yields $p = 0.36$, giving no evidence that the residual variance deviates from what the fitted ZIG family implies. 
+The AUC of 0.813 confirms that the occurrence submodel correctly ranks a randomly drawn dry day above a randomly drawn wet day in 81.3% of cases, a threshold-free measure of discriminative performance that does not depend on any particular operating point. At the Youden-optimal threshold of 0.6246, the Brier Score of 0.1654 and Brier Skill Score of 0.2819 quantify the calibrated probabilistic accuracy of the occurrence submodel relative to a naive climatological baseline. The MAE of 2.760 mm represents the average absolute deviation between the model's point prediction and the recorded observation across all days; the higher rain-day MAE of 5.607 mm reflects the harder prediction problem on positive observations once dry days are excluded. The zero-inflation calibration ratio of 1.00 ($p = 0.512$) confirms that the hurdle component reproduces the 64.05% dry-day rate correctly across the full conditional distribution of covariates, not merely at the intercept. The dispersion test yields $p = 0.152$, giving no evidence that the residual variance deviates from what the fitted ZIG family implies. 
 
 ---
 
