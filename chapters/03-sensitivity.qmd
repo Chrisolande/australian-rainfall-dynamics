@@ -14,7 +14,7 @@
 
 source(here::here("config.R"))
 source(here::here("utils.R"))
-source(here::here("chapter2", "sensitivity_analysis.R"))
+source(here::here("chapter02-03", "sensitivity_analysis.R"))
 
 CONTINUOUS_GHOST_VARS <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
 
@@ -48,7 +48,7 @@ Multiple imputation by chained equations relies on a Gibbs-style iterative algor
 plot_convergence_trace()
 ```
 
-All four variables exhibit satisfactory convergence (@fig-convergence-trace). The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The `sunshine` chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.
+All four variables show satisfactory convergence (@fig-convergence-trace). The chains mix freely throughout and show no directional trend in either the mean or the standard deviation, confirming that five iterations were sufficient for the PMM models to reach a stable solution. The `sunshine` chains undergo a sharper adjustment between iterations one and two, consistent with the asymmetric bimodal structure of that variable's observed distribution, but settle into stable mixing immediately afterward. This behaviour is expected: PMM must locate a donor pool within a distribution that has both a low-sunshine cluster and a high-sunshine cluster, and this requires slightly more initial adjustment than the unimodal cloud cover distributions. It is not evidence of non-convergence.
 
 ---
 
@@ -109,7 +109,7 @@ The between-imputation variance is material for all four variables, though its s
 
 The cloud cover variables show the widest absolute ranges, consistent with their discrete integer scale (0 to 8 oktas). The ribbon plots reveal a characteristic stepped pattern in the mean line, a direct consequence of donor values being drawn from a finite set of integer okta levels rather than a continuous distribution. A notable feature of the cloud cover ribbons is that for a substantial proportion of observations the ribbon collapses to zero width, meaning all ten completions agreed on the same donor value. This stability coexists with periodic spikes in ribbon width at specific observation ranks, most plausibly corresponding to cases where predictor coverage was sparse and the PMM donor pool was ambiguous between adjacent okta levels. The median range of zero for both cloud variables confirms that this agreement is the typical rather than the exceptional case.
 
-`sunshine` and `evaporation` exhibit a different structure. Their mean ranges (3.470 and 3.201 respectively) are smaller in absolute terms than the cloud cover ranges, but their CV of Range values (1.172 and 1.721) indicate that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.
+`sunshine` and `evaporation` show a different structure. Their mean ranges (3.470 and 3.201 respectively) are smaller in absolute terms than the cloud cover ranges, but their CV of Range values (1.172 and 1.721) indicate that imputation uncertainty is not spread uniformly across the distribution: the ribbons are narrow across the bulk of observations but widen substantially in the right tail, where high-sunshine and high-evaporation events are rarer and the PMM donor pool is consequently thinner. For any given high-evaporation day, the spread between the most and least optimistic imputed values across the ten completions is disproportionately large relative to the average. This right-tail concentration of uncertainty is precisely the regime where downstream model coefficients are most sensitive to the choice of completion, making pooled inference particularly important for these two variables.
 
 Taken together, the non-zero mean ranges and the elevated CV values for `sunshine` and `evaporation` confirm that the data does not satisfy MCAR in the regions where uncertainty is highest. Using a single completed dataset would treat the seed-to-seed variability visible in @fig-between-imputation-variance as if it did not exist, producing standard errors that are artificially narrow. This provides direct empirical justification for the Rubin's Rules pooling strategy formalised in the following section.
 

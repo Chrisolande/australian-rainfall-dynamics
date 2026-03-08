@@ -12,12 +12,12 @@
 
 source(here::here("config.R"))
 source(here::here("utils.R"))
-source(here::here("chapter4", "feature_engineering.R"))
-source(here::here("chapter5", "modeling_core.R"))
-source(here::here("chapter5", "modeling_pool.R"))
-source(here::here("chapter5", "modeling_runners.R"))
-source(here::here("chapter5", "mitml_wrappers.R"))
-source(here::here("chapter5", "Reporting.R"))
+source(here::here("chapter5", "feature_engineering.R"))
+source(here::here("chapter6", "modeling_core.R"))
+source(here::here("chapter6", "modeling_pool.R"))
+source(here::here("chapter6", "modeling_runners.R"))
+source(here::here("chapter6", "mitml_wrappers.R"))
+source(here::here("chapter6", "Reporting.R"))
 
 engineered_list <- complete(imp_mids, action = "all") %>% map(engineer_features)
 
@@ -145,17 +145,7 @@ disp_formula <- ~ humidity3pm +
 
 A Zero-Inflated Gamma model is a two-component mixture. The first component, the zero-inflation submodel, is a logistic regression that estimates the probability of a structurally zero outcome: a dry day on which no precipitation occurs. The second component, the conditional intensity submodel, is a Gamma regression with log link that models the expected rainfall given that rain does fall. Together they address the two questions identified in @sec-eda: whether rain will occur, and if so, how much.
 
-Formally, for observation $i$ the model takes a hurdle structure:
-
-$$
-P(Y_i = 0) = \pi_i
-$$
-
-$$
-P(Y_i = y) = (1 - \pi_i) \cdot f_\Gamma(y \mid \mu_i, \phi), \quad y > 0
-$$
-
-where $\pi_i = \text{logit}^{-1}(\mathbf{z}_i^\top \boldsymbol{\gamma})$ is the zero-inflation probability and $\mu_i = \exp(\mathbf{x}_i^\top \boldsymbol{\beta})$ is the conditional mean intensity. The two linear predictors $\mathbf{z}_i$ and $\mathbf{x}_i$ can include different sets of covariates, allowing predictors of occurrence to differ from predictors of intensity. All models are fitted using `glmmTMB`. Progressive model construction provides a transparent audit trail connecting each modelling decision to its empirical motivation and enables incremental comparison to isolate the contribution of each newly added component.
+The mathematical specification is given on the project index. The two linear predictors for occurrence and intensity can include different sets of covariates, allowing the drivers of dry-day probability to differ from the drivers of rainfall volume, the structural distinction between the ZIG framework and a Tweedie model. All models are fitted using `glmmTMB`. Progressive model construction provides a transparent audit trail connecting each modelling decision to its empirical motivation and enables incremental comparison to isolate the contribution of each newly added component.
 
 ---
 
@@ -404,12 +394,71 @@ saveRDS(m6_mixed, here::here("models", "m6_mixed.rds"))
 render_pooled_model_table(get_model("m6_mixed"), "M6: Fixed Effects Model")
 ```
 
-All five preceding models implicitly assume that the relationship between each atmospheric predictor and rainfall is spatially uniform across a continent spanning tropical monsoon, subtropical semi-arid, temperate oceanic, and Mediterranean climate regimes. The EDA in @sec-eda confirmed that both mean rainfall levels and seasonal patterns vary substantially across the station network.
+The five preceding models share a common assumption: that the relationship between
+atmospheric predictors and rainfall is spatially uniform across a continent spanning
+tropical monsoon, subtropical semi-arid, temperate oceanic, and Mediterranean climate
+regimes. The EDA in @sec-eda confirmed that both mean rainfall levels and seasonal
+patterns vary substantially across the station network, and a pooled fixed-effects
+structure cannot represent that heterogeneity without absorbing it as residual noise.
 
-Model 6 relaxes the spatial homogeneity assumption through a mixed-effects structure (@tbl-m6). Location-specific random effects allow the intercept and three scientifically motivated slopes for `humidity3pm`, `rain_yesterday`, and `dewpoint_change` to vary freely across weather stations. An uncorrelated (diagonal) random effects covariance structure is specified via `diag()` rather than an unstructured matrix, avoiding overparameterisation across the number of stations. The zero-inflation submodel is expanded with `sunshine`, `evaporation`, and day-of-year harmonic terms, reflecting the hypothesis that occurrence probability is governed by the same broad range of atmospheric drivers as intensity. Additionally, `days_since_rain` in the zero-inflation submodel is replaced by a four-degree-of-freedom natural spline, implementing the non-linear rapid-then-gradual decay in rainfall probability identified in @sec-dry-spell. The spline permits the marginal probability of precipitation to decline steeply within the first ten dry days and then stabilise, rather than imposing the constant log-odds decrement of a linear term.
+Model 6 addresses this through a mixed-effects structure (@tbl-m6). Location-specific
+random effects allow the intercept and three slopes, `humidity3pm`, `rain_yesterday`,
+and `dewpoint_change`, to vary freely across weather stations. An uncorrelated
+diagonal covariance structure is specified via `diag()` rather than a full
+unstructured matrix, which would be overparameterised given the number of stations.
+The zero-inflation submodel is simultaneously expanded to include `sunshine`,
+`evaporation`, and day-of-year harmonic terms, reflecting the hypothesis that
+occurrence probability is governed by the same broad range of atmospheric drivers as
+intensity. The `days_since_rain` term is replaced by a four-degree-of-freedom natural
+spline, implementing the non-linear dry spell decay identified in @sec-dry-spell:
+rather than imposing a constant log-odds decrement, the spline allows precipitation
+probability to decline steeply through the first ten dry days before stabilising.
 
-The fixed-effect estimates for the global-mean relationships remain directionally and numerically consistent with those from Model 5, confirming that the random effects are absorbing genuine between-location variation rather than confounding the population-average coefficients.
+The fixed-effect estimates for global-mean relationships remain directionally and
+numerically consistent with Model 5, confirming that the random effects are absorbing
+genuine between-location variation rather than distorting population-average
+coefficients.
 
-Several predictors warrant attention in the context of the expanded zero-inflation submodel. `dewpoint_9am` is now significant in the occurrence model ($\hat{\beta}_{zi} = -0.512$, $p < 0.001$), in contrast to its non-significance in all prior specifications. This reversal reflects the expanded zero-inflation predictor set: once sunshine, evaporation, and seasonal harmonics are included, morning dewpoint carries a distinct contribution to precipitation probability that was previously absorbed by correlated terms. The `humidity_ma7` coefficient in the zero-inflation submodel ($\hat{\beta}_{zi} = -0.254$, $p < 0.001$) is negative and substantial, indicating that a persistently humid antecedent week substantially reduces the probability of a dry day, consistent with extended moisture advection creating a background state favourable to continued precipitation.
+Two predictors in the expanded zero-inflation submodel warrant attention. `dewpoint_9am`
+is now significant ($\hat{\beta}_{zi} = -0.512$, $p < 0.001$), reversing its
+non-significance in all prior specifications. Once sunshine, evaporation, and seasonal
+harmonics are controlled for, morning dewpoint carries a distinct contribution to
+precipitation probability that was previously absorbed by correlated terms. The
+`humidity_ma7` coefficient ($\hat{\beta}_{zi} = -0.254$, $p < 0.001$) is negative
+and substantial: a persistently humid antecedent week substantially reduces the
+probability of a dry day, consistent with extended moisture advection maintaining
+conditions favourable to continued precipitation.
 
-The natural spline terms for `days_since_rain` in the zero-inflation submodel are collectively non-significant at conventional thresholds, with the second basis function marginally approaching significance ($\hat{\beta} = 0.115$, $p = 0.075$). This suggests that the dry spell decay function, while visually non-linear in @sec-dry-spell, does not depart substantially from linearity once the full complement of humidity, seasonal, and persistence predictors is included. The spline is retained for its robustness to potential non-linearity, but the practical difference from a linear specification appears limited given the current covariate set.
+The natural spline terms for `days_since_rain` are collectively non-significant, with
+only the second basis function marginally approaching significance ($p = 0.075$). The
+dry spell decay function, while visually non-linear in @sec-dry-spell, does not depart
+substantially from linearity once humidity, seasonal, and persistence predictors are
+included. The spline is retained for robustness, but the practical difference from a
+linear specification appears limited under the current covariate set.
+
+### Dispersion Modelling
+
+Model 6 additionally estimates the Gamma shape parameter $\phi_i$ as a function of
+covariates rather than treating it as a global constant. The conditional variance of
+rainfall given occurrence, $\text{Var}(Y \mid Y > 0) = \mu_i^2 / \phi_i$, is
+unlikely to be uniform across atmospheric conditions: deep convective events produce
+more erratic intensity distributions than steady frontal rainfall under stable
+westerly flow, and a fixed dispersion parameter cannot represent this.
+
+The dominant signal comes from the evaporation spline ($\hat{\beta} = -3.101$,
+$p < 0.001$). Higher surface evaporative demand is associated with substantially
+lower $\phi_i$, meaning greater conditional variance in rainfall volume.
+`dewpoint_change` follows the same direction ($\hat{\beta} = -0.050$, $p < 0.001$):
+a larger diurnal drop in dewpoint, indicative of dry-air entrainment under unstable
+conditions, reduces $\phi_i$ further and increases conditional dispersion. `humidity3pm`
+moves in the opposite direction ($\hat{\beta} = 0.052$, $p < 0.001$), with higher
+afternoon humidity increasing $\phi_i$ and narrowing conditional variance. Moister
+atmospheric states produce more sustained, consistent rainfall rather than isolated
+high-intensity events. The day-of-year harmonics (`day_sin`: $\hat{\beta} = -0.045$;
+`day_cos`: $\hat{\beta} = -0.031$; both $p < 0.001$) are negative and highly
+significant, capturing seasonal modulation of rainfall variability that operates
+independently of mean-level effects across the annual cycle.
+
+Taken together, the dispersion coefficients reflect a physically interpretable
+pattern: moisture and atmospheric stability reduce conditional variance, while
+instability, dry-air intrusion, and high evaporative demand increase it.

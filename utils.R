@@ -1,15 +1,41 @@
 # Function to display missing values
 missing_val <- function(df) {
-  missing_tab <- df %>%
+  df %>%
     summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
     pivot_longer(
       everything(),
       names_to = "column",
       values_to = "pct_missing"
     ) %>%
-    arrange(desc(pct_missing))
-
-  return(missing_tab %>% kable())
+    arrange(desc(pct_missing)) %>%
+    mutate(pct_missing = as.numeric(round(pct_missing, 1))) %>%
+    rename(
+      Column = column,
+      `Missing (%)` = pct_missing
+    ) %>%
+    datatable(
+      rownames = FALSE,
+      filter = "top",
+      extensions = "Buttons",
+      options = list(
+        pageLength = 26,
+        dom = "Bt",
+        buttons = c("csv", "excel"),
+        scrollY = "300px",
+        scrollX = TRUE,
+        scroller = TRUE,
+        columnDefs = list(
+          list(className = "dt-right", targets = 1)
+        )
+      )
+    ) %>%
+    formatStyle(
+      "Missing (%)",
+      background = styleColorBar(c(0, 100), "#f87171"),
+      backgroundSize = "100% 80%",
+      backgroundRepeat = "no-repeat",
+      backgroundPosition = "center"
+    )
 }
 
 # Function to check multicollinearity

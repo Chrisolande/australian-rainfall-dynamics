@@ -25,7 +25,7 @@ Rolling means over 3-day and 7-day trailing windows are computed for both rainfa
 #| echo: true
 #| message: false
 
-source(here::here("chapter4", "moving_averages.R"))
+source(here::here("chapter5", "moving_averages.R"))
 ma_dat <- build_ma_data()
 ```
 
@@ -78,7 +78,7 @@ plot_ma_ridgeline(ma_dat)
 #| echo: true
 #| warning: false
 
-source(here::here("chapter4", "ma_correlation.R"))
+source(here::here("chapter5", "ma_correlation.R"))
 plot_ma_correlation(ma_dat)
 ```
 
@@ -96,7 +96,7 @@ This presents a choice between responsiveness and stability. The 3-day average r
 #| message: false
 #| warning: false
 
-source(here::here("chapter4", "feature_engineering.R"))
+source(here::here("chapter5", "feature_engineering.R"))
 ```
 
 The pipeline is organised into four conceptually distinct transformations, each addressing a specific structural property identified in the EDA.
@@ -169,7 +169,7 @@ Feature engineering that introduces interaction terms, composite indices, and te
 
 **Cyclical and wind components.** The `day_sin`, `day_cos`, `gust_V_NS`, and `gust_U_EW` features all show VIF values well below 3 (@tbl-vif). This confirms that the decomposition strategies, sine/cosine for the annual cycle and $U$/$V$ projection for wind direction successfully converted circular variables into continuous representations without introducing redundancy. Each component carries information that is approximately orthogonal to its pair.
 
-**Interaction stability.** The `sun_humid_interaction` term has a VIF of 1.174 (@tbl-vif), which is exceptionally low for a multiplicative interaction. Without mean-centring the constituent variables before multiplication, interaction terms routinely exhibit VIFs above 10 due to their algebraic overlap with the main effects. The observed value of 1.174 provides empirical confirmation that centring eliminated this artificial correlation, and that the interaction term is capturing a genuinely distinct dimension of the feature space, the joint Rain Corner structure identified in @sec-bivariate-density.
+**Interaction stability.** The `sun_humid_interaction` term has a VIF of 1.174 (@tbl-vif), which is exceptionally low for a multiplicative interaction. Without mean-centring the constituent variables before multiplication, interaction terms routinely show VIFs above 10 due to their algebraic overlap with the main effects. The observed value of 1.174 provides empirical confirmation that centring eliminated this artificial correlation, and that the interaction term is capturing a genuinely distinct dimension of the feature space, the joint Rain Corner structure identified in @sec-bivariate-density.
 
 **Elevated collinearity in humidity.** The highest observed VIF is for `humidity3pm` at 4.776 (@tbl-vif). This is expected: humidity participates structurally in three of the derived features (`moisture_index`, `instability_index`, and `sun_humid_interaction`), and its 7-day moving average is also present in the feature set. A VIF of 4.776 lies below the conventional threshold of 10 for severe concern and is consistent with moderate collinearity. The decision to retain `humidity3pm` despite this inflation is deliberate: it is the single strongest individual predictor of rainfall in the dataset (Spearman $r = 0.44$, as established in @sec-correlation), and removing it in favour of its derived aggregates would sacrifice the direct same-day atmospheric moisture signal for the sake of a marginal improvement in collinearity. For tree-based models, this trade-off does not arise, since these methods are not sensitive to multicollinearity by design.
 

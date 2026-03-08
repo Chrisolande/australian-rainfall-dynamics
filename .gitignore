@@ -5,7 +5,7 @@
 .idea
 /.quarto/
 
-# Ignore knitr/RMarkdown caches (These are heavy and machine-specific)
+# Ignore knitr/RMarkdown caches
 *_cache/
 chapters/*_files/
 chapters/*_cache/
@@ -16,3 +16,5 @@ chapters/*_cache/
 test_files/
 iml/
 .codacy/
+ausweather.ipynb
+refactored.ipynb

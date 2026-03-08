@@ -494,7 +494,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter8"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">render_error_metrics</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-global-metrics" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
@@ -504,21 +504,20 @@ Table&nbsp;8.1: Global predictive error metrics across all observations and loca
 </figcaption>
 <div aria-describedby="tbl-global-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
-<caption>Error Metrics</caption>
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold;">Metric</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Estimate</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">RMSE</td>
 <td style="text-align: right;">7.567</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">mae</td>
+<td style="text-align: left;">MAE</td>
 <td style="text-align: right;">2.760</td>
 </tr>
 </tbody>
@@ -540,21 +539,20 @@ Table&nbsp;8.2: Predictive error metrics restricted to rain-days (positive obser
 </figcaption>
 <div aria-describedby="tbl-positive-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
-<caption>Error Metrics</caption>
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold;">Metric</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Estimate</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">RMSE</td>
 <td style="text-align: right;">12.263</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">mae</td>
+<td style="text-align: left;">MAE</td>
 <td style="text-align: right;">5.607</td>
 </tr>
 </tbody>
@@ -1206,11 +1204,11 @@ Wind9am U EW (Spline, Df=2)2</td>
 </figure>
 </div>
 </div>
-<p>The ten spline and random-effect parameters yield <span class="math inline">\(F(10,\ 138.9) = 75.283\)</span>, <span class="math inline">\(p &lt; 0.001\)</span> (<a href="#tbl-d1-m6-vs-m5" class="quarto-xref">Table&nbsp;<span>8.8</span></a>). The <span class="math inline">\(\Delta\text{AIC} = -6{,}915.32\)</span> is the second largest gain in the sequence, reflecting the substantial explanatory contribution of geographic heterogeneity. The RIV of 3.877 indicates that the non-linear spline terms, particularly the instability index spline and the eastward wind component splines, exhibit meaningful between-imputation variability.</p>
+<p>The ten spline and random-effect parameters yield <span class="math inline">\(F(10,\ 138.9) = 75.283\)</span>, <span class="math inline">\(p &lt; 0.001\)</span> (<a href="#tbl-d1-m6-vs-m5" class="quarto-xref">Table&nbsp;<span>8.8</span></a>). The <span class="math inline">\(\Delta\text{AIC} = -6{,}915.32\)</span> is the second largest gain in the sequence, reflecting the substantial explanatory contribution of geographic heterogeneity. The RIV of 3.877 indicates that the non-linear spline terms, particularly the instability index spline and the eastward wind component splines, show meaningful between-imputation variability.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"model_progression.R"</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter8"</span>, <span class="st">"model_progression.R"</span>))</span>
 <span id="cb11-2"><a href="#cb11-2"></a>model_stats <span class="ot">&lt;-</span> <span class="fu">build_model_stats</span>()</span>
 <span id="cb11-3"><a href="#cb11-3"></a></span>
 <span id="cb11-4"><a href="#cb11-4"></a><span class="fu">render_model_summary</span>(model_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1812,10 +1810,10 @@ Figure&nbsp;8.3: AIC trajectory across the progressive model sequence. Each exte
 <span id="cb13-4"><a href="#cb13-4"></a></span>
 <span id="cb13-5"><a href="#cb13-5"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
 <span id="cb13-6"><a href="#cb13-6"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb13-7"><a href="#cb13-7"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter4"</span>, <span class="st">"feature_engineering.R"</span>))</span>
-<span id="cb13-8"><a href="#cb13-8"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"mitml_wrappers.R"</span>))</span>
-<span id="cb13-9"><a href="#cb13-9"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"Reporting.R"</span>))</span>
-<span id="cb13-10"><a href="#cb13-10"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"feature_engineering.R"</span>))</span>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"mitml_wrappers.R"</span>))</span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"Reporting.R"</span>))</span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter8"</span>, <span class="st">"distribution_comparison.R"</span>))</span>
 <span id="cb13-11"><a href="#cb13-11"></a></span>
 <span id="cb13-12"><a href="#cb13-12"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
 <span id="cb13-13"><a href="#cb13-13"></a>m_full <span class="ot">&lt;-</span> <span class="fu">get_diagnostic_model</span>(m6_mixed)</span>
@@ -1846,7 +1844,7 @@ Figure&nbsp;8.3: AIC trajectory across the progressive model sequence. Each exte
 <span id="cb13-40"><a href="#cb13-40"></a><span class="co">#| cache: true</span></span>
 <span id="cb13-41"><a href="#cb13-41"></a><span class="co">#| warning: false</span></span>
 <span id="cb13-42"><a href="#cb13-42"></a></span>
-<span id="cb13-43"><a href="#cb13-43"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
+<span id="cb13-43"><a href="#cb13-43"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter8"</span>, <span class="st">"predictive_accuracy.R"</span>))</span>
 <span id="cb13-44"><a href="#cb13-44"></a><span class="fu">render_error_metrics</span>()</span>
 <span id="cb13-45"><a href="#cb13-45"></a><span class="in">```</span></span>
 <span id="cb13-46"><a href="#cb13-46"></a></span>
@@ -2053,13 +2051,13 @@ Figure&nbsp;8.3: AIC trajectory across the progressive model sequence. Each exte
 <span id="cb13-281"><a href="#cb13-281"></a><span class="fu">evict_model</span>(<span class="st">"m5_wind"</span>, <span class="st">"m6_mixed"</span>)</span>
 <span id="cb13-282"><a href="#cb13-282"></a><span class="in">```</span></span>
 <span id="cb13-283"><a href="#cb13-283"></a></span>
-<span id="cb13-284"><a href="#cb13-284"></a>The ten spline and random-effect parameters yield $F(10,\ 138.9) = 75.283$, $p &lt; 0.001$ (@tbl-d1-m6-vs-m5). The $\Delta\text{AIC} = -6{,}915.32$ is the second largest gain in the sequence, reflecting the substantial explanatory contribution of geographic heterogeneity. The RIV of 3.877 indicates that the non-linear spline terms, particularly the instability index spline and the eastward wind component splines, exhibit meaningful between-imputation variability.</span>
+<span id="cb13-284"><a href="#cb13-284"></a>The ten spline and random-effect parameters yield $F(10,\ 138.9) = 75.283$, $p &lt; 0.001$ (@tbl-d1-m6-vs-m5). The $\Delta\text{AIC} = -6{,}915.32$ is the second largest gain in the sequence, reflecting the substantial explanatory contribution of geographic heterogeneity. The RIV of 3.877 indicates that the non-linear spline terms, particularly the instability index spline and the eastward wind component splines, show meaningful between-imputation variability.</span>
 <span id="cb13-285"><a href="#cb13-285"></a></span>
 <span id="cb13-288"><a href="#cb13-288"></a><span class="in">```{r}</span></span>
 <span id="cb13-289"><a href="#cb13-289"></a><span class="co">#| label: tbl-model-selection-summary</span></span>
 <span id="cb13-290"><a href="#cb13-290"></a><span class="co">#| tbl-cap: "Model selection summary. AIC and BIC are heuristic quantities averaged across imputed datasets. $\\Delta$AIC is relative to M6, the best model. The Akaike weight of M6 rounds to 1.0 at any practical precision."</span></span>
 <span id="cb13-291"><a href="#cb13-291"></a></span>
-<span id="cb13-292"><a href="#cb13-292"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"model_progression.R"</span>))</span>
+<span id="cb13-292"><a href="#cb13-292"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter8"</span>, <span class="st">"model_progression.R"</span>))</span>
 <span id="cb13-293"><a href="#cb13-293"></a>model_stats <span class="ot">&lt;-</span> <span class="fu">build_model_stats</span>()</span>
 <span id="cb13-294"><a href="#cb13-294"></a></span>
 <span id="cb13-295"><a href="#cb13-295"></a><span class="fu">render_model_summary</span>(model_stats)</span>

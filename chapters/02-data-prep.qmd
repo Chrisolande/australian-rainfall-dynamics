@@ -29,7 +29,7 @@ source(here::here("utils.R"))
 #| message: false
 #| warning: false
 
-source(here::here("chapter2", "cleaning.R"))
+source(here::here("chapter02-03", "cleaning.R"))
 ```
 
 **Column standardisation.** All variable names are converted to `snake_case` via `janitor::clean_names()`, called at ingestion. This eliminates downstream ambiguity in variable references and ensures internal consistency across all chapters.
@@ -53,7 +53,7 @@ Before designing an imputation strategy, it is necessary to understand the mecha
 #| message: false
 #| warning: false
 
-source(here::here("chapter2", "data_missingness.R"))
+source(here::here("chapter02-03", "data_missingness.R"))
 render_comissingness_table()
 ```
 
@@ -169,7 +169,7 @@ Before Stage 2 runs, all station-variable pairs identified in @sec-ghost-sensor 
 #| echo: true
 #| eval: false
 
-source(here::here("chapter2", "imputation.R"))
+source(here::here("chapter02-03", "imputation.R"))
 ```
 
 ```{r}

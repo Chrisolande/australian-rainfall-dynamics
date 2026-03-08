@@ -12,8 +12,9 @@
 
 source(here::here("config.R"))
 source(here::here("utils.R"))
-source(here::here("chapter4", "feature_engineering.R"))
+source(here::here("chapter5", "feature_engineering.R"))
 
+pred_rainfall <- readRDS(here::here("models", "rainfall_preds.rds"))
 engineered_list <- complete(imp_mids, action = "all") %>%
   map(engineer_features)
 
@@ -23,9 +24,8 @@ m6_mixed <- get_model("m6_mixed")
 ```{r}
 #| label: eval-build-predictions
 #| include: false
-#| cache: true
 
-source(here::here("chapter6", "eval_classification.R"))
+source(here::here("chapter7", "eval_classification.R"))
 preds <- build_predictions()
 ```
 
@@ -80,7 +80,7 @@ The Brier Score is 0.1654 and the Brier Skill Score is 0.2819, indicating meanin
 #| echo: true
 #| warning: false
 
-source(here::here("chapter6", "eval_random_effects.R"))
+source(here::here("chapter7", "eval_random_effects.R"))
 plot_location_effects()
 ```
 
@@ -106,7 +106,7 @@ The random intercepts represent the location-specific baseline deviations in rai
 #| message: false
 #| warning: false
 
-source(here::here("chapter6", "eval_diagnostics.R"))
+source(here::here("chapter7", "eval_diagnostics.R"))
 run_dharma_diagnostics()
 ```
 
@@ -127,7 +127,7 @@ Standard residual diagnostics are not directly applicable to Zero-Inflated Gamma
 #| message: false
 #| warning: false
 
-source(here::here("chapter6", "eval_autocorrelation.R"))
+source(here::here("chapter7", "eval_autocorrelation.R"))
 full_data <- build_autocorrelation_data()
 dw_results <- run_dw_tests(full_data, m_full, res)
 ```
@@ -151,7 +151,7 @@ dw_data %>%
 
 The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.
 
-This risk is particularly salient here. The raw data exhibits strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature `rain_yesterday`, the 7-day moving average features, the natural spline of `days_since_rain`, and the cyclical seasonal encoding.
+This risk is particularly salient here. The raw data shows strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature `rain_yesterday`, the 7-day moving average features, the natural spline of `days_since_rain`, and the cyclical seasonal encoding.
 
 **Results across all locations.** The Durbin-Watson test was applied to residuals from all 49 stations and results are reported in @tbl-dw-results, sorted by p-value. The theoretical value under perfect serial independence is 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. The distribution of test statistics across stations reveals a consistent pattern: nearly all values fall in the range 1.81 to 2.25, indicating that the residuals are close to independence everywhere, though the degree of remaining structure varies by location.
 

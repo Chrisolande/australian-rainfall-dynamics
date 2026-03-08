@@ -553,7 +553,7 @@ Figure&nbsp;7.2: Confusion matrix at the Youden-optimal threshold (0.6246)
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_random_effects.R"</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_random_effects.R"</span>))</span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="fu">plot_location_effects</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
@@ -580,7 +580,7 @@ Figure&nbsp;7.3: Location-specific baseline rainfall adjustments (random interce
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_diagnostics.R"</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_diagnostics.R"</span>))</span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="fu">run_dharma_diagnostics</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
@@ -630,7 +630,7 @@ Figure&nbsp;7.6: DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_autocorrelation.R"</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_autocorrelation.R"</span>))</span>
 <span id="cb7-2"><a href="#cb7-2"></a>full_data <span class="ot">&lt;-</span> <span class="fu">build_autocorrelation_data</span>()</span>
 <span id="cb7-3"><a href="#cb7-3"></a>dw_results <span class="ot">&lt;-</span> <span class="fu">run_dw_tests</span>(full_data, m_full, res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -643,15 +643,15 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 </figcaption>
 <div aria-describedby="tbl-dw-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-588833e5ad7b479f4496" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-588833e5ad7b479f4496">{"x":{"filter":"none","vertical":false,"caption":"<caption>Durbin-Watson test results across all 49 locations, sorted by p-value.<\/caption>","data":[["Ballarat","Watsonia","Cairns","MelbourneAirport","Walpole","Portland","GoldCoast","Newcastle","Melbourne","Sale","Canberra","Dartmoor","CoffsHarbour","Albany","Launceston","Hobart","PearceRAAF","NorfolkIsland","NorahHead","MountGinini","Nhil","MountGambier","Mildura","Townsville","WaggaWagga","Bendigo","Wollongong","SalmonGums","Nuriootpa","Sydney","Albury","PerthAirport","Penrith","Tuggeranong","Williamtown","Witchcliffe","Adelaide","BadgerysCreek","Katherine","Darwin","Richmond","Moree","SydneyAirport","Uluru","Cobar","AliceSprings","Perth","Brisbane","Woomera"],[2.2527,2.2,1.8149,2.1613,2.1521,2.1246,1.8754,1.8754,2.1367,2.1196,2.1041,2.1089,1.8933,1.9026,2.0962,2.0925,2.0993,2.0933,1.9073,1.908,2.1247,2.0893,2.0864,1.9148,2.0821,2.0806,1.9194,2.0803,2.0786,1.9287,2.0654,2.0629,2.0588,2.0516,2.0523,2.0432,2.042,2.0426,1.9439,2.0373,2.0381,2.0309,2.0222,1.975,2.017,2.0139,2.0109,2.0083,2.0021],[0,0,0,0,0.0001,0.0007,0.0007,0.0007,0.0008,0.0011,0.0024,0.0032,0.0038,0.0075,0.008200000000000001,0.0091,0.0091,0.0111,0.0122,0.0132,0.0137,0.0141,0.0179,0.0191,0.0252,0.0266,0.0278,0.0293,0.0314,0.0395,0.0732,0.0848,0.1097,0.158,0.1867,0.2407,0.2439,0.25,0.2683,0.2923,0.3012,0.4093,0.543,0.627,0.642,0.7028,0.7594,0.8159999999999999,0.9546]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Location<\/th>\n      <th>DW Statistic<\/th>\n      <th>p-value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":15,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2]},{"name":"location","targets":0},{"name":"dw_stat","targets":1},{"name":"p_value","targets":2}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,15,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0bc13295bbcb7fb81664" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0bc13295bbcb7fb81664">{"x":{"filter":"none","vertical":false,"caption":"<caption>Durbin-Watson test results across all 49 locations, sorted by p-value.<\/caption>","data":[["Ballarat","Watsonia","Cairns","MelbourneAirport","Walpole","Portland","GoldCoast","Newcastle","Melbourne","Sale","Canberra","Dartmoor","CoffsHarbour","Albany","Launceston","Hobart","PearceRAAF","NorfolkIsland","NorahHead","MountGinini","Nhil","MountGambier","Mildura","Townsville","WaggaWagga","Bendigo","Wollongong","SalmonGums","Nuriootpa","Sydney","Albury","PerthAirport","Penrith","Tuggeranong","Williamtown","Witchcliffe","Adelaide","BadgerysCreek","Katherine","Darwin","Richmond","Moree","SydneyAirport","Uluru","Cobar","AliceSprings","Perth","Brisbane","Woomera"],[2.2527,2.2,1.8149,2.1613,2.1521,2.1246,1.8754,1.8754,2.1367,2.1196,2.1041,2.1089,1.8933,1.9026,2.0962,2.0925,2.0993,2.0933,1.9073,1.908,2.1247,2.0893,2.0864,1.9148,2.0821,2.0806,1.9194,2.0803,2.0786,1.9287,2.0654,2.0629,2.0588,2.0516,2.0523,2.0432,2.042,2.0426,1.9439,2.0373,2.0381,2.0309,2.0222,1.975,2.017,2.0139,2.0109,2.0083,2.0021],[0,0,0,0,0.0001,0.0007,0.0007,0.0007,0.0008,0.0011,0.0024,0.0032,0.0038,0.0075,0.008200000000000001,0.0091,0.0091,0.0111,0.0122,0.0132,0.0137,0.0141,0.0179,0.0191,0.0252,0.0266,0.0278,0.0293,0.0314,0.0395,0.0732,0.0848,0.1097,0.158,0.1867,0.2407,0.2439,0.25,0.2683,0.2923,0.3012,0.4093,0.543,0.627,0.642,0.7028,0.7594,0.8159999999999999,0.9546]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Location<\/th>\n      <th>DW Statistic<\/th>\n      <th>p-value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":15,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2]},{"name":"location","targets":0},{"name":"dw_stat","targets":1},{"name":"p_value","targets":2}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,15,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </figure>
 </div>
 </div>
 <p>The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.</p>
-<p>This risk is particularly salient here. The raw data exhibits strong temporal autocorrelation: yesterday’s rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <code>rain_yesterday</code>, the 7-day moving average features, the natural spline of <code>days_since_rain</code>, and the cyclical seasonal encoding.</p>
+<p>This risk is particularly salient here. The raw data shows strong temporal autocorrelation: yesterday’s rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <code>rain_yesterday</code>, the 7-day moving average features, the natural spline of <code>days_since_rain</code>, and the cyclical seasonal encoding.</p>
 <p><strong>Results across all locations.</strong> The Durbin-Watson test was applied to residuals from all 49 stations and results are reported in <a href="#tbl-dw-results" class="quarto-xref">Table&nbsp;<span>7.1</span></a>, sorted by p-value. The theoretical value under perfect serial independence is 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. The distribution of test statistics across stations reveals a consistent pattern: nearly all values fall in the range 1.81 to 2.25, indicating that the residuals are close to independence everywhere, though the degree of remaining structure varies by location.</p>
 <p><strong>Stations with the least residual autocorrelation.</strong> Woomera (DW = 2.0021, <span class="math inline">\(p\)</span> = 0.955), Brisbane (DW = 2.0083, <span class="math inline">\(p\)</span> = 0.816), Perth (DW = 2.0109, <span class="math inline">\(p\)</span> = 0.759), and Alice Springs (DW = 2.0139, <span class="math inline">\(p\)</span> = 0.703) show statistics that are essentially indistinguishable from the ideal value of 2.0. These are predominantly arid or subtropical interior locations where rainfall is episodic and driven by synoptic-scale events well-captured by the dynamic predictors. The temporal engineering has absorbed virtually all day-to-day dependence for these stations.</p>
 <p><strong>Stations with the strongest residual autocorrelation.</strong> Ballarat (DW = 2.2527, <span class="math inline">\(p\)</span> &lt; 0.001), Watsonia (DW = 2.2000, <span class="math inline">\(p\)</span> &lt; 0.001), Cairns (DW = 1.8149, <span class="math inline">\(p\)</span> &lt; 0.001), and Melbourne Airport (DW = 2.1613, <span class="math inline">\(p\)</span> &lt; 0.001) sit at the extremes of the distribution. Ballarat and Watsonia, both in the Victorian highlands, show mild negative autocorrelation (DW &gt; 2), suggesting a slight tendency for above-average residuals to follow below-average ones a pattern consistent with orographic rainfall variability that the current predictor set does not fully resolve. Cairns shows mild positive autocorrelation (DW &lt; 2), consistent with multi-day monsoon persistence in tropical North Queensland that the 7-day moving average partially but not entirely captures.</p>
@@ -1165,20 +1165,20 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 <span id="cb8-14"><a href="#cb8-14"></a></span>
 <span id="cb8-15"><a href="#cb8-15"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"config.R"</span>))</span>
 <span id="cb8-16"><a href="#cb8-16"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"utils.R"</span>))</span>
-<span id="cb8-17"><a href="#cb8-17"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter4"</span>, <span class="st">"feature_engineering.R"</span>))</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter5"</span>, <span class="st">"feature_engineering.R"</span>))</span>
 <span id="cb8-18"><a href="#cb8-18"></a></span>
-<span id="cb8-19"><a href="#cb8-19"></a>engineered_list <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-20"><a href="#cb8-20"></a>  <span class="fu">map</span>(engineer_features)</span>
-<span id="cb8-21"><a href="#cb8-21"></a></span>
-<span id="cb8-22"><a href="#cb8-22"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="in">```</span></span>
-<span id="cb8-24"><a href="#cb8-24"></a></span>
-<span id="cb8-27"><a href="#cb8-27"></a><span class="in">```{r}</span></span>
-<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#| label: eval-build-predictions</span></span>
-<span id="cb8-29"><a href="#cb8-29"></a><span class="co">#| include: false</span></span>
-<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#| cache: true</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>pred_rainfall <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"rainfall_preds.rds"</span>))</span>
+<span id="cb8-20"><a href="#cb8-20"></a>engineered_list <span class="ot">&lt;-</span> <span class="fu">complete</span>(imp_mids, <span class="at">action =</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>  <span class="fu">map</span>(engineer_features)</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a>m6_mixed <span class="ot">&lt;-</span> <span class="fu">get_model</span>(<span class="st">"m6_mixed"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="in">```</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="in">```{r}</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a><span class="co">#| label: eval-build-predictions</span></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#| include: false</span></span>
 <span id="cb8-31"><a href="#cb8-31"></a></span>
-<span id="cb8-32"><a href="#cb8-32"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_classification.R"</span>))</span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_classification.R"</span>))</span>
 <span id="cb8-33"><a href="#cb8-33"></a>preds <span class="ot">&lt;-</span> <span class="fu">build_predictions</span>()</span>
 <span id="cb8-34"><a href="#cb8-34"></a><span class="in">```</span></span>
 <span id="cb8-35"><a href="#cb8-35"></a></span>
@@ -1233,7 +1233,7 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 <span id="cb8-92"><a href="#cb8-92"></a><span class="co">#| echo: true</span></span>
 <span id="cb8-93"><a href="#cb8-93"></a><span class="co">#| warning: false</span></span>
 <span id="cb8-94"><a href="#cb8-94"></a></span>
-<span id="cb8-95"><a href="#cb8-95"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_random_effects.R"</span>))</span>
+<span id="cb8-95"><a href="#cb8-95"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_random_effects.R"</span>))</span>
 <span id="cb8-96"><a href="#cb8-96"></a><span class="fu">plot_location_effects</span>()</span>
 <span id="cb8-97"><a href="#cb8-97"></a><span class="in">```</span></span>
 <span id="cb8-98"><a href="#cb8-98"></a></span>
@@ -1259,7 +1259,7 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 <span id="cb8-120"><a href="#cb8-120"></a><span class="co">#| message: false</span></span>
 <span id="cb8-121"><a href="#cb8-121"></a><span class="co">#| warning: false</span></span>
 <span id="cb8-122"><a href="#cb8-122"></a></span>
-<span id="cb8-123"><a href="#cb8-123"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_diagnostics.R"</span>))</span>
+<span id="cb8-123"><a href="#cb8-123"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_diagnostics.R"</span>))</span>
 <span id="cb8-124"><a href="#cb8-124"></a><span class="fu">run_dharma_diagnostics</span>()</span>
 <span id="cb8-125"><a href="#cb8-125"></a><span class="in">```</span></span>
 <span id="cb8-126"><a href="#cb8-126"></a></span>
@@ -1280,7 +1280,7 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 <span id="cb8-143"><a href="#cb8-143"></a><span class="co">#| message: false</span></span>
 <span id="cb8-144"><a href="#cb8-144"></a><span class="co">#| warning: false</span></span>
 <span id="cb8-145"><a href="#cb8-145"></a></span>
-<span id="cb8-146"><a href="#cb8-146"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter6"</span>, <span class="st">"eval_autocorrelation.R"</span>))</span>
+<span id="cb8-146"><a href="#cb8-146"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_autocorrelation.R"</span>))</span>
 <span id="cb8-147"><a href="#cb8-147"></a>full_data <span class="ot">&lt;-</span> <span class="fu">build_autocorrelation_data</span>()</span>
 <span id="cb8-148"><a href="#cb8-148"></a>dw_results <span class="ot">&lt;-</span> <span class="fu">run_dw_tests</span>(full_data, m_full, res)</span>
 <span id="cb8-149"><a href="#cb8-149"></a><span class="in">```</span></span>
@@ -1304,7 +1304,7 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 <span id="cb8-169"><a href="#cb8-169"></a></span>
 <span id="cb8-170"><a href="#cb8-170"></a>The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.</span>
 <span id="cb8-171"><a href="#cb8-171"></a></span>
-<span id="cb8-172"><a href="#cb8-172"></a>This risk is particularly salient here. The raw data exhibits strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <span class="in">`rain_yesterday`</span>, the 7-day moving average features, the natural spline of <span class="in">`days_since_rain`</span>, and the cyclical seasonal encoding.</span>
+<span id="cb8-172"><a href="#cb8-172"></a>This risk is particularly salient here. The raw data shows strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <span class="in">`rain_yesterday`</span>, the 7-day moving average features, the natural spline of <span class="in">`days_since_rain`</span>, and the cyclical seasonal encoding.</span>
 <span id="cb8-173"><a href="#cb8-173"></a></span>
 <span id="cb8-174"><a href="#cb8-174"></a>**Results across all locations.** The Durbin-Watson test was applied to residuals from all 49 stations and results are reported in @tbl-dw-results, sorted by p-value. The theoretical value under perfect serial independence is 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. The distribution of test statistics across stations reveals a consistent pattern: nearly all values fall in the range 1.81 to 2.25, indicating that the residuals are close to independence everywhere, though the degree of remaining structure varies by location.</span>
 <span id="cb8-175"><a href="#cb8-175"></a></span>

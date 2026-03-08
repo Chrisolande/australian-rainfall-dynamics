@@ -20,13 +20,9 @@ source(here::here("utils.R"))
 
 ## Data Quality Summary {#sec-data-quality}
 
-A thorough investigation of missingness is documented in @sec-data and summarised briefly here for continuity. The full diagnostic pipeline, comprising co-missingness analysis, temporal structural break detection, ghost sensor identification, and a weather-conditionality test, established the following picture.
+The missingness diagnostics and imputation pipeline are documented in full in @sec-data. Briefly: `sunshine` and `evaporation` are missing in 47.7% and 42.5% of records respectively, their missingness is station-conditional rather than outcome-conditional, and both are recovered via predictive mean matching across ten imputed datasets. The imputed dataset `df_final` is used throughout the remainder of this chapter; `df_clean` is used only in this opening section to avoid circularity between imputed features and the response distribution.
 
-The dataset contains 314,146 missing entries in total, distributed highly unevenly across features. The four most affected variables are `sunshine` (47.7% missing), `evaporation` (42.5%), `cloud3pm` (approximately 40%), and `cloud9am` (approximately 38%). Their missingness is not independent: co-missing rates between any pair of these four variables range from 67% to 93%, confirming that they fail together at the station level rather than through separate independent sensor faults. This constitutes Missing Not At Random at the station level, driven by instrumentation deployment profiles.
-
-A weather-conditionality test confirmed that sunshine missingness does not covary with rainfall amounts: the missing rate is 47.8% on dry days and 47.2% on rainy days. Missingness is station-conditional rather than outcome-conditional, meaning imputed values do not introduce directional bias into the training labels.
-
-The core dynamic variables; pressure, wind speed, temperature, and humidity show missingness below 10% and are available across virtually all observations.
+**Modelling implication.** Discarding `sunshine` and `evaporation` would sacrifice two of the strongest predictors of rainfall occurrence (see @sec-correlation); listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations.
 
 ```{r}
 #| label: missing-values-summary
@@ -39,11 +35,6 @@ print(paste("Total missing values:", total_na))
 
 missing_val(df_clean)
 ```
-
-
-**Resolution.** A two-stage hybrid imputation pipeline was applied in @sec-data. Stage 1 applied linear temporal interpolation, bounded by a five-day gap cap, to eight smoothly-evolving meteorological variables: minimum and maximum temperature, morning and afternoon temperature, morning and afternoon pressure, and morning and afternoon humidity. Stage 2 addressed the remaining missingness using `mice` with method assignments differentiated by variable type. The four continuous atmospheric variables (`sunshine`, `evaporation`, `cloud9am`, `cloud3pm`) were imputed via predictive mean matching, which constrains imputed draws to the empirically observed range of each variable and preserves marginal distributional shape without imposing parametric assumptions. The three wind direction variables (`wind_gust_dir`, `wind_dir9am`, `wind_dir3pm`) were imputed using Random Forest, which handles their unordered sixteen-level factor structure natively. Each variable's predictor set was restricted to physically motivated covariates: cloud cover from humidity and pressure, sunshine from cloud cover and temperature, evaporation from wind speed, temperature, and humidity, and wind direction from the corresponding wind speed, pressure, location, and month. Ghost sensor station-variable pairs those with more than 90% missingness across the full observation window were identified before the Stage 2 run and carried forward with binary imputation flags (`sunshine_imp_flagged`, `evap_imp_flagged`, `cloud3pm_imp_flagged`, `cloud9am_imp_flagged`) rather than populated with extrapolations that have no empirical anchor. The imputed dataset `df_final` is used throughout the remainder of this chapter. The raw dataset `df_clean` is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.
-
-**Modelling implication.** The concentration of missingness in `sunshine` and `evaporation`, both of which exhibit meaningful correlation with rainfall as shown in @sec-correlation, creates a direct trade-off: discarding these variables avoids imputation complexity but sacrifices predictive signal, while listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations. 
 
 ---
 
@@ -58,7 +49,7 @@ Understanding the marginal distribution of the response variable is a prerequisi
 #| message: false
 #| warning: false
 
-source(here::here("chapter3", "target.R"))
+source(here::here("chapter4", "target.R"))
 render_descriptive_stats()
 ```
 
@@ -93,7 +84,7 @@ Because rainfall is heavily skewed and the relationships are unlikely to be line
 #| message: false
 #| warning: false
 
-source(here::here("chapter3", "correlation.R"))
+source(here::here("chapter4", "correlation.R"))
 render_correlation_table()
 ```
 
@@ -118,7 +109,7 @@ run_cocor_test()
 
 **Moisture indicators (positive association).** `Humidity3pm` ($r = 0.44$) and cloud cover ($r \approx 0.37$) show the strongest positive associations. High afternoon humidity indicates that moisture has accumulated in the lower atmosphere over the course of the day. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics that produce it.
 
-**Radiation and evaporation indicators (negative association).** `Sunshine` ($r = -0.40$) and `evaporation` ($r = -0.31$) exhibit the strongest negative associations. Long sunshine hours proxy clear-sky, high-pressure conditions. High evaporation signals warm, dry, low-humidity surface conditions.
+**Radiation and evaporation indicators (negative association).** `Sunshine` ($r = -0.40$) and `evaporation` ($r = -0.31$) show the strongest negative associations. Long sunshine hours proxy clear-sky, high-pressure conditions. High evaporation signals warm, dry, low-humidity surface conditions.
 
 **Multicollinearity.** The correlation heatmap (@fig-correlation-matrix) reveals substantial redundancy among predictors. `pressure9am` and `pressure3pm` share $r = 0.96$, and the two temperature readings are similarly collinear. This directly motivates VIF-based feature selection in the feature engineering chapter.
 
@@ -137,7 +128,7 @@ run_cocor_test()
 #| message: false
 #| warning: false
 
-source(here::here("chapter3", "temporal.R"))
+source(here::here("chapter4", "temporal.R"))
 render_weekly_frequency_table()
 ```
 
@@ -247,7 +238,7 @@ The linear model is an approximation. A likelihood ratio test against a four-kno
 #| message: false
 #| warning: false
 
-source(here::here("chapter3", "pressure.R"))
+source(here::here("chapter4", "pressure.R"))
 pressure_dat <- build_pressure_data()
 plot_pressure_qq(pressure_dat)
 ```
@@ -310,7 +301,7 @@ plot_pressure_means()
 #| message: false
 #| warning: false
 
-source(here::here("chapter3", "seasonality.R"))
+source(here::here("chapter4", "seasonality.R"))
 seasonal_dat <- build_seasonal_data()
 monthly_stats <- build_monthly_stats()
 ```
@@ -328,7 +319,7 @@ plot_monthly_ridgeline()
 
 ```{r}
 #| label: fig-seasonal-facet
-#| fig-cap: "Seasonal rainfall patterns by meteorological season. Summer exhibits high variance and a pronounced right tail; winter shows narrower, more predictable distributions. Quartile lines mark the 25th, 50th, and 75th percentiles within each month."
+#| fig-cap: "Seasonal rainfall patterns by meteorological season. Summer shows high variance and a pronounced right tail; winter shows narrower, more predictable distributions. Quartile lines mark the 25th, 50th, and 75th percentiles within each month."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -413,13 +404,13 @@ Post-hoc Dunn's tests identify three distinct statistical groups (@fig-seasonal-
 #| echo: true
 #| warning: false
 
-source(here::here("chapter3", "interactions.R"))
+source(here::here("chapter4", "interactions.R"))
 plot_rain_corner()
 ```
 
 While individual correlation analysis in @sec-correlation identifies humidity and sunshine as primary predictors, a standard additive model assumes their effects on the log-odds of rainfall are independent. The bivariate density plots (@fig-interaction-rain-corner) test this assumption directly by visualising the joint distribution of these two features conditioned on the rainfall outcome.
 
-**Dry Day Structure.** The feature space for dry days exhibits a concentrated region in the lower-right of the humidity-sunshine plane, where sunshine is moderate-to-high and afternoon humidity is low. This reflects the high-pressure suppression regimes documented in @sec-markov, where clear skies drive both elevated sunshine duration and suppressed humidity. Neither variable in isolation is a reliable discriminator between outcomes; the specific combination carries the predictive signal.
+**Dry Day Structure.** The feature space for dry days shows a concentrated region in the lower-right of the humidity-sunshine plane, where sunshine is moderate-to-high and afternoon humidity is low. This reflects the high-pressure suppression regimes documented in @sec-markov, where clear skies drive both elevated sunshine duration and suppressed humidity. Neither variable in isolation is a reliable discriminator between outcomes; the specific combination carries the predictive signal.
 
 **The Rain Corner.** Precipitation events concentrate tightly in the upper-left quadrant of the feature space, where afternoon humidity is high and sunshine hours are low simultaneously. This cluster is not a feature of either variable's marginal distribution: high humidity alone and low sunshine alone each occur on dry days with regularity. It is the joint occurrence that distinguishes the rainfall regime. The density mass that is dispersed broadly across the dry-day panel collapses into this single region when rain is present, a pattern that an additive model would be structurally unable to capture.
 
