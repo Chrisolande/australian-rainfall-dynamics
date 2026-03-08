@@ -1177,148 +1177,149 @@ Table&nbsp;7.1: Durbin-Watson test results across all 49 locations, sorted by p-
 <span id="cb8-28"><a href="#cb8-28"></a><span class="in">```{r}</span></span>
 <span id="cb8-29"><a href="#cb8-29"></a><span class="co">#| label: eval-build-predictions</span></span>
 <span id="cb8-30"><a href="#cb8-30"></a><span class="co">#| include: false</span></span>
-<span id="cb8-31"><a href="#cb8-31"></a></span>
-<span id="cb8-32"><a href="#cb8-32"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_classification.R"</span>))</span>
-<span id="cb8-33"><a href="#cb8-33"></a>preds <span class="ot">&lt;-</span> <span class="fu">build_predictions</span>()</span>
-<span id="cb8-34"><a href="#cb8-34"></a><span class="in">```</span></span>
-<span id="cb8-35"><a href="#cb8-35"></a></span>
-<span id="cb8-36"><a href="#cb8-36"></a><span class="fu">## Classification Performance of the Occurrence Submodel {#sec-classification}</span></span>
-<span id="cb8-37"><a href="#cb8-37"></a></span>
-<span id="cb8-40"><a href="#cb8-40"></a><span class="in">```{r}</span></span>
-<span id="cb8-41"><a href="#cb8-41"></a><span class="co">#| label: fig-roc-curve</span></span>
-<span id="cb8-42"><a href="#cb8-42"></a><span class="co">#| fig-cap: "ROC curve for rainfall occurrence prediction. AUC = 0.813 indicates strong discriminative ability in separating dry days from wet days."</span></span>
-<span id="cb8-43"><a href="#cb8-43"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-44"><a href="#cb8-44"></a><span class="co">#| message: false</span></span>
-<span id="cb8-45"><a href="#cb8-45"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-46"><a href="#cb8-46"></a></span>
-<span id="cb8-47"><a href="#cb8-47"></a><span class="fu">plot_roc</span>(preds)</span>
-<span id="cb8-48"><a href="#cb8-48"></a><span class="in">```</span></span>
-<span id="cb8-49"><a href="#cb8-49"></a></span>
-<span id="cb8-52"><a href="#cb8-52"></a><span class="in">```{r}</span></span>
-<span id="cb8-53"><a href="#cb8-53"></a><span class="co">#| label: fig-confusion-matrix</span></span>
-<span id="cb8-54"><a href="#cb8-54"></a><span class="co">#| fig-cap: "Confusion matrix at the Youden-optimal threshold (0.6246)"</span></span>
-<span id="cb8-55"><a href="#cb8-55"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-56"><a href="#cb8-56"></a><span class="co">#| message: false</span></span>
-<span id="cb8-57"><a href="#cb8-57"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-58"><a href="#cb8-58"></a></span>
-<span id="cb8-59"><a href="#cb8-59"></a><span class="fu">plot_confusion_matrix</span>(preds)</span>
-<span id="cb8-60"><a href="#cb8-60"></a><span class="in">```</span></span>
-<span id="cb8-61"><a href="#cb8-61"></a></span>
-<span id="cb8-64"><a href="#cb8-64"></a><span class="in">```{r}</span></span>
-<span id="cb8-65"><a href="#cb8-65"></a><span class="co">#| label: brier-score</span></span>
-<span id="cb8-66"><a href="#cb8-66"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-67"><a href="#cb8-67"></a></span>
-<span id="cb8-68"><a href="#cb8-68"></a><span class="fu">render_brier_scores</span>(preds)</span>
-<span id="cb8-69"><a href="#cb8-69"></a><span class="in">```</span></span>
-<span id="cb8-70"><a href="#cb8-70"></a></span>
-<span id="cb8-71"><a href="#cb8-71"></a>Although the ZIG model is primarily a framework for predicting rainfall amount, its zero-inflation component constitutes a binary classifier at each observation: it assigns a probability that the day is structurally dry. Evaluating this component as a classifier allows direct assessment of how well the model separates the two fundamentally different weather states identified in @sec-eda.</span>
-<span id="cb8-72"><a href="#cb8-72"></a></span>
-<span id="cb8-73"><a href="#cb8-73"></a>**Discriminative ability.** The area under the ROC curve is 0.813 (@fig-roc-curve), meaning that in 81.3% of randomly drawn pairs consisting of one genuinely dry day and one genuinely wet day, the model correctly assigns the higher dryness probability to the dry day. This threshold-free measure of separation indicates strong discriminative performance for a meteorological classification problem of this complexity.</span>
-<span id="cb8-74"><a href="#cb8-74"></a></span>
-<span id="cb8-75"><a href="#cb8-75"></a>**Threshold selection.** The raw zero-inflation probability must be converted to a binary prediction through a threshold. Youden's J statistic, which maximises the sum of sensitivity and specificity simultaneously, selects an optimal threshold of 0.6246. This is notably higher than the naive 0.5 default because dry days constitute 64% of the sample: the model's calibrated prior assigns moderate dryness probability to many observations by default, and a higher threshold requires more decisive evidence before predicting "No Rain."</span>
-<span id="cb8-76"><a href="#cb8-76"></a></span>
-<span id="cb8-77"><a href="#cb8-77"></a>**Confusion matrix.** At this threshold, the model produces 68,074 correct dry-day predictions (true negatives), 36,662 correct rain predictions (true positives), 22,764 false alarms (predicted dry, actually wet), and 14,356 missed rain events (predicted wet, actually dry) (@fig-confusion-matrix). The model generates false alarms at roughly twice the rate at which it misses rain events. In a meteorological context this asymmetry is operationally desirable: the consequence of carrying an umbrella on a dry day is trivial compared to the consequence of being unprepared for a significant rainfall event.</span>
-<span id="cb8-78"><a href="#cb8-78"></a></span>
-<span id="cb8-79"><a href="#cb8-79"></a>The Brier Score is 0.1654 and the Brier Skill Score is 0.2819, indicating meaningful improvement over a climatological reference forecast.</span>
-<span id="cb8-80"><a href="#cb8-80"></a></span>
-<span id="cb8-81"><a href="#cb8-81"></a>---</span>
-<span id="cb8-82"><a href="#cb8-82"></a></span>
-<span id="cb8-83"><a href="#cb8-83"></a><span class="fu">## Spatial Heterogeneity and Random Effects {#sec-random-effects}</span></span>
-<span id="cb8-84"><a href="#cb8-84"></a></span>
-<span id="cb8-87"><a href="#cb8-87"></a><span class="in">```{r}</span></span>
-<span id="cb8-88"><a href="#cb8-88"></a><span class="co">#| label: fig-location-effects</span></span>
-<span id="cb8-89"><a href="#cb8-89"></a><span class="co">#| fig-cap: "Location-specific baseline rainfall adjustments (random intercepts). Cities to the right of the dashed line produce systematically more rainfall than the national average when all dynamic weather variables are held constant; cities to the left produce systematically less."</span></span>
-<span id="cb8-90"><a href="#cb8-90"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb8-91"><a href="#cb8-91"></a><span class="co">#| fig-height: 12</span></span>
-<span id="cb8-92"><a href="#cb8-92"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-93"><a href="#cb8-93"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-94"><a href="#cb8-94"></a></span>
-<span id="cb8-95"><a href="#cb8-95"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_random_effects.R"</span>))</span>
-<span id="cb8-96"><a href="#cb8-96"></a><span class="fu">plot_location_effects</span>()</span>
-<span id="cb8-97"><a href="#cb8-97"></a><span class="in">```</span></span>
-<span id="cb8-98"><a href="#cb8-98"></a></span>
-<span id="cb8-99"><a href="#cb8-99"></a>The random intercepts represent the location-specific baseline deviations in rainfall intensity after removing the contribution of all dynamic weather variables humidity, pressure, wind, seasonality, and persistence (@fig-location-effects). What remains is the component of rainfall attributable to geographic and climatic factors that do not vary day-to-day: proximity to moisture sources, orographic effects, predominant circulation patterns, and regional climate regime.</span>
-<span id="cb8-100"><a href="#cb8-100"></a></span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="co">#| cache:true</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a></span>
+<span id="cb8-33"><a href="#cb8-33"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_classification.R"</span>))</span>
+<span id="cb8-34"><a href="#cb8-34"></a>preds <span class="ot">&lt;-</span> <span class="fu">build_predictions</span>()</span>
+<span id="cb8-35"><a href="#cb8-35"></a><span class="in">```</span></span>
+<span id="cb8-36"><a href="#cb8-36"></a></span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="fu">## Classification Performance of the Occurrence Submodel {#sec-classification}</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a></span>
+<span id="cb8-41"><a href="#cb8-41"></a><span class="in">```{r}</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a><span class="co">#| label: fig-roc-curve</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a><span class="co">#| fig-cap: "ROC curve for rainfall occurrence prediction. AUC = 0.813 indicates strong discriminative ability in separating dry days from wet days."</span></span>
+<span id="cb8-44"><a href="#cb8-44"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a><span class="co">#| message: false</span></span>
+<span id="cb8-46"><a href="#cb8-46"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-47"><a href="#cb8-47"></a></span>
+<span id="cb8-48"><a href="#cb8-48"></a><span class="fu">plot_roc</span>(preds)</span>
+<span id="cb8-49"><a href="#cb8-49"></a><span class="in">```</span></span>
+<span id="cb8-50"><a href="#cb8-50"></a></span>
+<span id="cb8-53"><a href="#cb8-53"></a><span class="in">```{r}</span></span>
+<span id="cb8-54"><a href="#cb8-54"></a><span class="co">#| label: fig-confusion-matrix</span></span>
+<span id="cb8-55"><a href="#cb8-55"></a><span class="co">#| fig-cap: "Confusion matrix at the Youden-optimal threshold (0.6246)"</span></span>
+<span id="cb8-56"><a href="#cb8-56"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-57"><a href="#cb8-57"></a><span class="co">#| message: false</span></span>
+<span id="cb8-58"><a href="#cb8-58"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-59"><a href="#cb8-59"></a></span>
+<span id="cb8-60"><a href="#cb8-60"></a><span class="fu">plot_confusion_matrix</span>(preds)</span>
+<span id="cb8-61"><a href="#cb8-61"></a><span class="in">```</span></span>
+<span id="cb8-62"><a href="#cb8-62"></a></span>
+<span id="cb8-65"><a href="#cb8-65"></a><span class="in">```{r}</span></span>
+<span id="cb8-66"><a href="#cb8-66"></a><span class="co">#| label: brier-score</span></span>
+<span id="cb8-67"><a href="#cb8-67"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-68"><a href="#cb8-68"></a></span>
+<span id="cb8-69"><a href="#cb8-69"></a><span class="fu">render_brier_scores</span>(preds)</span>
+<span id="cb8-70"><a href="#cb8-70"></a><span class="in">```</span></span>
+<span id="cb8-71"><a href="#cb8-71"></a></span>
+<span id="cb8-72"><a href="#cb8-72"></a>Although the ZIG model is primarily a framework for predicting rainfall amount, its zero-inflation component constitutes a binary classifier at each observation: it assigns a probability that the day is structurally dry. Evaluating this component as a classifier allows direct assessment of how well the model separates the two fundamentally different weather states identified in @sec-eda.</span>
+<span id="cb8-73"><a href="#cb8-73"></a></span>
+<span id="cb8-74"><a href="#cb8-74"></a>**Discriminative ability.** The area under the ROC curve is 0.813 (@fig-roc-curve), meaning that in 81.3% of randomly drawn pairs consisting of one genuinely dry day and one genuinely wet day, the model correctly assigns the higher dryness probability to the dry day. This threshold-free measure of separation indicates strong discriminative performance for a meteorological classification problem of this complexity.</span>
+<span id="cb8-75"><a href="#cb8-75"></a></span>
+<span id="cb8-76"><a href="#cb8-76"></a>**Threshold selection.** The raw zero-inflation probability must be converted to a binary prediction through a threshold. Youden's J statistic, which maximises the sum of sensitivity and specificity simultaneously, selects an optimal threshold of 0.6246. This is notably higher than the naive 0.5 default because dry days constitute 64% of the sample: the model's calibrated prior assigns moderate dryness probability to many observations by default, and a higher threshold requires more decisive evidence before predicting "No Rain."</span>
+<span id="cb8-77"><a href="#cb8-77"></a></span>
+<span id="cb8-78"><a href="#cb8-78"></a>**Confusion matrix.** At this threshold, the model produces 68,074 correct dry-day predictions (true negatives), 36,662 correct rain predictions (true positives), 22,764 false alarms (predicted dry, actually wet), and 14,356 missed rain events (predicted wet, actually dry) (@fig-confusion-matrix). The model generates false alarms at roughly twice the rate at which it misses rain events. In a meteorological context this asymmetry is operationally desirable: the consequence of carrying an umbrella on a dry day is trivial compared to the consequence of being unprepared for a significant rainfall event.</span>
+<span id="cb8-79"><a href="#cb8-79"></a></span>
+<span id="cb8-80"><a href="#cb8-80"></a>The Brier Score is 0.1654 and the Brier Skill Score is 0.2819, indicating meaningful improvement over a climatological reference forecast.</span>
+<span id="cb8-81"><a href="#cb8-81"></a></span>
+<span id="cb8-82"><a href="#cb8-82"></a>---</span>
+<span id="cb8-83"><a href="#cb8-83"></a></span>
+<span id="cb8-84"><a href="#cb8-84"></a><span class="fu">## Spatial Heterogeneity and Random Effects {#sec-random-effects}</span></span>
+<span id="cb8-85"><a href="#cb8-85"></a></span>
+<span id="cb8-88"><a href="#cb8-88"></a><span class="in">```{r}</span></span>
+<span id="cb8-89"><a href="#cb8-89"></a><span class="co">#| label: fig-location-effects</span></span>
+<span id="cb8-90"><a href="#cb8-90"></a><span class="co">#| fig-cap: "Location-specific baseline rainfall adjustments (random intercepts). Cities to the right of the dashed line produce systematically more rainfall than the national average when all dynamic weather variables are held constant; cities to the left produce systematically less."</span></span>
+<span id="cb8-91"><a href="#cb8-91"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="co">#| fig-height: 12</span></span>
+<span id="cb8-93"><a href="#cb8-93"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_random_effects.R"</span>))</span>
+<span id="cb8-97"><a href="#cb8-97"></a><span class="fu">plot_location_effects</span>()</span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="in">```</span></span>
+<span id="cb8-99"><a href="#cb8-99"></a></span>
+<span id="cb8-100"><a href="#cb8-100"></a>The random intercepts represent the location-specific baseline deviations in rainfall intensity after removing the contribution of all dynamic weather variables humidity, pressure, wind, seasonality, and persistence (@fig-location-effects). What remains is the component of rainfall attributable to geographic and climatic factors that do not vary day-to-day: proximity to moisture sources, orographic effects, predominant circulation patterns, and regional climate regime.</span>
 <span id="cb8-101"><a href="#cb8-101"></a></span>
-<span id="cb8-102"><a href="#cb8-102"></a>**The wetter locations.** Katherine ($\hat{b} = 0.59$, $e^{0.59} \approx 1.80$) and Tuggeranong ($\hat{b} = 0.52$, $e^{0.52} \approx 1.68$) sit at the high end of the distribution, producing roughly 68% and 80% more rainfall respectively than a hypothetical average Australian location experiencing identical instantaneous weather conditions. Katherine's elevated baseline is geographically coherent: it sits in the tropical Top End of the Northern Territory, where monsoonal systems deliver sustained and intense rainfall with no structural analogue in the temperate south. Tuggeranong is located in the Australian Capital Territory near Canberra, where its elevated baseline reflects orographic enhancement from the surrounding Brindabella Ranges and exposure to moisture-bearing easterly flows that the dynamic predictors do not fully represent on a day-to-day basis.</span>
-<span id="cb8-103"><a href="#cb8-103"></a></span>
-<span id="cb8-104"><a href="#cb8-104"></a>**The drier locations.** Nhil ($\hat{b} = -0.69$, $e^{-0.69} \approx 0.50$) and Norfolk Island ($\hat{b} = -0.76$, $e^{-0.76} \approx 0.47$) show the strongest negative adjustments. Nhil produces roughly half the rainfall of an average location given identical weather conditions, reflecting its position in the semi-arid Wimmera region of inland Victoria where even moisture-laden air masses tend to deliver less precipitation than they would at the coast.</span>
-<span id="cb8-105"><a href="#cb8-105"></a></span>
-<span id="cb8-106"><a href="#cb8-106"></a>**Justification for the mixed-effects structure.** The magnitude and geographic coherence of these deviations confirm the necessity of the random effects component. A pooled fixed-effects model would suppress this spatial variation, producing coefficients that systematically over-predict rainfall in arid interior stations and under-predict it in high-rainfall locations. The mixed-effects structure allows the global physical relationships humidity drives intensity, southerly winds bring moisture to remain stable as fixed effects while accommodating the geographically variable baseline against which they operate.</span>
-<span id="cb8-107"><a href="#cb8-107"></a></span>
-<span id="cb8-108"><a href="#cb8-108"></a>---</span>
-<span id="cb8-109"><a href="#cb8-109"></a></span>
-<span id="cb8-110"><a href="#cb8-110"></a><span class="fu">## Residual Diagnostics via DHARMa Simulation {#sec-dharma}</span></span>
-<span id="cb8-111"><a href="#cb8-111"></a></span>
-<span id="cb8-114"><a href="#cb8-114"></a><span class="in">```{r}</span></span>
-<span id="cb8-115"><a href="#cb8-115"></a><span class="co">#| label: fig-dharma-diagnostics</span></span>
-<span id="cb8-116"><a href="#cb8-116"></a><span class="co">#| fig-cap: "DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs. predicted values."</span></span>
-<span id="cb8-117"><a href="#cb8-117"></a><span class="co">#| fig-width: 10</span></span>
-<span id="cb8-118"><a href="#cb8-118"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb8-119"><a href="#cb8-119"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-120"><a href="#cb8-120"></a><span class="co">#| message: false</span></span>
-<span id="cb8-121"><a href="#cb8-121"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-122"><a href="#cb8-122"></a></span>
-<span id="cb8-123"><a href="#cb8-123"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_diagnostics.R"</span>))</span>
-<span id="cb8-124"><a href="#cb8-124"></a><span class="fu">run_dharma_diagnostics</span>()</span>
-<span id="cb8-125"><a href="#cb8-125"></a><span class="in">```</span></span>
-<span id="cb8-126"><a href="#cb8-126"></a></span>
-<span id="cb8-127"><a href="#cb8-127"></a>Standard residual diagnostics are not directly applicable to Zero-Inflated Gamma models: the mixture of a point mass at zero and a continuous positive distribution means that conventional Pearson or deviance residuals do not have a tractable reference distribution. DHARMa addresses this by generating a large number of simulated datasets from the fitted model and computing, for each observation, where the actual value falls in the empirical distribution of simulated values. Under a correctly specified model, these scaled residuals follow a uniform distribution on $<span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>$ regardless of the model family. Deviations from uniformity indicate misspecification.</span>
-<span id="cb8-128"><a href="#cb8-128"></a></span>
-<span id="cb8-129"><a href="#cb8-129"></a>**Q-Q plot.** The empirical quantiles of the scaled residuals align closely with the theoretical diagonal across the full range of the distribution. The Kolmogorov-Smirnov test registers $p &lt; 0.05$, but this outcome is expected and should not be interpreted as evidence of meaningful misfit: with $N &gt; 140{,}000$ observations, the test has sufficient power to detect deviations of negligible practical magnitude. The visual alignment of the Q-Q plot, the appropriate diagnostic at this sample size shows no systematic departure from the uniform reference.</span>
-<span id="cb8-130"><a href="#cb8-130"></a></span>
-<span id="cb8-131"><a href="#cb8-131"></a>**Residuals versus predicted.** The three quantile lines (25th, 50th, and 75th percentiles of the scaled residuals at each fitted value) are horizontal and evenly spaced across the range of predictions. This indicates the absence of systematic non-linearity and the absence of heteroscedasticity. The model performs with equivalent fidelity across the full range of rainfall intensities, from light drizzle to extreme events.</span>
-<span id="cb8-132"><a href="#cb8-132"></a></span>
-<span id="cb8-133"><a href="#cb8-133"></a>---</span>
-<span id="cb8-134"><a href="#cb8-134"></a></span>
-<span id="cb8-135"><a href="#cb8-135"></a><span class="fu">## Temporal Autocorrelation in Residuals {#sec-autocorrelation}</span></span>
-<span id="cb8-136"><a href="#cb8-136"></a></span>
-<span id="cb8-139"><a href="#cb8-139"></a><span class="in">```{r}</span></span>
-<span id="cb8-140"><a href="#cb8-140"></a><span class="co">#| label: run-autocorrelation</span></span>
-<span id="cb8-141"><a href="#cb8-141"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-142"><a href="#cb8-142"></a><span class="co">#| eval: false</span></span>
-<span id="cb8-143"><a href="#cb8-143"></a><span class="co">#| message: false</span></span>
-<span id="cb8-144"><a href="#cb8-144"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-145"><a href="#cb8-145"></a></span>
-<span id="cb8-146"><a href="#cb8-146"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_autocorrelation.R"</span>))</span>
-<span id="cb8-147"><a href="#cb8-147"></a>full_data <span class="ot">&lt;-</span> <span class="fu">build_autocorrelation_data</span>()</span>
-<span id="cb8-148"><a href="#cb8-148"></a>dw_results <span class="ot">&lt;-</span> <span class="fu">run_dw_tests</span>(full_data, m_full, res)</span>
-<span id="cb8-149"><a href="#cb8-149"></a><span class="in">```</span></span>
-<span id="cb8-150"><a href="#cb8-150"></a></span>
-<span id="cb8-153"><a href="#cb8-153"></a><span class="in">```{r}</span></span>
-<span id="cb8-154"><a href="#cb8-154"></a><span class="co">#| label: tbl-dw-results</span></span>
-<span id="cb8-155"><a href="#cb8-155"></a><span class="co">#| tbl-cap: "Durbin-Watson test results across all 49 locations, sorted by p-value."</span></span>
-<span id="cb8-156"><a href="#cb8-156"></a><span class="co">#| echo: false</span></span>
-<span id="cb8-157"><a href="#cb8-157"></a></span>
-<span id="cb8-158"><a href="#cb8-158"></a>dw_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"dw_results.csv"</span>))</span>
-<span id="cb8-159"><a href="#cb8-159"></a></span>
-<span id="cb8-160"><a href="#cb8-160"></a>dw_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-161"><a href="#cb8-161"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(., <span class="dv">4</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-162"><a href="#cb8-162"></a>  <span class="fu">datatable</span>(</span>
-<span id="cb8-163"><a href="#cb8-163"></a>    <span class="at">colnames =</span> <span class="fu">c</span>(<span class="st">"Location"</span>, <span class="st">"DW Statistic"</span>, <span class="st">"p-value"</span>),</span>
-<span id="cb8-164"><a href="#cb8-164"></a>    <span class="at">caption =</span> <span class="st">"Durbin-Watson test results across all 49 locations, sorted by p-value."</span>,</span>
-<span id="cb8-165"><a href="#cb8-165"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">15</span>, <span class="at">dom =</span> <span class="st">"tip"</span>),</span>
-<span id="cb8-166"><a href="#cb8-166"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span></span>
-<span id="cb8-167"><a href="#cb8-167"></a>  )</span>
-<span id="cb8-168"><a href="#cb8-168"></a><span class="in">```</span></span>
-<span id="cb8-169"><a href="#cb8-169"></a></span>
-<span id="cb8-170"><a href="#cb8-170"></a>The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.</span>
-<span id="cb8-171"><a href="#cb8-171"></a></span>
-<span id="cb8-172"><a href="#cb8-172"></a>This risk is particularly salient here. The raw data shows strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <span class="in">`rain_yesterday`</span>, the 7-day moving average features, the natural spline of <span class="in">`days_since_rain`</span>, and the cyclical seasonal encoding.</span>
-<span id="cb8-173"><a href="#cb8-173"></a></span>
-<span id="cb8-174"><a href="#cb8-174"></a>**Results across all locations.** The Durbin-Watson test was applied to residuals from all 49 stations and results are reported in @tbl-dw-results, sorted by p-value. The theoretical value under perfect serial independence is 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. The distribution of test statistics across stations reveals a consistent pattern: nearly all values fall in the range 1.81 to 2.25, indicating that the residuals are close to independence everywhere, though the degree of remaining structure varies by location.</span>
-<span id="cb8-175"><a href="#cb8-175"></a></span>
-<span id="cb8-176"><a href="#cb8-176"></a>**Stations with the least residual autocorrelation.** Woomera (DW = 2.0021, $p$ = 0.955), Brisbane (DW = 2.0083, $p$ = 0.816), Perth (DW = 2.0109, $p$ = 0.759), and Alice Springs (DW = 2.0139, $p$ = 0.703) show statistics that are essentially indistinguishable from the ideal value of 2.0. These are predominantly arid or subtropical interior locations where rainfall is episodic and driven by synoptic-scale events well-captured by the dynamic predictors. The temporal engineering has absorbed virtually all day-to-day dependence for these stations.</span>
-<span id="cb8-177"><a href="#cb8-177"></a></span>
-<span id="cb8-178"><a href="#cb8-178"></a>**Stations with the strongest residual autocorrelation.** Ballarat (DW = 2.2527, $p$ &lt; 0.001), Watsonia (DW = 2.2000, $p$ &lt; 0.001), Cairns (DW = 1.8149, $p$ &lt; 0.001), and Melbourne Airport (DW = 2.1613, $p$ &lt; 0.001) sit at the extremes of the distribution. Ballarat and Watsonia, both in the Victorian highlands, show mild negative autocorrelation (DW &gt; 2), suggesting a slight tendency for above-average residuals to follow below-average ones a pattern consistent with orographic rainfall variability that the current predictor set does not fully resolve. Cairns shows mild positive autocorrelation (DW &lt; 2), consistent with multi-day monsoon persistence in tropical North Queensland that the 7-day moving average partially but not entirely captures.</span>
-<span id="cb8-179"><a href="#cb8-179"></a></span>
-<span id="cb8-180"><a href="#cb8-180"></a>**Overall assessment.** The majority of stations cluster near DW = 2.0 with $p$-values well above conventional thresholds, indicating that the temporal feature engineering was effective across the network as a whole. The residual autocorrelation at a handful of high-rainfall or orographically complex locations is modest in magnitude and does not undermine the validity of the model's inference; it does, however, identify locations where richer temporal or topographic predictors could yield further improvement.</span>
-<span id="cb8-181"><a href="#cb8-181"></a></span>
-<span id="cb8-182"><a href="#cb8-182"></a>---</span>
-<span id="cb8-183"><a href="#cb8-183"></a></span>
-<span id="cb8-184"><a href="#cb8-184"></a><span class="fu">## Summary of Validation Results {#sec-eval-summary}</span></span>
-<span id="cb8-185"><a href="#cb8-185"></a></span>
-<span id="cb8-186"><a href="#cb8-186"></a>The four validation procedures converge on a consistent picture of a well-specified model. The occurrence submodel achieves strong discriminative separation between dry and wet days, with a conservative error asymmetry appropriate for meteorological risk communication. The random effects structure captures geographically coherent spatial heterogeneity that a pooled model would suppress, with tropical and orographically exposed locations producing substantially more rainfall than the national average and semi-arid interior locations substantially less. The DHARMa diagnostics show close alignment to the uniform reference distribution with no systematic non-linearity or heteroscedasticity across the range of fitted values. The Durbin-Watson tests across all 49 stations confirm that the model's persistence and dry spell features have successfully eliminated serial dependence from the residuals at the large majority of locations, with modest residual autocorrelation confined to a small number of orographically complex or strongly monsoonal sites. Together, these results support the conclusion that M6 is both statistically valid and physically well-grounded.</span>
+<span id="cb8-102"><a href="#cb8-102"></a></span>
+<span id="cb8-103"><a href="#cb8-103"></a>**The wetter locations.** Katherine ($\hat{b} = 0.59$, $e^{0.59} \approx 1.80$) and Tuggeranong ($\hat{b} = 0.52$, $e^{0.52} \approx 1.68$) sit at the high end of the distribution, producing roughly 68% and 80% more rainfall respectively than a hypothetical average Australian location experiencing identical instantaneous weather conditions. Katherine's elevated baseline is geographically coherent: it sits in the tropical Top End of the Northern Territory, where monsoonal systems deliver sustained and intense rainfall with no structural analogue in the temperate south. Tuggeranong is located in the Australian Capital Territory near Canberra, where its elevated baseline reflects orographic enhancement from the surrounding Brindabella Ranges and exposure to moisture-bearing easterly flows that the dynamic predictors do not fully represent on a day-to-day basis.</span>
+<span id="cb8-104"><a href="#cb8-104"></a></span>
+<span id="cb8-105"><a href="#cb8-105"></a>**The drier locations.** Nhil ($\hat{b} = -0.69$, $e^{-0.69} \approx 0.50$) and Norfolk Island ($\hat{b} = -0.76$, $e^{-0.76} \approx 0.47$) show the strongest negative adjustments. Nhil produces roughly half the rainfall of an average location given identical weather conditions, reflecting its position in the semi-arid Wimmera region of inland Victoria where even moisture-laden air masses tend to deliver less precipitation than they would at the coast.</span>
+<span id="cb8-106"><a href="#cb8-106"></a></span>
+<span id="cb8-107"><a href="#cb8-107"></a>**Justification for the mixed-effects structure.** The magnitude and geographic coherence of these deviations confirm the necessity of the random effects component. A pooled fixed-effects model would suppress this spatial variation, producing coefficients that systematically over-predict rainfall in arid interior stations and under-predict it in high-rainfall locations. The mixed-effects structure allows the global physical relationships humidity drives intensity, southerly winds bring moisture to remain stable as fixed effects while accommodating the geographically variable baseline against which they operate.</span>
+<span id="cb8-108"><a href="#cb8-108"></a></span>
+<span id="cb8-109"><a href="#cb8-109"></a>---</span>
+<span id="cb8-110"><a href="#cb8-110"></a></span>
+<span id="cb8-111"><a href="#cb8-111"></a><span class="fu">## Residual Diagnostics via DHARMa Simulation {#sec-dharma}</span></span>
+<span id="cb8-112"><a href="#cb8-112"></a></span>
+<span id="cb8-115"><a href="#cb8-115"></a><span class="in">```{r}</span></span>
+<span id="cb8-116"><a href="#cb8-116"></a><span class="co">#| label: fig-dharma-diagnostics</span></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="co">#| fig-cap: "DHARMa simulated residual diagnostics for M6. Left: Q-Q plot of scaled residuals against the expected uniform distribution. Right: Residuals vs. predicted values."</span></span>
+<span id="cb8-118"><a href="#cb8-118"></a><span class="co">#| fig-width: 10</span></span>
+<span id="cb8-119"><a href="#cb8-119"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb8-120"><a href="#cb8-120"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-121"><a href="#cb8-121"></a><span class="co">#| message: false</span></span>
+<span id="cb8-122"><a href="#cb8-122"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-123"><a href="#cb8-123"></a></span>
+<span id="cb8-124"><a href="#cb8-124"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_diagnostics.R"</span>))</span>
+<span id="cb8-125"><a href="#cb8-125"></a><span class="fu">run_dharma_diagnostics</span>()</span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="in">```</span></span>
+<span id="cb8-127"><a href="#cb8-127"></a></span>
+<span id="cb8-128"><a href="#cb8-128"></a>Standard residual diagnostics are not directly applicable to Zero-Inflated Gamma models: the mixture of a point mass at zero and a continuous positive distribution means that conventional Pearson or deviance residuals do not have a tractable reference distribution. DHARMa addresses this by generating a large number of simulated datasets from the fitted model and computing, for each observation, where the actual value falls in the empirical distribution of simulated values. Under a correctly specified model, these scaled residuals follow a uniform distribution on $<span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>$ regardless of the model family. Deviations from uniformity indicate misspecification.</span>
+<span id="cb8-129"><a href="#cb8-129"></a></span>
+<span id="cb8-130"><a href="#cb8-130"></a>**Q-Q plot.** The empirical quantiles of the scaled residuals align closely with the theoretical diagonal across the full range of the distribution. The Kolmogorov-Smirnov test registers $p &lt; 0.05$, but this outcome is expected and should not be interpreted as evidence of meaningful misfit: with $N &gt; 140{,}000$ observations, the test has sufficient power to detect deviations of negligible practical magnitude. The visual alignment of the Q-Q plot, the appropriate diagnostic at this sample size shows no systematic departure from the uniform reference.</span>
+<span id="cb8-131"><a href="#cb8-131"></a></span>
+<span id="cb8-132"><a href="#cb8-132"></a>**Residuals versus predicted.** The three quantile lines (25th, 50th, and 75th percentiles of the scaled residuals at each fitted value) are horizontal and evenly spaced across the range of predictions. This indicates the absence of systematic non-linearity and the absence of heteroscedasticity. The model performs with equivalent fidelity across the full range of rainfall intensities, from light drizzle to extreme events.</span>
+<span id="cb8-133"><a href="#cb8-133"></a></span>
+<span id="cb8-134"><a href="#cb8-134"></a>---</span>
+<span id="cb8-135"><a href="#cb8-135"></a></span>
+<span id="cb8-136"><a href="#cb8-136"></a><span class="fu">## Temporal Autocorrelation in Residuals {#sec-autocorrelation}</span></span>
+<span id="cb8-137"><a href="#cb8-137"></a></span>
+<span id="cb8-140"><a href="#cb8-140"></a><span class="in">```{r}</span></span>
+<span id="cb8-141"><a href="#cb8-141"></a><span class="co">#| label: run-autocorrelation</span></span>
+<span id="cb8-142"><a href="#cb8-142"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-143"><a href="#cb8-143"></a><span class="co">#| eval: false</span></span>
+<span id="cb8-144"><a href="#cb8-144"></a><span class="co">#| message: false</span></span>
+<span id="cb8-145"><a href="#cb8-145"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-146"><a href="#cb8-146"></a></span>
+<span id="cb8-147"><a href="#cb8-147"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"chapter7"</span>, <span class="st">"eval_autocorrelation.R"</span>))</span>
+<span id="cb8-148"><a href="#cb8-148"></a>full_data <span class="ot">&lt;-</span> <span class="fu">build_autocorrelation_data</span>()</span>
+<span id="cb8-149"><a href="#cb8-149"></a>dw_results <span class="ot">&lt;-</span> <span class="fu">run_dw_tests</span>(full_data, m_full, res)</span>
+<span id="cb8-150"><a href="#cb8-150"></a><span class="in">```</span></span>
+<span id="cb8-151"><a href="#cb8-151"></a></span>
+<span id="cb8-154"><a href="#cb8-154"></a><span class="in">```{r}</span></span>
+<span id="cb8-155"><a href="#cb8-155"></a><span class="co">#| label: tbl-dw-results</span></span>
+<span id="cb8-156"><a href="#cb8-156"></a><span class="co">#| tbl-cap: "Durbin-Watson test results across all 49 locations, sorted by p-value."</span></span>
+<span id="cb8-157"><a href="#cb8-157"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-158"><a href="#cb8-158"></a></span>
+<span id="cb8-159"><a href="#cb8-159"></a>dw_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"dw_results.csv"</span>))</span>
+<span id="cb8-160"><a href="#cb8-160"></a></span>
+<span id="cb8-161"><a href="#cb8-161"></a>dw_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-162"><a href="#cb8-162"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(., <span class="dv">4</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb8-163"><a href="#cb8-163"></a>  <span class="fu">datatable</span>(</span>
+<span id="cb8-164"><a href="#cb8-164"></a>    <span class="at">colnames =</span> <span class="fu">c</span>(<span class="st">"Location"</span>, <span class="st">"DW Statistic"</span>, <span class="st">"p-value"</span>),</span>
+<span id="cb8-165"><a href="#cb8-165"></a>    <span class="at">caption =</span> <span class="st">"Durbin-Watson test results across all 49 locations, sorted by p-value."</span>,</span>
+<span id="cb8-166"><a href="#cb8-166"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">15</span>, <span class="at">dom =</span> <span class="st">"tip"</span>),</span>
+<span id="cb8-167"><a href="#cb8-167"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-168"><a href="#cb8-168"></a>  )</span>
+<span id="cb8-169"><a href="#cb8-169"></a><span class="in">```</span></span>
+<span id="cb8-170"><a href="#cb8-170"></a></span>
+<span id="cb8-171"><a href="#cb8-171"></a>The most consequential assumption to verify in a time-series regression is whether the residuals are serially independent. If the model has failed to capture all temporal structure in the data, residuals from consecutive days will be correlated, violating the assumption of independent errors and producing standard errors that are too small, confidence intervals that are too narrow, and significance tests that are anti-conservative.</span>
+<span id="cb8-172"><a href="#cb8-172"></a></span>
+<span id="cb8-173"><a href="#cb8-173"></a>This risk is particularly salient here. The raw data shows strong temporal autocorrelation: yesterday's rain state, the weekly wetness trend, and the dry spell dynamics all create day-to-day dependencies that, if unmodelled, would produce heavily autocorrelated residuals. The model addresses this through multiple temporal mechanisms: the Markov persistence feature <span class="in">`rain_yesterday`</span>, the 7-day moving average features, the natural spline of <span class="in">`days_since_rain`</span>, and the cyclical seasonal encoding.</span>
+<span id="cb8-174"><a href="#cb8-174"></a></span>
+<span id="cb8-175"><a href="#cb8-175"></a>**Results across all locations.** The Durbin-Watson test was applied to residuals from all 49 stations and results are reported in @tbl-dw-results, sorted by p-value. The theoretical value under perfect serial independence is 2.0; values below 2 indicate positive autocorrelation and values above 2 indicate negative autocorrelation. The distribution of test statistics across stations reveals a consistent pattern: nearly all values fall in the range 1.81 to 2.25, indicating that the residuals are close to independence everywhere, though the degree of remaining structure varies by location.</span>
+<span id="cb8-176"><a href="#cb8-176"></a></span>
+<span id="cb8-177"><a href="#cb8-177"></a>**Stations with the least residual autocorrelation.** Woomera (DW = 2.0021, $p$ = 0.955), Brisbane (DW = 2.0083, $p$ = 0.816), Perth (DW = 2.0109, $p$ = 0.759), and Alice Springs (DW = 2.0139, $p$ = 0.703) show statistics that are essentially indistinguishable from the ideal value of 2.0. These are predominantly arid or subtropical interior locations where rainfall is episodic and driven by synoptic-scale events well-captured by the dynamic predictors. The temporal engineering has absorbed virtually all day-to-day dependence for these stations.</span>
+<span id="cb8-178"><a href="#cb8-178"></a></span>
+<span id="cb8-179"><a href="#cb8-179"></a>**Stations with the strongest residual autocorrelation.** Ballarat (DW = 2.2527, $p$ &lt; 0.001), Watsonia (DW = 2.2000, $p$ &lt; 0.001), Cairns (DW = 1.8149, $p$ &lt; 0.001), and Melbourne Airport (DW = 2.1613, $p$ &lt; 0.001) sit at the extremes of the distribution. Ballarat and Watsonia, both in the Victorian highlands, show mild negative autocorrelation (DW &gt; 2), suggesting a slight tendency for above-average residuals to follow below-average ones a pattern consistent with orographic rainfall variability that the current predictor set does not fully resolve. Cairns shows mild positive autocorrelation (DW &lt; 2), consistent with multi-day monsoon persistence in tropical North Queensland that the 7-day moving average partially but not entirely captures.</span>
+<span id="cb8-180"><a href="#cb8-180"></a></span>
+<span id="cb8-181"><a href="#cb8-181"></a>**Overall assessment.** The majority of stations cluster near DW = 2.0 with $p$-values well above conventional thresholds, indicating that the temporal feature engineering was effective across the network as a whole. The residual autocorrelation at a handful of high-rainfall or orographically complex locations is modest in magnitude and does not undermine the validity of the model's inference; it does, however, identify locations where richer temporal or topographic predictors could yield further improvement.</span>
+<span id="cb8-182"><a href="#cb8-182"></a></span>
+<span id="cb8-183"><a href="#cb8-183"></a>---</span>
+<span id="cb8-184"><a href="#cb8-184"></a></span>
+<span id="cb8-185"><a href="#cb8-185"></a><span class="fu">## Summary of Validation Results {#sec-eval-summary}</span></span>
+<span id="cb8-186"><a href="#cb8-186"></a></span>
+<span id="cb8-187"><a href="#cb8-187"></a>The four validation procedures converge on a consistent picture of a well-specified model. The occurrence submodel achieves strong discriminative separation between dry and wet days, with a conservative error asymmetry appropriate for meteorological risk communication. The random effects structure captures geographically coherent spatial heterogeneity that a pooled model would suppress, with tropical and orographically exposed locations producing substantially more rainfall than the national average and semi-arid interior locations substantially less. The DHARMa diagnostics show close alignment to the uniform reference distribution with no systematic non-linearity or heteroscedasticity across the range of fitted values. The Durbin-Watson tests across all 49 stations confirm that the model's persistence and dry spell features have successfully eliminated serial dependence from the residuals at the large majority of locations, with modest residual autocorrelation confined to a small number of orographically complex or strongly monsoonal sites. Together, these results support the conclusion that M6 is both statistically valid and physically well-grounded.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

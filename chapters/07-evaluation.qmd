@@ -24,6 +24,7 @@ m6_mixed <- get_model("m6_mixed")
 ```{r}
 #| label: eval-build-predictions
 #| include: false
+#| cache:true
 
 source(here::here("chapter7", "eval_classification.R"))
 preds <- build_predictions()
